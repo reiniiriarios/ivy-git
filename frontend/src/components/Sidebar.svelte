@@ -8,7 +8,6 @@
   } from "../../wailsjs/go/main/App";
 
   interface Repo {
-    Id: string;
     Name: string;
     Directory: string;
   }

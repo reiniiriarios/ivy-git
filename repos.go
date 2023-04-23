@@ -17,7 +17,6 @@ type RepoSaveData struct {
 }
 
 type Repo struct {
-	Id        string
 	Name      string
 	Directory string
 }
@@ -98,8 +97,8 @@ func (a *App) AddRepo() RepoResponse {
 		}
 	}
 
+	id := uuid.New().String()
 	newRepo := Repo{
-		Id:        uuid.New().String(),
 		Name:      filepath.Base(d),
 		Directory: d,
 	}
@@ -107,7 +106,7 @@ func (a *App) AddRepo() RepoResponse {
 	if a.RepoSaveData.Repos == nil {
 		a.RepoSaveData.Repos = make(map[string]Repo)
 	}
-	a.RepoSaveData.Repos[newRepo.Id] = newRepo
+	a.RepoSaveData.Repos[id] = newRepo
 	a.SaveRepoData()
 
 	return RepoResponse{
