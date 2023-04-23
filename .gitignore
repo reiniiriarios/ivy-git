@@ -1,3 +1,7 @@
-build/bin
+/build/bin
 node_modules
-frontend/dist
+/frontend/dist
+/vendor
+ivy-git-res.syso
+
+/repos.yaml
