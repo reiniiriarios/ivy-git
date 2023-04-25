@@ -1,0 +1,25 @@
+.modal {
+  display: none;
+  z-index: 50;
+
+  .overlay {
+    z-index: 100;
+  }
+
+  &__box {
+    z-index: 200;
+    background-color: var(--color-modal-bg);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+
+  &__text {
+    padding: 1rem;
+  }
+
+  &__response {
+    border-top: 1px solid var(--color-modal-border);
+    padding: 1rem;
+  }
+}

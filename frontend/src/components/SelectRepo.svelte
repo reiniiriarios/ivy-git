@@ -79,12 +79,10 @@
   }
 </script>
 
-<div id="sidebar">
-  <button class="btn" id="current-repo" on:click={toggleList} on:keyup={toggleList}>
-    <div class="label">Current Repo:</div>
-    <div>{repos[selectedRepo] ? repos[selectedRepo].Name : 'none selected'}</div>
-  </button>
-</div>
+<button class="btn" id="current-repo" on:click={toggleList} on:keyup={toggleList}>
+  <div class="label">Current Repo:</div>
+  <div>{repos[selectedRepo] ? repos[selectedRepo].Name : 'none selected'}</div>
+</button>
 
 <div id="all-repos">
   <div class="overlay" on:click={hideList} on:keyup={hideList}></div>
@@ -104,18 +102,7 @@
 </div>
 
 <style lang="scss">
-  #sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--sidebar-width);
-    height: 100%;
-  }
-
   #current-repo {
-    position: absolute;
-    top: 0;
-    left: 0;
     height: 4rem;
     width: 100%;
     display: flex;

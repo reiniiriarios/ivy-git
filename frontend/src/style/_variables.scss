@@ -1,0 +1,46 @@
+:root {
+  --color-blueGrey-50: #eceff1;
+  --color-blueGrey-100: #cfd8dc;
+  --color-blueGrey-200: #b0bec5;
+  --color-blueGrey-300: #90a4ae;
+  --color-blueGrey-400: #78909c;
+  --color-blueGrey-500: #607d8b;
+  --color-blueGrey-600: #546e7a;
+  --color-blueGrey-700: #455a64;
+  --color-blueGrey-800: #37474f;
+  --color-blueGrey-900: #263238;
+
+  --color-red-50: #ffebee;
+  --color-red-100: #ffcdd2;
+  --color-red-200: #ef9a9a;
+  --color-red-300: #e57373;
+  --color-red-400: #ef5350;
+  --color-red-500: #f44336;
+  --color-red-600: #e53935;
+  --color-red-700: #d32f2f;
+  --color-red-800: #c62828;
+  --color-red-900: #b71c1c;
+
+  --color-app-bg: #26323880;
+  --color-sidebar-bg: #37474faa;
+
+  --color-text: #fff;
+  --color-text-muted: var(--color-blueGrey-100);
+  --color-text-label: var(--color-blueGrey-300);
+
+  --color-btn-bg: var(--color-blueGrey-700);
+  --color-btn-border: var(--color-blueGrey-800);
+  --color-btn-bg-hover: var(--color-blueGrey-600);
+
+  --color-btn2-bg: var(--color-blueGrey-800);
+  --color-btn2-border: var(--color-blueGrey-900);
+  --color-btn2-bg-hover: var(--color-blueGrey-700);
+
+  --color-modal-bg: var(--color-blueGrey-800);
+  --color-modal-border: var(--color-blueGrey-900);
+
+  --color-overlay-bg: #263238aa;
+
+  --sidebar-width: 20rem;
+  --repo-button-height: 4rem;
+}
