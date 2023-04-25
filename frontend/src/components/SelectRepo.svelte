@@ -30,8 +30,7 @@
     AddRepo().then((result) => {
       switch (result.Response) {
         case "error":
-          // todo
-          alert(result.Message);
+          (window as any).messageModal(result.Message);
           break;
 
         case "success":

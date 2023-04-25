@@ -84,7 +84,7 @@ func (a *App) AddRepo() RepoResponse {
 	if !a.IsGitRepo(d) {
 		return RepoResponse{
 			Response: "error",
-			Message:  "Directory is not a repo.",
+			Message:  "The directory selected is not a git repository.",
 		}
 	}
 
@@ -92,7 +92,7 @@ func (a *App) AddRepo() RepoResponse {
 		if r.Directory == d {
 			return RepoResponse{
 				Response: "error",
-				Message:  "Repo already added.",
+				Message:  "The directory selected is already added.",
 			}
 		}
 	}
