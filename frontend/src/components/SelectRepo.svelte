@@ -34,7 +34,7 @@
           break;
 
         case "success":
-          repos[result.Repo.Id as string] = result.Repo as Repo;
+          repos[result.Id as string] = result.Repo as Repo;
           repos = repos;
           break;
 

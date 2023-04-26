@@ -24,6 +24,7 @@ type Repo struct {
 type RepoResponse struct {
 	Response string
 	Message  string
+	Id       string
 	Repo     Repo
 }
 
@@ -111,6 +112,7 @@ func (a *App) AddRepo() RepoResponse {
 
 	return RepoResponse{
 		Response: "success",
+		Id:       id,
 		Repo:     newRepo,
 	}
 }
