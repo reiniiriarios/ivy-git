@@ -8,7 +8,8 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func (a *App) Git(command ...string) (string, error) {
+func (a *App) Git(directory string, command ...string) (string, error) {
+	command = append([]string{"-C", directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
 
 	var outb, errb bytes.Buffer
@@ -27,7 +28,7 @@ func (a *App) Git(command ...string) (string, error) {
 }
 
 func (a *App) IsGitRepo(directory string) bool {
-	r, err := a.Git("-C", directory, "rev-parse")
+	r, err := a.Git(directory, "rev-parse")
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return false

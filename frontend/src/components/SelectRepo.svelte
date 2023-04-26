@@ -21,8 +21,14 @@
   }
   getRepos();
 
+  function setSelectedRepo(r: string) {
+    selectedRepo = r;
+    (window as any).selectedRepo = r;
+    (window as any).getCurrentBranch();
+  }
+
   function getSelectedRepo() {
-    GetSelectedRepo().then((result) => (selectedRepo = result));
+    GetSelectedRepo().then((result) => setSelectedRepo(result));
   }
   getSelectedRepo();
 
@@ -47,7 +53,7 @@
 
   function selectRepo(e: any) {
     UpdateSelectedRepo(e.target.dataset.id).then(() => {
-      selectedRepo = e.target.dataset.id;
+      setSelectedRepo(e.target.dataset.id);
       hideList();
     });
   }
@@ -85,18 +91,20 @@
 
 <div id="all-repos">
   <div class="overlay" on:click={hideList} on:keyup={hideList}></div>
-  <div id="all-repos-bar">
-    <div id="add-repo-bar">
-      <button class="btn" id="add-repo" on:click={addRepo} on:keyup={addRepo}>Add Repo +</button>
+  <div id="all-repos__container">
+    <div id="all-repos__bar">
+      <div id="all-repos__add">
+        <button class="btn" on:click={addRepo} on:keyup={addRepo}>Add Repo +</button>
+      </div>
+      <ul id="all-repos__list">
+        {#each Object.entries(repos) as [id, repo]}
+          <li>
+            <button class="name" on:click={selectRepo} data-id={id}>{repo.Name}</button>
+            <button class="x" on:click={delRepo} on:keyup={delRepo} data-id={id}>&times;</button>
+          </li>
+        {/each}
+      </ul>
     </div>
-    <ul id="repos-list">
-      {#each Object.entries(repos) as [id, repo]}
-        <li>
-          <button class="name" on:click={selectRepo} data-id={id}>{repo.Name}</button>
-          <button class="x" on:click={delRepo} on:keyup={delRepo} data-id={id}>&times;</button>
-        </li>
-      {/each}
-    </ul>
   </div>
 </div>
 
@@ -118,59 +126,69 @@
 
   #all-repos {
     display: none;
+    height: 100%;
 
     .overlay {
       left: 20rem;
       width: calc(100% - 20rem);
     }
 
-    #all-repos-bar {
+    &__container {
+      position: relative;
+      height: 100%;
+    }
+
+    &__bar {
       background-color: var(--color-sidebar-bg);
       position: absolute;
-      top: 4rem;
+      top: 0;
       left: 0;
-      height: calc(100% - 4rem);
+      height: 100%;
       width: var(--sidebar-width);
     }
-  }
 
-  #add-repo {
-    width: 100%;
-    border-top: 1px solid var(--color-btn-border);
-  }
-
-  #repos-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
-    li {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: space-between;
+    &__add {
+      width: 100%;
+      border-top: 1px solid var(--color-btn-border);
 
       button {
-        text-align: left;
-        border: 0;
-        font-size: 0.9rem;
-        padding: 0.6rem 0.75rem;
+        width: 100%;
+      }
+    }
+
+    &__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
         margin: 0;
-        background-color: transparent;
-        color: var(--color-text);
-        cursor: pointer;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
 
-        &:hover {
-          background-color: var(--color-btn-bg-hover);
-        }
+        button {
+          text-align: left;
+          border: 0;
+          font-size: 0.9rem;
+          padding: 0.6rem 0.75rem;
+          margin: 0;
+          background-color: transparent;
+          color: var(--color-text);
+          cursor: pointer;
 
-        &.name {
-          width: 100%;
-        }
-
-        &.x {
           &:hover {
-            background-color: var(--color-red-800);
+            background-color: var(--color-btn-bg-hover);
+          }
+
+          &.name {
+            width: 100%;
+          }
+
+          &.x {
+            &:hover {
+              background-color: var(--color-red-800);
+            }
           }
         }
       }
