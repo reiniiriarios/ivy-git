@@ -54,16 +54,18 @@
 
   function showList() {
     document.getElementById("all-branches").style.display = "block";
+    document.getElementById("current-branch").classList.add('active');
     listVisible = true;
   }
 
   function hideList() {
     document.getElementById("all-branches").style.display = "none";
+    document.getElementById("current-branch").classList.remove('active');
     listVisible = false;
   }
 </script>
 
-<button class="btn" id="current-branch" on:click={toggleList} on:keyup={toggleList}>
+<button class="btn btn-drop" id="current-branch" on:click={toggleList} on:keyup={toggleList}>
   <div class="label">Current Branch:</div>
   <div>{selectedBranch?.Name ?? 'none selected'}</div>
 </button>

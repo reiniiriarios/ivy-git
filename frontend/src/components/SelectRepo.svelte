@@ -66,11 +66,13 @@
 
   function showList() {
     document.getElementById("all-repos").style.display = "block";
+    document.getElementById("current-repo").classList.add('active');
     listVisible = true;
   }
 
   function hideList() {
     document.getElementById("all-repos").style.display = "none";
+    document.getElementById("current-repo").classList.remove('active');
     listVisible = false;
   }
 
@@ -82,7 +84,7 @@
   }
 </script>
 
-<button class="btn" id="current-repo" on:click={toggleList} on:keyup={toggleList}>
+<button class="btn btn-drop" id="current-repo" on:click={toggleList} on:keyup={toggleList}>
   <div class="label">Current Repo:</div>
   <div>{repos[selectedRepo] ? repos[selectedRepo].Name : 'none selected'}</div>
 </button>
