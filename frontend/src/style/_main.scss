@@ -49,20 +49,6 @@ main {
   height: 100%;
 }
 
-.btn {
-  border: none;
-  color: var(--color-text);
-  background-color: var(--color-btn-bg);
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  margin: 0;
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--color-btn-bg-hover);
-  }
-}
-
 .overlay {
   z-index: 10;
   position: absolute;

@@ -1,0 +1,38 @@
+.btn {
+  border: none;
+  color: var(--color-text);
+  background-color: var(--color-btn-bg);
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-btn-bg-hover);
+  }
+}
+
+.list-btn {
+  text-align: left;
+  border: 0;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  margin: 0;
+  background-color: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-btn-bg-hover);
+  }
+
+  &.name {
+    width: 100%;
+  }
+
+  &.x {
+    &:hover {
+      background-color: var(--color-red-800);
+    }
+  }
+}

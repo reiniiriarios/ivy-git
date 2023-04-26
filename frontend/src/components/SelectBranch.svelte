@@ -78,7 +78,7 @@
       <ul id="all-branches__list">
         {#each Object.entries(branches) as [_, branch]}
           <li>
-            <button class="name" on:click={switchBranch} data-name={branch?.Name}>{branch?.Name}</button>
+            <button class="list-btn name" on:click={switchBranch} data-name={branch?.Name}>{branch?.Name}</button>
           </li>
         {/each}
       </ul>
@@ -145,25 +145,6 @@
         padding: 0;
         display: flex;
         justify-content: space-between;
-
-        button {
-          text-align: left;
-          border: 0;
-          font-size: 0.9rem;
-          padding: 0.6rem 0.75rem;
-          margin: 0;
-          background-color: transparent;
-          color: var(--color-text);
-          cursor: pointer;
-
-          &:hover {
-            background-color: var(--color-btn-bg-hover);
-          }
-
-          &.name {
-            width: 100%;
-          }
-        }
       }
     }
   }

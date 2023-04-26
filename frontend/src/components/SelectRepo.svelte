@@ -97,8 +97,8 @@
       <ul id="all-repos__list">
         {#each Object.entries(repos) as [id, repo]}
           <li>
-            <button class="name" on:click={selectRepo} data-id={id}>{repo.Name}</button>
-            <button class="x" on:click={delRepo} on:keyup={delRepo} data-id={id}>&times;</button>
+            <button class="list-btn name" on:click={selectRepo} data-id={id}>{repo.Name}</button>
+            <button class="list-btn x" on:click={delRepo} on:keyup={delRepo} data-id={id}>&times;</button>
           </li>
         {/each}
       </ul>
@@ -164,31 +164,6 @@
         padding: 0;
         display: flex;
         justify-content: space-between;
-
-        button {
-          text-align: left;
-          border: 0;
-          font-size: 0.9rem;
-          padding: 0.6rem 0.75rem;
-          margin: 0;
-          background-color: transparent;
-          color: var(--color-text);
-          cursor: pointer;
-
-          &:hover {
-            background-color: var(--color-btn-bg-hover);
-          }
-
-          &.name {
-            width: 100%;
-          }
-
-          &.x {
-            &:hover {
-              background-color: var(--color-red-800);
-            }
-          }
-        }
       }
     }
   }
