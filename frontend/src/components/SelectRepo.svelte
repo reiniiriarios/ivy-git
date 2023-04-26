@@ -155,6 +155,7 @@
         border: 0;
         font-size: 0.9rem;
         padding: 0.6rem 0.75rem;
+        margin: 0;
         background-color: transparent;
         color: var(--color-text);
         cursor: pointer;
