@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     GetCurrentBranch,
+    GetBranches,
   } from "../../wailsjs/go/main/App";
 
   interface Branch {
@@ -11,15 +12,22 @@
   let branches: Branch[] = [];
   let listVisible: boolean = false;
 
-  function getBranches() {
-    // GetBranches().then((result) => (repos = result as Repo[]));
+  (window as any).getBranches = () => {
+    GetBranches().then((result) => {
+      switch (result.Response) {
+        case "error":
+          (window as any).messageModal(result.Message);
+          break;
+
+        case "success":
+          branches = result.Branches;
+          break;
+      }
+    });
   }
-  getBranches();
 
   (window as any).getCurrentBranch = () => {
-    console.log('gc');
-    console.log((window as any).selectedRepo);
-    GetCurrentBranch((window as any).selectedRepo).then((result) => {
+    GetCurrentBranch().then((result) => {
       selectedBranch = result.Branch as Branch;
       selectedBranch = selectedBranch;
     });
@@ -68,9 +76,9 @@
         <button class="btn" on:click={newBranch} on:keyup={newBranch}>Create Branch +</button>
       </div>
       <ul id="all-branches__list">
-        {#each Object.entries(branches) as [id, branch]}
+        {#each Object.entries(branches) as [_, branch]}
           <li>
-            <button class="name" on:click={switchBranch} data-name={branch.Name}>{branch.Name}</button>
+            <button class="name" on:click={switchBranch} data-name={branch?.Name}>{branch?.Name}</button>
           </li>
         {/each}
       </ul>

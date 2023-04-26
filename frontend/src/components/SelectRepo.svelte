@@ -16,21 +16,16 @@
   let repos: Repo[] = [];
   let listVisible: boolean = false;
 
-  function getRepos() {
+  (window as any).getSelectedRepo = () => {
+    GetSelectedRepo().then((r) => {
+      selectedRepo = r;
+      (window as any).selectedRepo = r;
+    });
+  }
+
+  (window as any).getRepos = () => {
     GetRepos().then((result) => (repos = result as Repo[]));
   }
-  getRepos();
-
-  function setSelectedRepo(r: string) {
-    selectedRepo = r;
-    (window as any).selectedRepo = r;
-    (window as any).getCurrentBranch();
-  }
-
-  function getSelectedRepo() {
-    GetSelectedRepo().then((result) => setSelectedRepo(result));
-  }
-  getSelectedRepo();
 
   function addRepo() {
     AddRepo().then((result) => {
@@ -53,7 +48,10 @@
 
   function selectRepo(e: any) {
     UpdateSelectedRepo(e.target.dataset.id).then(() => {
-      setSelectedRepo(e.target.dataset.id);
+      selectedRepo = e.target.dataset.id;
+      (window as any).selectedRepo = e.target.dataset.id;
+      (window as any).getCurrentBranch();
+      (window as any).getBranches();
       hideList();
     });
   }
