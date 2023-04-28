@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"os/exec"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -27,6 +28,14 @@ func (a *App) Git(directory string, command ...string) (string, error) {
 	}
 
 	return outb.String(), nil
+}
+
+func (a *App) GitCwd(command ...string) (string, error) {
+	repo, exists := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
+	if !exists {
+		return "", errors.New("no current git directory available")
+	}
+	return a.Git(repo.Directory, command...)
 }
 
 func (a *App) IsGitRepo(directory string) bool {

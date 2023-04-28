@@ -23,15 +23,7 @@ type BranchesResponse struct {
 }
 
 func (a *App) GetCurrentBranch() BranchResponse {
-	repo, exists := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
-	if !exists {
-		return BranchResponse{
-			Response: "error",
-			Message:  "Repo not found.",
-		}
-	}
-
-	branch, err := a.Git(repo.Directory, "rev-parse", "--abbrev-ref", "HEAD")
+	branch, err := a.GitCwd("rev-parse", "--abbrev-ref", "HEAD")
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return BranchResponse{
@@ -49,15 +41,7 @@ func (a *App) GetCurrentBranch() BranchResponse {
 }
 
 func (a *App) GetBranches() BranchesResponse {
-	repo, exists := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
-	if !exists {
-		return BranchesResponse{
-			Response: "error",
-			Message:  "Repo not found.",
-		}
-	}
-
-	branches, err := a.Git(repo.Directory, "branch", "--list", "--format", "'%(refname:short)'")
+	branches, err := a.GitCwd("branch", "--list", "--format", "'%(refname:short)'")
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return BranchesResponse{
@@ -84,15 +68,7 @@ func (a *App) GetBranches() BranchesResponse {
 }
 
 func (a *App) SwitchBranch(branch string) GenericResponse {
-	repo, exists := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
-	if !exists {
-		return GenericResponse{
-			Response: "error",
-			Message:  "Repo not found.",
-		}
-	}
-
-	_, err := a.Git(repo.Directory, "switch", branch)
+	_, err := a.GitCwd("switch", branch)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return GenericResponse{

@@ -50,6 +50,7 @@
             Name: e.target.dataset.name,
           };
           hideList();
+          (window as any).getChanges();
           break;
       }
     });

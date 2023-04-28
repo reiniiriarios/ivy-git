@@ -52,6 +52,7 @@
       (window as any).selectedRepo = e.target.dataset.id;
       (window as any).getCurrentBranch();
       (window as any).getBranches();
+      (window as any).getChanges();
       hideList();
     });
   }
