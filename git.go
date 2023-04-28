@@ -2,26 +2,28 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"os/exec"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func (a *App) Git(directory string, command ...string) (string, error) {
+	// Run every git command in a specific directory.
 	command = append([]string{"-C", directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
 
-	var outb, errb bytes.Buffer
+	// Git outputs much to stderr that isn't error, so treat it the same.
+	// e.g.  git switch test
+	//       STDERR Switched to branch 'test'
+	//       STDOUT Your branch is up to date with 'origin/main'.
+	var outb bytes.Buffer
 	cmd.Stdout = &outb
-	cmd.Stderr = &errb
+	cmd.Stderr = cmd.Stdout
 
-	err2 := cmd.Run()
-	if err2 != nil {
-		return outb.String(), err2
-	}
-	if errb.String() != "" {
-		return outb.String(), errors.New(errb.String())
+	err := cmd.Run()
+	if err != nil {
+		runtime.LogError(a.ctx, "err2")
+		return outb.String(), err
 	}
 
 	return outb.String(), nil
@@ -34,8 +36,5 @@ func (a *App) IsGitRepo(directory string) bool {
 		return false
 	}
 
-	if r == "" {
-		return true
-	}
-	return false
+	return r == ""
 }

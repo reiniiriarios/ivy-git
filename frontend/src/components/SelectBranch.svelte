@@ -2,10 +2,11 @@
   import {
     GetCurrentBranch,
     GetBranches,
+    SwitchBranch,
   } from "../../wailsjs/go/main/App";
 
   interface Branch {
-    Name: string
+    Name: string;
   }
 
   let selectedBranch: Branch;
@@ -24,24 +25,34 @@
           break;
       }
     });
-  }
+  };
 
   (window as any).getCurrentBranch = () => {
     GetCurrentBranch().then((result) => {
       selectedBranch = result.Branch as Branch;
       selectedBranch = selectedBranch;
     });
-  }
+  };
 
   function newBranch() {
     // ...
   }
 
   function switchBranch(e: any) {
-    // SelectBranch(e.target.dataset.name).then(() => {
-    //   selectedBranch = e.target.dataset.name;
-    //   hideList();
-    // });
+    SwitchBranch(e.target.dataset.name).then((result) => {
+      switch (result.Response) {
+        case "error":
+          (window as any).messageModal(result.Message);
+          break;
+
+        case "success":
+          selectedBranch = {
+            Name: e.target.dataset.name,
+          };
+          hideList();
+          break;
+      }
+    });
   }
 
   function toggleList() {
@@ -54,33 +65,44 @@
 
   function showList() {
     document.getElementById("all-branches").style.display = "block";
-    document.getElementById("current-branch").classList.add('active');
+    document.getElementById("current-branch").classList.add("active");
     listVisible = true;
   }
 
   function hideList() {
     document.getElementById("all-branches").style.display = "none";
-    document.getElementById("current-branch").classList.remove('active');
+    document.getElementById("current-branch").classList.remove("active");
     listVisible = false;
   }
 </script>
 
-<button class="btn btn-drop" id="current-branch" on:click={toggleList} on:keyup={toggleList}>
+<button
+  class="btn btn-drop"
+  id="current-branch"
+  on:click={toggleList}
+  on:keyup={toggleList}
+>
   <div class="label">Current Branch:</div>
-  <div>{selectedBranch?.Name ?? 'none selected'}</div>
+  <div>{selectedBranch?.Name ?? "none selected"}</div>
 </button>
 
 <div id="all-branches">
-  <div class="overlay" on:click={hideList} on:keyup={hideList}></div>
+  <div class="overlay" on:click={hideList} on:keyup={hideList} />
   <div id="all-branches__container">
     <div id="all-branches__bar">
       <div id="all-branches__add">
-        <button class="btn" on:click={newBranch} on:keyup={newBranch}>Create Branch +</button>
+        <button class="btn" on:click={newBranch} on:keyup={newBranch}
+          >Create Branch +</button
+        >
       </div>
       <ul id="all-branches__list">
         {#each Object.entries(branches) as [_, branch]}
           <li>
-            <button class="list-btn name" on:click={switchBranch} data-name={branch?.Name}>{branch?.Name}</button>
+            <button
+              class="list-btn name"
+              on:click={switchBranch}
+              data-name={branch?.Name}>{branch?.Name}</button
+            >
           </li>
         {/each}
       </ul>

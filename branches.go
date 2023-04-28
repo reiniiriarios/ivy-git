@@ -83,6 +83,25 @@ func (a *App) GetBranches() BranchesResponse {
 	}
 }
 
-// func (a *App) SwitchBranch(repo string) {
+func (a *App) SwitchBranch(branch string) GenericResponse {
+	repo, exists := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
+	if !exists {
+		return GenericResponse{
+			Response: "error",
+			Message:  "Repo not found.",
+		}
+	}
 
-// }
+	_, err := a.Git(repo.Directory, "switch", branch)
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+
+	return GenericResponse{
+		Response: "success",
+	}
+}

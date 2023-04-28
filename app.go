@@ -10,6 +10,11 @@ type App struct {
 	RepoSaveData RepoSaveData
 }
 
+type GenericResponse struct {
+	Response string
+	Message  string
+}
+
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
