@@ -5,6 +5,10 @@
   import Message from "./components/Message.svelte";
   import SelectBranch from "./components/SelectBranch.svelte";
   import Changes from "./components/Changes.svelte";
+  import MainTabs from "./components/MainTabs.svelte";
+  import Tree from "./components/Tree.svelte";
+  import Diff from "./components/Diff.svelte";
+  import Details from "./components/Details.svelte";
 
   // Load initial ui state.
   function init() {
@@ -17,6 +21,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     init();
   });
+
+  let tab = (window as any).currentTab ?? '';
 </script>
 
 <div id="sidebar">
@@ -25,7 +31,14 @@
   <Changes />
 </div>
 <main>
-  ...
+  <MainTabs />
+  {#if tab == 'changes'}
+    <Diff />
+  {:else if tab == 'tree'}
+    <Tree />
+  {:else if tab == 'details'}
+    <Details />
+  {/if}
 </main>
 <Confirm />
 <Message />

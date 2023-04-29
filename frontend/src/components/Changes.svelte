@@ -97,14 +97,14 @@
       &--added {
         &::after {
           content: 'A';
-          color: var(--color-scale-green-7);
+          color: var(--color-scale-green-3);
         }
       }
 
       &--copied {
         &::after {
           content: 'C';
-          color: var(--color-lime-800);
+          color: var(--color-scale-yellow-7);
         }
       }
 
@@ -146,7 +146,7 @@
       &--untracked {
         &::after {
           content: 'U';
-          color: var(--color-scale-green-7);
+          color: var(--color-scale-green-3);
         }
       }
 
