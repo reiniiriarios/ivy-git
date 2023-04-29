@@ -13,18 +13,21 @@ func (a *App) Git(directory string, command ...string) (string, error) {
 	command = append([]string{"-C", directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
 
-	// Git outputs much to stderr that isn't error, so treat it the same.
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+
+	// Git outputs much to stderr that isn't error.
 	// e.g.  git switch test
 	//       STDERR Switched to branch 'test'
 	//       STDOUT Your branch is up to date with 'origin/main'.
-	var outb bytes.Buffer
-	cmd.Stdout = &outb
-	cmd.Stderr = cmd.Stdout
-
+	// The error may be 'exit status 1', but if there is an
+	// error, errb should contain the relevant information.
 	err := cmd.Run()
 	if err != nil {
-		runtime.LogError(a.ctx, "err2")
-		return outb.String(), err
+		runtime.LogError(a.ctx, err.Error())
+		runtime.LogError(a.ctx, errb.String())
+		return outb.String(), errors.New(errb.String())
 	}
 
 	return outb.String(), nil

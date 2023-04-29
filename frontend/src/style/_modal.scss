@@ -16,6 +16,8 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+    text-align: left;
+    white-space: pre-wrap;
   }
 
   &__text {
@@ -23,6 +25,7 @@
   }
 
   &__response {
+    text-align: center;
     border-top: 1px solid var(--color-modal-border);
     padding: 1rem;
   }

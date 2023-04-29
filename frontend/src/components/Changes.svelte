@@ -60,7 +60,7 @@
 
     &__header {
       font-size: 0.9rem;
-      color: var(--color-text-label);
+      color: var(--color-scale-gray-3);
       padding: 0.5rem 0.75rem 0.5rem;
       border-bottom: 1px solid var(--color-changes-border);
     }
@@ -70,16 +70,14 @@
       margin: 0 0 0.5rem;
       padding: 0;
       background-color: var(--color-changes-list-bg);
-
-      li {
-        border-bottom: 1px solid var(--color-changes-border);
-        padding: 0.5rem 1.5rem 0.25rem 1.5rem;
-      }
     }
 
     &__change {
       display: flex;
       justify-content: left;
+      align-items: center;
+      border-bottom: 1px solid var(--color-changes-border);
+      padding: 0.5rem 1.5rem 0.5rem 1.5rem;
     }
 
     &__status {

@@ -101,11 +101,12 @@
   --color-scale-gray-8: #161b22;
   --color-scale-gray-9: #0d1117;
 
-  --color-app-bg: #0d111780;
-  --color-sidebar-bg: #21262daa;
+  --color-app-bg: #0d1117aa;
+  --color-sidebar-bg: var(--color-scale-gray-8);
+  --color-sidebar-border: var(--color-scale-gray-9);
   --color-overlay-bg: #0d1117aa;
 
-  --color-changes-bg: #21262daa;
+  --color-changes-bg: var(--color-scale-gray-8);
   --color-changes-list-bg: var(--color-scale-gray-7);
   --color-changes-border: #161b22aa;
 

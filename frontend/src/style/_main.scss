@@ -38,6 +38,7 @@ body, button, input, textarea {
   width: var(--sidebar-width);
   overflow: visible;
   height: 100%;
+  border-right: 1px solid var(--color-sidebar-border);
 }
 
 main {
