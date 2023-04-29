@@ -23,7 +23,7 @@
     content: "";
     position: absolute;
     right: 1.5rem;
-    background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 18 18 0 36 18 29 18 18 7 7 18 7 18 0 18'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 0 18 18 36 0 29 0 18 11 7 0 7 0 0 0'/></svg>");
     width: 0.67rem;
     height: 0.67rem;
     background-position: center;
@@ -33,7 +33,7 @@
 
   &.active {
     &::after {
-      background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 0 18 18 36 0 29 0 18 11 7 0 7 0 0 0'/></svg>");
+      background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 18 18 0 36 18 29 18 18 7 7 18 7 18 0 18'/></svg>");
     }
   }
 }
