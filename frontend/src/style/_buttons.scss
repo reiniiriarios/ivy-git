@@ -30,6 +30,7 @@
     background-repeat: no-repeat;
     background-size: contain;
   }
+
   &.active {
     &::after {
       background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 0 18 18 36 0 29 0 18 11 7 0 7 0 0 0'/></svg>");

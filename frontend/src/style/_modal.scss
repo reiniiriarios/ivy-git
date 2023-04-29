@@ -1,4 +1,8 @@
 .modal {
+  --color-btn-bg: var(--color-scale-gray-6);
+  --color-btn-border: var(--color-scale-gray-7);
+  --color-btn-bg-hover: var(--color-scale-gray-5);
+
   display: none;
   z-index: 50;
 

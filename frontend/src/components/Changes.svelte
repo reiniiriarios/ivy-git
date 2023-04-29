@@ -33,8 +33,8 @@
     <ul class="changes__list changes__list--x">
       {#each changesX as change}
         <li class="changes__change">
-          <span class="changes__status changes__status--{change.Flag}" aria-label="{change.Letter}"></span>
           <span class="changes__file">{change.Basename}</span>
+          <span class="changes__status changes__status--{change.Flag}" aria-label="{change.Letter}"></span>
         </li>
       {/each}
     </ul>
@@ -44,8 +44,8 @@
     <ul class="changes__list changes__list--y">
       {#each changesY as change}
         <li class="changes__change">
-          <span class="changes__status changes__status--{change.Flag}" aria-label="{change.Letter}"></span>
           <span class="changes__file">{change.Basename}</span>
+          <span class="changes__status changes__status--{change.Flag}" aria-label="{change.Letter}"></span>
         </li>
       {/each}
     </ul>
@@ -59,10 +59,9 @@
     height: 100%;
 
     &__header {
-      text-transform: uppercase;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: var(--color-text-label);
-      padding: 0.5rem 0.75rem 0.25rem;
+      padding: 0.5rem 0.75rem 0.5rem;
       border-bottom: 1px solid var(--color-changes-border);
     }
 
@@ -70,46 +69,37 @@
       list-style: none;
       margin: 0 0 0.5rem;
       padding: 0;
-    background-color: var(--color-changes-list-bg);
+      background-color: var(--color-changes-list-bg);
 
       li {
         border-bottom: 1px solid var(--color-changes-border);
-        padding: 0.5rem 0.75rem 0.25rem;
-      }
-
-      &--x {
-
-      }
-
-      &--y {
-
+        padding: 0.5rem 1.5rem 0.25rem 1.5rem;
       }
     }
 
     &__change {
       display: flex;
+      justify-content: left;
     }
 
     &__status {
-      width: 1rem;
-      height: 1rem;
-      margin-right: 0.5rem;
       position: relative;
+      margin-left: auto;
 
       &::after {
         content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 1rem;
-        height: 1rem;
-        text-align: center;
+        width: 1.15rem;
+        height: 1.15rem;
+        font-size: 0.85rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       &--added {
         &::after {
           content: 'A';
-          color: var(--color-green-700);
+          color: var(--color-scale-green-7);
         }
       }
 
@@ -123,56 +113,56 @@
       &--deleted {
         &::after {
           content: 'D';
-          color: var(--color-red-700);
+          color: var(--color-scale-red-3);
         }
       }
 
       &--modified {
         &::after {
           content: 'M';
-          color: var(--color-amber-800);
+          color: var(--color-scale-orange-3);
         }
       }
 
       &--renamed {
         &::after {
           content: 'R';
-          color: var(--color-cyan-500);
+          color: var(--color-scale-blue-7);
         }
       }
 
       &--type-changed {
         &::after {
           content: 'T';
-          color: var(--color-teal-900);
+          color: var(--color-scale-purple-7);
         }
       }
 
       &--unmerged {
         &::after {
           content: 'U';
-          color: var(--color-purple-900);
+          color: var(--color-scale-pink-7);
         }
       }
 
       &--untracked {
         &::after {
           content: 'U';
-          color: var(--color-green-300);
+          color: var(--color-scale-green-7);
         }
       }
 
       &--ignored {
         &::after {
           content: '!';
-          color: var(--color-bluegrey-900);
+          color: var(--color-scale-gray-6);
         }
       }
 
       &--not-updated {
         &::after {
           content: '-';
-          color: var(--color-grey-900);
+          color: var(--color-scale-grey-6);
         }
       }
 
@@ -184,10 +174,6 @@
           color: #f00;
         }
       }
-    }
-
-    &__file {
-
     }
   }
 </style>
