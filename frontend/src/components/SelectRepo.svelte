@@ -38,10 +38,6 @@
           repos[result.Id as string] = result.Repo as Repo;
           repos = repos;
           break;
-
-        case "":
-        default:
-          // nothing, no dir was selected
       }
     });
   }
@@ -54,6 +50,9 @@
       (window as any).getBranches();
       (window as any).getChanges();
       hideList();
+      if ((window as any).currentTab == 'tree') {
+        (window as any).GetCommitsForTree();
+      }
     });
   }
 

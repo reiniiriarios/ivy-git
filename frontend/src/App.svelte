@@ -17,12 +17,17 @@
     (window as any).getCurrentBranch();
     (window as any).getBranches();
     (window as any).getChanges();
+    if ((window as any).currentTab == 'tree') {
+      (window as any).GetCommitsForTree();
+    }
   }
   document.addEventListener('DOMContentLoaded', () => {
     init();
   });
 
-  let tab = (window as any).currentTab ?? '';
+  function getCurrentTab(): string {
+    return (window as any).currentTab;
+  }
 </script>
 
 <div id="sidebar">
@@ -32,11 +37,11 @@
 </div>
 <main>
   <MainTabs />
-  {#if tab == 'changes'}
+  {#if getCurrentTab() == 'changes'}
     <Diff />
-  {:else if tab == 'tree'}
+  {:else if getCurrentTab() == 'tree'}
     <Tree />
-  {:else if tab == 'details'}
+  {:else if getCurrentTab() == 'details'}
     <Details />
   {/if}
 </main>
