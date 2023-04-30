@@ -101,7 +101,7 @@ func (a *App) GetCommits() ([]Commit, map[string]uint64, error) {
 func (a *App) GetRefs() (Refs, error) {
 	var refs Refs
 
-	r, err := a.GitCwd("show-ref", "--heads", "--tags", "-d", "--head")
+	r, err := a.GitCwd("show-ref", "--dereference", "--head")
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return refs, err
@@ -119,12 +119,12 @@ func (a *App) GetRefs() (Refs, error) {
 					Name: name[11:],
 				})
 			} else if strings.HasPrefix(name, "refs/tags/") {
-				refs.Tags = append(refs.Heads, Ref{
+				refs.Tags = append(refs.Tags, Ref{
 					Hash: hash,
 					Name: name[10:],
 				})
 			} else if strings.HasPrefix(name, "refs/remotes/") {
-				refs.Remotes = append(refs.Heads, Ref{
+				refs.Remotes = append(refs.Remotes, Ref{
 					Hash: hash,
 					Name: name[13:],
 				})

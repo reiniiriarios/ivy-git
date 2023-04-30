@@ -43,7 +43,7 @@
       {#if Object.entries(commits).length}
         <table>
           <tr>
-            <th>Branch/Tag</th>
+            <th class="b">Branch/Tag</th>
             <th>Tree</th>
             <th>Commit</th>
             <th>Author</th>
@@ -65,6 +65,12 @@
                         {#if commit.Hash == HEAD}
                           <div class="tree__head">HEAD</div>
                         {/if}
+                      </div>
+                    {/each}
+                  {:else if commit.Remotes && commit.Remotes.length}
+                    {#each commit.Remotes as r}
+                      <div class="tree__branch">
+                        <div class="tree__remote">{r}</div>
                       </div>
                     {/each}
                   {/if}
@@ -101,14 +107,23 @@
       }
 
       th {
+        text-align: left;
+        padding: 0.25rem 0.5rem;
+        height: 2rem;
+        white-space: nowrap;
         background-color: var(--color-scale-gray-7);
 
         &:not(:first-child) {
           border-left: 1px solid var(--color-scale-gray-8);
         }
+
+        &.b {
+          text-align: right;
+          padding-right: 1rem;
+        }
       }
 
-      th, td {
+      td {
         text-align: left;
         padding: 0.125rem 0.5rem;
         height: 1.75rem;
@@ -132,10 +147,15 @@
       &::after {
         content: '';
         height: 1px;
-        width: 1rem;
+        width: 0.5rem;
         position: absolute;
-        right: -1rem;
+        right: -0.5rem;
         background-color: red;
+      }
+
+      &:last-child::after {
+        width: 1rem;
+        right: -1rem;
       }
 
       &-name {
