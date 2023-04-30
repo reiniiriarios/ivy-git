@@ -1,10 +1,12 @@
 <script lang="ts">
-
+  export let active: boolean;
 </script>
 
-<div class="diff">
+{#if active}
+  <div class="diff">
 
-</div>
+  </div>
+{/if}
 
 <style lang="scss">
   .diff {

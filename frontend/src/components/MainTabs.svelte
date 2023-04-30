@@ -1,4 +1,8 @@
 <script lang="ts">
+  import Details from "./Details.svelte";
+  import Diff from "./Diff.svelte";
+  import Tree from "./Tree.svelte";
+
   let tab = "tree";
   (window as any).currentTab = tab;
 
@@ -34,6 +38,10 @@
     Details
   </button>
 </nav>
+
+<Diff active={tab == 'changes'} />
+<Tree active={tab == 'tree'} />
+<Details active={tab == 'details'} />
 
 <style lang="scss">
   .tabs {

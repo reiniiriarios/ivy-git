@@ -1,4 +1,6 @@
 <script lang="ts">
+  export let active: boolean;
+
   import { GetCommitsForTree } from "../../wailsjs/go/main/App";
 
   interface Commit {
@@ -12,11 +14,6 @@
     Tags: string[];
     Remotes: string[];
     Heads: string[];
-  }
-
-  interface Ref {
-    Hash: string;
-    Name: string;
   }
 
   let commits: Commit[] = [];
@@ -40,53 +37,55 @@
   };
 </script>
 
-<div class="tree">
-  <div class="tree__table">
-    {#if Object.entries(commits).length}
-      <table>
-        <tr>
-          <th>Branch/Tag</th>
-          <th>Tree</th>
-          <th>Commit</th>
-          <th>Author</th>
-          <th>Date</th>
-        </tr>
-        {#each Object.entries(commits) as [_, commit]}
+{#if active}
+  <div class="tree">
+    <div class="tree__table">
+      {#if Object.entries(commits).length}
+        <table>
           <tr>
-            <td>
-              <div class="tree__refs c1">
-                {#if commit.Heads && commit.Heads.length}
-                  {#each commit.Heads as h}
-                    <div class="tree__branch">
-                      <div class="tree__branch-name">{h}</div>
-                      {#if commit.Remotes && commit.Remotes.length}
-                        {#each commit.Remotes as r}
-                          <div class="tree__remote">{r}</div>
-                        {/each}
-                      {/if}
-                      {#if commit.Hash == HEAD}
-                        <div class="tree__head">HEAD</div>
-                      {/if}
-                    </div>
-                  {/each}
-                {/if}
-                {#if commit.Tags && commit.Tags.length}
-                  {#each commit.Tags as t}
-                    <div class="tree__tag">{t}</div>
-                  {/each}
-                {/if}
-              </div>
-            </td>
-            <td>...</td>
-            <td>{commit.Subject}</td>
-            <td>{commit.AuthorName ?? commit.AuthorEmail}</td>
-            <td>{commit.AuthorDatetime}</td>
+            <th>Branch/Tag</th>
+            <th>Tree</th>
+            <th>Commit</th>
+            <th>Author</th>
+            <th>Date</th>
           </tr>
-        {/each}
-      </table>
-    {/if}
+          {#each Object.entries(commits) as [_, commit]}
+            <tr>
+              <td>
+                <div class="tree__refs c1">
+                  {#if commit.Heads && commit.Heads.length}
+                    {#each commit.Heads as h}
+                      <div class="tree__branch">
+                        <div class="tree__branch-name">{h}</div>
+                        {#if commit.Remotes && commit.Remotes.length}
+                          {#each commit.Remotes as r}
+                            <div class="tree__remote">{r}</div>
+                          {/each}
+                        {/if}
+                        {#if commit.Hash == HEAD}
+                          <div class="tree__head">HEAD</div>
+                        {/if}
+                      </div>
+                    {/each}
+                  {/if}
+                  {#if commit.Tags && commit.Tags.length}
+                    {#each commit.Tags as t}
+                      <div class="tree__tag">{t}</div>
+                    {/each}
+                  {/if}
+                </div>
+              </td>
+              <td>...</td>
+              <td>{commit.Subject}</td>
+              <td>{commit.AuthorName ?? commit.AuthorEmail}</td>
+              <td>{commit.AuthorDatetime}</td>
+            </tr>
+          {/each}
+        </table>
+      {/if}
+    </div>
   </div>
-</div>
+{/if}
 
 <style lang="scss">
   .tree {
