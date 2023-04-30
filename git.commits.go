@@ -18,27 +18,30 @@ type Commit struct {
 	AuthorTimestamp int64
 	AuthorDatetime  string
 	Subject         string
-	Tags            []string
-	Remotes         []string
-	Heads           []string
+	Branches        []Ref
+	Tags            []Ref
+	Remotes         []Ref
+	Heads           []Ref
 }
 
 type Ref struct {
-	Hash string
-	Name string
+	Hash      string
+	Name      string
+	ShortName string
 }
 
 type Refs struct {
-	HEAD    string
-	Tags    []Ref
-	Remotes []Ref
-	Heads   []Ref
+	HEAD     Ref
+	Branches []Ref
+	Tags     []Ref
+	Remotes  []Ref
+	Heads    []Ref
 }
 
 type CommitResponse struct {
 	Response string
 	Message  string
-	HEAD     string
+	HEAD     Ref
 	Commits  []Commit
 }
 
@@ -107,6 +110,12 @@ func (a *App) GetRefs() (Refs, error) {
 		return refs, err
 	}
 
+	// For the purposes of displaying a coherent tree,
+	// we're denoting the following:
+	// - refs/heads/[...] = branches
+	// - refs/tags/[...] = tags
+	// - HEAD and refs/remotes/[...]/HEAD = heads
+	// - refs/remotes/[...]/[...] = remotes
 	rs := strings.Split(strings.ReplaceAll(r, "\r\n", "\n"), "\n")
 	for _, r := range rs {
 		rr := strings.Split(strings.Trim(r, "'"), " ")
@@ -114,7 +123,7 @@ func (a *App) GetRefs() (Refs, error) {
 			hash := rr[0]
 			name := strings.Join(rr[1:], " ")
 			if strings.HasPrefix(name, "refs/heads/") {
-				refs.Heads = append(refs.Heads, Ref{
+				refs.Branches = append(refs.Branches, Ref{
 					Hash: hash,
 					Name: name[11:],
 				})
@@ -124,12 +133,27 @@ func (a *App) GetRefs() (Refs, error) {
 					Name: name[10:],
 				})
 			} else if strings.HasPrefix(name, "refs/remotes/") {
-				refs.Remotes = append(refs.Remotes, Ref{
-					Hash: hash,
-					Name: name[13:],
-				})
+				n := name[13:]
+				s := n
+				rrr := strings.Split(n, "/")
+				if len(rrr) >= 2 {
+					s = rrr[0]
+				}
+				ref := Ref{
+					Hash:      hash,
+					Name:      n,
+					ShortName: s,
+				}
+				if name[len(name)-4:] == "HEAD" {
+					refs.Heads = append(refs.Remotes, ref)
+				} else {
+					refs.Remotes = append(refs.Remotes, ref)
+				}
 			} else if name == "HEAD" {
-				refs.HEAD = hash
+				refs.HEAD = Ref{
+					Hash: hash,
+					Name: name,
+				}
 			} else {
 				runtime.LogWarning(a.ctx, "Error parsing ref: "+name)
 			}
@@ -159,21 +183,27 @@ func (a *App) GetCommitsForTree() CommitResponse {
 		}
 	}
 
+	for _, b := range refs.Branches {
+		if c, exists := lookup[b.Hash]; exists {
+			commits[c].Branches = append(commits[c].Branches, b)
+		}
+	}
+
 	for _, h := range refs.Heads {
 		if c, exists := lookup[h.Hash]; exists {
-			commits[c].Heads = append(commits[c].Heads, h.Name)
+			commits[c].Heads = append(commits[c].Heads, h)
 		}
 	}
 
 	for _, t := range refs.Tags {
 		if c, exists := lookup[t.Hash]; exists {
-			commits[c].Tags = append(commits[c].Tags, t.Name)
+			commits[c].Tags = append(commits[c].Tags, t)
 		}
 	}
 
 	for _, r := range refs.Remotes {
 		if c, exists := lookup[r.Hash]; exists {
-			commits[c].Remotes = append(commits[c].Remotes, r.Name)
+			commits[c].Remotes = append(commits[c].Remotes, r)
 		}
 	}
 

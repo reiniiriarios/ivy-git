@@ -11,13 +11,20 @@
     AuthorTimestamp: number;
     AuthorDatetime: string;
     Subject: string;
-    Tags: string[];
-    Remotes: string[];
-    Heads: string[];
+    Branches: Ref[];
+    Tags: Ref[];
+    Remotes: Ref[];
+    Heads: Ref[];
+  }
+
+  interface Ref {
+    Hash: string;
+    Name: string;
+    ShortName: string;
   }
 
   let commits: Commit[] = [];
-  let HEAD: string = "";
+  let HEAD: Ref;
   let currentColor = 1;
 
   (window as any).GetCommitsForTree = () => {
@@ -53,32 +60,49 @@
             <tr>
               <td>
                 <div class="tree__refs c{currentColor}">
-                  {#if commit.Heads && commit.Heads.length}
-                    {#each commit.Heads as h}
+
+                  {#if commit.Branches && commit.Branches.length}
+                    {#each commit.Branches as b}
                       <div class="tree__branch">
-                        <div class="tree__branch-name">{h}</div>
+                        <div class="tree__branch-name">{b.Name}</div>
                         {#if commit.Remotes && commit.Remotes.length}
                           {#each commit.Remotes as r}
-                            <div class="tree__remote">{r}</div>
+                            <div class="tree__leaf">{r.ShortName}</div>
                           {/each}
-                        {/if}
-                        {#if commit.Hash == HEAD}
-                          <div class="tree__head">HEAD</div>
                         {/if}
                       </div>
                     {/each}
                   {:else if commit.Remotes && commit.Remotes.length}
                     {#each commit.Remotes as r}
                       <div class="tree__branch">
-                        <div class="tree__remote">{r}</div>
+                        <div class="tree__leaf">{r.Name}</div>
                       </div>
                     {/each}
                   {/if}
-                  {#if commit.Tags && commit.Tags.length}
-                    {#each commit.Tags as t}
-                      <div class="tree__tag">{t}</div>
+
+                  {#if commit.Hash == HEAD.Hash}
+                    <div class="tree__branch">
+                      <div class="tree__branch-name">HEAD</div>
+                      {#if commit.Heads && commit.Heads.length}
+                        {#each commit.Heads as h}
+                          <div class="tree__leaf">{h.ShortName}</div>
+                        {/each}
+                      {/if}
+                    </div>
+                  {:else if commit.Heads && commit.Heads.length}
+                    {#each commit.Heads as h}
+                      <div class="tree__branch">
+                        <div class="tree__leaf">{h.Name}</div>
+                      </div>
                     {/each}
                   {/if}
+
+                  {#if commit.Tags && commit.Tags.length}
+                    {#each commit.Tags as t}
+                      <div class="tree__tag">{t.Name}</div>
+                    {/each}
+                  {/if}
+
                 </div>
               </td>
               <td>...</td>
@@ -132,7 +156,8 @@
     }
 
     &__refs {
-      text-align: right;
+      display: flex;
+      justify-content: right;
     }
 
     &__branch {
@@ -163,11 +188,7 @@
       }
     }
 
-    &__remote {
-      padding: 0.2rem 0.5rem;
-    }
-
-    &__head {
+    &__leaf {
       padding: 0.2rem 0.5rem;
       background-color: rgba(0 0 0 / 25%);
     }
