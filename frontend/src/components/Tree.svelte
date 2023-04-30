@@ -1,6 +1,8 @@
 <script lang="ts">
   export let active: boolean;
 
+  import octicons from '@primer/octicons';
+
   import { GetCommitsForTree } from "../../wailsjs/go/main/App";
 
   interface Commit {
@@ -50,7 +52,7 @@
       {#if Object.entries(commits).length}
         <table>
           <tr>
-            <th class="b">Branch/Tag</th>
+            <th class="b">Branch</th>
             <th>Tree</th>
             <th>Commit</th>
             <th>Author</th>
@@ -64,6 +66,7 @@
                   {#if commit.Branches && commit.Branches.length}
                     {#each commit.Branches as b}
                       <div class="tree__branch">
+                        <div class="tree__icon">{@html octicons['git-branch'].toSVG()}</div>
                         <div class="tree__branch-name">{b.Name}</div>
                         {#if commit.Remotes && commit.Remotes.length}
                           {#each commit.Remotes as r}
@@ -75,14 +78,16 @@
                   {:else if commit.Remotes && commit.Remotes.length}
                     {#each commit.Remotes as r}
                       <div class="tree__branch">
+                        <div class="tree__icon">{@html octicons['git-branch'].toSVG()}</div>
                         <div class="tree__leaf">{r.Name}</div>
                       </div>
                     {/each}
                   {/if}
 
                   {#if commit.Hash == HEAD.Hash}
-                    <div class="tree__branch">
-                      <div class="tree__branch-name">HEAD</div>
+                    <div class="tree__head">
+                      <div class="tree__icon">{@html octicons['arrow-right'].toSVG()}</div>
+                      <div class="tree__head-name">HEAD</div>
                       {#if commit.Heads && commit.Heads.length}
                         {#each commit.Heads as h}
                           <div class="tree__leaf">{h.ShortName}</div>
@@ -91,7 +96,8 @@
                     </div>
                   {:else if commit.Heads && commit.Heads.length}
                     {#each commit.Heads as h}
-                      <div class="tree__branch">
+                      <div class="tree__head">
+                        <div class="tree__icon">{@html octicons['arrow-right'].toSVG()}</div>
                         <div class="tree__leaf">{h.Name}</div>
                       </div>
                     {/each}
@@ -99,7 +105,10 @@
 
                   {#if commit.Tags && commit.Tags.length}
                     {#each commit.Tags as t}
-                      <div class="tree__tag">{t.Name}</div>
+                      <div class="tree__tag">
+                        <div class="tree__icon">{@html octicons['tag'].toSVG()}</div>
+                        <div class="tree__tag-name">{t.Name}</div>
+                      </div>
                     {/each}
                   {/if}
 
@@ -160,7 +169,9 @@
       justify-content: right;
     }
 
-    &__branch {
+    &__branch,
+    &__head,
+    &__tag {
       display: inline-flex;
       justify-content: left;
       align-items: center;
@@ -184,7 +195,45 @@
       }
 
       &-name {
-        padding: 0.2rem 0.5rem;
+        padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+        border-left: 1px solid;
+        border-color: inherit;
+      }
+
+      .c1 & {
+        border-color: var(--color-branch-1-border);
+        background-color: var(--color-branch-1-bg);
+
+        &::after {
+          background-color: var(--color-branch-1-bg);
+        }
+      }
+
+      .c2 & {
+        border-color: var(--color-branch-2-border);
+        background-color: var(--color-branch-2-bg);
+
+        &::after {
+          background-color: var(--color-branch-2-bg);
+        }
+      }
+
+      .c3 & {
+        border-color: var(--color-branch-3-border);
+        background-color: var(--color-branch-3-bg);
+
+        &::after {
+          background-color: var(--color-branch-3-bg);
+        }
+      }
+
+      .c4 & {
+        border-color: var(--color-branch-4-border);
+        background-color: var(--color-branch-4-bg);
+
+        &::after {
+          background-color: var(--color-branch-4-bg);
+        }
       }
     }
 
@@ -192,49 +241,16 @@
       padding: 0.2rem 0.5rem;
       background-color: rgba(0 0 0 / 25%);
     }
-  }
 
-  .c1 {
-    .tree__branch {
-      border-color: var(--color-branch-1-border);
-      background-color: var(--color-branch-1-bg);
-
-      &::after {
-        background-color: var(--color-branch-1-bg);
-      }
-    }
-  }
-
-  .c2 {
-    .tree__branch {
-      border-color: var(--color-branch-2-border);
-      background-color: var(--color-branch-2-bg);
-
-      &::after {
-        background-color: var(--color-branch-2-bg);
-      }
-    }
-  }
-
-  .c3 {
-    .tree__branch {
-      border-color: var(--color-branch-3-border);
-      background-color: var(--color-branch-3-bg);
-
-      &::after {
-        background-color: var(--color-branch-3-bg);
-      }
-    }
-  }
-
-  .c4 {
-    .tree__branch {
-      border-color: var(--color-branch-4-border);
-      background-color: var(--color-branch-4-bg);
-
-      &::after {
-        background-color: var(--color-branch-4-bg);
-      }
+    &__icon {
+      width: 1.7rem;
+      height: 1.5rem;
+      padding-left: 0.1rem;
+      padding-right: 0.1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      fill: var(--color-text);
     }
   }
 </style>
