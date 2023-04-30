@@ -101,6 +101,25 @@
   --color-scale-gray-8: #161b22;
   --color-scale-gray-9: #0d1117;
 
+  --color-branch-1-bg: #1a962488;
+  --color-branch-1-border: #1a9624;
+  --color-branch-2-bg: #23867988;
+  --color-branch-2-border: #238679;
+  --color-branch-3-bg: #1f6feb88;
+  --color-branch-3-border: #1f6feb;
+  --color-branch-4-bg: #8957e588;
+  --color-branch-4-border: #8957e5;
+  --color-branch-5-bg: #bf4b8a88;
+  --color-branch-5-border: #bf4b8a;
+  --color-branch-6-bg: #da363388;
+  --color-branch-6-border: #da3633;
+  --color-branch-7-bg: #cf462d88;
+  --color-branch-7-border: #cf462d;
+  --color-branch-8-bg: #bd561d88;
+  --color-branch-8-border: #bd561d;
+  --color-branch-9-bg: #9e6a0388;
+  --color-branch-9-border: #9e6a03;
+
   --color-app-bg: #0d1117aa;
   --color-sidebar-bg: var(--color-scale-gray-8);
   --color-sidebar-border: var(--color-scale-gray-9);
@@ -125,6 +144,9 @@
 
   --color-modal-bg: var(--color-scale-gray-7);
   --color-modal-border: var(--color-scale-gray-8);
+
+  --color-scrollbar-bg: rgba(13 17 23 / 25%);
+  --color-scrollbar-fg: rgba(13 17 23 / 50%);
 
   --sidebar-width: 20rem;
   --repo-button-height: 4rem;

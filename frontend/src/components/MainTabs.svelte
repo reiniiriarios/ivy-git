@@ -39,6 +39,7 @@
   .tabs {
     width: 100%;
     display: flex;
+    border-bottom: 1px solid var(--color-btn-border);
 
     &__tab {
       width: 33.333%;

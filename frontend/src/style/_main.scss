@@ -25,6 +25,10 @@ body, button, input, textarea {
   font-variant: common-ligatures slashed-zero tabular-nums;
 }
 
+table {
+  border-spacing: 0;
+}
+
 #app {
   height: 100vh;
   width: 100vw;
@@ -58,4 +62,18 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+::-webkit-scrollbar {
+  background-color: var(--color-scrollbar-bg);
+  height: 1rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-fg);
+}
+
+::selection {
+  color: var(--color-scale-gray-9);
+  background-color: var(--color-scale-gray-1);
 }
