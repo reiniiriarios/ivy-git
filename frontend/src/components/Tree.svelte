@@ -52,7 +52,7 @@
           {#each Object.entries(commits) as [_, commit]}
             <tr>
               <td>
-                <div class="tree__refs c1">
+                <div class="tree__refs c{currentColor}">
                   {#if commit.Heads && commit.Heads.length}
                     {#each commit.Heads as h}
                       <div class="tree__branch">
