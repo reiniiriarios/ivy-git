@@ -48,119 +48,127 @@
 
 {#if active}
   <div class="tree">
-    <div class="tree__table">
-      {#if Object.entries(commits).length}
-        <table>
+    {#if Object.entries(commits).length}
+      <table>
+        <tr>
+          <th class="h-b">Branch</th>
+          <th>Tree</th>
+          <th class="h-c">Commit</th>
+          <th>Author</th>
+          <th>Date</th>
+        </tr>
+        {#each Object.entries(commits) as [_, commit]}
           <tr>
-            <th class="b">Branch</th>
-            <th>Tree</th>
-            <th>Commit</th>
-            <th>Author</th>
-            <th>Date</th>
-          </tr>
-          {#each Object.entries(commits) as [_, commit]}
-            <tr>
-              <td>
-                <div class="tree__refs c{currentColor}">
+            <td>
+              <div class="tree__refs c{currentColor}">
 
-                  {#if commit.Branches && commit.Branches.length}
-                    {#each commit.Branches as b}
-                      <div class="tree__branch">
-                        <div class="tree__icon">{@html octicons['git-branch'].toSVG()}</div>
-                        <div class="tree__branch-name">{b.Name}</div>
-                        {#if commit.Remotes && commit.Remotes.length}
-                          {#each commit.Remotes as r}
-                            <div class="tree__leaf">{r.ShortName}</div>
-                          {/each}
-                        {/if}
-                      </div>
-                    {/each}
-                  {:else if commit.Remotes && commit.Remotes.length}
-                    {#each commit.Remotes as r}
-                      <div class="tree__branch">
-                        <div class="tree__icon">{@html octicons['git-branch'].toSVG()}</div>
-                        <div class="tree__leaf">{r.Name}</div>
-                      </div>
-                    {/each}
-                  {/if}
-
-                  {#if commit.Hash == HEAD.Hash}
-                    <div class="tree__head">
-                      <div class="tree__icon">{@html octicons['arrow-right'].toSVG()}</div>
-                      <div class="tree__head-name">HEAD</div>
-                      {#if commit.Heads && commit.Heads.length}
-                        {#each commit.Heads as h}
-                          <div class="tree__leaf">{h.ShortName}</div>
+                {#if commit.Branches && commit.Branches.length}
+                  {#each commit.Branches as b}
+                    <div class="tree__branch">
+                      <div class="tree__icon">{@html octicons['git-branch'].toSVG()}</div>
+                      <div class="tree__branch-name">{b.Name}</div>
+                      {#if commit.Remotes && commit.Remotes.length}
+                        {#each commit.Remotes as r}
+                          <div class="tree__leaf">{r.ShortName}</div>
                         {/each}
                       {/if}
                     </div>
-                  {:else if commit.Heads && commit.Heads.length}
-                    {#each commit.Heads as h}
-                      <div class="tree__head">
-                        <div class="tree__icon">{@html octicons['arrow-right'].toSVG()}</div>
-                        <div class="tree__leaf">{h.Name}</div>
-                      </div>
-                    {/each}
-                  {/if}
+                  {/each}
+                {:else if commit.Remotes && commit.Remotes.length}
+                  {#each commit.Remotes as r}
+                    <div class="tree__branch">
+                      <div class="tree__icon">{@html octicons['git-branch'].toSVG()}</div>
+                      <div class="tree__leaf">{r.Name}</div>
+                    </div>
+                  {/each}
+                {/if}
 
-                  {#if commit.Tags && commit.Tags.length}
-                    {#each commit.Tags as t}
-                      <div class="tree__tag">
-                        <div class="tree__icon">{@html octicons['tag'].toSVG()}</div>
-                        <div class="tree__tag-name">{t.Name}</div>
-                      </div>
-                    {/each}
-                  {/if}
+                {#if commit.Hash == HEAD.Hash}
+                  <div class="tree__head">
+                    <div class="tree__icon">{@html octicons['arrow-right'].toSVG()}</div>
+                    <div class="tree__head-name">HEAD</div>
+                    {#if commit.Heads && commit.Heads.length}
+                      {#each commit.Heads as h}
+                        <div class="tree__leaf">{h.ShortName}</div>
+                      {/each}
+                    {/if}
+                  </div>
+                {:else if commit.Heads && commit.Heads.length}
+                  {#each commit.Heads as h}
+                    <div class="tree__head">
+                      <div class="tree__icon">{@html octicons['arrow-right'].toSVG()}</div>
+                      <div class="tree__leaf">{h.Name}</div>
+                    </div>
+                  {/each}
+                {/if}
 
-                </div>
-              </td>
-              <td>...</td>
-              <td>{commit.Subject}</td>
-              <td>{commit.AuthorName ?? commit.AuthorEmail}</td>
-              <td>{commit.AuthorDatetime}</td>
-            </tr>
-          {/each}
-        </table>
-      {/if}
-    </div>
+                {#if commit.Tags && commit.Tags.length}
+                  {#each commit.Tags as t}
+                    <div class="tree__tag">
+                      <div class="tree__icon">{@html octicons['tag'].toSVG()}</div>
+                      <div class="tree__tag-name">{t.Name}</div>
+                    </div>
+                  {/each}
+                {/if}
+
+              </div>
+            </td>
+            <td>...</td>
+            <td>{commit.Subject}</td>
+            <td>{commit.AuthorName ?? commit.AuthorEmail}</td>
+            <td>{commit.AuthorDatetime}</td>
+          </tr>
+        {/each}
+      </table>
+    {/if}
   </div>
 {/if}
 
 <style lang="scss">
   .tree {
-    width: 100%;
-    height: 100%;
+    min-width: 100%;
+    height: calc(100vh - var(--tabs-height));
+    overflow: auto;
 
-    &__table {
-      width: 100%;
-      overflow-x: auto;
+    table {
+      min-width: 100%;
 
-      table {
-        width: 100%;
-      }
+      tr {
+        th {
+          text-align: left;
+          padding: 0.25rem 0.5rem;
+          height: 2rem;
+          white-space: nowrap;
+          background-color: var(--color-scale-gray-7);
 
-      th {
-        text-align: left;
-        padding: 0.25rem 0.5rem;
-        height: 2rem;
-        white-space: nowrap;
-        background-color: var(--color-scale-gray-7);
+          &:not(:first-child) {
+            border-left: 1px solid var(--color-scale-gray-8);
+          }
 
-        &:not(:first-child) {
-          border-left: 1px solid var(--color-scale-gray-8);
+          &.h-b {
+            text-align: right;
+            padding-right: 1rem;
+          }
+
+          &.h-c {
+            width: 100%;
+          }
         }
 
-        &.b {
-          text-align: right;
-          padding-right: 1rem;
-        }
-      }
+        td {
+          text-align: left;
+          padding: 0.125rem 0.5rem;
+          height: 1.75rem;
+          white-space: nowrap;
 
-      td {
-        text-align: left;
-        padding: 0.125rem 0.5rem;
-        height: 1.75rem;
-        white-space: nowrap;
+          &:first-child {
+            padding-left: 0.67rem;
+          }
+
+          &:not(:first-child) {
+            padding-right: 0.67rem;
+          }
+        }
       }
     }
 
@@ -195,7 +203,7 @@
       }
 
       &-name {
-        padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+        padding: 0.15rem 0.5rem 0.25rem 0.5rem;
         border-left: 1px solid;
         border-color: inherit;
       }
@@ -238,7 +246,7 @@
     }
 
     &__leaf {
-      padding: 0.2rem 0.5rem;
+      padding: 0.15rem 0.5rem 0.25rem 0.5rem;
       background-color: rgba(0 0 0 / 25%);
     }
 

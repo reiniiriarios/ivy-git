@@ -120,7 +120,7 @@
   --color-branch-9-bg: #9e6a0388;
   --color-branch-9-border: #9e6a03;
 
-  --color-app-bg: #0d1117aa;
+  --color-app-bg: #0d1117cc;
   --color-sidebar-bg: var(--color-scale-gray-8);
   --color-sidebar-border: var(--color-scale-gray-9);
   --color-overlay-bg: #0d1117aa;
@@ -145,9 +145,10 @@
   --color-modal-bg: var(--color-scale-gray-7);
   --color-modal-border: var(--color-scale-gray-8);
 
-  --color-scrollbar-bg: rgba(13 17 23 / 25%);
-  --color-scrollbar-fg: rgba(13 17 23 / 50%);
+  --color-scrollbar-bg: var(--color-scale-gray-8);
+  --color-scrollbar-fg: var(--color-scale-gray-6);
 
   --sidebar-width: 20rem;
   --repo-button-height: 4rem;
+  --tabs-height: 2.5rem;
 }

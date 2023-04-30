@@ -69,8 +69,16 @@ main {
   height: 1rem;
 }
 
+::-webkit-scrollbar-track-piece {
+  background-color: var(--color-scrollbar-bg);
+}
+
 ::-webkit-scrollbar-thumb {
   background-color: var(--color-scrollbar-fg);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--color-scrollbar-bg);
 }
 
 ::selection {
