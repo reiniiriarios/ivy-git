@@ -144,6 +144,7 @@
 
     &__bar {
       background-color: var(--color-sidebar-bg);
+      border-right: 1px solid var(--color-sidebar-border);
       position: absolute;
       top: 0;
       left: 0;
