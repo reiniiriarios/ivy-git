@@ -1,4 +1,4 @@
-![](docs/ivy-git-01-win.jpg)
+![](docs/ivy-git-02-mac.png)
 
 # Ivy Git
 
