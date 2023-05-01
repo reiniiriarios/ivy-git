@@ -120,7 +120,10 @@
   --color-branch-9-bg: #9e6a0388;
   --color-branch-9-border: #9e6a03;
 
-  --color-app-bg: #0d1117cc;
+  --color-app-bg--windows: #0d1117cc;
+  --color-app-bg--darwin: #0d111766;
+  --color-app-bg: var(--color-app-bg--windows);
+
   --color-sidebar-bg: var(--color-scale-gray-8);
   --color-sidebar-border: var(--color-scale-gray-9);
   --color-overlay-bg: #0d1117aa;
@@ -148,6 +151,7 @@
   --color-scrollbar-bg: var(--color-scale-gray-8);
   --color-scrollbar-fg: var(--color-scale-gray-6);
 
+  --title-bar-height: 2.25rem;
   --sidebar-width: 20rem;
   --repo-button-height: 4rem;
   --tabs-height: 2.5rem;

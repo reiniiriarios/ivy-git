@@ -1,6 +1,6 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "ivy-git",
+  "name": "Ivy Git",
   "outputfilename": "ivy-git",
   "frontend:install": "npm install",
   "frontend:build": "npm run build",
@@ -8,6 +8,6 @@
   "frontend:dev:serverUrl": "auto",
   "author": {
     "name": "Emma Litwa-Vulcu",
-    "email": "emma@heysparkbox.com"
+    "email": "emma@litwavulcu.com"
   }
 }

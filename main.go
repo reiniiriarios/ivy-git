@@ -6,6 +6,7 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
@@ -19,13 +20,16 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "Ivy Git",
-		Width:  1280,
-		Height: 768,
+		Title:     "Ivy Git",
+		Width:     1280,
+		Height:    768,
+		MinWidth:  1024,
+		MinHeight: 600,
+		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 7, G: 18, B: 34, A: 128},
+		BackgroundColour: &options.RGBA{R: 7, G: 18, B: 34, A: 64},
 		OnStartup:        app.startup,
 		OnDomReady:       app.domready,
 		Bind: []interface{}{
@@ -38,6 +42,12 @@ func main() {
 		Windows: &windows.Options{
 			WindowIsTranslucent:  true,
 			WebviewIsTransparent: true,
+		},
+		Linux: &linux.Options{
+			WindowIsTranslucent: false,
+		},
+		Debug: options.Debug{
+			OpenInspectorOnStartup: false,
 		},
 	})
 

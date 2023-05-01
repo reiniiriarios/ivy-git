@@ -6,6 +6,8 @@
   import SelectBranch from "./components/SelectBranch.svelte";
   import Changes from "./components/Changes.svelte";
   import MainTabs from "./components/MainTabs.svelte";
+  import TitleBar from "./components/TitleBar.svelte";
+  import { GoOs } from "../wailsjs/go/main/App";
 
   // Load initial ui state.
   function init() {
@@ -17,19 +19,32 @@
     if ((window as any).currentTab == 'tree') {
       (window as any).GetCommitsForTree();
     }
+    GoOs().then(os => {
+      switch (os) {
+        case "darwin":
+          document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
+          break;
+        case "windows":
+          document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--windows)");
+          break;
+      }
+    });
   }
   document.addEventListener('DOMContentLoaded', () => {
     init();
   });
 </script>
 
-<div id="sidebar">
-  <SelectRepo />
-  <SelectBranch />
-  <Changes />
+<TitleBar />
+<div id="container">
+  <div id="sidebar">
+    <SelectRepo />
+    <SelectBranch />
+    <Changes />
+  </div>
+  <main>
+    <MainTabs />
+  </main>
+  <Confirm />
+  <Message />
 </div>
-<main>
-  <MainTabs />
-</main>
-<Confirm />
-<Message />

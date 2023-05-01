@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"runtime"
 )
 
 // App struct
@@ -27,8 +28,10 @@ func (a *App) startup(ctx context.Context) {
 	a.LoadYaml()
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
 func (a *App) domready(ctx context.Context) {
 	// ...
+}
+
+func (a *App) GoOs() string {
+	return runtime.GOOS
 }
