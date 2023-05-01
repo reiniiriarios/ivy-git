@@ -28,6 +28,7 @@ type Ref struct {
 	Hash      string
 	Name      string
 	ShortName string
+	Annotated bool
 }
 
 type Refs struct {
@@ -128,9 +129,16 @@ func (a *App) GetRefs() (Refs, error) {
 					Name: name[11:],
 				})
 			} else if strings.HasPrefix(name, "refs/tags/") {
+				annotated := strings.HasSuffix(name, "^{}")
+				if annotated {
+					name = name[10 : len(name)-3]
+				} else {
+					name = name[10:]
+				}
 				refs.Tags = append(refs.Tags, Ref{
-					Hash: hash,
-					Name: name[10:],
+					Hash:      hash,
+					Name:      name,
+					Annotated: annotated,
 				})
 			} else if strings.HasPrefix(name, "refs/remotes/") {
 				n := name[13:]
