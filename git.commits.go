@@ -9,6 +9,8 @@ import (
 )
 
 const GIT_LOG_SEP = "-act45j3o9y78__jyo9ct-a4ojy9actyo_ct4oy9j-"
+const UNCOMMITED_HASH = "#"
+const DATE_FORMAT = "Jan 1, 2006, 03:04:05 pm"
 
 type Commit struct {
 	Hash            string
@@ -76,7 +78,8 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 		return commits, lookup, err
 	}
 
-	var i uint64 = 0
+	// Start counting commits at 1, 0 will be uncommited changes (if any)
+	var i uint64 = 1
 	cs := strings.Split(strings.ReplaceAll(c, "\r\n", "\n"), "\n")
 	for _, cm := range cs {
 		cm = strings.Trim(cm, "'")
@@ -95,7 +98,7 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 			if err != nil {
 				runtime.LogError(a.ctx, err.Error())
 			} else {
-				dt = time.Unix(ts, 0).Format("Jan 1, 2006, 03:04:05 pm")
+				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
 			}
 
 			// Index by SHA
@@ -239,10 +242,25 @@ func (a *App) GetCommitList() CommitResponse {
 			Message:  err.Error(),
 		}
 	}
-	vertices := a.getVertices(commits, lookup, HEAD)
+
+	u := a.getNumUncommitedChanges()
+
+	if u > 0 {
+		t := time.Now()
+		// The first index of commits is reserved for uncommited changes.
+		commits[0] = Commit{
+			Hash:            UNCOMMITED_HASH,
+			Parents:         []string{HEAD.Hash},
+			AuthorName:      "*",
+			AuthorEmail:     "",
+			AuthorTimestamp: t.Unix(),
+			AuthorDatetime:  t.Format(DATE_FORMAT),
+			Subject:         "Uncommited Changes (" + strconv.Itoa(u) + ")",
+		}
+	}
 
 	g := Graph{
-		Vertices: vertices,
+		Vertices: a.getVertices(commits, lookup, HEAD),
 	}
 	g.BuildPaths()
 
@@ -251,4 +269,13 @@ func (a *App) GetCommitList() CommitResponse {
 		HEAD:     HEAD,
 		Commits:  commits,
 	}
+}
+
+func (a *App) getNumUncommitedChanges() int {
+	c, err := a.GitCwd("status", "--untracked-files=all", "--porcelain")
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+		return 0
+	}
+	return strings.Count(c, "\n")
 }

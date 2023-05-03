@@ -24,9 +24,10 @@ func (a *App) getVertices(commits []Commit, lookup map[string]uint64, HEAD Ref) 
 		Id: -1,
 	}
 
-	for i := range commits {
+	for i, c := range commits {
 		vertices[i] = Vertex{
-			Id: int64(i),
+			Id:        int64(i),
+			Committed: c.Hash != UNCOMMITED_HASH,
 		}
 	}
 
@@ -112,17 +113,14 @@ func (b *GraphBranch) addLine(l Line) {
 }
 
 type Graph struct {
-	Vertices     []Vertex
-	Branches     []GraphBranch
-	CurrentColor uint16
-}
-
-func (g *Graph) getNextColor() uint16 {
-	g.CurrentColor++
-	return g.CurrentColor
+	Vertices []Vertex
+	Branches []GraphBranch
+	Width    uint16
+	Height   uint16
 }
 
 func (g *Graph) BuildPaths() {
+	var color uint16 = 0
 	for _, v := range g.Vertices {
 		// If there are no parents and there's already a branch, skip.
 		if len(v.Parents) == 0 && v.Branch != nil {
@@ -132,15 +130,19 @@ func (g *Graph) BuildPaths() {
 		if v.isMergeCommit() {
 			g.buildMergePath(&v)
 		} else {
-			g.buildNormalPath(&v)
+			g.buildNormalPath(&v, color)
+			color++
 		}
 	}
+
+	g.Width = g.getWidth()
+	g.Height = g.getHeight()
 }
 
-func (g *Graph) buildNormalPath(v *Vertex) {
+func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	// Create new branch, assign it to the vertex.
 	b := GraphBranch{
-		Color: g.getNextColor(),
+		Color: color,
 	}
 	if v.Branch != nil {
 		v.Branch = &b
@@ -260,4 +262,19 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 			break
 		}
 	}
+}
+
+func (g *Graph) getWidth() uint16 {
+	var x uint16 = 0
+	for _, v := range g.Vertices {
+		p := v.getNextPoint()
+		if p.X > x {
+			x = p.X
+		}
+	}
+	return x
+}
+
+func (g *Graph) getHeight() uint16 {
+	return uint16(len(g.Vertices))
 }
