@@ -24,6 +24,7 @@ type Commit struct {
 	Tags            []Ref
 	Remotes         []Ref
 	Heads           []Ref
+	Stash           Stash
 }
 
 type Ref struct {
@@ -63,10 +64,12 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 	// %H  - hash
 	// %P  - parent hash
 	// %an - Author Name
-	// %an - Author Email
-	// %an - Author Time
+	// %ae - Author Email
+	// %at - Author Time
 	// %s  - Subject
-	format := strings.Join([]string{"%H", "%P", "%an", "%ae", "%at", "%s"}, GIT_LOG_SEP)
+	// https://git-scm.com/docs/pretty-formats
+	data := []string{"%H", "%P", "%an", "%ae", "%at", "%s"}
+	format := strings.Join(data, GIT_LOG_SEP)
 	// Include:
 	// - branches
 	// - tags
@@ -84,7 +87,7 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 	for _, cm := range cs {
 		cm = strings.Trim(cm, "'")
 		parts := strings.Split(cm, GIT_LOG_SEP)
-		if len(parts) == 6 {
+		if len(parts) == len(data) {
 
 			// Get parents
 			parents := []string{}
@@ -278,4 +281,65 @@ func (a *App) getNumUncommitedChanges() int {
 		return 0
 	}
 	return strings.Count(c, "\n")
+}
+
+type Stash struct {
+	Hash            string
+	Parent          string
+	RefName         string
+	AuthorName      string
+	AuthorEmail     string
+	AuthorTimestamp int64
+	AuthorDatetime  string
+	Subject         string
+}
+
+func (a *App) getStashes() []Stash {
+	var stashes []Stash
+
+	// Include:
+	// %H  - hash
+	// %P  - parent hash
+	// %gd - refname
+	// %an - Author Name
+	// %ae - Author Email
+	// %at - Author Time
+	// %s  - Subject
+	// https://git-scm.com/docs/pretty-formats
+	data := []string{"%H", "%P", "%gd", "%an", "%ae", "%at", "%s"}
+	format := strings.Join(data, GIT_LOG_SEP)
+	s, err := a.GitCwd("reflog", "--format='"+format+"'", "--glob=refs/stash")
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+		return stashes
+	}
+
+	ss := strings.Split(strings.ReplaceAll(s, "\r\n", "\n"), "\n")
+	for _, st := range ss {
+		st = strings.Trim(st, "'")
+		parts := strings.Split(st, GIT_LOG_SEP)
+		if len(parts) == len(data) {
+			// Get timestamp and formatted datetime for author
+			ts, err := strconv.ParseInt(parts[5], 10, 64)
+			dt := ""
+			if err != nil {
+				runtime.LogError(a.ctx, err.Error())
+			} else {
+				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
+			}
+
+			stashes = append(stashes, Stash{
+				Hash:            parts[0],
+				Parent:          parts[1],
+				RefName:         parts[2],
+				AuthorName:      parts[3],
+				AuthorEmail:     parts[4],
+				AuthorTimestamp: ts,
+				AuthorDatetime:  dt,
+				Subject:         parts[7],
+			})
+		}
+	}
+
+	return stashes
 }
