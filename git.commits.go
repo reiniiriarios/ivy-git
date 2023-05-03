@@ -39,6 +39,12 @@ type Refs struct {
 	Heads    []Ref
 }
 
+type CommitDetails struct {
+	Commits []Commit
+	Lookup  map[string]uint64
+	HEAD    Ref
+}
+
 type CommitResponse struct {
 	Response string
 	Message  string
@@ -47,12 +53,25 @@ type CommitResponse struct {
 }
 
 // Get commit details from `git log`.
-func (a *App) GetCommits() ([]Commit, map[string]uint64, error) {
+func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 	var commits []Commit
 	lookup := make(map[string]uint64)
 
+	// Include:
+	// %H  - hash
+	// %P  - parent hash
+	// %an - Author Name
+	// %an - Author Email
+	// %an - Author Time
+	// %s  - Subject
 	format := strings.Join([]string{"%H", "%P", "%an", "%ae", "%at", "%s"}, GIT_LOG_SEP)
-	c, err := a.GitCwd("--no-pager", "log", "--format='"+format+"'")
+	// Include:
+	// - branches
+	// - tags
+	// - commits mentioned by reflogs
+	// - all remotes
+	// - HEAD
+	c, err := a.GitCwd("--no-pager", "log", "--format='"+format+"'", "--branches", "--tags", "--reflog", "--glob=refs/remotes", "HEAD")
 	if err != nil {
 		return commits, lookup, err
 	}
@@ -102,7 +121,7 @@ func (a *App) GetCommits() ([]Commit, map[string]uint64, error) {
 }
 
 // Get ref details from `git show-ref`.
-func (a *App) GetRefs() (Refs, error) {
+func (a *App) getRefs() (Refs, error) {
 	var refs Refs
 
 	r, err := a.GitCwd("show-ref", "--dereference", "--head")
@@ -113,10 +132,10 @@ func (a *App) GetRefs() (Refs, error) {
 
 	// For the purposes of displaying a coherent tree,
 	// we're denoting the following:
-	// - refs/heads/[...] = branches
-	// - refs/tags/[...] = tags
+	// - refs/heads/[...]                 = branches
+	// - refs/tags/[...]                  = tags
 	// - HEAD and refs/remotes/[...]/HEAD = heads
-	// - refs/remotes/[...]/[...] = remotes
+	// - refs/remotes/[...]/[...]         = remotes
 	rs := strings.Split(strings.ReplaceAll(r, "\r\n", "\n"), "\n")
 	for _, r := range rs {
 		rr := strings.Split(strings.Trim(r, "'"), " ")
@@ -172,23 +191,17 @@ func (a *App) GetRefs() (Refs, error) {
 }
 
 // Compile commits and refs for tree view.
-func (a *App) GetCommitsForTree() CommitResponse {
-	commits, lookup, err := a.GetCommits()
+func (a *App) getCommits() ([]Commit, map[string]uint64, Ref, error) {
+	commits, lookup, err := a.getLog()
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
-		return CommitResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
+		return commits, lookup, Ref{}, err
 	}
 
-	refs, err := a.GetRefs()
+	refs, err := a.getRefs()
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
-		return CommitResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
+		return commits, lookup, Ref{}, err
 	}
 
 	for _, b := range refs.Branches {
@@ -215,9 +228,27 @@ func (a *App) GetCommitsForTree() CommitResponse {
 		}
 	}
 
+	return commits, lookup, refs.HEAD, nil
+}
+
+func (a *App) GetCommitList() CommitResponse {
+	commits, lookup, HEAD, err := a.getCommits()
+	if err != nil {
+		return CommitResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	vertices := a.getVertices(commits, lookup, HEAD)
+
+	g := Graph{
+		Vertices: vertices,
+	}
+	g.BuildPaths()
+
 	return CommitResponse{
 		Response: "success",
-		HEAD:     refs.HEAD,
+		HEAD:     HEAD,
 		Commits:  commits,
 	}
 }
