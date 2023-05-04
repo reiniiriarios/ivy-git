@@ -1,7 +1,13 @@
-/build/bin
-node_modules
-/frontend/dist
-/vendor
-ivy-git-res.syso
+# os
+.DS_Store
+Thumbs.db
 
+# build
+/build/bin
+/*res.syso
+
+# vendor
+/vendor
+
+# config
 /repos.yaml
