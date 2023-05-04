@@ -9,6 +9,7 @@ import (
 type Change struct {
 	File     string
 	Basename string
+	Dir      string
 	Letter   string
 	Flag     string
 }
@@ -22,7 +23,7 @@ type ChangesResponse struct {
 
 // FRONTEND: Get list of changed files.
 func (a *App) GitListChanges() ChangesResponse {
-	c, err := a.GitCwd("status", "--porcelain")
+	c, err := a.GitCwd("status", "--untracked-files", "--porcelain")
 	if err != nil {
 		return ChangesResponse{
 			Response: "error",
@@ -42,6 +43,7 @@ func (a *App) GitListChanges() ChangesResponse {
 				changesX = append(changesX, Change{
 					File:     file,
 					Basename: filepath.Base(file),
+					Dir:      filepath.Dir(file),
 					Letter:   x,
 					Flag:     getStatusFlag(x),
 				})
@@ -51,6 +53,7 @@ func (a *App) GitListChanges() ChangesResponse {
 				changesY = append(changesY, Change{
 					File:     file,
 					Basename: filepath.Base(file),
+					Dir:      filepath.Dir(file),
 					Letter:   y,
 					Flag:     getStatusFlag(y),
 				})

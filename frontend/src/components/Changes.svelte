@@ -4,6 +4,7 @@
   interface Change {
     File: string;
     Basename: string;
+    Dir: string;
     Letter: string;
     Flag: string;
   }
@@ -33,7 +34,10 @@
     <ul class="changes__list changes__list--x">
       {#each changesX as change}
         <li class="changes__change">
-          <span class="changes__file">{change.Basename}</span>
+          <span class="changes__file">
+            <span class="changes__filename">{change.Basename}</span>
+            <span class="changes__dir">{change.Dir != '.' ? change.Dir : ''}</span>
+          </span>
           <span class="changes__status changes__status--{change.Flag}" aria-label="{change.Letter}"></span>
         </li>
       {/each}
@@ -44,7 +48,10 @@
     <ul class="changes__list changes__list--y">
       {#each changesY as change}
         <li class="changes__change">
-          <span class="changes__file">{change.Basename}</span>
+          <div class="changes__file">
+            <div class="changes__filename">{change.Basename}</div>
+            <div class="changes__dir">{change.Dir != '.' ? change.Dir : ''}</div>
+          </div>
           <span class="changes__status changes__status--{change.Flag}" aria-label="{change.Letter}"></span>
         </li>
       {/each}
@@ -77,7 +84,18 @@
       justify-content: left;
       align-items: center;
       border-bottom: 1px solid var(--color-changes-border);
-      padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+      padding: 0.30rem 1.5rem 0.36rem;
+      min-height: 3rem;
+    }
+
+    &__file {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__dir {
+      color: var(--color-scale-gray-3);
+      font-size: 0.85rem;
     }
 
     &__status {
