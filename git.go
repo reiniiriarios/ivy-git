@@ -9,6 +9,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+// Run a git command in a specific directory.
 func (a *App) Git(directory string, command ...string) (string, error) {
 	// Run every git command in a specific directory.
 	command = append([]string{"-C", directory}, command...)
@@ -34,6 +35,7 @@ func (a *App) Git(directory string, command ...string) (string, error) {
 	return outb.String(), nil
 }
 
+// Run a git command in the directory of the currently selected repo.
 func (a *App) GitCwd(command ...string) (string, error) {
 	repo, exists := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
 	if !exists {
@@ -52,6 +54,7 @@ func (a *App) IsGitRepo(directory string) bool {
 	return r == ""
 }
 
+// Parse a multiline string into an array.
 func (a *App) getLines(s string) []string {
 	var r []string
 	l := strings.Split(strings.ReplaceAll(s, "\r\n", "\n"), "\n")

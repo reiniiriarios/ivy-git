@@ -32,6 +32,8 @@ func (a *App) domready(ctx context.Context) {
 	// ...
 }
 
+// FRONTEND: Get the os string.
+// See https://github.com/golang/go/blob/master/src/go/build/syslist.go
 func (a *App) GoOs() string {
 	return runtime.GOOS
 }

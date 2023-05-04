@@ -20,6 +20,7 @@ type ChangesResponse struct {
 	ChangesY []Change
 }
 
+// FRONTEND: Get list of changed files.
 func (a *App) GitListChanges() ChangesResponse {
 	c, err := a.GitCwd("status", "--porcelain")
 	if err != nil {
@@ -76,6 +77,8 @@ func (a *App) GitListChanges() ChangesResponse {
 	}
 }
 
+// Get status flag for `git status --porcelain`
+//
 // X          Y     Meaning
 // -------------------------------------------------
 //

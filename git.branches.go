@@ -22,6 +22,7 @@ type BranchesResponse struct {
 	Branches map[string]Branch
 }
 
+// FRONTEND: Get current branch for currently selected repo.
 func (a *App) GetCurrentBranch() BranchResponse {
 	branch, err := a.GitCwd("rev-parse", "--abbrev-ref", "HEAD")
 	if err != nil {
@@ -40,6 +41,7 @@ func (a *App) GetCurrentBranch() BranchResponse {
 	}
 }
 
+// FRONTEND: Get list of all branches for currently selected repo.
 func (a *App) GetBranches() BranchesResponse {
 	branches, err := a.GitCwd("branch", "--list", "--format", "'%(refname:short)'")
 	if err != nil {
@@ -66,8 +68,9 @@ func (a *App) GetBranches() BranchesResponse {
 	}
 }
 
+// FRONTEND: Switch branch on currently selected repo.
 func (a *App) SwitchBranch(branch string) GenericResponse {
-	_, err := a.GitCwd("switch", branch)
+	_, err := a.GitCwd("checkout", branch)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return GenericResponse{

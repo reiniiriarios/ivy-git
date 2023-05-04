@@ -18,6 +18,7 @@ type Connection struct {
 	BranchId int64
 }
 
+// Get vertices to plot based on commits and HEAD.
 func (a *App) getVertices(commits []Commit, HEAD Ref) []Vertex {
 	var vertices []Vertex
 	nullVertex := Vertex{
@@ -90,7 +91,11 @@ func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b *GraphBranch) {
 	}
 }
 
+// Return whether the vertex is a merge commit.
 func (v *Vertex) isMergeCommit() bool {
+	// If there's a next parent vertex that isn't a null vertex,
+	// the vertex has more than one parent,
+	// and the vertex and next parent both have a branch.
 	p := v.getNextParent()
 	return p != nil && p.Id != -1 && len(v.Parents) > 1 && v.Branch != nil && p.Branch != nil
 }
@@ -103,6 +108,7 @@ type GraphBranch struct {
 	UncommitedPoints uint16
 }
 
+// Add line to branch.
 func (b *GraphBranch) addLine(l Line) {
 	b.Lines = append(b.Lines, l)
 	if l.Committed {
@@ -121,6 +127,7 @@ type Graph struct {
 	Height   uint16
 }
 
+// Build all paths for the graph.
 func (g *Graph) BuildPaths() {
 	var color uint16 = 0
 	for _, v := range g.Vertices {
@@ -141,6 +148,7 @@ func (g *Graph) BuildPaths() {
 	g.Height = g.getHeight()
 }
 
+// Build a path for the graph (that isn't a merge commit).
 func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	// Create new branch, assign it to the vertex.
 	b := GraphBranch{
@@ -215,6 +223,7 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	g.Branches = append(g.Branches, b)
 }
 
+// Build a merge path for the graph.
 func (g *Graph) buildMergePath(v1 *Vertex) {
 	// Parent
 	p := v1.getNextParent()
@@ -266,6 +275,7 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 	}
 }
 
+// Get the width of the graph in vertices.
 func (g *Graph) getWidth() uint16 {
 	var x uint16 = 0
 	for _, v := range g.Vertices {
@@ -277,6 +287,7 @@ func (g *Graph) getWidth() uint16 {
 	return x
 }
 
+// Get the height of the graph in commits.
 func (g *Graph) getHeight() uint16 {
 	return uint16(len(g.Vertices))
 }

@@ -28,6 +28,7 @@ type RepoResponse struct {
 	Repo     Repo
 }
 
+// Load configuration yaml for app.
 func (a *App) LoadYaml() {
 	if _, err := os.Stat(a.repoYamlLocation()); errors.Is(err, os.ErrNotExist) {
 		a.initYaml()
@@ -50,19 +51,23 @@ func (a *App) LoadYaml() {
 	a.RepoSaveData = data
 }
 
+// FRONTEND: Get repo information.
 func (a *App) GetRepos() map[string]Repo {
 	return a.RepoSaveData.Repos
 }
 
+// FRONTEND: Update currently selected repo.
 func (a *App) UpdateSelectedRepo(repo string) {
 	a.RepoSaveData.CurrentRepo = repo
-	a.SaveRepoData()
+	a.saveRepoData()
 }
 
+// FRONTEND: Get the currently selected repo.
 func (a *App) GetSelectedRepo() string {
 	return a.RepoSaveData.CurrentRepo
 }
 
+// FRONTEND: Add a new repo.
 func (a *App) AddRepo() RepoResponse {
 	d, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: "Select Git Repository",
@@ -108,7 +113,7 @@ func (a *App) AddRepo() RepoResponse {
 		a.RepoSaveData.Repos = make(map[string]Repo)
 	}
 	a.RepoSaveData.Repos[id] = newRepo
-	a.SaveRepoData()
+	a.saveRepoData()
 
 	return RepoResponse{
 		Response: "success",
@@ -117,13 +122,15 @@ func (a *App) AddRepo() RepoResponse {
 	}
 }
 
+// FRONTEND: Remove a repo from the list.
 func (a *App) RemoveRepo(id string) map[string]Repo {
 	delete(a.RepoSaveData.Repos, id)
-	a.SaveRepoData()
+	a.saveRepoData()
 	return a.RepoSaveData.Repos
 }
 
-func (a *App) SaveRepoData() {
+// Save repo data to yaml config.
+func (a *App) saveRepoData() {
 	data, err := yaml.Marshal(&a.RepoSaveData)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
@@ -135,6 +142,7 @@ func (a *App) SaveRepoData() {
 	}
 }
 
+// Create yaml config.
 func (a *App) initYaml() {
 	f, e := os.Create(a.repoYamlLocation())
 	if e != nil {
@@ -143,6 +151,8 @@ func (a *App) initYaml() {
 	defer f.Close()
 }
 
+// TODO: Return location of config yaml.
+// This should be different depending on os.
 func (a *App) repoYamlLocation() string {
 	// todo
 	return "repos.yaml"

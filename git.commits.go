@@ -239,6 +239,7 @@ func (a *App) getCommits() ([]Commit, map[string]uint64, Ref, error) {
 	return commits, lookup, refs.HEAD, nil
 }
 
+// FRONTEND: Get list of commits and all associated details for display.
 func (a *App) GetCommitList() CommitResponse {
 	commits, lookup, HEAD, err := a.getCommits()
 	if err != nil {
@@ -308,6 +309,7 @@ func (a *App) GetCommitList() CommitResponse {
 	}
 }
 
+// Get the number of changed files that are uncommitted.
 func (a *App) getNumUncommitedChanges() int {
 	c, err := a.GitCwd("status", "--untracked-files=all", "--porcelain")
 	if err != nil {
@@ -317,6 +319,7 @@ func (a *App) getNumUncommitedChanges() int {
 	return strings.Count(c, "\n")
 }
 
+// Get all stashes from `git reflog`.
 func (a *App) getStashes() []Commit {
 	var stashes []Commit
 
