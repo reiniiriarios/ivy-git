@@ -84,8 +84,7 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 		return commits, lookup, err
 	}
 
-	// Start counting commits at 1, 0 will be uncommited changes (if any)
-	var i uint64 = 1
+	var i uint64 = 0
 	cs := a.getLines(c)
 	for _, cm := range cs {
 		parts := strings.Split(cm, GIT_LOG_SEP)
@@ -249,22 +248,6 @@ func (a *App) GetCommitList() CommitResponse {
 		}
 	}
 
-	// Add uncommitted changes.
-	u := a.getNumUncommitedChanges()
-	if u > 0 {
-		t := time.Now()
-		// The first index of commits is reserved for uncommited changes.
-		commits[0] = Commit{
-			Hash:            UNCOMMITED_HASH,
-			Parents:         []string{HEAD.Hash},
-			AuthorName:      "*",
-			AuthorEmail:     "",
-			AuthorTimestamp: t.Unix(),
-			AuthorDatetime:  "*",
-			Subject:         "Uncommited Changes (" + strconv.Itoa(u) + ")",
-		}
-	}
-
 	// Add stashes.
 	add := make(map[uint64]Commit)
 	var ids []uint64
@@ -293,6 +276,21 @@ func (a *App) GetCommitList() CommitResponse {
 				commits = append(c1, commits[i:]...)
 			}
 		}
+	}
+
+	// Add uncommitted changes.
+	u := a.getNumUncommitedChanges()
+	if u > 0 {
+		t := time.Now()
+		commits = append([]Commit{{
+			Hash:            UNCOMMITED_HASH,
+			Parents:         []string{HEAD.Hash},
+			AuthorName:      "*",
+			AuthorEmail:     "",
+			AuthorTimestamp: t.Unix(),
+			AuthorDatetime:  "*",
+			Subject:         "Uncommited Changes (" + strconv.Itoa(u) + ")",
+		}}, commits...)
 	}
 
 	// Build all graph data.

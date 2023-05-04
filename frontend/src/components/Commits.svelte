@@ -41,6 +41,7 @@
         case "success":
           commits = result.Commits as Commit[];
           HEAD = result.HEAD;
+          console.log(HEAD);
           console.log(commits);
           break;
       }
