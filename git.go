@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"os/exec"
+	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -49,4 +50,14 @@ func (a *App) IsGitRepo(directory string) bool {
 	}
 
 	return r == ""
+}
+
+func (a *App) getLines(s string) []string {
+	var r []string
+	l := strings.Split(strings.ReplaceAll(s, "\r\n", "\n"), "\n")
+	for _, v := range l {
+		v = strings.Trim(v, "'")
+		r = append(l, v)
+	}
+	return r
 }

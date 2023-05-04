@@ -32,9 +32,8 @@ func (a *App) GitListChanges() ChangesResponse {
 	// https://git-scm.com/docs/git-status
 	var changesX []Change
 	var changesY []Change
-	cs := strings.Split(strings.ReplaceAll(c, "\r\n", "\n"), "\n")
+	cs := a.getLines(c)
 	for _, change := range cs {
-		change = strings.Trim(change, "'")
 		if strings.Trim(change, " ") != "" {
 			x := change[0:1]
 			file := change[2:]

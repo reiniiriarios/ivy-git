@@ -51,9 +51,8 @@ func (a *App) GetBranches() BranchesResponse {
 	}
 
 	branch_list := make(map[string]Branch)
-	bs := strings.Split(strings.ReplaceAll(branches, "\r\n", "\n"), "\n")
+	bs := a.getLines(branches)
 	for _, branch := range bs {
-		branch = strings.Trim(branch, "'")
 		if strings.Trim(branch, " ") != "" {
 			branch_list[branch] = Branch{
 				Name: branch,

@@ -83,9 +83,8 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 
 	// Start counting commits at 1, 0 will be uncommited changes (if any)
 	var i uint64 = 1
-	cs := strings.Split(strings.ReplaceAll(c, "\r\n", "\n"), "\n")
+	cs := a.getLines(c)
 	for _, cm := range cs {
-		cm = strings.Trim(cm, "'")
 		parts := strings.Split(cm, GIT_LOG_SEP)
 		if len(parts) == len(data) {
 
@@ -142,9 +141,9 @@ func (a *App) getRefs() (Refs, error) {
 	// - refs/tags/[...]                  = tags
 	// - HEAD and refs/remotes/[...]/HEAD = heads
 	// - refs/remotes/[...]/[...]         = remotes
-	rs := strings.Split(strings.ReplaceAll(r, "\r\n", "\n"), "\n")
+	rs := a.getLines(r)
 	for _, r := range rs {
-		rr := strings.Split(strings.Trim(r, "'"), " ")
+		rr := strings.Split(r, " ")
 		if len(rr) >= 2 {
 			hash := rr[0]
 			name := strings.Join(rr[1:], " ")
@@ -314,9 +313,8 @@ func (a *App) getStashes() []Stash {
 		return stashes
 	}
 
-	ss := strings.Split(strings.ReplaceAll(s, "\r\n", "\n"), "\n")
+	ss := a.getLines(s)
 	for _, st := range ss {
-		st = strings.Trim(st, "'")
 		parts := strings.Split(st, GIT_LOG_SEP)
 		if len(parts) == len(data) {
 			// Get timestamp and formatted datetime for author
