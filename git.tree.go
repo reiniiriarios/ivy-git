@@ -18,17 +18,19 @@ type Connection struct {
 	BranchId int64
 }
 
-func (a *App) getVertices(commits []Commit, lookup map[string]uint64, HEAD Ref) []Vertex {
+func (a *App) getVertices(commits []Commit, HEAD Ref) []Vertex {
 	var vertices []Vertex
 	nullVertex := Vertex{
 		Id: -1,
 	}
 
+	lookup := make(map[string]int)
 	for i, c := range commits {
 		vertices[i] = Vertex{
 			Id:        int64(i),
 			Committed: c.Hash != UNCOMMITED_HASH,
 		}
+		lookup[c.Hash] = i
 	}
 
 	// Assign each vertex its parents.

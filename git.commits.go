@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ const DATE_FORMAT = "Jan 1, 2006, 03:04:05 pm"
 type Commit struct {
 	Hash            string
 	Parents         []string
+	RefName         string
 	AuthorName      string
 	AuthorEmail     string
 	AuthorTimestamp int64
@@ -24,7 +26,7 @@ type Commit struct {
 	Tags            []Ref
 	Remotes         []Ref
 	Heads           []Ref
-	Stash           Stash
+	Stash           string
 }
 
 type Ref struct {
@@ -53,6 +55,7 @@ type CommitResponse struct {
 	Message  string
 	HEAD     Ref
 	Commits  []Commit
+	Graph    Graph
 }
 
 // Get commit details from `git log`.
@@ -245,8 +248,8 @@ func (a *App) GetCommitList() CommitResponse {
 		}
 	}
 
+	// Add uncommitted changes.
 	u := a.getNumUncommitedChanges()
-
 	if u > 0 {
 		t := time.Now()
 		// The first index of commits is reserved for uncommited changes.
@@ -261,8 +264,39 @@ func (a *App) GetCommitList() CommitResponse {
 		}
 	}
 
+	// Add stashes.
+	add := make(map[uint64]Commit)
+	var ids []uint64
+	for _, s := range a.getStashes() {
+		// Confirm the stash hash doesn't match a commit.
+		if _, exists := lookup[s.Hash]; !exists {
+			// If the stash parent hash matches a commit, add to the list.
+			if p, exists := lookup[s.Parents[0]]; exists {
+				add[p] = s
+				ids = append(ids, p)
+			}
+		}
+	}
+	// Sort the list of stashes to add inversely by id, then timestamp.
+	sort.Slice(ids, func(i, j int) bool {
+		if i != j {
+			return i > j
+		}
+		return add[ids[i]].AuthorTimestamp > add[ids[j]].AuthorTimestamp
+	})
+	// Add the stashes in to the commits list.
+	for _, s := range ids {
+		for i := range commits {
+			if s == uint64(i) {
+				c1 := append(commits[:i], add[s])
+				commits = append(c1, commits[i:]...)
+			}
+		}
+	}
+
+	// Build all graph data.
 	g := Graph{
-		Vertices: a.getVertices(commits, lookup, HEAD),
+		Vertices: a.getVertices(commits, HEAD),
 	}
 	g.BuildPaths()
 
@@ -270,6 +304,7 @@ func (a *App) GetCommitList() CommitResponse {
 		Response: "success",
 		HEAD:     HEAD,
 		Commits:  commits,
+		Graph:    g,
 	}
 }
 
@@ -282,19 +317,8 @@ func (a *App) getNumUncommitedChanges() int {
 	return strings.Count(c, "\n")
 }
 
-type Stash struct {
-	Hash            string
-	Parent          string
-	RefName         string
-	AuthorName      string
-	AuthorEmail     string
-	AuthorTimestamp int64
-	AuthorDatetime  string
-	Subject         string
-}
-
-func (a *App) getStashes() []Stash {
-	var stashes []Stash
+func (a *App) getStashes() []Commit {
+	var stashes []Commit
 
 	// Include:
 	// %H  - hash
@@ -326,9 +350,9 @@ func (a *App) getStashes() []Stash {
 				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
 			}
 
-			stashes = append(stashes, Stash{
+			stashes = append(stashes, Commit{
 				Hash:            parts[0],
-				Parent:          parts[1],
+				Parents:         []string{parts[1]},
 				RefName:         parts[2],
 				AuthorName:      parts[3],
 				AuthorEmail:     parts[4],
