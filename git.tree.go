@@ -20,17 +20,17 @@ type Connection struct {
 
 // Get vertices to plot based on commits and HEAD.
 func (a *App) getVertices(commits []Commit, HEAD Ref) []Vertex {
-	var vertices []Vertex
+	vertices := []Vertex{}
 	nullVertex := Vertex{
 		Id: -1,
 	}
 
 	lookup := make(map[string]int)
 	for i, c := range commits {
-		vertices[i] = Vertex{
+		vertices = append(vertices, Vertex{
 			Id:        int64(i),
 			Committed: c.Hash != UNCOMMITED_HASH,
-		}
+		})
 		lookup[c.Hash] = i
 	}
 
@@ -212,9 +212,9 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 
 		i++
 	}
-	// If we looped through every vertex and
-	// either there's no parent or the parent is a null vertex,
-	if int(i) == len(g.Vertices) && (p != nil || p.Id == -1) {
+
+	// If we looped through every vertex and the parent is a null vertex.
+	if int(i) == len(g.Vertices) && p != nil && p.Id == -1 {
 		v.NextParent++
 	}
 

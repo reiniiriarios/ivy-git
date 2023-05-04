@@ -79,7 +79,7 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 	// - commits mentioned by reflogs
 	// - all remotes
 	// - HEAD
-	c, err := a.GitCwd("--no-pager", "log", "--format='"+format+"'", "--branches", "--tags", "--reflog", "--glob=refs/remotes", "HEAD")
+	c, err := a.GitCwd("--no-pager", "log", "--format='"+format+"'", "--branches", "--tags", "--glob=refs/remotes", "HEAD")
 	if err != nil {
 		return commits, lookup, err
 	}
@@ -260,7 +260,7 @@ func (a *App) GetCommitList() CommitResponse {
 			AuthorName:      "*",
 			AuthorEmail:     "",
 			AuthorTimestamp: t.Unix(),
-			AuthorDatetime:  t.Format(DATE_FORMAT),
+			AuthorDatetime:  "*",
 			Subject:         "Uncommited Changes (" + strconv.Itoa(u) + ")",
 		}
 	}

@@ -60,7 +60,7 @@ func (a *App) getLines(s string) []string {
 	l := strings.Split(strings.ReplaceAll(s, "\r\n", "\n"), "\n")
 	for _, v := range l {
 		v = strings.Trim(v, "'")
-		r = append(l, v)
+		r = append(r, v)
 	}
 	return r
 }

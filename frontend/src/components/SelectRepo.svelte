@@ -51,7 +51,7 @@
       (window as any).getChanges();
       hideList();
       if ((window as any).currentTab == 'tree') {
-        (window as any).GetCommitsForTree();
+        (window as any).GetCommitList();
       }
     });
   }

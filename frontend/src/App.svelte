@@ -17,7 +17,7 @@
     (window as any).getBranches();
     (window as any).getChanges();
     if ((window as any).currentTab == 'tree') {
-      (window as any).GetCommitsForTree();
+      (window as any).GetCommitList();
     }
     GoOs().then(os => {
       switch (os) {

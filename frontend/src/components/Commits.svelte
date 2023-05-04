@@ -3,7 +3,9 @@
 
   import octicons from '@primer/octicons';
 
-  import { GetCommitsForTree } from "../../wailsjs/go/main/App";
+  import { GetCommitList } from "../../wailsjs/go/main/App";
+
+  const UNCOMMITED_HASH = "#";
 
   interface Commit {
     Hash: string;
@@ -29,8 +31,8 @@
   let HEAD: Ref;
   let currentColor = 1;
 
-  (window as any).GetCommitsForTree = () => {
-    GetCommitsForTree().then((result) => {
+  (window as any).GetCommitList = () => {
+    GetCommitList().then((result) => {
       switch (result.Response) {
         case "error":
           (window as any).messageModal(result.Message);
@@ -58,7 +60,7 @@
           <th>Date</th>
         </tr>
         {#each Object.entries(commits) as [_, commit]}
-          <tr>
+          <tr class="{commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''}">
             <td>
               <div class="tree__refs c{currentColor}">
 
@@ -127,11 +129,12 @@
 <style lang="scss">
   .tree {
     min-width: 100%;
-    height: calc(100vh - var(--tabs-height));
+    height: calc(100vh - var(--tabs-height) - var(--title-bar-height));
     overflow: auto;
 
     table {
       min-width: 100%;
+      margin-bottom: 0.5rem;
 
       tr {
         th {
@@ -168,6 +171,10 @@
           &:not(:first-child) {
             padding-right: 0.67rem;
           }
+        }
+
+        &.uncommitted {
+          color: var(--color-scale-gray-3);
         }
       }
     }
