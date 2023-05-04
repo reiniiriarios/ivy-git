@@ -197,6 +197,66 @@ func (a *App) getRefs() (Refs, error) {
 	return refs, nil
 }
 
+// Get all stashes from `git reflog`.
+func (a *App) getStashes() []Commit {
+	var stashes []Commit
+
+	// Include:
+	// %H  - hash
+	// %P  - parent hash
+	// %gd - refname
+	// %an - Author Name
+	// %ae - Author Email
+	// %at - Author Time
+	// %s  - Subject
+	// https://git-scm.com/docs/pretty-formats
+	data := []string{"%H", "%P", "%gd", "%an", "%ae", "%at", "%s"}
+	format := strings.Join(data, GIT_LOG_SEP)
+	s, err := a.GitCwd("reflog", "--format='"+format+"'", "--glob=refs/stash")
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+		return stashes
+	}
+
+	ss := a.getLines(s)
+	for _, st := range ss {
+		parts := strings.Split(st, GIT_LOG_SEP)
+		if len(parts) == len(data) {
+			// Get timestamp and formatted datetime for author
+			ts, err := strconv.ParseInt(parts[5], 10, 64)
+			dt := ""
+			if err != nil {
+				runtime.LogError(a.ctx, err.Error())
+			} else {
+				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
+			}
+
+			stashes = append(stashes, Commit{
+				Hash:            parts[0],
+				Parents:         []string{parts[1]},
+				RefName:         parts[2],
+				AuthorName:      parts[3],
+				AuthorEmail:     parts[4],
+				AuthorTimestamp: ts,
+				AuthorDatetime:  dt,
+				Subject:         parts[7],
+			})
+		}
+	}
+
+	return stashes
+}
+
+// Get the number of changed files that are uncommitted.
+func (a *App) getNumUncommitedChanges() int {
+	c, err := a.GitCwd("status", "--untracked-files=all", "--porcelain")
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+		return 0
+	}
+	return strings.Count(c, "\n")
+}
+
 // Compile commits and refs for tree view.
 func (a *App) getCommits() ([]Commit, map[string]uint64, Ref, error) {
 	commits, lookup, err := a.getLog()
@@ -305,64 +365,4 @@ func (a *App) GetCommitList() CommitResponse {
 		Commits:  commits,
 		Graph:    g,
 	}
-}
-
-// Get the number of changed files that are uncommitted.
-func (a *App) getNumUncommitedChanges() int {
-	c, err := a.GitCwd("status", "--untracked-files=all", "--porcelain")
-	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
-		return 0
-	}
-	return strings.Count(c, "\n")
-}
-
-// Get all stashes from `git reflog`.
-func (a *App) getStashes() []Commit {
-	var stashes []Commit
-
-	// Include:
-	// %H  - hash
-	// %P  - parent hash
-	// %gd - refname
-	// %an - Author Name
-	// %ae - Author Email
-	// %at - Author Time
-	// %s  - Subject
-	// https://git-scm.com/docs/pretty-formats
-	data := []string{"%H", "%P", "%gd", "%an", "%ae", "%at", "%s"}
-	format := strings.Join(data, GIT_LOG_SEP)
-	s, err := a.GitCwd("reflog", "--format='"+format+"'", "--glob=refs/stash")
-	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
-		return stashes
-	}
-
-	ss := a.getLines(s)
-	for _, st := range ss {
-		parts := strings.Split(st, GIT_LOG_SEP)
-		if len(parts) == len(data) {
-			// Get timestamp and formatted datetime for author
-			ts, err := strconv.ParseInt(parts[5], 10, 64)
-			dt := ""
-			if err != nil {
-				runtime.LogError(a.ctx, err.Error())
-			} else {
-				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
-			}
-
-			stashes = append(stashes, Commit{
-				Hash:            parts[0],
-				Parents:         []string{parts[1]},
-				RefName:         parts[2],
-				AuthorName:      parts[3],
-				AuthorEmail:     parts[4],
-				AuthorTimestamp: ts,
-				AuthorDatetime:  dt,
-				Subject:         parts[7],
-			})
-		}
-	}
-
-	return stashes
 }
