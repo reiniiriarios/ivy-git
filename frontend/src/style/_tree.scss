@@ -1,0 +1,37 @@
+.commit__label {
+  .c-1 & {
+    border-color: var(--color-branch-1-border) !important;
+    background-color: var(--color-branch-1-bg) !important;
+
+    &::after {
+      background-color: var(--color-branch-1-bg) !important;
+    }
+  }
+
+  .c-2 & {
+    border-color: var(--color-branch-2-border) !important;
+    background-color: var(--color-branch-2-bg) !important;
+
+    &::after {
+      background-color: var(--color-branch-2-bg) !important;
+    }
+  }
+
+  .c-3 & {
+    border-color: var(--color-branch-3-border) !important;
+    background-color: var(--color-branch-3-bg) !important;
+
+    &::after {
+      background-color: var(--color-branch-3-bg) !important;
+    }
+  }
+
+  .c-4 & {
+    border-color: var(--color-branch-4-border) !important;
+    background-color: var(--color-branch-4-bg) !important;
+
+    &::after {
+      background-color: var(--color-branch-4-bg) !important;
+    }
+  }
+}
