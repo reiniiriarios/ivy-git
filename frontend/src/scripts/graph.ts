@@ -2,11 +2,11 @@ export const UNCOMMITED_HASH = "#";
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const NUM_COLORS = 10;
 
-const GRID_X = 16;
-const GRID_Y = 16;
-const GRID_D = GRID_Y * 0.8;
-const OFFSET_X = 16;
-const OFFSET_Y = 16;
+const SCALE_X = 16;
+const SCALE_Y = 24;
+const CURVE_D = SCALE_Y * 0.8;
+const OFFSET_X = 12;
+const OFFSET_Y = 12;
 
 export interface Commit {
   Hash: string;
@@ -86,6 +86,10 @@ export function drawGraph(g: Graph): SVGSVGElement {
   });
 
   svg.appendChild(grp);
+
+  svg.setAttribute('height', scaleY(g.Height).toFixed(0).toString())
+  svg.setAttribute('width', scaleY(g.Width).toFixed(0).toString())
+
   return svg;
 }
 
@@ -139,8 +143,8 @@ function drawBranch(g: SVGGElement, b: Branch) {
     }
     // Curved path
     else {
-      let y1d = scaleY(b.Lines[i].P1.Y + GRID_D).toFixed(1);
-      let y2d = scaleY(b.Lines[i].P2.Y - GRID_D).toFixed(1);
+      let y1d = scaleY(b.Lines[i].P1.Y + CURVE_D).toFixed(1);
+      let y2d = scaleY(b.Lines[i].P2.Y - CURVE_D).toFixed(1);
       path += `C${x1},${y1d} ${x2},${y2d} ${x2},${y2}`;
     }
   }
@@ -177,9 +181,9 @@ function drawVertex(g: SVGGElement, v: Vertex) {
 }
 
 function scaleX(x: number): number {
-  return x * GRID_X + OFFSET_X;
+  return x * SCALE_X + OFFSET_X;
 }
 
 function scaleY(y: number): number {
-  return y * GRID_Y + OFFSET_Y;
+  return y * SCALE_Y + OFFSET_Y;
 }

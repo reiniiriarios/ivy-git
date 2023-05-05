@@ -36,24 +36,14 @@
 {#if active}
   <div class="commits">
     {#if Object.entries(commits).length}
-      <table>
+      <table class="commits__branches">
         <tr>
           <th class="h-b">Branch</th>
-          <th>
-            <div id="tree">
-              <div id="tree__holder">{@html svg.outerHTML}</div>
-            </div>
-            Tree
-          </th>
-          <th class="h-c">Commit</th>
-          <th>Author</th>
-          <th>Date</th>
         </tr>
         {#each Object.entries(commits) as [_, commit]}
           <tr class="commit c-{currentColor} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''}">
             <td>
               <div class="commit__refs">
-
                 {#if commit.Branches && commit.Branches.length}
                   {#each commit.Branches as b}
                     <div class="commit__label commit__branch">
@@ -102,10 +92,23 @@
                     </div>
                   {/each}
                 {/if}
-
               </div>
             </td>
-            <td>...</td>
+          </tr>
+        {/each}
+      </table>
+      <div id="tree" class="tree">
+        <div class="tree__text">Tree</div>
+        <div class="tree__graph">{@html svg.outerHTML}</div>
+      </div>
+      <table class="commits__details">
+        <tr>
+          <th class="h-c">Commit</th>
+          <th>Author</th>
+          <th>Date</th>
+        </tr>
+        {#each Object.entries(commits) as [_, commit]}
+          <tr class="commit c-{currentColor} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''}">
             <td>{commit.Subject}</td>
             <td>{commit.AuthorName ?? commit.AuthorEmail}</td>
             <td>{commit.AuthorDatetime}</td>
@@ -121,22 +124,26 @@
     min-width: 100%;
     height: calc(100vh - var(--tabs-height) - var(--title-bar-height));
     overflow: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: top;
 
     table {
-      min-width: 100%;
       margin-bottom: 0.5rem;
 
       tr {
+        th, td {
+          // Height in pixels!
+          height: 24px;
+          box-sizing: border-box;
+        }
+
         th {
           text-align: left;
           padding: 0.25rem 0.5rem;
-          height: 2rem;
           white-space: nowrap;
           background-color: var(--color-scale-gray-7);
-
-          &:not(:first-child) {
-            border-left: 1px solid var(--color-scale-gray-8);
-          }
 
           &.h-b {
             text-align: right;
@@ -151,7 +158,6 @@
         td {
           text-align: left;
           padding: 0.125rem 0.5rem;
-          height: 1.75rem;
           white-space: nowrap;
 
           &:first-child {
@@ -168,12 +174,19 @@
         }
       }
     }
-  }
 
-  #tree {
-    position: relative;
-    &__holder {
-      position: absolute;
+    &__branches {
+      th {
+        border-right: 1px solid var(--color-scale-gray-8);
+      }
+    }
+
+    &__details {
+      flex: 1;
+
+      th {
+        border-left: 1px solid var(--color-scale-gray-8);
+      }
     }
   }
 

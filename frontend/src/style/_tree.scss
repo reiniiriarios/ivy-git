@@ -1,23 +1,44 @@
-$num-colors: 9;
+$num-colors: 10;
 
-#tree {
-  .b {
-    stroke: red;
+.tree {
+  padding: 0;
+  min-width: 4rem;
+  text-align: left;
+
+  &__text {
+    // Height in pixels!
+    height: 24px;
+    box-sizing: border-box;
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+    background-color: var(--color-scale-gray-7);
+    font-weight: bold;
   }
 
-  @for $c from 0 through $num-colors - 1 {
-    .b-#{$c} {
-      stroke: var(--color-branch-#{$c}-bg);
+  &__graph {
+    overflow-x: hidden;
+  }
+
+  // Branches
+  .b {
+    stroke: red;
+    stroke-width: 4px;
+
+    @for $c from 0 through $num-colors - 1 {
+      &.b-#{$c} {
+        stroke: var(--color-branch-#{$c}-bg);
+      }
     }
   }
 
+  // Vertices
   .v {
     fill: red;
-  }
 
-  @for $c from 0 through $num-colors - 1 {
-    .v-#{$c} {
-      fill: var(--color-branch-#{$c}-bg);
+    @for $c from 0 through $num-colors - 1 {
+      &.v-#{$c} {
+        fill: var(--color-branch-#{$c}-bg);
+      }
     }
   }
 }
