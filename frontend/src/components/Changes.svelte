@@ -115,70 +115,70 @@
       &--added {
         &::after {
           content: 'A';
-          color: var(--color-scale-green-3-100);
+          color: var(--color-scale-g-3-100);
         }
       }
 
       &--copied {
         &::after {
           content: 'C';
-          color: var(--color-scale-yellow-7-100);
+          color: var(--color-scale-y-7-100);
         }
       }
 
       &--deleted {
         &::after {
           content: 'D';
-          color: var(--color-scale-red-3-100);
+          color: var(--color-scale-r-3-100);
         }
       }
 
       &--modified {
         &::after {
           content: 'M';
-          color: var(--color-scale-orange-3-100);
+          color: var(--color-scale-o-3-100);
         }
       }
 
       &--renamed {
         &::after {
           content: 'R';
-          color: var(--color-scale-blue-7-100);
+          color: var(--color-scale-b-7-100);
         }
       }
 
       &--type-changed {
         &::after {
           content: 'T';
-          color: var(--color-scale-purple-7-100);
+          color: var(--color-scale-p-7-100);
         }
       }
 
       &--unmerged {
         &::after {
           content: 'U';
-          color: var(--color-scale-pink-7-100);
+          color: var(--color-scale-n-7-100);
         }
       }
 
       &--untracked {
         &::after {
           content: 'U';
-          color: var(--color-scale-green-3-100);
+          color: var(--color-scale-g-3-100);
         }
       }
 
       &--ignored {
         &::after {
           content: '!';
-          color: var(--color-scale-a-6-100);
+          color: var(--color-scale-o2-6-100);
         }
       }
 
       &--not-updated {
         &::after {
           content: '-';
-          color: var(--color-scale-grey-6-100);
+          color: var(--color-scale-a-6-100);
         }
       }
 

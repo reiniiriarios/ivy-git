@@ -104,15 +104,15 @@
     }
 
     #close {
-      background-color: var(--color-scale-red-4-100);
+      background-color: var(--color-scale-r-4-100);
     }
 
     #minimize {
-      background-color: var(--color-scale-yellow-2-100);
+      background-color: var(--color-scale-y-2-100);
     }
 
     #maximize {
-      background-color: var(--color-scale-green-3-100);
+      background-color: var(--color-scale-g-3-100);
     }
 
     &:hover {
@@ -146,7 +146,7 @@
     }
 
     #close:hover {
-      background-color: var(--color-scale-red-5-100);
+      background-color: var(--color-scale-r-5-100);
 
       span {
         fill: var(--color-scale-a-1-100);
