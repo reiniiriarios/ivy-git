@@ -5,7 +5,7 @@
 
   import { GetCommitList } from '../../wailsjs/go/main/App';
 
-  import { drawGraph, UNCOMMITED_HASH } from '../scripts/graph';
+  import { drawGraph, getLabelDist, UNCOMMITED_HASH } from '../scripts/graph';
   import type { Commit, Ref } from '../scripts/graph';
 
   let commits: Commit[] = [];
@@ -41,58 +41,61 @@
           <th class="h-b">Branch</th>
         </tr>
         {#each Object.entries(commits) as [_, commit]}
-          <tr class="commit c-{currentColor} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''}">
+          <tr class="commit c-{commit.Color} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''}">
             <td>
-              <div class="commit__refs">
-                {#if commit.Branches && commit.Branches.length}
-                  {#each commit.Branches as b}
-                    <div class="commit__label commit__branch">
-                      <div class="commit__icon">{@html octicons['git-branch'].toSVG()}</div>
-                      <div class="commit__label-name">{b.Name}</div>
-                      {#if commit.Remotes && commit.Remotes.length}
-                        {#each commit.Remotes as r}
-                          <div class="commit__leaf">{r.ShortName}</div>
+              {#if commit.Labeled}
+                <div class="commit__refs">
+                  {#if commit.Branches && commit.Branches.length}
+                    {#each commit.Branches as b}
+                      <div class="commit__label commit__branch">
+                        <div class="commit__icon">{@html octicons['git-branch'].toSVG()}</div>
+                        <div class="commit__label-name">{b.Name}</div>
+                        {#if commit.Remotes && commit.Remotes.length}
+                          {#each commit.Remotes as r}
+                            <div class="commit__leaf">{r.ShortName}</div>
+                          {/each}
+                        {/if}
+                      </div>
+                    {/each}
+                  {:else if commit.Remotes && commit.Remotes.length}
+                    {#each commit.Remotes as r}
+                      <div class="commit__label commit__label--branch">
+                        <div class="commit__icon">{@html octicons['git-branch'].toSVG()}</div>
+                        <div class="commit__leaf">{r.Name}</div>
+                      </div>
+                    {/each}
+                  {/if}
+
+                  {#if commit.Hash == HEAD.Hash}
+                    <div class="commit__label commit__label--head">
+                      <div class="commit__icon">{@html octicons['arrow-right'].toSVG()}</div>
+                      <div class="commit__label-name">HEAD</div>
+                      {#if commit.Heads && commit.Heads.length}
+                        {#each commit.Heads as h}
+                          <div class="commit__leaf">{h.ShortName}</div>
                         {/each}
                       {/if}
                     </div>
-                  {/each}
-                {:else if commit.Remotes && commit.Remotes.length}
-                  {#each commit.Remotes as r}
-                    <div class="commit__label commit__label--branch">
-                      <div class="commit__icon">{@html octicons['git-branch'].toSVG()}</div>
-                      <div class="commit__leaf">{r.Name}</div>
-                    </div>
-                  {/each}
-                {/if}
+                  {:else if commit.Heads && commit.Heads.length}
+                    {#each commit.Heads as h}
+                      <div class="commit__label commit__label--head">
+                        <div class="commit__icon">{@html octicons['arrow-right'].toSVG()}</div>
+                        <div class="commit__leaf">{h.Name}</div>
+                      </div>
+                    {/each}
+                  {/if}
 
-                {#if commit.Hash == HEAD.Hash}
-                  <div class="commit__label commit__label--head">
-                    <div class="commit__icon">{@html octicons['arrow-right'].toSVG()}</div>
-                    <div class="commit__label-name">HEAD</div>
-                    {#if commit.Heads && commit.Heads.length}
-                      {#each commit.Heads as h}
-                        <div class="commit__leaf">{h.ShortName}</div>
-                      {/each}
-                    {/if}
-                  </div>
-                {:else if commit.Heads && commit.Heads.length}
-                  {#each commit.Heads as h}
-                    <div class="commit__label commit__label--head">
-                      <div class="commit__icon">{@html octicons['arrow-right'].toSVG()}</div>
-                      <div class="commit__leaf">{h.Name}</div>
-                    </div>
-                  {/each}
-                {/if}
-
-                {#if commit.Tags && commit.Tags.length}
-                  {#each commit.Tags as t}
-                    <div class="commit__label commit__label--tag">
-                      <div class="commit__icon">{@html octicons['tag'].toSVG()}</div>
-                      <div class="commit__label-name">{t.Name}</div>
-                    </div>
-                  {/each}
-                {/if}
-              </div>
+                  {#if commit.Tags && commit.Tags.length}
+                    {#each commit.Tags as t}
+                      <div class="commit__label commit__label--tag">
+                        <div class="commit__icon">{@html octicons['tag'].toSVG()}</div>
+                        <div class="commit__label-name">{t.Name}</div>
+                      </div>
+                    {/each}
+                  {/if}
+                  <div class="commit__line" style="width:{getLabelDist(commit.X)}px; right:-{getLabelDist(commit.X)}px"></div>
+                </div>
+              {/if}
             </td>
           </tr>
         {/each}
@@ -127,7 +130,7 @@
     display: flex;
     flex-direction: row;
     justify-content: stretch;
-    align-items: top;
+    align-items: middle;
 
     table {
       margin-bottom: 0.5rem;
@@ -157,7 +160,6 @@
 
         td {
           text-align: left;
-          padding: 0.125rem 0.5rem;
           white-space: nowrap;
 
           &:first-child {
@@ -191,9 +193,14 @@
   }
 
   .commit {
+    box-sizing: border-box;
+    overflow: hidden;
+
     &__refs {
       display: flex;
       justify-content: right;
+      align-items: center;
+      position: relative;
     }
 
     &__label {
@@ -224,6 +231,14 @@
         border-left: 1px solid;
         border-color: inherit;
       }
+    }
+
+    &__line {
+      height: 1px;
+      position: absolute;
+      width: 1rem;
+      right: -1rem;
+      background-color: red;
     }
 
     &__leaf {

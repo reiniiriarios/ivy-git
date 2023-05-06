@@ -9,11 +9,15 @@ const OFFSET_X = 12;
 const OFFSET_Y = 12;
 
 // Scale from graph coordinates to pixels.
-const SCALE_X = 16;
+const SCALE_X = 12;
+// SCALE_Y should match height of <tr>.
 const SCALE_Y = 24;
 
 // Adjust curve of lines.
-const CURVE_D = SCALE_Y * 0.8;
+// SCALE_Y * 0  = straight lines, hard corners
+// SCALE_Y * 1  = curved, but hits horizontal
+// SCALE_Y * 1+ = inverts curve
+const CURVE = SCALE_Y * 0.5;
 
 // Dot size.
 const VERTEX_RADIUS = 3;
@@ -32,6 +36,9 @@ export interface Commit {
   Tags: Ref[];
   Remotes: Ref[];
   Heads: Ref[];
+  Labeled: boolean;
+  Color: number;
+  X: number;
 }
 
 export interface Ref {
@@ -74,8 +81,8 @@ interface Branch {
   Id: number;
   Color: number;
   Lines: Line[];
-  FinalVertexId: number;
   UncommitedPoints: number;
+  Merge: boolean;
 }
 
 interface Graph {
@@ -83,6 +90,11 @@ interface Graph {
   Branches: Branch[];
   Width: number;
   Height: number;
+}
+
+export function getLabelDist(x: number): number {
+  // Center is 2px to the left of the calculated center.
+  return scaleX(x);
 }
 
 export function drawGraph(g: Graph): SVGSVGElement {
@@ -130,7 +142,8 @@ function drawBranch(g: SVGGElement, b: Branch) {
   for (let i = 0; i < b.Lines.length; i++) {
     // If there's a current path and the new point is a different type of path.
     if (path && i && b.Lines[i].Committed !== b.Lines[i - 1].Committed) {
-      drawBranchPath(g, path, color);
+      let c = b.Lines[i - 1].Committed ? color : 'u';
+      drawBranchPath(g, path, c);
       path = "";
     }
 
@@ -155,14 +168,15 @@ function drawBranch(g: SVGGElement, b: Branch) {
     }
     // Curved path
     else {
-      let y1d = scaleY(b.Lines[i].P1.Y + CURVE_D).toFixed(1);
-      let y2d = scaleY(b.Lines[i].P2.Y - CURVE_D).toFixed(1);
+      let y1d = (scaleY(b.Lines[i].P1.Y) + CURVE).toFixed(1);
+      let y2d = (scaleY(b.Lines[i].P2.Y) - CURVE).toFixed(1);
       path += `C${x1},${y1d} ${x2},${y2d} ${x2},${y2}`;
     }
   }
 
   if (path) {
-    drawBranchPath(g, path, color);
+    let c = b.Lines[b.Lines.length - 1].Committed ? color : 'u';
+    drawBranchPath(g, path, c);
   }
 }
 

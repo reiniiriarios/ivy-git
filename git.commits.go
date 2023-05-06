@@ -31,6 +31,9 @@ type Commit struct {
 	Remotes         []Ref
 	Heads           []Ref
 	Stash           string
+	Labeled         bool
+	Color           uint16
+	X               uint16
 }
 
 type Ref struct {
@@ -357,11 +360,28 @@ func (a *App) GetCommitList() CommitResponse {
 		}}, commits...)
 	}
 
+	vertices, lookup2 := a.getVertices(commits, HEAD)
+
 	// Build all graph data.
 	g := Graph{
-		Vertices: a.getVertices(commits, HEAD),
+		Vertices: vertices,
 	}
 	g.BuildPaths()
+
+	// Add color and x-coord to commits from graph data.
+	// Add whether the commit should have a label.
+	for i := range commits {
+		if vertices[lookup2[commits[i].Hash]].Branch != nil {
+			commits[i].Color = vertices[lookup2[commits[i].Hash]].Branch.Color
+		}
+		commits[i].X = vertices[lookup2[commits[i].Hash]].X
+		commits[i].Labeled =
+			len(commits[i].Heads) > 0 ||
+				len(commits[i].Branches) > 0 ||
+				len(commits[i].Tags) > 0 ||
+				len(commits[i].Remotes) > 0 ||
+				commits[i].Hash == HEAD.Hash
+	}
 
 	return CommitResponse{
 		Response: "success",

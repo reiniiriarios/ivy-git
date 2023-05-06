@@ -8,6 +8,7 @@ type Line struct {
 	Committed bool
 	// true = P1, false = P2
 	LockedDirection bool
+	Merge           bool
 }
 
 type Point struct {
@@ -21,7 +22,7 @@ type Connection struct {
 }
 
 // Get vertices to plot based on commits and HEAD.
-func (a *App) getVertices(commits []Commit, HEAD Ref) []Vertex {
+func (a *App) getVertices(commits []Commit, HEAD Ref) ([]Vertex, map[string]int64) {
 	vertices := []Vertex{}
 
 	lookup := make(map[string]int64)
@@ -46,7 +47,7 @@ func (a *App) getVertices(commits []Commit, HEAD Ref) []Vertex {
 		}
 	}
 
-	return vertices
+	return vertices, lookup
 }
 
 type Vertex struct {
@@ -101,7 +102,6 @@ type GraphBranch struct {
 	Id               int64
 	Color            uint16
 	Lines            []Line
-	FinalVertexId    int64
 	UncommitedPoints uint16
 }
 
@@ -211,8 +211,9 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 		b.addLine(Line{
 			P1:              p1,
 			P2:              p2,
-			Committed:       v.Committed,
+			Committed:       v1.Committed,
 			LockedDirection: p1.X < p2.X,
+			Merge:           false,
 		})
 		g.Vertices[i].addUnavailPoint(p2.X, p, &b)
 
@@ -250,7 +251,6 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 		v.NextParent++
 	}
 
-	b.FinalVertexId = int64(i) // VERIFY!!!!!
 	b.Id = int64(len(g.Branches))
 	g.Branches = append(g.Branches, b)
 }
@@ -301,6 +301,7 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 			P2:              p2,
 			Committed:       v1.Committed,
 			LockedDirection: dir,
+			Merge:           true,
 		})
 
 		// If point was found connected to parent, move vertex to next parent and be done.

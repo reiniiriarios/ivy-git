@@ -23,6 +23,7 @@ $num-colors: 10;
   .b {
     stroke: red;
     stroke-width: 2px;
+    fill: transparent;
 
     &.b-u {
       stroke: var(--color-branch-u-bg);
@@ -51,13 +52,20 @@ $num-colors: 10;
   }
 }
 
-.commit__label {
-  @for $c from 0 through $num-colors - 1 {
-    .c-#{$c} & {
-      border-color: var(--color-branch-#{$c}-bg) !important;
-      background-color: var(--color-branch-#{$c}-bg--translucent) !important;
-  
-      &::after {
+
+@for $c from 0 through $num-colors - 1 {
+  .c-#{$c} {
+    .commit {
+      &__label {
+        border-color: var(--color-branch-#{$c}-bg) !important;
+        background-color: var(--color-branch-#{$c}-bg--translucent) !important;
+    
+        &::after {
+          background-color: var(--color-branch-#{$c}-bg--translucent) !important;
+        }
+      }
+
+      &__line {
         background-color: var(--color-branch-#{$c}-bg--translucent) !important;
       }
     }
