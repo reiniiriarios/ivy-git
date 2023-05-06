@@ -21,6 +21,7 @@ const CURVE = SCALE_Y * 0.5;
 
 // Dot size.
 const VERTEX_RADIUS = 3;
+const VERTEX_RADIUS_U = 4;
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
@@ -36,6 +37,7 @@ export interface Commit {
   Tags: Ref[];
   Remotes: Ref[];
   Heads: Ref[];
+  Stash: boolean;
   Labeled: boolean;
   Color: number;
   X: number;
@@ -75,6 +77,7 @@ interface Vertex {
   XNext: number;
   Connections: Connection[];
   Committed: boolean;
+  Stash: boolean;
 }
 
 interface Branch {
@@ -197,12 +200,15 @@ function drawVertex(g: SVGGElement, v: Vertex) {
   let c = document.createElementNS(SVG_NAMESPACE, "circle");
   c.setAttribute("cx", cx);
   c.setAttribute("cy", cy);
-  c.setAttribute("r", VERTEX_RADIUS.toString());
-  c.setAttribute("class", `v v-${color}`);
+  if (v.Stash || !v.Committed) {
+    c.setAttribute("r", VERTEX_RADIUS_U.toString());
+    c.setAttribute("class", `v2 v-${color}`);
+  }
+  else {
+    c.setAttribute("r", VERTEX_RADIUS.toString());
+    c.setAttribute("class", `v v-${color}`);
+  }
   g.appendChild(c);
-
-  // if is stash
-  // draw differently
 }
 
 function scaleX(x: number): number {

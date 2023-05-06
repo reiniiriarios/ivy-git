@@ -104,15 +104,15 @@
     }
 
     #close {
-      background-color: var(--color-scale-red-4);
+      background-color: var(--color-scale-red-4-100);
     }
 
     #minimize {
-      background-color: var(--color-scale-yellow-2);
+      background-color: var(--color-scale-yellow-2-100);
     }
 
     #maximize {
-      background-color: var(--color-scale-green-3);
+      background-color: var(--color-scale-green-3-100);
     }
 
     &:hover {
@@ -132,7 +132,7 @@
         height: var(--title-bar-height);
         justify-content: center;
         align-items: center;
-        fill: var(--color-scale-gray-4);
+        fill: var(--color-scale-a-4-100);
 
         svg {
           height: 10px;
@@ -141,15 +141,15 @@
       }
 
       &:hover {
-        background-color: var(--color-scale-gray-6);
+        background-color: var(--color-scale-a-6-100);
       }
     }
 
     #close:hover {
-      background-color: var(--color-scale-red-5);
+      background-color: var(--color-scale-red-5-100);
 
       span {
-        fill: var(--color-scale-gray-1);
+        fill: var(--color-scale-a-1-100);
       }
     }
   }
@@ -164,12 +164,12 @@
         height: var(--title-bar-height);
         justify-content: center;
         align-items: center;
-        fill: var(--color-scale-gray-4);
+        fill: var(--color-scale-a-4-100);
       }
 
       &:hover {
         span {
-          fill: var(--color-scale-gray-1);
+          fill: var(--color-scale-a-1-100);
         }
       }
     }

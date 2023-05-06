@@ -67,7 +67,7 @@
 
     &__header {
       font-size: 0.9rem;
-      color: var(--color-scale-gray-3);
+      color: var(--color-scale-a-3-100);
       padding: 0.5rem 0.75rem 0.5rem;
       border-bottom: 1px solid var(--color-changes-border);
     }
@@ -94,7 +94,7 @@
     }
 
     &__dir {
-      color: var(--color-scale-gray-3);
+      color: var(--color-scale-a-3-100);
       font-size: 0.85rem;
     }
 
@@ -115,70 +115,70 @@
       &--added {
         &::after {
           content: 'A';
-          color: var(--color-scale-green-3);
+          color: var(--color-scale-green-3-100);
         }
       }
 
       &--copied {
         &::after {
           content: 'C';
-          color: var(--color-scale-yellow-7);
+          color: var(--color-scale-yellow-7-100);
         }
       }
 
       &--deleted {
         &::after {
           content: 'D';
-          color: var(--color-scale-red-3);
+          color: var(--color-scale-red-3-100);
         }
       }
 
       &--modified {
         &::after {
           content: 'M';
-          color: var(--color-scale-orange-3);
+          color: var(--color-scale-orange-3-100);
         }
       }
 
       &--renamed {
         &::after {
           content: 'R';
-          color: var(--color-scale-blue-7);
+          color: var(--color-scale-blue-7-100);
         }
       }
 
       &--type-changed {
         &::after {
           content: 'T';
-          color: var(--color-scale-purple-7);
+          color: var(--color-scale-purple-7-100);
         }
       }
 
       &--unmerged {
         &::after {
           content: 'U';
-          color: var(--color-scale-pink-7);
+          color: var(--color-scale-pink-7-100);
         }
       }
 
       &--untracked {
         &::after {
           content: 'U';
-          color: var(--color-scale-green-3);
+          color: var(--color-scale-green-3-100);
         }
       }
 
       &--ignored {
         &::after {
           content: '!';
-          color: var(--color-scale-gray-6);
+          color: var(--color-scale-a-6-100);
         }
       }
 
       &--not-updated {
         &::after {
           content: '-';
-          color: var(--color-scale-grey-6);
+          color: var(--color-scale-grey-6-100);
         }
       }
 

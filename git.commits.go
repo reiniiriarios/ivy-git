@@ -1,7 +1,6 @@
 package main
 
 import (
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -30,7 +29,7 @@ type Commit struct {
 	Tags            []Ref
 	Remotes         []Ref
 	Heads           []Ref
-	Stash           string
+	Stash           bool
 	Labeled         bool
 	Color           uint16
 	X               uint16
@@ -195,7 +194,8 @@ func (a *App) getRefs() (Refs, error) {
 					Hash: hash,
 					Name: name,
 				}
-			} else {
+			} else if !strings.HasPrefix(name, "refs/stash") {
+				// Ignore stash, but anything else log a warning.
 				runtime.LogWarning(a.ctx, "Error parsing ref: "+name)
 			}
 		}
@@ -219,7 +219,7 @@ func (a *App) getStashes() []Commit {
 	// https://git-scm.com/docs/pretty-formats
 	data := []string{"%H", "%P", "%gd", "%an", "%ae", "%at", "%s"}
 	format := strings.Join(data, GIT_LOG_SEP)
-	s, err := a.GitCwd("reflog", "--format='"+format+"'", "--glob=refs/stash")
+	s, err := a.GitCwd("reflog", "--format='"+format+"'", "refs/stash")
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return stashes
@@ -229,6 +229,15 @@ func (a *App) getStashes() []Commit {
 	for _, st := range ss {
 		parts := strings.Split(st, GIT_LOG_SEP)
 		if len(parts) == len(data) {
+
+			// Get parents
+			parents := []string{}
+			if parts[1] != "" {
+				parents = strings.Split(parts[1], " ")
+				// Only keep the first parent for stashes.
+				parents = parents[0:1]
+			}
+
 			// Get timestamp and formatted datetime for author
 			ts, err := strconv.ParseInt(parts[5], 10, 64)
 			dt := ""
@@ -240,13 +249,14 @@ func (a *App) getStashes() []Commit {
 
 			stashes = append(stashes, Commit{
 				Hash:            parts[0],
-				Parents:         []string{parts[1]},
+				Parents:         parents,
 				RefName:         parts[2],
 				AuthorName:      parts[3],
 				AuthorEmail:     parts[4],
 				AuthorTimestamp: ts,
 				AuthorDatetime:  dt,
-				Subject:         parts[7],
+				Subject:         parts[6],
+				Stash:           true,
 			})
 		}
 	}
@@ -316,31 +326,21 @@ func (a *App) GetCommitList() CommitResponse {
 	}
 
 	// Add stashes.
-	add := make(map[uint64]Commit)
-	var ids []uint64
-	for _, s := range a.getStashes() {
+	stashes := a.getStashes()
+	for _, s := range stashes {
 		// Confirm the stash hash doesn't match a commit.
 		if _, exists := lookup[s.Hash]; !exists {
 			// If the stash parent hash matches a commit, add to the list.
-			if p, exists := lookup[s.Parents[0]]; exists {
-				add[p] = s
-				ids = append(ids, p)
-			}
-		}
-	}
-	// Sort the list of stashes to add inversely by id, then timestamp.
-	sort.Slice(ids, func(i, j int) bool {
-		if i != j {
-			return i > j
-		}
-		return add[ids[i]].AuthorTimestamp > add[ids[j]].AuthorTimestamp
-	})
-	// Add the stashes in to the commits list.
-	for _, s := range ids {
-		for i := range commits {
-			if s == uint64(i) {
-				c1 := append(commits[:i], add[s])
-				commits = append(c1, commits[i:]...)
+			for i := range commits {
+				if commits[i].Hash == s.Parents[0] {
+					if len(commits) == i {
+						commits = append(commits, s)
+					} else {
+						commits = append(commits[:i+1], commits[i:]...)
+						commits[i] = s
+					}
+					break
+				}
 			}
 		}
 	}

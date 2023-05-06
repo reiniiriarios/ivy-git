@@ -146,7 +146,7 @@
           text-align: left;
           padding: 0.25rem 0.5rem;
           white-space: nowrap;
-          background-color: var(--color-scale-gray-7);
+          background-color: var(--color-scale-a-7-100);
 
           &.h-b {
             text-align: right;
@@ -172,14 +172,14 @@
         }
 
         &.uncommitted {
-          color: var(--color-scale-gray-3);
+          color: var(--color-scale-a-3-100);
         }
       }
     }
 
     &__branches {
       th {
-        border-right: 1px solid var(--color-scale-gray-8);
+        border-right: 1px solid var(--color-scale-a-8-100);
       }
     }
 
@@ -187,7 +187,7 @@
       flex: 1;
 
       th {
-        border-left: 1px solid var(--color-scale-gray-8);
+        border-left: 1px solid var(--color-scale-a-8-100);
       }
     }
   }

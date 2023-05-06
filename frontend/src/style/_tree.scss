@@ -11,7 +11,7 @@ $num-colors: 10;
     box-sizing: border-box;
     padding: 0.25rem 0.5rem;
     white-space: nowrap;
-    background-color: var(--color-scale-gray-7);
+    background-color: var(--color-scale-a-7-100);
     font-weight: bold;
   }
 
@@ -47,6 +47,24 @@ $num-colors: 10;
     @for $c from 0 through $num-colors - 1 {
       &.v-#{$c} {
         fill: var(--color-branch-#{$c}-bg);
+      }
+    }
+  }
+
+  .v2 {
+    stroke: red;
+    stroke-width: 2px;
+    fill: orange;
+
+    &.v-u {
+      stroke: var(--color-branch-u-bg);
+      fill: var(--color-branch-u-bg2);
+    }
+
+    @for $c from 0 through $num-colors - 1 {
+      &.v-#{$c} {
+        stroke: var(--color-branch-#{$c}-bg);
+        fill: var(--color-branch-#{$c}-bg2);
       }
     }
   }

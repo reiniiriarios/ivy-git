@@ -31,6 +31,7 @@ func (a *App) getVertices(commits []Commit, HEAD Ref) ([]Vertex, map[string]int6
 			Id:          int64(i),
 			Committed:   c.Hash != UNCOMMITED_HASH,
 			Connections: make(map[uint16]Connection),
+			Stash:       c.Stash,
 		})
 		lookup[c.Hash] = int64(i)
 	}
@@ -60,6 +61,7 @@ type Vertex struct {
 	XNext       uint16
 	Connections map[uint16]Connection
 	Committed   bool
+	Stash       bool
 }
 
 func (v *Vertex) hasNextParent() bool {
@@ -178,7 +180,7 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	// Current vertex and current parent.
 	v1 := &g.Vertices[v.Id]
 	var p *Vertex = nil
-	if v.hasNextParent() {
+	if v.hasNextParent() && v.getNextParent() != NULL_VERTEX {
 		p = &g.Vertices[v.getNextParent()]
 	}
 
@@ -285,14 +287,14 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 			}
 		}
 
-		// If point was found connected to parent, move to next point.
-		if found {
+		// If point wasn't found connected to parent, move to next point.
+		if !found {
 			p2 = v2.getNextPoint()
 		}
 
 		// Which point on the line is locked.
 		dir := true
-		if found || v2.Id == p.Id {
+		if !found && v2.Id != p.Id {
 			dir = p1.X < p2.X
 		}
 
@@ -303,6 +305,8 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 			LockedDirection: dir,
 			Merge:           true,
 		})
+
+		g.Vertices[v2.Id].addUnavailPoint(p2.X, p, p.Branch)
 
 		// If point was found connected to parent, move vertex to next parent and be done.
 		if found {
