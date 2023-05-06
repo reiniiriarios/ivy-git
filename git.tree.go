@@ -230,8 +230,10 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 			pb := p.BranchId != -1
 
 			// Assign branch to parent.
-			g.Vertices[p.Id].BranchId = b.Id
-			g.Vertices[p.Id].X = p2.X
+			if !pb {
+				g.Vertices[p.Id].BranchId = b.Id
+				g.Vertices[p.Id].X = p2.X
+			}
 
 			// Update the current vertex's parent.
 			v1.NextParent++
