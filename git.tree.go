@@ -29,6 +29,7 @@ func (a *App) getVertices(commits []Commit, HEAD Ref) ([]Vertex, map[string]int6
 	for i, c := range commits {
 		vertices = append(vertices, Vertex{
 			Id:          int64(i),
+			BranchId:    -1,
 			Committed:   c.Hash != UNCOMMITED_HASH,
 			Connections: make(map[uint16]Connection),
 			Stash:       c.Stash,
@@ -56,7 +57,7 @@ type Vertex struct {
 	Children    []int64
 	Parents     []int64
 	NextParent  int
-	Branch      *GraphBranch
+	BranchId    int64
 	X           uint16
 	XNext       uint16
 	Connections map[uint16]Connection
@@ -86,7 +87,7 @@ func (v *Vertex) getNextPoint() Point {
 	}
 }
 
-func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b *GraphBranch) {
+func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b int64) {
 	if x == v.XNext {
 		v.XNext = x + 1
 		var vId int64 = -1
@@ -95,7 +96,7 @@ func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b *GraphBranch) {
 		}
 		v.Connections[x] = Connection{
 			VertexId: vId,
-			BranchId: b.Id,
+			BranchId: b,
 		}
 	}
 }
@@ -128,7 +129,7 @@ type Graph struct {
 
 // Return whether the vertex is a merge commit.
 func (g *Graph) isMergeCommit(v int64) bool {
-	if g.Vertices[v].Branch == nil {
+	if g.Vertices[v].BranchId == -1 {
 		return false
 	}
 	if len(g.Vertices[v].Parents) <= 1 {
@@ -141,7 +142,7 @@ func (g *Graph) isMergeCommit(v int64) bool {
 	if p == NULL_VERTEX {
 		return false
 	}
-	if g.Vertices[p].Branch == nil {
+	if g.Vertices[p].BranchId == -1 {
 		return false
 	}
 
@@ -154,7 +155,7 @@ func (g *Graph) BuildPaths() {
 	for i := 0; i < len(g.Vertices); {
 		// If the vertex has no parents or isn't on a branch yet, draw it.
 
-		if g.Vertices[i].hasNextParent() || g.Vertices[i].Branch == nil {
+		if g.Vertices[i].hasNextParent() || g.Vertices[i].BranchId == -1 {
 			if g.isMergeCommit(int64(i)) {
 				g.buildMergePath(&g.Vertices[i])
 			} else {
@@ -176,6 +177,8 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	b := GraphBranch{
 		Color: color,
 	}
+	b.Id = int64(len(g.Branches))
+	g.Branches = append(g.Branches, b)
 
 	// Current vertex and current parent.
 	v1 := &g.Vertices[v.Id]
@@ -186,16 +189,16 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 
 	// Previous point.
 	var p1 Point
-	if v.Branch == nil {
+	if v.BranchId == -1 {
 		p1 = v.getNextPoint()
 	} else {
 		p1 = v.getPoint()
 	}
-	v.addUnavailPoint(p1.X, v, &b)
+	v.addUnavailPoint(p1.X, v, b.Id)
 
 	// If vertex doesn't have a branch yet, assign it and set x to the previous point.
-	if v.Branch == nil {
-		v.Branch = &b
+	if v.BranchId == -1 {
+		v.BranchId = b.Id
 		v.X = p1.X
 	}
 
@@ -203,31 +206,31 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	var i int
 	for i = int(v.Id) + 1; i < len(g.Vertices); i++ {
 		var p2 Point
-		if p != nil && p.Id == int64(i) && p.Branch != nil {
+		if p != nil && p.Id == int64(i) && p.BranchId != -1 {
 			p2 = g.Vertices[i].getPoint()
 		} else {
 			p2 = g.Vertices[i].getNextPoint()
 		}
 
 		// Add the line, mark the point unavail, move to next point.
-		b.addLine(Line{
+		g.Branches[b.Id].addLine(Line{
 			P1:              p1,
 			P2:              p2,
 			Committed:       v1.Committed,
 			LockedDirection: p1.X < p2.X,
 			Merge:           false,
 		})
-		g.Vertices[i].addUnavailPoint(p2.X, p, &b)
+		g.Vertices[i].addUnavailPoint(p2.X, p, b.Id)
 
 		p1 = p2
 
 		// If the parent of v1 has been reached,
 		if p != nil && p.Id == int64(i) {
 			// Is the parent already on a branch.
-			pb := p.Branch != nil
+			pb := p.BranchId != -1
 
 			// Assign branch to parent.
-			g.Vertices[p.Id].Branch = &b
+			g.Vertices[p.Id].BranchId = b.Id
 			g.Vertices[p.Id].X = p2.X
 
 			// Update the current vertex's parent.
@@ -252,9 +255,6 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	if i == len(g.Vertices) && p != nil && p.Id == NULL_VERTEX {
 		v.NextParent++
 	}
-
-	b.Id = int64(len(g.Branches))
-	g.Branches = append(g.Branches, b)
 }
 
 // Build a merge path for the graph.
@@ -267,21 +267,22 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 
 	// Previous point.
 	var p1 Point
-	if v1.Branch == nil {
+	if v1.BranchId == -1 {
 		p1 = v1.getNextPoint()
 	} else {
 		p1 = v1.getPoint()
 	}
 
-	for _, v2 := range g.Vertices {
+	var i int
+	for i = int(v1.Id) + 1; i < len(g.Vertices); i++ {
 		// Get point connecting to parent vertex.
 		var p2 Point
 		found := false
-		for i, c := range v2.Connections {
-			if c.VertexId == p.Id && c.BranchId == p.Branch.Id {
+		for n, c := range g.Vertices[i].Connections {
+			if c.VertexId == p.Id && c.BranchId == p.BranchId {
 				p2 = Point{
-					X: uint16(i),
-					Y: v2.Id,
+					X: uint16(n),
+					Y: int64(i),
 				}
 				found = true
 			}
@@ -289,16 +290,16 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 
 		// If point wasn't found connected to parent, move to next point.
 		if !found {
-			p2 = v2.getNextPoint()
+			p2 = g.Vertices[i].getNextPoint()
 		}
 
 		// Which point on the line is locked.
 		dir := true
-		if !found && v2.Id != p.Id {
+		if !found && int64(i) != p.Id {
 			dir = p1.X < p2.X
 		}
 
-		p.Branch.addLine(Line{
+		g.Branches[p.BranchId].addLine(Line{
 			P1:              p1,
 			P2:              p2,
 			Committed:       v1.Committed,
@@ -306,7 +307,7 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 			Merge:           true,
 		})
 
-		g.Vertices[v2.Id].addUnavailPoint(p2.X, p, p.Branch)
+		g.Vertices[i].addUnavailPoint(p2.X, p, p.BranchId)
 
 		// If point was found connected to parent, move vertex to next parent and be done.
 		if found {

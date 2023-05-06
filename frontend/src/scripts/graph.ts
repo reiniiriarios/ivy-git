@@ -72,7 +72,7 @@ interface Vertex {
   Children: Vertex[];
   Parents: Vertex[];
   NextParent: number;
-  Branch: Branch;
+  BranchId: number;
   X: number;
   XNext: number;
   Connections: Connection[];
@@ -108,7 +108,9 @@ export function drawGraph(g: Graph): SVGSVGElement {
   });
 
   g.Vertices.forEach((v) => {
-    drawVertex(grp, v);
+    if (v.BranchId != -1) {
+      drawVertex(grp, v, g.Branches[v.BranchId]);
+    }
   });
 
   svg.appendChild(grp);
@@ -189,10 +191,8 @@ function drawBranchPath(g: SVGGElement, path: string, color: string) {
   g.appendChild(l);
 }
 
-function drawVertex(g: SVGGElement, v: Vertex) {
-  if (!v.Branch) return;
-
-  let color = v.Committed ? (v.Branch.Color % NUM_COLORS).toString() : "u";
+function drawVertex(g: SVGGElement, v: Vertex, b: Branch) {
+  let color = v.Committed ? (b.Color % NUM_COLORS).toString() : "u";
 
   let cx = scaleX(v.X).toString();
   let cy = scaleY(v.Id).toString();

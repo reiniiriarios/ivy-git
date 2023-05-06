@@ -371,8 +371,11 @@ func (a *App) GetCommitList() CommitResponse {
 	// Add color and x-coord to commits from graph data.
 	// Add whether the commit should have a label.
 	for i := range commits {
-		if vertices[lookup2[commits[i].Hash]].Branch != nil {
-			commits[i].Color = vertices[lookup2[commits[i].Hash]].Branch.Color
+		if vertices[lookup2[commits[i].Hash]].BranchId != -1 {
+			bid := vertices[lookup2[commits[i].Hash]].BranchId
+			if bid != -1 {
+				commits[i].Color = g.Branches[bid].Color
+			}
 		}
 		commits[i].X = vertices[lookup2[commits[i].Hash]].X
 		commits[i].Labeled =
