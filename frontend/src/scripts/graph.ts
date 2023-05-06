@@ -1,12 +1,24 @@
+// Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";
-const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+
+// Match to _tree.scss.
 const NUM_COLORS = 10;
 
-const SCALE_X = 16;
-const SCALE_Y = 24;
-const CURVE_D = SCALE_Y * 0.8;
+// Adjust start of graph from top left.
 const OFFSET_X = 12;
 const OFFSET_Y = 12;
+
+// Scale from graph coordinates to pixels.
+const SCALE_X = 16;
+const SCALE_Y = 24;
+
+// Adjust curve of lines.
+const CURVE_D = SCALE_Y * 0.8;
+
+// Dot size.
+const VERTEX_RADIUS = 3;
+
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
 export interface Commit {
   Hash: string;
@@ -172,7 +184,7 @@ function drawVertex(g: SVGGElement, v: Vertex) {
   let c = document.createElementNS(SVG_NAMESPACE, "circle");
   c.setAttribute("cx", cx);
   c.setAttribute("cy", cy);
-  c.setAttribute("r", "4");
+  c.setAttribute("r", VERTEX_RADIUS.toString());
   c.setAttribute("class", `v v-${color}`);
   g.appendChild(c);
 

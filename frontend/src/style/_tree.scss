@@ -22,7 +22,11 @@ $num-colors: 10;
   // Branches
   .b {
     stroke: red;
-    stroke-width: 4px;
+    stroke-width: 2px;
+
+    &.b-u {
+      stroke: var(--color-branch-u-bg);
+    }
 
     @for $c from 0 through $num-colors - 1 {
       &.b-#{$c} {
@@ -34,6 +38,10 @@ $num-colors: 10;
   // Vertices
   .v {
     fill: red;
+
+    &.v-u {
+      fill: var(--color-branch-u-bg);
+    }
 
     @for $c from 0 through $num-colors - 1 {
       &.v-#{$c} {
