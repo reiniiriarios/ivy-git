@@ -93,7 +93,6 @@ interface Graph {
 }
 
 export function getLabelDist(x: number): number {
-  // Center is 2px to the left of the calculated center.
   return scaleX(x);
 }
 
