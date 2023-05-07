@@ -42,6 +42,7 @@ export interface Commit {
   Labeled: boolean;
   Color: number;
   X: number;
+  Merge: boolean;
 }
 
 export interface Ref {

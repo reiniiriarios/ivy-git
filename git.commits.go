@@ -30,6 +30,7 @@ type Commit struct {
 	Remotes         []Ref
 	Heads           []Ref
 	Stash           bool
+	Merge           bool
 	Labeled         bool
 	Color           uint16
 	X               uint16
@@ -120,6 +121,7 @@ func (a *App) getLog() ([]Commit, map[string]uint64, error) {
 				AuthorTimestamp: ts,
 				AuthorDatetime:  dt,
 				Subject:         parts[5],
+				Merge:           len(parents) > 1,
 			})
 			lookup[parts[0]] = i
 			i++

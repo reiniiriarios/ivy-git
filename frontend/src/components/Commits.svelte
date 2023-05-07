@@ -120,7 +120,7 @@
           <th>Date</th>
         </tr>
         {#each Object.entries(commits) as [_, commit]}
-          <tr class="commit c-{currentColor} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''}">
+          <tr class="commit c-{currentColor} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''} {commit.Merge ? 'merge' : ''} {commit.Stash ? 'stash' : ''}">
             <td>{commit.Subject}</td>
             <td>{commit.AuthorName ?? commit.AuthorEmail}</td>
             <td>{commit.AuthorDatetime}</td>
@@ -174,6 +174,14 @@
 
         &.uncommitted {
           color: var(--color-scale-a-3-100);
+        }
+
+        &.merge {
+          color: var(--color-scale-a-3-100);
+        }
+
+        &.stash {
+          color: var(--color-scale-a-2-100);
         }
       }
     }
