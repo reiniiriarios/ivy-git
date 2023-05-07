@@ -383,7 +383,8 @@ func (a *App) GetCommitList() CommitResponse {
 				len(commits[i].Branches) > 0 ||
 				len(commits[i].Tags) > 0 ||
 				len(commits[i].Remotes) > 0 ||
-				commits[i].Hash == HEAD.Hash
+				commits[i].Hash == HEAD.Hash ||
+				commits[i].Stash
 	}
 
 	return CommitResponse{

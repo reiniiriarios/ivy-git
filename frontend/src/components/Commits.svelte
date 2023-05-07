@@ -45,10 +45,11 @@
             <td>
               {#if commit.Labeled}
                 <div class="commit__refs">
+
                   {#if commit.Branches && commit.Branches.length}
                     {#each commit.Branches as b}
                       <div class="commit__label commit__branch">
-                        <div class="commit__icon">{@html octicons['git-branch'].toSVG()}</div>
+                        <div class="commit__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
                         <div class="commit__label-name">{b.Name}</div>
                         {#if commit.Remotes && commit.Remotes.length}
                           {#each commit.Remotes as r}
@@ -60,7 +61,7 @@
                   {:else if commit.Remotes && commit.Remotes.length}
                     {#each commit.Remotes as r}
                       <div class="commit__label commit__label--branch">
-                        <div class="commit__icon">{@html octicons['git-branch'].toSVG()}</div>
+                        <div class="commit__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
                         <div class="commit__leaf">{r.Name}</div>
                       </div>
                     {/each}
@@ -68,7 +69,7 @@
 
                   {#if commit.Hash == HEAD.Hash}
                     <div class="commit__label commit__label--head">
-                      <div class="commit__icon">{@html octicons['arrow-right'].toSVG()}</div>
+                      <div class="commit__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
                       <div class="commit__label-name">HEAD</div>
                       {#if commit.Heads && commit.Heads.length}
                         {#each commit.Heads as h}
@@ -79,7 +80,7 @@
                   {:else if commit.Heads && commit.Heads.length}
                     {#each commit.Heads as h}
                       <div class="commit__label commit__label--head">
-                        <div class="commit__icon">{@html octicons['arrow-right'].toSVG()}</div>
+                        <div class="commit__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
                         <div class="commit__leaf">{h.Name}</div>
                       </div>
                     {/each}
@@ -88,11 +89,19 @@
                   {#if commit.Tags && commit.Tags.length}
                     {#each commit.Tags as t}
                       <div class="commit__label commit__label--tag">
-                        <div class="commit__icon">{@html octicons['tag'].toSVG()}</div>
+                        <div class="commit__icon">{@html octicons['tag'].toSVG({ "width": 14 })}</div>
                         <div class="commit__label-name">{t.Name}</div>
                       </div>
                     {/each}
                   {/if}
+
+                  {#if commit.Stash}
+                    <div class="commit__label commit__label--stash">
+                      <div class="commit__icon">{@html octicons['inbox'].toSVG({ "width": 14 })}</div>
+                      <div class="commit__label-name">{commit.RefName}</div>
+                    </div>
+                  {/if}
+
                   <div class="commit__line" style="width:{getLabelDist(commit.X)}px; right:-{getLabelDist(commit.X)}px"></div>
                 </div>
               {/if}
@@ -161,14 +170,6 @@
         td {
           text-align: left;
           white-space: nowrap;
-
-          &:first-child {
-            padding-left: 0.67rem;
-          }
-
-          &:not(:first-child) {
-            padding-right: 0.67rem;
-          }
         }
 
         &.uncommitted {
@@ -181,6 +182,10 @@
       th {
         border-right: 1px solid var(--color-scale-a-8-100);
       }
+
+      td {
+        padding-left: 0.67rem;
+      }
     }
 
     &__details {
@@ -188,6 +193,15 @@
 
       th {
         border-left: 1px solid var(--color-scale-a-8-100);
+      }
+
+      td {
+        padding-left: 0.67rem;
+        padding-right: 0.67rem;
+
+        &:last-child {
+          padding-right: 0.75rem;
+        }
       }
     }
   }

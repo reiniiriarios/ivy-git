@@ -28,6 +28,7 @@ const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 export interface Commit {
   Hash: string;
   Parents: string[];
+	RefName: string;
   AuthorName: string;
   AuthorEmail: string;
   AuthorTimestamp: number;
