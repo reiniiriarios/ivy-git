@@ -224,6 +224,9 @@ $color-scale-white: #ffffff;
   --color-scrollbar-bg: var(--color-scale-a-8-100);
   --color-scrollbar-fg: var(--color-scale-a-6-100);
 
+  --color-commitlistitem-bg-hover: #21262d88;
+  --color-commitlistitem-bg-hover-fade: linear-gradient(0.25turn, #21262d00, #21262d88);
+
   --title-bar-height: 2.25rem;
   --sidebar-width: 20rem;
   --repo-button-height: 4rem;

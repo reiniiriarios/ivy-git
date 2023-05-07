@@ -100,6 +100,10 @@
         right: -1rem;
       }
 
+      &:hover {
+        filter: brightness(125%);
+      }
+
       &-name {
         padding: 0.15rem 0.5rem 0.25rem 0.5rem;
         border-left: 1px solid;

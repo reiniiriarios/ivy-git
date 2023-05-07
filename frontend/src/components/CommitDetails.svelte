@@ -5,12 +5,36 @@
 </script>
 
 <tr class="c-{commit.Color} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''} {commit.Merge ? 'merge' : ''} {commit.Stash ? 'stash' : ''}">
-  <td>{commit.Subject}</td>
+  <td><span class="bg"></span>{commit.Subject}</td>
   <td>{commit.AuthorName ?? commit.AuthorEmail}</td>
   <td>{commit.AuthorDatetime}</td>
 </tr>
 
 <style lang="scss">
+  tr {
+    cursor: default !important;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+
+    &:hover {
+      background-color: var(--color-commitlistitem-bg-hover);
+
+      .bg {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        top: 0;
+        height: var(--commit-details-height);
+        background: var(--color-commitlistitem-bg-hover-fade);
+        left: -6rem;
+        width: 6rem;
+        pointer-events: none;
+        z-index: -1;
+      }
+    }
+  }
+
   td {
     text-align: left;
     white-space: nowrap;
