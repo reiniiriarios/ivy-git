@@ -4,6 +4,7 @@ $num-colors: 10;
   padding: 0;
   min-width: 4rem;
   text-align: left;
+  z-index: 100;
 
   &__text {
     height: var(--commit-details-height);
