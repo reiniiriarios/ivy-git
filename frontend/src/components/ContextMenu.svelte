@@ -1,6 +1,9 @@
 <script lang="ts">
   import { menus, type Menu } from '../scripts/context-menus';
+
   const X_OFFSET = 3;
+
+  let currentClickedElement: HTMLElement;
 
   function displayMenu(e: MouseEvent, menu: Menu) {
     let menuElement = document.getElementById("context-menu__" + menu.class);
@@ -21,6 +24,7 @@
 
   function hideMenu(menu: Menu) {
     document.getElementById("context-menu__" + menu.class).style.display = 'none';
+    currentClickedElement = null;
   }
 
   function hideMenus() {
@@ -28,43 +32,48 @@
     for (let i = 0; i < menuElements.length; i++) {
       (menuElements[i] as HTMLElement).style.display = 'none';
     }
+    currentClickedElement = null;
   }
 
-  document.addEventListener(
-    "contextmenu",
-    function (e: MouseEvent & { target: HTMLElement }) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener("contextmenu", function (e: MouseEvent & { target: HTMLElement }) {
+      if (currentClickedElement) {
+        e.preventDefault();
+        hideMenus();
+        return;
+      }
       // todo: e.preventDefault() for everywhere in production mode
       menus.forEach((menu) => {
-        let el: HTMLElement;
         if (e.target.classList.contains(menu.class)) {
-          el = e.target;
+          currentClickedElement = e.target;
         } else {
           let n = e.target.parentNode;
           for (let i = 0; i < 4; i++, n = n.parentNode) {
             if (n instanceof HTMLElement && n.classList.contains(menu.class)) {
-              el = n;
+              currentClickedElement = n;
               break;
             }
           }
         }
-        if (el) {
+        if (currentClickedElement) {
           e.preventDefault();
+          console.log('displaying menu');
           displayMenu(e, menu);
         } else {
           hideMenu(menu);
         }
       });
-    }
-  );
+    });
 
-  document.body.addEventListener("keydown", function (e: KeyboardEvent) {
-    if (e.key === "Escape") {
+    document.body.addEventListener("keydown", function (e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        hideMenus();
+      }
+    });
+
+    document.addEventListener("click", function(e: MouseEvent) {
       hideMenus();
-    }
-  });
-
-  document.addEventListener("click", function(e: MouseEvent) {
-    hideMenus();
+    });
   });
 </script>
 
@@ -74,7 +83,7 @@
       {#each menu.items as item}
         {#if item.text}
           <li class="context-menu__item">
-            <div class="context-menu__action" on:click={item.callback} on:keyup={item.callback}>{item.text}</div>
+            <div class="context-menu__action" on:click={(e) => item.callback(currentClickedElement)} on:keyup={() => {}}>{item.text}</div>
           </li>
         {:else if item.sep}
           <li class="context-menu__sep"></li>

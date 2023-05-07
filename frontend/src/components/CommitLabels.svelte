@@ -10,7 +10,7 @@
 <div class="refs">
   {#if commit.Branches && commit.Branches.length}
     {#each commit.Branches as b}
-      <div class="refs__label refs__branch">
+      <div class="refs__label refs__branch" data-name="{b.Name}">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__label-name">{b.Name}</div>
         {#if commit.Remotes && commit.Remotes.length}

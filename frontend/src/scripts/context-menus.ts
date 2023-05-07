@@ -1,3 +1,5 @@
+import { ClipboardSetText } from '../../wailsjs/runtime/runtime';
+
 export interface Menu {
   class: string;
   items: MenuItem[];
@@ -5,7 +7,8 @@ export interface Menu {
 
 export interface MenuItem {
   text?: string;
-  callback?: () => any;
+  // e will be the element or parent element clicked on with the menu class.
+  callback?: (e: HTMLElement) => any;
   sep?: boolean;
 }
 
@@ -30,7 +33,9 @@ export const menus: Menu[] = [
       },
       {
         text: "Copy Branch Name to Clipboard",
-        callback: () => alert('todo: copy'),
+        callback: (e) => {
+          ClipboardSetText(e.dataset.name)
+        },
       },
     ],
   },
