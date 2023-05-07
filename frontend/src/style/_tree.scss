@@ -6,8 +6,7 @@ $num-colors: 10;
   text-align: left;
 
   &__text {
-    // Height in pixels!
-    height: 24px;
+    height: var(--commit-details-height);
     box-sizing: border-box;
     padding: 0.25rem 0.5rem;
     white-space: nowrap;
@@ -73,7 +72,7 @@ $num-colors: 10;
 
 @for $c from 0 through $num-colors - 1 {
   .c-#{$c} {
-    .commit {
+    .refs {
       &__label {
         border-color: var(--color-branch-#{$c}-bg) !important;
         background-color: var(--color-branch-#{$c}-bg--translucent) !important;
