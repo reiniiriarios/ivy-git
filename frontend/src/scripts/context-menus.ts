@@ -14,11 +14,11 @@ export interface MenuItem {
 
 export const menus: Menu[] = [
   {
-    class: "refs__branch",
+    class: "refs__label--branch",
     items: [
       {
         text: "Checkout Branch",
-        callback: () => alert('oh hey'),
+        callback: () => alert('todo: checkout'),
       },
       {
         text: "Push Branch",
@@ -39,4 +39,22 @@ export const menus: Menu[] = [
       },
     ],
   },
+  {
+    class: "refs__label--tag",
+    items: [
+      {
+        text: "Checkout Commit",
+        callback: () => alert('todo: checkout'),
+      },
+      {
+        sep: true,
+      },
+      {
+        text: "Copy Tag Name to Clipboard",
+        callback: (e) => {
+          ClipboardSetText(e.dataset.name)
+        },
+      },
+    ]
+  }
 ];

@@ -43,26 +43,29 @@
         return;
       }
       // todo: e.preventDefault() for everywhere in production mode
-      menus.forEach((menu) => {
-        if (e.target.classList.contains(menu.class)) {
+      for (let i = 0; i < menus.length; i++) {
+        console.log(currentClickedElement);
+        if (e.target.classList.contains(menus[i].class)) {
           currentClickedElement = e.target;
         } else {
           let n = e.target.parentNode;
-          for (let i = 0; i < 4; i++, n = n.parentNode) {
-            if (n instanceof HTMLElement && n.classList.contains(menu.class)) {
+          for (let j = 0; j < 4; j++, n = n.parentNode) {
+            if (n instanceof HTMLElement && n.classList.contains(menus[i].class)) {
               currentClickedElement = n;
               break;
             }
           }
         }
+        console.log(currentClickedElement);
         if (currentClickedElement) {
           e.preventDefault();
           console.log('displaying menu');
-          displayMenu(e, menu);
+          displayMenu(e, menus[i]);
+          break;
         } else {
-          hideMenu(menu);
+          hideMenu(menus[i]);
         }
-      });
+      };
     });
 
     document.body.addEventListener("keydown", function (e: KeyboardEvent) {

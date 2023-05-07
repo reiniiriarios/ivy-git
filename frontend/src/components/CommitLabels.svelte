@@ -10,7 +10,7 @@
 <div class="refs">
   {#if commit.Branches && commit.Branches.length}
     {#each commit.Branches as b}
-      <div class="refs__label refs__branch" data-name="{b.Name}">
+      <div class="refs__label refs__label--branch" data-name="{b.Name}">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__label-name">{b.Name}</div>
         {#if commit.Remotes && commit.Remotes.length}
@@ -22,7 +22,7 @@
     {/each}
   {:else if commit.Remotes && commit.Remotes.length}
     {#each commit.Remotes as r}
-      <div class="refs__label refs__label--branch">
+      <div class="refs__label refs__label--branch" data-name="{r.Name}">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__leaf">{r.Name}</div>
       </div>
@@ -50,7 +50,7 @@
 
   {#if commit.Tags && commit.Tags.length}
     {#each commit.Tags as t}
-      <div class="refs__label refs__label--tag">
+      <div class="refs__label refs__label--tag" data-name="{t.Name}">
         <div class="refs__icon">{@html octicons['tag'].toSVG({ "width": 14 })}</div>
         <div class="refs__label-name">{t.Name}</div>
       </div>
