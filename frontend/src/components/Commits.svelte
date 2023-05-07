@@ -22,10 +22,11 @@
         case "success":
           commits = result.Commits as Commit[];
           HEAD = result.HEAD;
-          console.log(HEAD);
-          console.log(commits);
+          console.log('HEAD', HEAD);
+          console.log('commits', commits);
           svg = drawGraph(result.Graph);
-          console.log(result.Graph);
+          console.log('branches', result.Graph.Branches);
+          console.log('vertices', result.Graph.Vertices);
           break;
       }
     });
@@ -33,7 +34,7 @@
 </script>
 
 {#if active}
-  <div class="commits">
+  <div class="commits" id="commits">
     {#if Object.entries(commits).length}
       <table class="commits__branches">
         <tr>

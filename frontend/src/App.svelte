@@ -7,6 +7,7 @@
   import Changes from "./components/Changes.svelte";
   import MainTabs from "./components/MainTabs.svelte";
   import TitleBar from "./components/TitleBar.svelte";
+  import ContextMenu from "./components/ContextMenu.svelte";
   import { GoOs } from "../wailsjs/go/main/App";
 
   // Load initial ui state.
@@ -48,3 +49,4 @@
   <Confirm />
   <Message />
 </div>
+<ContextMenu />

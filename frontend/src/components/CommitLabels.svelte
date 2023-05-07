@@ -73,6 +73,9 @@
     justify-content: right;
     align-items: center;
     position: relative;
+    cursor: default !important;
+    user-select: none;
+    -webkit-user-select: none;
 
     &__label {
       display: inline-flex;
