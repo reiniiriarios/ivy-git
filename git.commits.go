@@ -12,7 +12,7 @@ import (
 const UNCOMMITED_HASH = "#"
 
 // Displayed in commit list.
-const DATE_FORMAT = "Jan 1, 2006, 03:04:05 pm"
+const DATE_FORMAT = "Jan 2, 2006, 03:04:05 pm"
 
 const GIT_LOG_SEP = "-act45j3o9y78__jyo9ct-a4ojy9actyo_ct4oy9j-"
 
