@@ -76,6 +76,7 @@
     cursor: default !important;
     user-select: none;
     -webkit-user-select: none;
+    white-space: nowrap;
 
     &__label {
       display: inline-flex;
