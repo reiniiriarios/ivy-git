@@ -221,7 +221,8 @@ func (a *App) getStashes() []Commit {
 	// https://git-scm.com/docs/pretty-formats
 	data := []string{"%H", "%P", "%gd", "%an", "%ae", "%at", "%s"}
 	format := strings.Join(data, GIT_LOG_SEP)
-	s, err := a.GitCwd("reflog", "--format='"+format+"'", "refs/stash")
+	// TODO: consider replacing with `git stash list` to prevent "bad revision" errors
+	s, err := a.GitCwd("reflog", "--format='"+format+"'", "refs/stash", "--")
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return stashes
