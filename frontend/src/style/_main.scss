@@ -89,3 +89,13 @@ main {
   color: var(--color-scale-a-9-100);
   background-color: var(--color-scale-a-1-100);
 }
+
+.resizer {
+  cursor: col-resize;
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  z-index: 1000;
+  pointer-events: all;
+}

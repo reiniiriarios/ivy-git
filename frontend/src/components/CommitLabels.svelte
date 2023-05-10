@@ -64,7 +64,7 @@
     </div>
   {/if}
 
-  <div class="refs__line" style="width:{getLabelDist(commit.X)}px; right:-{getLabelDist(commit.X)}px"></div>
+  <div class="refs__line" style="width:{getLabelDist(commit.X)}; right: -{getLabelDist(commit.X)};"></div>
 </div>
 
 <style lang="scss">
@@ -118,6 +118,8 @@
       width: 1rem;
       right: -1rem;
       background-color: red;
+      z-index: 180;
+      pointer-events: none;
     }
 
     &__leaf {

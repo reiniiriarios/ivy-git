@@ -1,3 +1,5 @@
+import { vertexOut, vertexOver } from './vertex';
+
 // Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";
 
@@ -26,6 +28,7 @@ const VERTEX_RADIUS_U = 4;
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
 export interface Commit {
+  Id: number;
   Hash: string;
   Parents: string[];
 	RefName: string;
@@ -97,8 +100,13 @@ interface Graph {
   Height: number;
 }
 
-export function getLabelDist(x: number): number {
-  return scaleX(x);
+export function getLabelDist(x: number): string {
+  return (scaleX(x) - 2).toFixed(0) + 'px';
+}
+
+export function getSVGWidth(g: Graph): string {
+  // todo: have a max for this
+  return scaleX(g.Width).toFixed(0) + 'px';
 }
 
 export function drawGraph(g: Graph): SVGSVGElement {
@@ -117,8 +125,8 @@ export function drawGraph(g: Graph): SVGSVGElement {
 
   svg.appendChild(grp);
 
-  svg.setAttribute('height', scaleY(g.Height).toFixed(0).toString())
-  svg.setAttribute('width', scaleY(g.Width).toFixed(0).toString())
+  svg.setAttribute('height', scaleY(g.Height).toFixed(0))
+  svg.setAttribute('width', scaleX(g.Width).toFixed(0))
 
   return svg;
 }
@@ -202,6 +210,7 @@ function drawVertex(g: SVGGElement, v: Vertex, b: Branch) {
   let c = document.createElementNS(SVG_NAMESPACE, "circle");
   c.setAttribute("cx", cx);
   c.setAttribute("cy", cy);
+  c.setAttribute("data-id", v.Id.toString());
   if (v.Stash || !v.Committed) {
     c.setAttribute("r", VERTEX_RADIUS_U.toString());
     c.setAttribute("class", `v2 v-${color}`);
@@ -210,6 +219,10 @@ function drawVertex(g: SVGGElement, v: Vertex, b: Branch) {
     c.setAttribute("r", VERTEX_RADIUS.toString());
     c.setAttribute("class", `v v-${color}`);
   }
+
+  c.addEventListener('mouseover', vertexOver);
+  c.addEventListener('mouseout', vertexOut);
+
   g.appendChild(c);
 }
 

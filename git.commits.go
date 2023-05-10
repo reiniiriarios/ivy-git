@@ -17,6 +17,7 @@ const DATE_FORMAT = "Jan 2, 2006, 03:04:05 pm"
 const GIT_LOG_SEP = "-act45j3o9y78__jyo9ct-a4ojy9actyo_ct4oy9j-"
 
 type Commit struct {
+	Id              uint64
 	Hash            string
 	Parents         []string
 	RefName         string
@@ -388,6 +389,7 @@ func (a *App) GetCommitList() CommitResponse {
 				len(commits[i].Remotes) > 0 ||
 				commits[i].Hash == HEAD.Hash ||
 				commits[i].Stash
+		commits[i].Id = uint64(i)
 	}
 
 	return CommitResponse{
