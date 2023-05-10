@@ -47,7 +47,7 @@
           </th>
           <th use:createResizableColumn data-name="subject" data-order="2" class="commits__th commits__th--subject">Commit</th>
           <th use:createResizableColumn data-name="authorName" data-order="3" class="commits__th commits__th--author">Author</th>
-          <th use:createResizableColumn data-name="authorDate" data-order="4" data-nograb class="commits__th commits__th--date">Date</th>
+          <th use:createResizableColumn data-name="authorDate" data-order="4" data-resizeflex class="commits__th commits__th--date">Date</th>
         </tr>
         {#each Object.entries(commits) as [_, commit]}
           <CommitDetails commit={commit} HEAD={HEAD} />
