@@ -3,6 +3,11 @@
 
   import { getLabelDist, type Commit, type Ref } from "../scripts/graph";
 
+  function current(n: string): boolean {
+    console.log((window as any).currentBranch);
+    return (window as any).currentBranch.Name == n;
+  }
+
   export let commit: Commit;
   export let HEAD: Ref;
 </script>
@@ -12,6 +17,7 @@
     {#each commit.Branches as b}
       <div class="refs__label refs__label--branch"
         data-name="{b.Name}"
+        data-current="{current(b.Name)}"
         data-menu="branch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__label-name">{b.Name}</div>
@@ -25,7 +31,9 @@
   {:else if commit.Remotes && commit.Remotes.length}
     {#each commit.Remotes as r}
       <div class="refs__label refs__label--branch"
-        data-name="{r.Name}">
+        data-name="{r.Name}"
+        data-remote="{r.ShortName}"
+        data-menu="remoteBranch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__leaf">{r.Name}</div>
       </div>
@@ -33,7 +41,8 @@
   {/if}
 
   {#if commit.Hash == HEAD.Hash}
-    <div class="refs__label refs__label--head">
+    <div class="refs__label refs__label--head"
+      data-menu="head">
       <div class="refs__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
       <div class="refs__label-name">HEAD</div>
       {#if commit.Heads && commit.Heads.length}
@@ -44,7 +53,9 @@
     </div>
   {:else if commit.Heads && commit.Heads.length}
     {#each commit.Heads as h}
-      <div class="refs__label refs__label--head">
+      <div class="refs__label refs__label--head"
+        data-remote="{h.ShortName}"
+        data-menu="remoteHead">
         <div class="refs__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
         <div class="refs__leaf">{h.Name}</div>
       </div>

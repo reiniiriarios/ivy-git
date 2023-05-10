@@ -31,6 +31,7 @@
     GetCurrentBranch().then((result) => {
       selectedBranch = result.Branch as Branch;
       selectedBranch = selectedBranch;
+      (window as any).currentBranch = selectedBranch;
     });
   };
 

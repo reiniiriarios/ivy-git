@@ -25,6 +25,7 @@ type BranchesResponse struct {
 // FRONTEND: Get current branch for currently selected repo.
 func (a *App) GetCurrentBranch() BranchResponse {
 	branch, err := a.GitCwd("rev-parse", "--abbrev-ref", "HEAD")
+	branch = strings.ReplaceAll(strings.ReplaceAll(branch, "\r", ""), "\n", "")
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 		return BranchResponse{

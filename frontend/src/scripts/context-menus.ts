@@ -14,11 +14,14 @@ export interface MenuItem {
 export const menus: Menus = {
 
   branch: (e: HTMLElement) => {
-    let m: MenuItem[] = [
-      {
+    let m: MenuItem[] = [];
+    if (e.dataset.current !== "true") {
+      m.push({
         text: "Checkout Branch",
         callback: () => alert("todo: checkout"),
-      },
+      });
+    }
+    m = m.concat([
       {
         text: "Push Branch",
         callback: () => alert("todo: push"),
@@ -27,21 +30,25 @@ export const menus: Menus = {
         text: "Rename Branch",
         callback: () => alert("todo: rename"),
       },
-    ];
-    if (e.dataset.active) {
+    ]);
+    if (e.dataset.current !== "true") {
       m.push({
         text: "Delete Branch",
         callback: () => alert("todo: delete"),
       });
     }
+    if (e.dataset.current !== "true") {
+      m = m.concat([
+        {
+          sep: true,
+        },
+        {
+          text: "Rebase on Branch",
+          callback: () => alert("todo: rebase"),
+        },
+      ]);
+    }
     m = m.concat([
-      {
-        sep: true,
-      },
-      {
-        text: "Rebase on Branch",
-        callback: () => alert("todo: rebase"),
-      },
       {
         sep: true,
       },
@@ -105,6 +112,65 @@ export const menus: Menus = {
         text: "Copy Stash Name to Clipboard",
         callback: (e) => {
           ClipboardSetText(window.atob(e.dataset.subject));
+        },
+      },
+    ];
+  },
+
+  head: (e: HTMLElement) => {
+    return [
+      {
+        text: "ToDo",
+        callback: () => alert("todo"),
+      },
+    ];
+  },
+
+  remoteHead: (e: HTMLElement) => {
+    return [
+      {
+        text: "ToDo",
+        callback: () => alert("todo"),
+      },
+      {
+        sep: true,
+      },
+      {
+        text: "Copy Remote Name to Clipboard",
+        callback: (e) => {
+          ClipboardSetText(e.dataset.remote);
+        },
+      },
+    ];
+  },
+
+  remoteBranch: (e: HTMLElement) => {
+    return [
+      {
+        text: "Push Branch",
+        callback: () => alert("push"),
+      },
+      {
+        text: "Pull Branch",
+        callback: () => alert("pull"),
+      },
+      {
+        text: "Reset Local Branch to Remote",
+        callback: () => alert("reset"),
+      },
+      {
+        sep: true,
+      },
+      {
+        text: "Copy Branch Name to Clipboard",
+        callback: (e) => {
+          ClipboardSetText(e.dataset.name);
+        },
+      },
+      {
+        text: "Copy Remote Name to Clipboard",
+        callback: (e) => {
+          ClipboardSetText(e.dataset.remote);
         },
       },
     ];

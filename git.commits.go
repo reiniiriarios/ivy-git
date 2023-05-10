@@ -159,9 +159,16 @@ func (a *App) getRefs() (Refs, error) {
 			hash := rr[0]
 			name := strings.Join(rr[1:], " ")
 			if strings.HasPrefix(name, "refs/heads/") {
+				n := name[11:]
+				s := n
+				rrr := strings.Split(n, "/")
+				if len(rrr) >= 2 {
+					s = rrr[0]
+				}
 				refs.Branches = append(refs.Branches, Ref{
-					Hash: hash,
-					Name: name[11:],
+					Hash:      hash,
+					Name:      n,
+					ShortName: s,
 				})
 			} else if strings.HasPrefix(name, "refs/tags/") {
 				annotated := strings.HasSuffix(name, "^{}")
