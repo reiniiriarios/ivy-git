@@ -1,100 +1,111 @@
 <script lang="ts">
-  import { menus, type Menu } from '../scripts/context-menus';
+  import { menus, type MenuItem } from '../scripts/context-menus';
 
   const X_OFFSET = 3;
 
   let currentClickedElement: HTMLElement;
+  let currentMenu: string;
+  let menuItems: MenuItem[] = [];
 
-  function displayMenu(e: MouseEvent, menu: Menu) {
-    let menuElement = document.getElementById("context-menu__" + menu.class);
+  function displayMenu(e: MouseEvent) {
+    let menuElement = document.getElementById("context-menu");
+    console.log(menuElement.clientWidth);
     let x = e.pageX;
     let y = e.pageY;
-    if (window.innerWidth - e.pageX < menuElement.offsetWidth + X_OFFSET) {
-      x -= menuElement.offsetWidth - X_OFFSET;
+    let w = getCurrentMenuWidth();
+    let h = getCurrentMenuHeight();
+    if (window.innerWidth - e.pageX < w + X_OFFSET) {
+      x = window.innerWidth - x - X_OFFSET;
+      menuElement.style.left = "auto";
+      menuElement.style.right = x + "px";
     } else {
       x += X_OFFSET;
+      menuElement.style.left = x + "px";
+      menuElement.style.right = "auto";
     }
-    if (window.innerHeight - e.pageY < menuElement.offsetHeight) {
-      y -= menuElement.offsetHeight;
+    if (window.innerHeight - e.pageY < h) {
+      y -= h;
     }
     menuElement.style.display = 'block';
-    menuElement.style.left = x + "px";
     menuElement.style.top = y + "px";
   }
 
-  function hideMenu(menu: Menu) {
-    document.getElementById("context-menu__" + menu.class).style.display = 'none';
-    currentClickedElement = null;
+  function getCurrentMenuHeight() {
+    // Easier than exact calculation, works just as well.
+    let height = 8;
+    menuItems.forEach(i => i.sep ? height += 10 : height += 29);
+    return height;
   }
 
-  function hideMenus() {
-    let menuElements = document.getElementsByClassName('context-menu');
-    for (let i = 0; i < menuElements.length; i++) {
-      (menuElements[i] as HTMLElement).style.display = 'none';
-    }
+  function getCurrentMenuWidth() {
+    // Easier than exact calculation, works nearly as well.
+    return menuItems.reduce((a, b) => a.text?.length > b.text?.length ? a : b).text.length * 7.5;
+  }
+
+  function hideMenu() {
+    document.getElementById("context-menu").style.display = 'none';
     currentClickedElement = null;
+    currentMenu = null;
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener("contextmenu", function (e: MouseEvent & { target: HTMLElement }) {
       if (currentClickedElement) {
         e.preventDefault();
-        hideMenus();
+        hideMenu();
         return;
       }
       // todo: e.preventDefault() for everywhere in production mode
-      for (let i = 0; i < menus.length; i++) {
-        console.log(currentClickedElement);
-        if (e.target.classList.contains(menus[i].class)) {
-          currentClickedElement = e.target;
-        } else {
-          let n = e.target.parentNode;
-          for (let j = 0; j < 4; j++, n = n.parentNode) {
-            if (n instanceof HTMLElement && n.classList.contains(menus[i].class)) {
-              currentClickedElement = n;
-              break;
-            }
+
+      if (typeof menus[e.target.dataset.menu] !== 'undefined') {
+        currentClickedElement = e.target;
+        currentMenu = e.target.dataset.menu;
+      }
+      else {
+        let n = e.target.parentNode;
+        for (let j = 0; j < 4; j++, n = n.parentNode) {
+          if (n instanceof HTMLElement && typeof menus[n.dataset.menu] !== 'undefined') {
+            currentClickedElement = n;
+            currentMenu = n.dataset.menu;
+            break;
           }
         }
-        console.log(currentClickedElement);
-        if (currentClickedElement) {
-          e.preventDefault();
-          console.log('displaying menu');
-          displayMenu(e, menus[i]);
-          break;
-        } else {
-          hideMenu(menus[i]);
-        }
-      };
+      }
+
+      if (currentMenu) {
+        e.preventDefault();
+        menuItems = menus[currentMenu](currentClickedElement);
+        displayMenu(e);
+      } else {
+        hideMenu();
+      }
     });
 
     document.body.addEventListener("keydown", function (e: KeyboardEvent) {
       if (e.key === "Escape") {
-        hideMenus();
+        hideMenu();
       }
     });
 
     document.addEventListener("click", function(e: MouseEvent) {
-      hideMenus();
+      hideMenu();
     });
   });
 </script>
 
-{#each menus as menu}
-  <div class="context-menu" id="context-menu__{menu.class}">
-    <ul class="context-menu__items">
-      {#each menu.items as item}
-        {#if item.text}
-          <li class="context-menu__item">
-            <div class="context-menu__action" on:click={(e) => item.callback(currentClickedElement)} on:keyup={() => {}}>{item.text}</div>
-          </li>
-        {:else if item.sep}
-          <li class="context-menu__sep"></li>
-        {/if}
-      {/each}
-    </ul>
-  </div>
-{/each}
+<div class="context-menu" id="context-menu">
+  <ul class="context-menu__items">
+    {#each menuItems as item}
+      {#if item.text}
+        <li class="context-menu__item">
+          <div class="context-menu__action" on:click={(e) => item.callback(currentClickedElement)} on:keyup={() => {}}>{item.text}</div>
+        </li>
+      {:else if item.sep}
+        <li class="context-menu__sep"></li>
+      {/if}
+    {/each}
+  </ul>
+</div>
 
 <style lang="scss">
   .context-menu {
@@ -105,6 +116,7 @@
     text-align: left;
     background-color: var(--color-context-bg);
     padding: 0.3rem;
+    box-shadow: 0.1rem 0.1rem 0.5rem rgba(0 0 0 / 30%);
 
     &__items {
       list-style: none;

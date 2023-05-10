@@ -4,9 +4,16 @@
 
   export let commit: Commit;
   export let HEAD: Ref;
+
+  let u = commit.Hash === UNCOMMITED_HASH;
+  let h = commit.Hash === HEAD.Hash;
 </script>
 
-<tr data-id="{commit.Id}" class="commit c-{commit.Color} {commit.Hash === UNCOMMITED_HASH ? 'uncommitted' : ''} {commit.Merge ? 'merge' : ''} {commit.Stash ? 'stash' : ''}">
+<tr class="commit c-{commit.Color} {u ? 'uncommitted' : ''} {commit.Merge ? 'merge' : ''} {commit.Stash ? 'stash' : ''}"
+  data-id="{commit.Id}"
+  data-hash="{commit.Hash}"
+  data-head="{h}"
+  data-menu="{u ? '' : 'commit'}">
   <td class="commit__td commit__td--refs">
     {#if commit.Labeled}
       <CommitLabels commit={commit} HEAD={HEAD} />
