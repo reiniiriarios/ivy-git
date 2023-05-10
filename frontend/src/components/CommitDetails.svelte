@@ -66,6 +66,7 @@
 
         .stash & {
           color: var(--color-scale-a-2-100);
+          font-style: italic;
         }
       }
     }

@@ -3,7 +3,7 @@
 
   import { GetCommitList } from '../../wailsjs/go/main/App';
   import { drawGraph, getSVGWidth, type Commit, type Ref } from '../scripts/graph';
-  import { createResizableColumn } from '../scripts/commit-table-resize';
+  import { createResizableColumn, setCommitsTable } from '../scripts/commit-table-resize';
   import CommitDetails from './CommitDetails.svelte';
 
   let commits: Commit[] = [];
@@ -31,27 +31,23 @@
       }
     });
   };
-
-  const resize = (e: HTMLElement) => {
-    createResizableColumn(e);
-  }
 </script>
 
 {#if active}
   <div class="commits" id="commits">
     {#if Object.entries(commits).length}
-      <table class="commits__table">
+      <table use:setCommitsTable class="commits__table" id="commits__table">
         <tr>
-          <th use:resize class="commits__th commits__th--branch">Branch</th>
-          <th use:resize class="commits__th commits__th--tree" style="min-width: {svgWidth};">
+          <th use:createResizableColumn data-name="branch" data-order="0" class="commits__th commits__th--branch">Branch</th>
+          <th use:createResizableColumn data-name="tree" data-order="1" class="commits__th commits__th--tree" style="min-width: {svgWidth};">
             <div class="commits__th-inner">Tree</div>
             <div class="tree">
               <div class="tree__graph">{@html svg.outerHTML}</div>
             </div>
           </th>
-          <th use:resize class="commits__th commits__th--commit">Commit</th>
-          <th use:resize class="commits__th commits__th--author">Author</th>
-          <th class="commits__th commits__th--date">Date</th>
+          <th use:createResizableColumn data-name="subject" data-order="2" class="commits__th commits__th--subject">Commit</th>
+          <th use:createResizableColumn data-name="authorName" data-order="3" class="commits__th commits__th--author">Author</th>
+          <th use:createResizableColumn data-name="authorDate" data-order="4" data-nograb class="commits__th commits__th--date">Date</th>
         </tr>
         {#each Object.entries(commits) as [_, commit]}
           <CommitDetails commit={commit} HEAD={HEAD} />
@@ -61,6 +57,7 @@
   </div>
 {/if}
 
+<!-- svelte-ignore css-unused-selector -->
 <style lang="scss">
   .commits {
     width: 100%;
@@ -95,6 +92,10 @@
 
       &--tree {
         padding: 0;
+      }
+
+      &--subject {
+        width: 100%;
       }
 
       &-inner {
