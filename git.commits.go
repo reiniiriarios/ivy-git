@@ -37,6 +37,14 @@ type Commit struct {
 	X               uint16
 }
 
+type CommitAddl struct {
+	Body               string
+	CommitterName      string
+	CommitterEmail     string
+	CommitterTimestamp int64
+	CommitterDatetime  string
+}
+
 type Ref struct {
 	Hash      string
 	Name      string
@@ -58,12 +66,18 @@ type CommitDetails struct {
 	HEAD    Ref
 }
 
-type CommitResponse struct {
+type CommitsResponse struct {
 	Response string
 	Message  string
 	HEAD     Ref
 	Commits  []Commit
 	Graph    Graph
+}
+
+type CommitResponse struct {
+	Response string
+	Message  string
+	Commit   CommitAddl
 }
 
 // Get commit details from `git log`.
@@ -327,10 +341,10 @@ func (a *App) getCommits() ([]Commit, map[string]uint64, Ref, error) {
 }
 
 // FRONTEND: Get list of commits and all associated details for display.
-func (a *App) GetCommitList() CommitResponse {
+func (a *App) GetCommitList() CommitsResponse {
 	commits, lookup, HEAD, err := a.getCommits()
 	if err != nil {
-		return CommitResponse{
+		return CommitsResponse{
 			Response: "error",
 			Message:  err.Error(),
 		}
@@ -399,10 +413,65 @@ func (a *App) GetCommitList() CommitResponse {
 		commits[i].Id = uint64(i)
 	}
 
-	return CommitResponse{
+	return CommitsResponse{
 		Response: "success",
 		HEAD:     HEAD,
 		Commits:  commits,
 		Graph:    g,
+	}
+}
+
+func (a *App) GetCommitDetails(hash string) CommitResponse {
+	// Include:
+	// %H  - hash
+	// %P  - parent hash
+	// %an - Committer Name
+	// %ae - Committer Email
+	// %at - Committer Time
+	// %s  - Subject
+	// https://git-scm.com/docs/pretty-formats
+	data := []string{"%cn", "%ce", "%ct", "%b"}
+	format := strings.Join(data, GIT_LOG_SEP)
+	// Include:
+	// - branches
+	// - tags
+	// - commits mentioned by reflogs
+	// - all remotes
+	// - HEAD
+	c, err := a.GitCwd("--no-pager", "log", hash, "--format='"+format+"'", "--max-count=1")
+	if err != nil {
+		return CommitResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+
+	c = strings.Trim(strings.Trim(strings.Trim(c, "\n"), "\r"), "'")
+	parts := strings.Split(c, GIT_LOG_SEP)
+	if len(parts) != len(data) {
+		return CommitResponse{
+			Response: "error",
+			Message:  "Error fetching commit details.",
+		}
+	}
+
+	// Get timestamp and formatted datetime for committer
+	ts, err := strconv.ParseInt(parts[2], 10, 64)
+	dt := ""
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+	} else {
+		dt = time.Unix(ts, 0).Format(DATE_FORMAT)
+	}
+
+	return CommitResponse{
+		Response: "success",
+		Commit: CommitAddl{
+			Body:               parts[3],
+			CommitterName:      parts[0],
+			CommitterEmail:     parts[1],
+			CommitterTimestamp: ts,
+			CommitterDatetime:  dt,
+		},
 	}
 }

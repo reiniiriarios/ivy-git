@@ -189,6 +189,8 @@ $color-scale-white: #ffffff;
   --color-branch-9-bg2: var(--color-scale-l-8-100);
   --color-branch-9-bg--translucent: var(--color-scale-l-5-50);
 
+  --color-links: var(--color-scale-g-3-100);
+
   --color-app-bg--windows: #0d1117cc;
   --color-app-bg--darwin: #0d111766;
   --color-app-bg: var(--color-app-bg--windows);
@@ -224,8 +226,10 @@ $color-scale-white: #ffffff;
   --color-scrollbar-bg: var(--color-scale-a-8-100);
   --color-scrollbar-fg: var(--color-scale-a-6-100);
 
-  --color-commitlistitem-bg-hover: var(--color-scale-a-7-50);
-  --color-commitlistitem-bg-active: var(--color-scale-a-6-50);
+  --color-commitlistitem-bg-hover: var(--color-scale-a-6-50);
+  --color-commitlistitem-bg-active: var(--color-scale-a-6-75);
+
+  --color-commitdetails-border: var(--color-scale-a-7-100);
 
   --title-bar-height: 2.25rem;
   --sidebar-width: 20rem;

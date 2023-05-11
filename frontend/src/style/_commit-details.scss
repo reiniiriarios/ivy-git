@@ -2,13 +2,34 @@
   height: var(--commit-details-height);
   display: flex;
   flex-direction: row;
+  text-align: left;
+
+  &__left,
+  &__right {
+    flex: 1;
+    overflow-y: auto;
+    border-top: 1px solid var(--color-commitdetails-border);
+    padding: 0.33rem 0.25rem;
+  }
 
   &__left {
+    table {
+      th {
+        text-align: right;
+        padding: 0.3rem 0.4rem 0.2rem 0.75rem;
+        white-space: nowrap;
+        vertical-align: top;
+        cursor: default !important;
+        user-select: none;
+        -webkit-user-select: none;
+        font-weight: normal;
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+      }
 
+      td {
+        padding: 0.25rem 0.75rem 0.25rem 0.4rem;
+      }
+    }
   }
-
-  &__right {
-
-  }
-
 }

@@ -29,6 +29,11 @@ table {
   border-spacing: 0;
 }
 
+a {
+  color: var(--color-links);
+  text-decoration: none;
+}
+
 #app {
   height: 100vh;
   width: 100vw;

@@ -8,8 +8,6 @@
   let u = commit.Hash === UNCOMMITED_HASH;
   let h = commit.Hash === HEAD.Hash;
 
-  let detailsOpen = false;
-
   function clearActive() {
     let all = document.getElementsByClassName('commit');
     for (let i = 0; i < all.length; i++) {
@@ -19,13 +17,12 @@
 
   function showDetails() {
     clearActive();
-    if (detailsOpen) {
+    if ((window as any).currentCommitDetails() === commit.Hash) {
       (window as any).hideCommitDetails();
     } else {
       (window as any).showCommitDetails(commit);
       (document.querySelector(`.commit[data-id="${commit.Id}"]`) as HTMLElement).classList.add('active');
     }
-    detailsOpen = !detailsOpen;
   }
 </script>
 
@@ -34,7 +31,7 @@
   data-hash="{commit.Hash}"
   data-head="{h}"
   data-menu="{u ? '' : 'commit'}"
-  on:mousedown={showDetails}
+  on:click={showDetails}
   on:keyup={showDetails}>
   <td class="commit__td commit__td--refs">
     {#if commit.Labeled}
