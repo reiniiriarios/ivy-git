@@ -1,26 +1,29 @@
 <script lang="ts">
-  import { UNCOMMITED_HASH, type Commit, type Ref } from "../scripts/graph";
-  import CommitLabels from "./CommitLabels.svelte";
+  import type { Commit } from "src/scripts/graph";
 
-  export let commit: Commit;
-  export let HEAD: Ref;
+  let commit: Commit;
+  let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
-  let u = commit.Hash === UNCOMMITED_HASH;
-  let h = commit.Hash === HEAD.Hash;
+  (window as any).showCommitDetails = (c: Commit) => {
+    commit = c;
+    document.documentElement.style.setProperty('--commit-details-height', height);
+  };
+
+  (window as any).hideCommitDetails = () => {
+    document.documentElement.style.setProperty('--commit-details-height', '0');
+    commit = null;
+  }
+  (window as any).hideCommitDetails();
 </script>
 
-<tr class="commit c-{commit.Color} {u ? 'uncommitted' : ''} {commit.Merge ? 'merge' : ''} {commit.Stash ? 'stash' : ''}"
-  data-id="{commit.Id}"
-  data-hash="{commit.Hash}"
-  data-head="{h}"
-  data-menu="{u ? '' : 'commit'}">
-  <td class="commit__td commit__td--refs">
-    {#if commit.Labeled}
-      <CommitLabels commit={commit} HEAD={HEAD} />
-    {/if}
-  </td>
-  <td class="commit__td commit__td--tree"></td>
-  <td class="commit__td commit__td--subject">{commit.Subject}</td>
-  <td class="commit__td commit__td--author">{commit.AuthorName ?? commit.AuthorEmail}</td>
-  <td class="commit__td commit__td--authortime">{commit.AuthorDatetime}</td>
-</tr>
+<div class="commit-details">
+  {#if commit}
+    <div class="commit-details__left">
+      left
+      {commit.Hash}
+    </div>
+    <div class="commit-details__right">
+      right
+    </div>
+  {/if}
+</div>

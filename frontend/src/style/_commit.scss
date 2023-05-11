@@ -8,7 +8,7 @@
     text-align: left;
     padding-left: 0.67rem;
     padding-right: 0.67rem;
-    height: var(--commit-details-height);
+    height: var(--commit-row-height);
     box-sizing: border-box;
     white-space: nowrap;
 
@@ -52,5 +52,9 @@
   &:hover,
   &.hover {
     background-color: var(--color-commitlistitem-bg-hover);
+  }
+
+  &.active {
+    background-color: var(--color-commitlistitem-bg-active);
   }
 }

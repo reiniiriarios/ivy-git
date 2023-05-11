@@ -1,11 +1,13 @@
 .commits {
   width: calc(100% - var(--resize-bar-width));
   height: calc(100vh - var(--tabs-height) - var(--title-bar-height) - var(--resize-bar-width));
-  overflow: auto;
   display: flex;
-  flex-direction: row;
-  justify-content: stretch;
-  align-items: middle;
+  flex-direction: column;
+
+  &__table-container {
+    overflow: auto;
+    height: calc(100% - var(--commit-details-height));
+  }
 
   &__table {
     margin-bottom: 0.5rem;
@@ -19,7 +21,7 @@
   }
 
   &__th {
-    height: var(--commit-details-height);
+    height: var(--commit-row-height);
     box-sizing: border-box;
     text-align: left;
     padding: 0.25rem 0.5rem 0.25rem 0.67rem;

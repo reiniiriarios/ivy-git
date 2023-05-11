@@ -224,14 +224,17 @@ $color-scale-white: #ffffff;
   --color-scrollbar-bg: var(--color-scale-a-8-100);
   --color-scrollbar-fg: var(--color-scale-a-6-100);
 
-  --color-commitlistitem-bg-hover: #21262d88;
-  --color-commitlistitem-bg-hover-fade: linear-gradient(0.25turn, #21262d00, #21262d88);
+  --color-commitlistitem-bg-hover: var(--color-scale-a-7-50);
+  --color-commitlistitem-bg-active: var(--color-scale-a-6-50);
 
   --title-bar-height: 2.25rem;
   --sidebar-width: 20rem;
   --repo-button-height: 4rem;
   --tabs-height: 2.5rem;
   --resize-bar-width: 0.33rem;
+  --commit-details-height: 25vh;
+  --commit-details-height-default: var(--commit-details-height);
+
   // In Pixels!
-  --commit-details-height: 24px;
+  --commit-row-height: 24px;
 }
