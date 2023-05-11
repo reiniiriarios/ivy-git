@@ -37,21 +37,28 @@
   <div class="commits" id="commits">
     {#if Object.entries(commits).length}
       <table use:setCommitsTable class="commits__table" id="commits__table">
-        <tr>
-          <th use:createResizableColumn data-name="branch" data-order="0" class="commits__th commits__th--branch">Branch</th>
-          <th use:createResizableColumn data-name="tree" data-order="1" class="commits__th commits__th--tree" style="min-width: {svgWidth};">
-            <div class="commits__th-inner">Tree</div>
-            <div class="tree">
-              <div class="tree__graph">{@html svg.outerHTML}</div>
-            </div>
-          </th>
-          <th use:createResizableColumn data-name="subject" data-order="2" class="commits__th commits__th--subject">Commit</th>
-          <th use:createResizableColumn data-name="authorName" data-order="3" class="commits__th commits__th--author">Author</th>
-          <th use:createResizableColumn data-name="authorDate" data-order="4" data-resizeflex class="commits__th commits__th--date">Date</th>
-        </tr>
-        {#each Object.entries(commits) as [_, commit]}
-          <CommitDetails commit={commit} HEAD={HEAD} />
-        {/each}
+        <thead>
+          <tr>
+            <th use:createResizableColumn data-name="branch" data-order="0" class="commits__th commits__th--branch">Branch</th>
+            <th use:createResizableColumn data-name="tree" data-order="1" class="commits__th commits__th--tree" style="min-width: {svgWidth};">Tree</th>
+            <th use:createResizableColumn data-name="subject" data-order="2" class="commits__th commits__th--subject">Commit</th>
+            <th use:createResizableColumn data-name="authorName" data-order="3" class="commits__th commits__th--author">Author</th>
+            <th use:createResizableColumn data-name="authorDate" data-order="4" data-resizeflex class="commits__th commits__th--date">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td>
+              <div class="tree">
+                <div class="tree__graph">{@html svg.outerHTML}</div>
+              </div>
+            </td>
+          </tr>
+          {#each Object.entries(commits) as [_, commit]}
+            <CommitDetails commit={commit} HEAD={HEAD} />
+          {/each}
+        </tbody>
       </table>
     {/if}
   </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Details from "./Details.svelte";
   import Diff from "./Diff.svelte";
-  import Tree from "./Commits.svelte";
+  import Commits from "./Commits.svelte";
 
   let tab = "tree";
   (window as any).currentTab = tab;
@@ -40,5 +40,8 @@
 </nav>
 
 <Diff active={tab == 'changes'} />
-<Tree active={tab == 'tree'} />
+<Commits active={tab == 'tree'} />
 <Details active={tab == 'details'} />
+
+<div class="window-resize window-resize--right"></div>
+<div class="window-resize window-resize--bottom"></div>

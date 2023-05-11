@@ -99,3 +99,21 @@ main {
   z-index: 1000;
   pointer-events: all;
 }
+
+.window-resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: var(--color-scale-a-9-50);
+
+  &--right {
+    width: var(--resize-bar-width);
+    height: calc(100vh - var(--tabs-height) - var(--title-bar-height));
+  }
+
+  &--bottom {
+    width: calc(100vw - var(--sidebar-width));
+    height: var(--resize-bar-width);
+  }
+}

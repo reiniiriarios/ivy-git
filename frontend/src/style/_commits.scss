@@ -1,6 +1,6 @@
 .commits {
-  width: 100%;
-  height: calc(100vh - var(--tabs-height) - var(--title-bar-height));
+  width: calc(100% - var(--resize-bar-width));
+  height: calc(100vh - var(--tabs-height) - var(--title-bar-height) - var(--resize-bar-width));
   overflow: auto;
   display: flex;
   flex-direction: row;
@@ -10,6 +10,12 @@
   &__table {
     margin-bottom: 0.5rem;
     width: 100%;
+
+    tr:first-child {
+      td {
+        padding: 0;
+      }
+    }
   }
 
   &__th {
@@ -22,15 +28,13 @@
     cursor: default !important;
     user-select: none;
     -webkit-user-select: none;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 500;
 
     &--branch {
       text-align: right;
       padding-right: 1rem;
-    }
-
-    &--tree {
-      padding: 0;
     }
 
     &--subject {

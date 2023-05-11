@@ -77,7 +77,6 @@
       if (currentMenu) {
         e.preventDefault();
         menuItems = menus[currentMenu](currentClickedElement);
-        console.log(currentClickedElement);
         currentClickedElement.classList.add('hover');
         displayMenu(e);
       }
