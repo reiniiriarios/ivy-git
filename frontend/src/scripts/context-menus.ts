@@ -186,7 +186,7 @@ export const menus: Menus = {
           callback: () => alert("todo: checkout"),
         },
         {
-          text: "Cherry Pick",
+          text: "Cherry Pick Commit",
           callback: () => alert("todo: checkout"),
         },
       ]);

@@ -78,26 +78,21 @@
   }
 </script>
 
-<button
-  class="btn btn-drop"
-  id="current-branch"
-  on:click={toggleList}
-  on:keyup={toggleList}
->
-  <div class="label">Current Branch:</div>
-  <div>{selectedBranch?.Name ?? "none selected"}</div>
+<button class="btn btn-drop sidebar-big-button" id="current-branch" on:click={toggleList} on:keyup={toggleList}>
+  <div class="sidebar-big-button__label">Current Branch:</div>
+  <div class="sidebar-big-button__value">{selectedBranch?.Name ?? "none selected"}</div>
 </button>
 
-<div id="all-branches">
+<div id="all-branches" class="sidebar-dropdown">
   <div class="overlay" on:click={hideList} on:keyup={hideList} />
-  <div id="all-branches__container">
-    <div id="all-branches__bar">
-      <div id="all-branches__add">
+  <div class="sidebar-dropdown__container">
+    <div class="sidebar-dropdown__bar">
+      <div class="sidebar-dropdown__add">
         <button class="btn" on:click={newBranch} on:keyup={newBranch}
           >Create Branch +</button
         >
       </div>
-      <ul id="all-branches__list">
+      <ul class="sidebar-dropdown__list">
         {#each Object.entries(branches) as [_, branch]}
           <li>
             <button
@@ -111,68 +106,3 @@
     </div>
   </div>
 </div>
-
-<style lang="scss">
-  #current-branch {
-    height: 4rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: left;
-    padding-left: 1.5rem;
-    border-top: 1px solid var(--color-btn-border);
-
-    .label {
-      color: var(--color-text-label);
-      font-size: 0.9rem;
-    }
-  }
-
-  #all-branches {
-    display: none;
-    height: 100%;
-
-    .overlay {
-      left: 20rem;
-      width: calc(100% - 20rem);
-    }
-
-    &__container {
-      position: relative;
-      height: 100%;
-    }
-
-    &__bar {
-      background-color: var(--color-sidebar-bg);
-      border-right: 1px solid var(--color-sidebar-border);
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: var(--sidebar-width);
-    }
-
-    &__add {
-      width: 100%;
-      border-top: 1px solid var(--color-btn-border);
-
-      button {
-        width: 100%;
-      }
-    }
-
-    &__list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-
-      li {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: space-between;
-      }
-    }
-  }
-</style>

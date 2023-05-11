@@ -16,7 +16,6 @@
 
   function maximize() {
     (window as any).runtime.WindowIsMaximised().then((isMaximized: boolean) => {
-      console.log(isMaximized);
       isMaximized
         ? (window as any).runtime.WindowUnmaximise()
         : (window as any).runtime.WindowMaximise();

@@ -9,7 +9,6 @@
 
   function displayMenu(e: MouseEvent) {
     let menuElement = document.getElementById("context-menu");
-    console.log(menuElement.clientWidth);
     let x = e.pageX;
     let y = e.pageY;
     let w = getCurrentMenuWidth();
@@ -32,18 +31,21 @@
 
   function getCurrentMenuHeight() {
     // Easier than exact calculation, works just as well.
-    let height = 8;
-    menuItems.forEach(i => i.sep ? height += 10 : height += 29);
+    let height = 18;
+    menuItems.forEach(i => i.sep ? height += 17 : height += 30);
     return height;
   }
 
   function getCurrentMenuWidth() {
     // Easier than exact calculation, works nearly as well.
-    return menuItems.reduce((a, b) => a.text?.length > b.text?.length ? a : b).text.length * 7.5;
+    return menuItems.reduce((a, b) => a.text?.length > b.text?.length ? a : b).text.length * 7.6;
   }
 
   function hideMenu() {
     document.getElementById("context-menu").style.display = 'none';
+    if (currentClickedElement) {
+      currentClickedElement.classList.remove('hover');
+    }
     currentClickedElement = null;
     currentMenu = null;
   }
@@ -75,8 +77,11 @@
       if (currentMenu) {
         e.preventDefault();
         menuItems = menus[currentMenu](currentClickedElement);
+        console.log(currentClickedElement);
+        currentClickedElement.classList.add('hover');
         displayMenu(e);
-      } else {
+      }
+      else {
         hideMenu();
       }
     });
@@ -98,7 +103,11 @@
     {#each menuItems as item}
       {#if item.text}
         <li class="context-menu__item">
-          <div class="context-menu__action" on:click={(e) => item.callback(currentClickedElement)} on:keyup={() => {}}>{item.text}</div>
+          <div class="context-menu__action"
+            on:click={(e) => item.callback(currentClickedElement)}
+            on:keyup={(e) => item.callback(currentClickedElement)}>
+            {item.text}
+          </div>
         </li>
       {:else if item.sep}
         <li class="context-menu__sep"></li>
@@ -115,7 +124,7 @@
     min-width: 14rem;
     text-align: left;
     background-color: var(--color-context-bg);
-    padding: 0.3rem;
+    padding: 0.7rem 0.3rem 0.9rem;
     box-shadow: 0.1rem 0.1rem 0.5rem rgba(0 0 0 / 30%);
 
     &__items {
@@ -129,7 +138,7 @@
     }
 
     &__sep {
-      margin: 0.4rem 0;
+      margin: 0.6rem 0;
       height: 1px;
       background-color: var(--color-context-border);
     }

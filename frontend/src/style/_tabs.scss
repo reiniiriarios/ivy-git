@@ -1,0 +1,29 @@
+.tabs {
+  width: 100%;
+  display: flex;
+  border-bottom: 1px solid var(--color-btn-border);
+  height: var(--tabs-height);
+
+  &__tab {
+    width: 33.333%;
+    border: none;
+    color: var(--color-text);
+    background-color: var(--color-btn-bg);
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    cursor: pointer;
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--color-btn-border);
+    }
+
+    &.active {
+      background-color: var(--color-btn-bg-active);
+    }
+
+    &:hover {
+      background-color: var(--color-btn-bg-hover);
+    }
+  }
+}
