@@ -1,6 +1,7 @@
 package main
 
 import (
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -64,20 +65,6 @@ type CommitDetails struct {
 	Commits []Commit
 	Lookup  map[string]uint64
 	HEAD    Ref
-}
-
-type CommitsResponse struct {
-	Response string
-	Message  string
-	HEAD     Ref
-	Commits  []Commit
-	Graph    Graph
-}
-
-type CommitResponse struct {
-	Response string
-	Message  string
-	Commit   CommitAddl
 }
 
 // Get commit details from `git log`.
@@ -340,6 +327,14 @@ func (a *App) getCommits() ([]Commit, map[string]uint64, Ref, error) {
 	return commits, lookup, refs.HEAD, nil
 }
 
+type CommitsResponse struct {
+	Response string
+	Message  string
+	HEAD     Ref
+	Commits  []Commit
+	Graph    Graph
+}
+
 // FRONTEND: Get list of commits and all associated details for display.
 func (a *App) GetCommitList() CommitsResponse {
 	commits, lookup, HEAD, err := a.getCommits()
@@ -421,23 +416,22 @@ func (a *App) GetCommitList() CommitsResponse {
 	}
 }
 
+type CommitResponse struct {
+	Response string
+	Message  string
+	Commit   CommitAddl
+}
+
+// FRONTEND: Get additional commit details not listed in the table.
 func (a *App) GetCommitDetails(hash string) CommitResponse {
 	// Include:
-	// %H  - hash
-	// %P  - parent hash
 	// %an - Committer Name
 	// %ae - Committer Email
 	// %at - Committer Time
-	// %s  - Subject
+	// %b  - Body
 	// https://git-scm.com/docs/pretty-formats
 	data := []string{"%cn", "%ce", "%ct", "%b"}
 	format := strings.Join(data, GIT_LOG_SEP)
-	// Include:
-	// - branches
-	// - tags
-	// - commits mentioned by reflogs
-	// - all remotes
-	// - HEAD
 	c, err := a.GitCwd("--no-pager", "log", hash, "--format='"+format+"'", "--max-count=1")
 	if err != nil {
 		return CommitResponse{
@@ -473,5 +467,123 @@ func (a *App) GetCommitDetails(hash string) CommitResponse {
 			CommitterTimestamp: ts,
 			CommitterDatetime:  dt,
 		},
+	}
+}
+
+type FileStat struct {
+	File    string
+	Name    string
+	Dir     string
+	Path    []string
+	Added   uint32
+	Deleted uint32
+	Status  string
+}
+
+type FileStatDir struct {
+	Name  string
+	Path  []string
+	Files []FileStat
+	Dirs  []FileStatDir
+}
+
+type CommitDiffSummaryResponse struct {
+	Response string
+	Message  string
+	Files    FileStatDir
+}
+
+// FRONTEND: Get commit diff summary from diff-tree --numstat and --name-status.
+func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
+	filestats := []FileStat{}
+
+	// Get the number of lines added and deleted from each file.
+	n, err := a.GitCwd("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash)
+	if err != nil {
+		return CommitDiffSummaryResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	n = strings.Trim(strings.Trim(strings.Trim(n, "\n"), "\r"), "'")
+	// The -z option splits lines by NUL.
+	nl := strings.Split(n, "\x00")
+	// The first line is the hash, skip.
+	for _, l := range nl[1:] {
+		nf := strings.Fields(l)
+		if len(nf) == 3 {
+			a, _ := strconv.ParseInt(nf[0], 10, 32)
+			d, _ := strconv.ParseInt(nf[1], 10, 32)
+			name := filepath.Base(nf[2])
+			dir := filepath.Dir(nf[2])
+			path := strings.Split(strings.ReplaceAll(dir, "\\", "/"), "/")
+			filestats = append(filestats, FileStat{
+				File:    nf[2],
+				Name:    name,
+				Dir:     dir,
+				Path:    path,
+				Added:   uint32(a),
+				Deleted: uint32(d),
+			})
+		}
+	}
+
+	// Get the status of each file in the commit.
+	s, err := a.GitCwd("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash)
+	if err != nil {
+		return CommitDiffSummaryResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	s = strings.Trim(strings.Trim(strings.Trim(s, "\n"), "\r"), "'")
+	// The -z option splits lines by NUL.
+	sl := strings.Split(s, "\x00")
+	// The first line is the hash, skip.
+	// Each line is either the status or the file. Parse two lines at a time.
+	for i := 1; i < len(sl)-1; i += 2 {
+		for f := range filestats {
+			if filestats[f].File == sl[i+1] {
+				filestats[f].Status = sl[i]
+				break
+			}
+		}
+	}
+
+	println("\n")
+	// Parse files into directory tree.
+	files := FileStatDir{}
+	for _, f := range filestats {
+		println(f.File)
+		c := &files
+		for n, p := range f.Path {
+			if p != "." {
+				println("looking for", p)
+				added := false
+				for j := range c.Dirs {
+					if c.Dirs[j].Name == p {
+						added = true
+						c = &c.Dirs[j]
+					}
+				}
+				if !added {
+					println("adding", p, "to", c.Name)
+					c.Dirs = append(c.Dirs, FileStatDir{
+						Name: p,
+						Path: append(f.Path[:n], p),
+					})
+					c = &c.Dirs[len(c.Dirs)-1]
+				}
+			}
+			if n == len(f.Path)-1 {
+				println("appending", f.Name, "to", c.Name)
+				c.Files = append(c.Files, f)
+			}
+		}
+	}
+
+	return CommitDiffSummaryResponse{
+		Response: "success",
+		Files:    files,
 	}
 }

@@ -33,3 +33,48 @@
     }
   }
 }
+
+.filestatdir {
+  color: var(--color-text-muted);
+
+  &__dir {
+    &--files,
+    &--root {
+      & > .filestatdir__dir {
+        display: block;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  &__file {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    margin-left: 1rem;
+    color: var(--color-text);
+
+    &--M {
+      color: var(--color-scale-o-1-100);
+    }
+
+    &--A {
+      color: var(--color-scale-g-1-100);
+    }
+
+    &--D {
+      color: var(--color-scale-r-1-100);
+    }
+
+    .diff {
+      color: var(--color-text-muted);
+    }
+
+    .added {
+      color: var(--color-scale-g-3-100);
+    }
+
+    .deleted {
+      color: var(--color-scale-r-4-100);
+    }
+  }
+}

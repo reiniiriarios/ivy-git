@@ -1,6 +1,26 @@
+<script lang="ts" context="module">
+  export interface FileStat {
+  	File: string;
+  	Name: string;
+  	Dir: string;
+  	Path: string[];
+  	Added: number;
+  	Deleted: number;
+  	Status: string;
+  }
+
+  export interface FileStatDir {
+  	Name: string;
+    Path: string[];
+  	Files: FileStat[];
+  	Dirs: FileStatDir[];
+  }
+</script>
+
 <script lang="ts">
   import type { Commit } from "src/scripts/graph";
-  import { GetCommitDetails } from "../../wailsjs/go/main/App";
+  import { GetCommitDetails, GetCommitDiffSummary } from "../../wailsjs/go/main/App";
+  import CommitDetailsFiles from "./CommitDetailsFiles.svelte";
 
   interface CommitDetails {
   	Body: string;
@@ -12,6 +32,7 @@
 
   let commit: Commit;
   let commitDetails: CommitDetails;
+  let commitFiles: FileStatDir;
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
   (window as any).currentCommitDetails = (): string => {
@@ -21,6 +42,7 @@
   (window as any).showCommitDetails = (c: Commit) => {
     commit = c;
     document.documentElement.style.setProperty('--commit-details-height', height);
+
     GetCommitDetails(c.Hash).then(r => {
       switch (r.Response) {
         case "error":
@@ -29,6 +51,19 @@
 
         case "success":
           commitDetails = r.Commit as CommitDetails;
+          break;
+      }
+    });
+
+    GetCommitDiffSummary(c.Hash).then(r => {
+      switch (r.Response) {
+        case "error":
+          (window as any).messageModal(r.Message);
+          break;
+
+        case "success":
+          commitFiles = r.Files
+          console.log(r.Files);
           break;
       }
     })
@@ -102,7 +137,9 @@
       </table>
     </div>
     <div class="commit-details__right">
-      right
+      <div class="filestatdir">
+        <CommitDetailsFiles files={commitFiles} />
+      </div>
     </div>
   {/if}
 </div>
