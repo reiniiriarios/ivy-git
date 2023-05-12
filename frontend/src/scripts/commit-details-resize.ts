@@ -60,6 +60,11 @@ export const setDetailsResizable = (el: HTMLElement) => {
   commitDetailsContainer.appendChild(resizer);
 }
 
+export const resetDetailsSizing = () => {
+  if (commitsContainer) commitsContainer.style.height = '';
+  if (commitDetailsContainer) commitDetailsContainer.style.height = '';
+}
+
 // Resize window handler. Update as a percentage with min height.
 const makeDetailsSizingPercentage = async (e: UIEvent) => {
   let ch = parseInt(window.getComputedStyle(commitsContainer).height);

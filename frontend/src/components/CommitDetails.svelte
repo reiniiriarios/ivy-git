@@ -21,7 +21,7 @@
   import type { Commit } from "../scripts/graph";
   import { GetCommitDetails, GetCommitDiffSummary } from "../../wailsjs/go/main/App";
   import CommitDetailsFiles from "./CommitDetailsFiles.svelte";
-  import { setDetailsResizable } from "../scripts/commit-details-resize";
+  import { resetDetailsSizing, setDetailsResizable } from "../scripts/commit-details-resize";
 
   interface CommitDetails {
   	Body: string;
@@ -72,6 +72,7 @@
 
   (window as any).hideCommitDetails = () => {
     document.documentElement.style.setProperty('--commit-details-height', '0');
+    resetDetailsSizing();
     commit = null;
   }
   (window as any).hideCommitDetails();
