@@ -23,18 +23,13 @@
 </script>
 
 <nav class="tabs">
-  <button class="tabs__tab {tab == 'changes' ? 'active' : ''}" id="tab-changes"
-    on:click={tabChanges}
-    on:keyup={tabChanges}>
+  <button class="tabs__tab {tab == 'changes' ? 'active' : ''}" id="tab-changes" on:click={tabChanges}>
     Changes
   </button>
-  <button class="tabs__tab {tab == 'tree' ? 'active' : ''}" id="tab-tree"
-    on:click={tabTree} on:keyup={tabTree}>
+  <button class="tabs__tab {tab == 'tree' ? 'active' : ''}" id="tab-tree" on:click={tabTree}>
     Commits
   </button>
-  <button
-    class="tabs__tab {tab == 'details' ? 'active' : ''}" id="tab-details"
-    on:click={tabDetails} on:keyup={tabDetails}>
+  <button class="tabs__tab {tab == 'details' ? 'active' : ''}" id="tab-details" on:click={tabDetails}>
     Details
   </button>
 </nav>
