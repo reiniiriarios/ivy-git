@@ -6,6 +6,7 @@
   import { createResizableColumn, setCommitsTable } from '../scripts/commit-table-resize';
   import CommitRow from './CommitRow.svelte';
   import CommitDetails from './CommitDetails.svelte';
+  import { setCommitsContainer } from '../scripts/commit-details-resize';
 
   let commits: Commit[] = [];
   let HEAD: Ref;
@@ -36,7 +37,7 @@
 
 {#if active}
   <div class="commits" id="commits">
-    <div class="commits__table-container">
+    <div class="commits__table-container" use:setCommitsContainer>
       {#if Object.entries(commits).length}
         <table use:setCommitsTable class="commits__table" id="commits__table">
           <thead>

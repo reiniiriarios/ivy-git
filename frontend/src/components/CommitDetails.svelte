@@ -18,9 +18,10 @@
 </script>
 
 <script lang="ts">
-  import type { Commit } from "src/scripts/graph";
+  import type { Commit } from "../scripts/graph";
   import { GetCommitDetails, GetCommitDiffSummary } from "../../wailsjs/go/main/App";
   import CommitDetailsFiles from "./CommitDetailsFiles.svelte";
+  import { setDetailsResizable } from "../scripts/commit-details-resize";
 
   interface CommitDetails {
   	Body: string;
@@ -76,7 +77,7 @@
   (window as any).hideCommitDetails();
 </script>
 
-<div class="commit-details">
+<div class="commit-details" use:setDetailsResizable>
   {#if commit}
     <div class="commit-details__left">
       <table>

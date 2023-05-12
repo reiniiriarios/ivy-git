@@ -105,6 +105,16 @@ main {
   pointer-events: all;
 }
 
+.resizer-h {
+  cursor: row-resize;
+  position: absolute;
+  top: -5px;
+  left: 0;
+  height: 10px;
+  z-index: 1000;
+  pointer-events: all;
+}
+
 .window-resize {
   position: absolute;
   bottom: 0;
