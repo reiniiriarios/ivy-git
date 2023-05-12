@@ -57,7 +57,10 @@
     });
   }
 
-  function toggleList() {
+  function toggleList(e?: MouseEvent | KeyboardEvent) {
+    if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
+      return;
+    }
     if (listVisible) {
       hideList();
     } else {
@@ -71,26 +74,34 @@
     listVisible = true;
   }
 
-  function hideList() {
+  function hideList(e?: MouseEvent | KeyboardEvent) {
+    if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
+      return;
+    }
     document.getElementById("all-branches").style.display = "none";
     document.getElementById("current-branch").classList.remove("active");
     listVisible = false;
   }
+
+  window.addEventListener('keydown', function(e: KeyboardEvent) {
+    if(['Escape'].includes(e.key) && listVisible) {
+      hideList();
+    }
+  });
 </script>
 
-<button class="btn btn-drop sidebar-big-button" id="current-branch" on:click={toggleList} on:keyup={toggleList}>
+<button class="btn btn-drop sidebar-big-button" id="current-branch" on:click={toggleList}>
   <div class="sidebar-big-button__label">Current Branch:</div>
   <div class="sidebar-big-button__value">{selectedBranch?.Name ?? "none selected"}</div>
 </button>
 
 <div id="all-branches" class="sidebar-dropdown">
-  <div class="overlay" on:click={hideList} on:keyup={hideList} />
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div class="overlay" on:click={hideList} />
   <div class="sidebar-dropdown__container">
     <div class="sidebar-dropdown__bar">
       <div class="sidebar-dropdown__add">
-        <button class="btn" on:click={newBranch} on:keyup={newBranch}
-          >Create Branch +</button
-        >
+        <button class="btn" on:click={newBranch}>Create Branch +</button>
       </div>
       <ul class="sidebar-dropdown__list">
         {#each Object.entries(branches) as [_, branch]}

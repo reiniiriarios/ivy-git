@@ -56,7 +56,10 @@
     });
   }
 
-  function toggleList() {
+  function toggleList(e?: MouseEvent | KeyboardEvent) {
+    if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
+      return;
+    }
     if (listVisible) {
       hideList();
     } else {
@@ -70,7 +73,10 @@
     listVisible = true;
   }
 
-  function hideList() {
+  function hideList(e?: MouseEvent | KeyboardEvent) {
+    if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
+      return;
+    }
     document.getElementById("all-repos").style.display = "none";
     document.getElementById("current-repo").classList.remove('active');
     listVisible = false;
@@ -82,25 +88,32 @@
       RemoveRepo(e.target.dataset.id).then((result) => (repos = result as Repo[]));
     }, 'Remove', 'Cancel');
   }
+
+  window.addEventListener('keydown', function(e: KeyboardEvent) {
+    if(['Escape'].includes(e.key) && listVisible) {
+      hideList();
+    }
+  });
 </script>
 
-<button class="btn btn-drop sidebar-big-button" id="current-repo" on:click={toggleList} on:keyup={toggleList}>
+<button class="btn btn-drop sidebar-big-button" id="current-repo" on:click={toggleList}>
   <div class="sidebar-big-button__label">Current Repo:</div>
   <div class="sidebar-big-button__value">{repos[selectedRepo] ? repos[selectedRepo].Name : 'none selected'}</div>
 </button>
 
 <div id="all-repos" class="sidebar-dropdown">
-  <div class="overlay" on:click={hideList} on:keyup={hideList}></div>
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div class="overlay" on:click={hideList}></div>
   <div class="sidebar-dropdown__container">
     <div class="sidebar-dropdown__bar">
       <div class="sidebar-dropdown__add">
-        <button class="btn" on:click={addRepo} on:keyup={addRepo}>Add Repo +</button>
+        <button class="btn" on:click={addRepo}>Add Repo +</button>
       </div>
       <ul class="sidebar-dropdown__list">
         {#each Object.entries(repos) as [id, repo]}
           <li>
             <button class="list-btn name" on:click={selectRepo} data-id={id}>{repo.Name}</button>
-            <button class="list-btn x" on:click={delRepo} on:keyup={delRepo} data-id={id}>&times;</button>
+            <button class="list-btn x" on:click={delRepo} data-id={id}>&times;</button>
           </li>
         {/each}
       </ul>
