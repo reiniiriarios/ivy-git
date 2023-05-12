@@ -52,6 +52,7 @@
       hideList();
       if ((window as any).currentTab == 'tree') {
         (window as any).GetCommitList();
+        (window as any).hideCommitDetails();
       }
     });
   }
