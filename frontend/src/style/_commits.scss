@@ -55,5 +55,12 @@
     &:not(:first-child) {
       border-left: 1px solid var(--color-scale-a-8-100);
     }
+
+    // Order z-index of columns in descending order to allow resizer to z-index correctly.
+    @for $n from 0 to 8 {
+      &:nth-child(#{$n}) {
+        z-index: calc(550 - #{$n});
+      }
+    }
   }
 }
