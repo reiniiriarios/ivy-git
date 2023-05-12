@@ -1,12 +1,9 @@
 <script lang="ts">
-  export let active: boolean;
 </script>
 
-{#if active}
-  <div class="details">
+<div class="details">
 
-  </div>
-{/if}
+</div>
 
 <style lang="scss">
   .details {

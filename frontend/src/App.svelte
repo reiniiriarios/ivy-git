@@ -14,6 +14,7 @@
   import { currentRepo, repos } from "stores/repos";
   import { branches, currentBranch } from "stores/branches";
   import { changes } from "stores/changes";
+  import { currentTab } from "stores/current-tab";
 
   // Load initial ui state.
   function init() {
@@ -22,7 +23,7 @@
     branches.refresh();
     repos.refresh();
     changes.refresh();
-    if ((window as any).currentTab == 'tree') {
+    if ($currentTab === 'tree') {
       (window as any).GetCommitList();
     }
     GoOs().then(os => {
