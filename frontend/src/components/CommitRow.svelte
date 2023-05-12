@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { UNCOMMITED_HASH, type Commit, type Ref } from 'scripts/graph';
+  import { UNCOMMITED_HASH } from 'scripts/graph';
   import CommitLabels from 'components/CommitLabels.svelte';
+  import { HEAD, type Commit } from 'stores/commit-data';
 
   export let commit: Commit;
-  export let HEAD: Ref;
 
   let u = commit.Hash === UNCOMMITED_HASH;
-  let h = commit.Hash === HEAD.Hash;
+  let h = commit.Hash === $HEAD.Hash;
 
   function clearActive() {
     let all = document.getElementsByClassName('commit');
@@ -48,7 +48,7 @@
   use:setKeyboard>
   <td class="commit__td commit__td--refs">
     {#if commit.Labeled}
-      <CommitLabels commit={commit} HEAD={HEAD} />
+      <CommitLabels commit={commit} />
     {/if}
   </td>
   <td class="commit__td commit__td--tree"></td>

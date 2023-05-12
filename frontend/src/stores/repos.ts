@@ -1,5 +1,8 @@
 import { writable } from 'svelte/store';
 import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from 'wailsjs/go/main/App';
+import { commitData } from 'stores/commit-data';
+import { changes } from 'stores/changes';
+import { currentTab } from './current-tab';
 
 export interface Repo {
   Name: string;
@@ -7,13 +10,13 @@ export interface Repo {
 }
 
 function createRepos() {
-  const { subscribe, update } = writable([] as Repo[]);
+  const { subscribe, set } = writable([] as Repo[]);
   
   return {
     subscribe,
     refresh: async () => {
       GetRepos().then(result => {
-        update(_ => result as Repo[])
+        set(result as Repo[])
       });
     },
     add: async () => {
@@ -28,13 +31,16 @@ function createRepos() {
     delete: async (id: string) => {
       (window as any).confirmModal(`Are you sure you want to remove ${repos[id].Name}?`, () => {
         RemoveRepo(id).then(() => {
-          repos.refresh()
+          repos.refresh();
         });
       }, 'Remove', 'Cancel');
     }
   };
 }
 export const repos = createRepos();
+
+let cTab = '';
+currentTab.subscribe(t => cTab = t);
 
 function createCurrentRepo() {
   const { subscribe, update, set } = writable("");
@@ -46,17 +52,17 @@ function createCurrentRepo() {
         set(result);
       });
     },
-    set: (r: string) => {
+    set: async (r: string) => {
       update(c => {
         if (c === r) {
           return c;
         }
         UpdateSelectedRepo(r).then(() => {
-          if ((window as any).currentTab == 'tree') {
-            (window as any).GetCommitList();
+          if (cTab === 'tree') {
+            commitData.refresh();
             (window as any).hideCommitDetails();
           }
-          (window as any).getChanges();
+          changes.refresh();
         });
         return r;
       });

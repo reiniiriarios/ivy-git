@@ -1,15 +1,15 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
 
-  import { getLabelDist, type Commit, type Ref } from 'scripts/graph';
+  import { getLabelDist } from 'scripts/graph';
   import { currentBranch } from 'stores/branches';
+  import { HEAD, type Commit } from 'stores/commit-data';
 
   function isCurrent(n: string): boolean {
     return $currentBranch.Name == n;
   }
 
   export let commit: Commit;
-  export let HEAD: Ref;
 </script>
 
 <div class="refs">
@@ -40,7 +40,7 @@
     {/each}
   {/if}
 
-  {#if commit.Hash == HEAD.Hash}
+  {#if commit.Hash == $HEAD.Hash}
     <div class="refs__label refs__label--head"
       data-menu="head">
       <div class="refs__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>

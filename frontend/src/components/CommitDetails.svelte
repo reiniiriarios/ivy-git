@@ -21,7 +21,7 @@
 </script>
 
 <script lang="ts">
-  import type { Commit } from 'scripts/graph';
+  import type { Commit } from 'stores/commit-data';
   import { GetCommitDetails, GetCommitDiffSummary } from 'wailsjs/go/main/App';
   import CommitDetailsFiles from 'components/CommitDetailsFiles.svelte';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';

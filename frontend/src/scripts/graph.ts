@@ -1,4 +1,5 @@
 import { vertexOut, vertexOver } from 'scripts/vertex';
+import { type Graph, type Branch, type Vertex } from 'stores/commit-data';
 
 // Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";
@@ -27,79 +28,6 @@ const VERTEX_RADIUS_U = 4;
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
-export interface Commit {
-  Id: number;
-  Hash: string;
-  Parents: string[];
-	RefName: string;
-  AuthorName: string;
-  AuthorEmail: string;
-  AuthorTimestamp: number;
-  AuthorDatetime: string;
-  Subject: string;
-  Branches: Ref[];
-  Tags: Ref[];
-  Remotes: Ref[];
-  Heads: Ref[];
-  Stash: boolean;
-  Labeled: boolean;
-  Color: number;
-  X: number;
-  Merge: boolean;
-}
-
-export interface Ref {
-  Hash: string;
-  Name: string;
-  ShortName: string;
-}
-
-interface Line {
-  P1: Point;
-  P2: Point;
-  Committed: boolean;
-  // true = P1, false = P2
-  LockedDirection: boolean;
-}
-
-interface Point {
-  X: number;
-  Y: number;
-}
-
-interface Connection {
-  VertexId: number;
-  BranchId: number;
-}
-
-interface Vertex {
-  Id: number;
-  Children: Vertex[];
-  Parents: Vertex[];
-  NextParent: number;
-  BranchId: number;
-  X: number;
-  XNext: number;
-  Connections: Connection[];
-  Committed: boolean;
-  Stash: boolean;
-}
-
-interface Branch {
-  Id: number;
-  Color: number;
-  Lines: Line[];
-  UncommitedPoints: number;
-  Merge: boolean;
-}
-
-interface Graph {
-  Vertices: Vertex[];
-  Branches: Branch[];
-  Width: number;
-  Height: number;
-}
-
 export function getLabelDist(x: number): string {
   return (scaleX(x) - 2).toFixed(0) + 'px';
 }
@@ -113,11 +41,11 @@ export function drawGraph(g: Graph): SVGSVGElement {
   let svg = document.createElementNS(SVG_NAMESPACE, "svg");
   let grp = document.createElementNS(SVG_NAMESPACE, "g");
 
-  g.Branches.forEach((b) => {
+  g.Branches?.forEach((b) => {
     drawBranch(grp, b);
   });
 
-  g.Vertices.forEach((v) => {
+  g.Vertices?.forEach((v) => {
     if (v.BranchId != -1) {
       drawVertex(grp, v, g.Branches[v.BranchId]);
     }
@@ -125,8 +53,8 @@ export function drawGraph(g: Graph): SVGSVGElement {
 
   svg.appendChild(grp);
 
-  svg.setAttribute('height', scaleY(g.Height).toFixed(0))
-  svg.setAttribute('width', scaleX(g.Width).toFixed(0))
+  svg.setAttribute('height', scaleY(g.Height ?? 0).toFixed(0));
+  svg.setAttribute('width', scaleX(g.Width ?? 0).toFixed(0));
 
   return svg;
 }
