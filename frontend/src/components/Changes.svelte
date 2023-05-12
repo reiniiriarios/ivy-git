@@ -1,38 +1,12 @@
 <script lang="ts">
-  import { GitListChanges } from 'wailsjs/go/main/App';
-
-  interface Change {
-    File: string;
-    Basename: string;
-    Dir: string;
-    Letter: string;
-    Flag: string;
-  }
-
-  let changesX: Change[] = [];
-  let changesY: Change[] = [];
-
-  (window as any).getChanges = () => {
-    GitListChanges().then((result) => {
-      switch (result.Response) {
-        case "error":
-          (window as any).messageModal(result.Message);
-          break;
-
-        case "success":
-          changesX = result.ChangesX ?? [];
-          changesY = result.ChangesY ?? [];
-          break;
-      }
-    });
-  };
+  import { changes } from 'stores/changes';
 </script>
 
 <div class="changes">
-  {#if changesX.length}
+  {#if $changes.x.length}
     <div class="changes__header">Staged</div>
     <ul class="changes__list changes__list--x">
-      {#each changesX as change}
+      {#each $changes.x as change}
         <li class="changes__change">
           <span class="changes__file">
             <span class="changes__filename">{change.Basename}</span>
@@ -43,10 +17,10 @@
       {/each}
     </ul>
   {/if}
-  {#if changesY.length}
+  {#if $changes.y.length}
     <div class="changes__header">Changes</div>
     <ul class="changes__list changes__list--y">
-      {#each changesY as change}
+      {#each $changes.y as change}
         <li class="changes__change">
           <div class="changes__file">
             <div class="changes__filename">{change.Basename}</div>
