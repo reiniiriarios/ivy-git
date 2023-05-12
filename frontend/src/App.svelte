@@ -9,6 +9,7 @@
   import TitleBar from "./components/TitleBar.svelte";
   import ContextMenu from "./components/ContextMenu.svelte";
   import { GoOs } from "../wailsjs/go/main/App";
+  import { tabUpDown } from "./scripts/keyboard-navigation";
 
   // Load initial ui state.
   function init() {
@@ -34,6 +35,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     init();
   });
+
+  window.addEventListener('keydown', tabUpDown);
 </script>
 
 <TitleBar />

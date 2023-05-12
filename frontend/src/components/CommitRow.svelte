@@ -30,14 +30,8 @@
 
   function setKeyboard(el: HTMLElement) {
     window.addEventListener('keydown', function(e: KeyboardEvent) {
-      if([' ', 'ArrowDown', 'ArrowUp'].includes(e.key) && e.target == el) {
+      if(e.key === ' ' && e.target === el) {
         e.preventDefault();
-        if (e.key === 'ArrowDown' && document.activeElement?.nextElementSibling instanceof HTMLElement) {
-          document.activeElement.nextElementSibling.focus();
-        }
-        else if (e.key === 'ArrowUp' && document.activeElement?.previousElementSibling instanceof HTMLElement) {
-          document.activeElement.previousElementSibling.focus();
-        }
       }
     });
   }
