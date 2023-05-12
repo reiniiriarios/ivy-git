@@ -11,12 +11,14 @@
   import { GoOs } from "../wailsjs/go/main/App";
   import { tabUpDown } from "./scripts/keyboard-navigation";
 
+  import { currentRepo, repos } from "./stores/repos";
+
   // Load initial ui state.
   function init() {
-    (window as any).getSelectedRepo();
-    (window as any).getRepos();
+    currentRepo.refresh();
     (window as any).getCurrentBranch();
     (window as any).getBranches();
+    repos.refresh();
     (window as any).getChanges();
     if ((window as any).currentTab == 'tree') {
       (window as any).GetCommitList();
