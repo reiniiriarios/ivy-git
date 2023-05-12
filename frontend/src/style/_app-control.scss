@@ -1,0 +1,106 @@
+.controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+
+  .control {
+    --wails-draggable: no-drag;
+  }
+
+  &.right {
+    right: 0;
+    left: initial;
+  }
+
+  &.darwin {
+    padding: 0.25rem 0.5rem;
+    box-sizing: border-box;
+  
+    .control {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 1rem;
+      margin: 0.25rem 0.3rem;
+      box-sizing: border-box;
+  
+      span {
+        display: none;
+        fill: #000;
+        opacity: 0.5;
+        mix-blend-mode: multiply;
+      }
+    }
+  
+    #close {
+      background-color: var(--color-scale-r-4-100);
+    }
+  
+    #minimize {
+      background-color: var(--color-scale-y-2-100);
+    }
+  
+    #maximize {
+      background-color: var(--color-scale-g-3-100);
+    }
+  
+    &:hover {
+      .control span {
+        display: block;
+      }
+    }
+  }
+  
+  &.windows {
+    .control {
+      width: calc(var(--title-bar-height) * 1.5);
+      height: var(--title-bar-height);
+  
+      span {
+        display: flex;
+        height: var(--title-bar-height);
+        justify-content: center;
+        align-items: center;
+        fill: var(--color-scale-a-4-100);
+  
+        svg {
+          height: 10px;
+          width: 10px;
+        }
+      }
+  
+      &:hover {
+        background-color: var(--color-scale-a-6-100);
+      }
+    }
+  
+    #close:hover {
+      background-color: var(--color-scale-r-5-100);
+  
+      span {
+        fill: var(--color-scale-a-1-100);
+      }
+    }
+  }
+  
+  &.linux {
+    .control {
+      width: calc(var(--title-bar-height) * 1.25);
+      height: var(--title-bar-height);
+  
+      span {
+        display: flex;
+        height: var(--title-bar-height);
+        justify-content: center;
+        align-items: center;
+        fill: var(--color-scale-a-4-100);
+      }
+  
+      &:hover {
+        span {
+          fill: var(--color-scale-a-1-100);
+        }
+      }
+    }
+  }
+}
