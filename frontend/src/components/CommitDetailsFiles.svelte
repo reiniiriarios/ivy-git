@@ -17,6 +17,9 @@
   {#if files?.Files?.length}
     {#each Object.entries(files.Files) as [_, f]}
       <div class="filestatdir__file filestatdir__file--{f.Status}">
+        {#if f.OldFile}
+          <span class="filestatdir__file-old">{f.OldFile} →</span>
+        {/if}
         {f.Name}
         <span class="diff">
           (<span class="added">+{f.Added}</span>, <span class="deleted">-{f.Deleted}</span>)

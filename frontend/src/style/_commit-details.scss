@@ -59,7 +59,11 @@
     }
 
     &--D {
-      color: var(--color-scale-r-1-100);
+      color: var(--color-scale-r-3-100);
+    }
+
+    &--R {
+      color: var(--color-scale-b-2-100);
     }
 
     .diff {
@@ -72,6 +76,10 @@
 
     .deleted {
       color: var(--color-scale-r-4-100);
+    }
+
+    &-old {
+      color: var(--color-text-muted);
     }
   }
 }

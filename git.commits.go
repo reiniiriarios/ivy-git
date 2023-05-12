@@ -475,6 +475,7 @@ type FileStat struct {
 	Name    string
 	Dir     string
 	Path    []string
+	OldFile string
 	Added   uint32
 	Deleted uint32
 	Status  string
@@ -509,8 +510,8 @@ func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
 	// The -z option splits lines by NUL.
 	nl := strings.Split(n, "\x00")
 	// The first line is the hash, skip.
-	for _, l := range nl[1:] {
-		nf := strings.Fields(l)
+	for i := 1; i < len(nl); i++ {
+		nf := strings.Fields(nl[i])
 		if len(nf) == 3 {
 			a, _ := strconv.ParseInt(nf[0], 10, 32)
 			d, _ := strconv.ParseInt(nf[1], 10, 32)
@@ -522,6 +523,27 @@ func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
 				Name:    name,
 				Dir:     dir,
 				Path:    path,
+				Added:   uint32(a),
+				Deleted: uint32(d),
+			})
+		} else if len(nf) == 2 {
+			// If there are two fields parsed, the next two lines are the
+			// previous name and the new name.
+			a, _ := strconv.ParseInt(nf[0], 10, 32)
+			d, _ := strconv.ParseInt(nf[1], 10, 32)
+			i++
+			oldfile := nl[i]
+			i++
+			file := nl[i]
+			name := filepath.Base(file)
+			dir := filepath.Dir(file)
+			path := strings.Split(strings.ReplaceAll(dir, "\\", "/"), "/")
+			filestats = append(filestats, FileStat{
+				File:    file,
+				Name:    name,
+				Dir:     dir,
+				Path:    path,
+				OldFile: oldfile,
 				Added:   uint32(a),
 				Deleted: uint32(d),
 			})
@@ -543,9 +565,18 @@ func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
 	// Each line is either the status or the file. Parse two lines at a time.
 	for i := 1; i < len(sl)-1; i += 2 {
 		for f := range filestats {
-			if filestats[f].File == sl[i+1] {
-				filestats[f].Status = sl[i]
-				break
+			// Renames get three lines of data.
+			if sl[i][:1] == "R" {
+				if filestats[f].File == sl[i+2] {
+					filestats[f].Status = "R"
+					i++
+					break
+				}
+			} else {
+				if filestats[f].File == sl[i+1] {
+					filestats[f].Status = sl[i]
+					break
+				}
 			}
 		}
 	}

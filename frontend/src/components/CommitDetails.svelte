@@ -4,6 +4,7 @@
   	Name: string;
   	Dir: string;
   	Path: string[];
+    OldFile: string;
   	Added: number;
   	Deleted: number;
   	Status: string;
