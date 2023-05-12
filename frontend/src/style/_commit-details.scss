@@ -35,15 +35,11 @@
 }
 
 .filestatdir {
-  color: var(--color-text-muted);
-
-  &__dir {
-    &--files,
-    &--root {
-      & > .filestatdir__dir {
-        display: block;
-        margin-left: 1rem;
-      }
+  // The first dir is the root, skip styling that one.
+  &__dir &__dir {
+    margin-left: 1rem;
+    &-name {
+      color: var(--color-text-muted);
     }
   }
 

@@ -3,12 +3,11 @@
   export let files: FileStatDir;
 </script>
 
-<span class="filestatdir__dir {!files?.Name ? 'filestatdir__dir--root' : files?.Files?.length || files?.Dirs?.length > 1 ? 'filestatdir__dir--files' : ''}">
+<div class="filestatdir__dir">
   {#if files?.Name}
-    {files.Name}
-    {#if files?.Dirs?.length === 1 && !files?.Files?.length}
-      /
-    {/if}
+    <div class="filestatdir__dir-name">
+      {files.Name}
+    </div>
   {/if}
   {#if files?.Dirs?.length}
     {#each Object.entries(files.Dirs) as [_, d]}
@@ -25,4 +24,4 @@
       </div>
     {/each}
   {/if}
-</span>
+</div>

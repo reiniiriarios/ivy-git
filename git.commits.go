@@ -550,15 +550,12 @@ func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
 		}
 	}
 
-	println("\n")
 	// Parse files into directory tree.
 	files := FileStatDir{}
 	for _, f := range filestats {
-		println(f.File)
 		c := &files
 		for n, p := range f.Path {
 			if p != "." {
-				println("looking for", p)
 				added := false
 				for j := range c.Dirs {
 					if c.Dirs[j].Name == p {
@@ -567,7 +564,6 @@ func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
 					}
 				}
 				if !added {
-					println("adding", p, "to", c.Name)
 					c.Dirs = append(c.Dirs, FileStatDir{
 						Name: p,
 						Path: append(f.Path[:n], p),
@@ -576,14 +572,35 @@ func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
 				}
 			}
 			if n == len(f.Path)-1 {
-				println("appending", f.Name, "to", c.Name)
 				c.Files = append(c.Files, f)
 			}
 		}
 	}
 
+	// Trim tree.
+	trimDirs(&files)
+
 	return CommitDiffSummaryResponse{
 		Response: "success",
 		Files:    files,
+	}
+}
+
+// Trim dirs with no contents except one dir.
+// This collapses dirs to, e.g.
+//
+//	foo / bar
+//	  baz.go
+//
+// if foo doesn't have any files changed and only one subdir, bar.
+func trimDirs(dir *FileStatDir) {
+	if dir.Name != "" && len(dir.Dirs) == 1 && len(dir.Files) == 0 {
+		dir.Dirs[0].Name = dir.Name + " / " + dir.Dirs[0].Name
+		*dir = dir.Dirs[0]
+		trimDirs(dir)
+	} else {
+		for d := range dir.Dirs {
+			trimDirs(&dir.Dirs[d])
+		}
 	}
 }
