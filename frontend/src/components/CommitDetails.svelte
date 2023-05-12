@@ -5,6 +5,8 @@
   	Dir: string;
   	Path: string[];
     OldFile: string;
+    OldName: string;
+    OldDir: string;
   	Added: number;
   	Deleted: number;
   	Status: string;

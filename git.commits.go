@@ -476,6 +476,8 @@ type FileStat struct {
 	Dir     string
 	Path    []string
 	OldFile string
+	OldName string
+	OldDir  string
 	Added   uint32
 	Deleted uint32
 	Status  string
@@ -538,12 +540,16 @@ func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
 			name := filepath.Base(file)
 			dir := filepath.Dir(file)
 			path := strings.Split(strings.ReplaceAll(dir, "\\", "/"), "/")
+			oldname := filepath.Base(oldfile)
+			olddir := filepath.Dir(oldfile)
 			filestats = append(filestats, FileStat{
 				File:    file,
 				Name:    name,
 				Dir:     dir,
 				Path:    path,
 				OldFile: oldfile,
+				OldName: oldname,
+				OldDir:  olddir,
 				Added:   uint32(a),
 				Deleted: uint32(d),
 			})

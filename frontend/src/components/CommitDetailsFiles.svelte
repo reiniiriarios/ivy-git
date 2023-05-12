@@ -18,7 +18,14 @@
     {#each Object.entries(files.Files) as [_, f]}
       <div class="filestatdir__file filestatdir__file--{f.Status}">
         {#if f.OldFile}
-          <span class="filestatdir__file-old">{f.OldFile} →</span>
+          <span class="filestatdir__file-old">
+            {#if f.Dir === f.OldDir}
+              {f.OldName}
+            {:else}
+              {f.OldFile}
+            {/if}
+            →
+          </span>
         {/if}
         {f.Name}
         <span class="diff">
