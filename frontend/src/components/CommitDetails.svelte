@@ -21,10 +21,10 @@
 </script>
 
 <script lang="ts">
-  import type { Commit } from "../scripts/graph";
-  import { GetCommitDetails, GetCommitDiffSummary } from "../../wailsjs/go/main/App";
-  import CommitDetailsFiles from "./CommitDetailsFiles.svelte";
-  import { resetDetailsSizing, setDetailsResizable } from "../scripts/commit-details-resize";
+  import type { Commit } from 'scripts/graph';
+  import { GetCommitDetails, GetCommitDiffSummary } from 'wailsjs/go/main/App';
+  import CommitDetailsFiles from 'components/CommitDetailsFiles.svelte';
+  import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
 
   interface CommitDetails {
   	Body: string;

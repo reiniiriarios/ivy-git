@@ -1,12 +1,12 @@
 <script lang="ts">
   export let active: boolean;
 
-  import { GetCommitList } from '../../wailsjs/go/main/App';
-  import { drawGraph, getSVGWidth, type Commit, type Ref } from '../scripts/graph';
-  import { createResizableColumn, setCommitsTable } from '../scripts/commit-table-resize';
-  import CommitRow from './CommitRow.svelte';
-  import CommitDetails from './CommitDetails.svelte';
-  import { setCommitsContainer } from '../scripts/commit-details-resize';
+  import { GetCommitList } from 'wailsjs/go/main/App';
+  import { drawGraph, getSVGWidth, type Commit, type Ref } from 'scripts/graph';
+  import { createResizableColumn, setCommitsTable } from 'scripts/commit-table-resize';
+  import CommitRow from 'components/CommitRow.svelte';
+  import CommitDetails from 'components/CommitDetails.svelte';
+  import { setCommitsContainer } from 'scripts/commit-details-resize';
 
   let commits: Commit[] = [];
   let HEAD: Ref;

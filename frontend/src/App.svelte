@@ -1,18 +1,18 @@
 <script lang="ts">
-  import "./style/style.scss";
-  import SelectRepo from "./components/SelectRepo.svelte";
-  import Confirm from './components/Confirm.svelte';
-  import Message from "./components/Message.svelte";
-  import SelectBranch from "./components/SelectBranch.svelte";
-  import Changes from "./components/Changes.svelte";
-  import MainTabs from "./components/MainTabs.svelte";
-  import TitleBar from "./components/TitleBar.svelte";
-  import ContextMenu from "./components/ContextMenu.svelte";
-  import { GoOs } from "../wailsjs/go/main/App";
-  import { tabUpDown } from "./scripts/keyboard-navigation";
+  import "style/style.scss";
+  import SelectRepo from "components/SelectRepo.svelte";
+  import Confirm from 'components/Confirm.svelte';
+  import Message from "components/Message.svelte";
+  import SelectBranch from "components/SelectBranch.svelte";
+  import Changes from "components/Changes.svelte";
+  import MainTabs from "components/MainTabs.svelte";
+  import TitleBar from "components/TitleBar.svelte";
+  import ContextMenu from "components/ContextMenu.svelte";
+  import { GoOs } from "wailsjs/go/main/App";
+  import { tabUpDown } from "scripts/keyboard-navigation";
 
-  import { currentRepo, repos } from "./stores/repos";
-  import { branches, currentBranch } from "./stores/branches";
+  import { currentRepo, repos } from "stores/repos";
+  import { branches, currentBranch } from "stores/branches";
 
   // Load initial ui state.
   function init() {

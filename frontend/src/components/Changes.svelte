@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { GitListChanges } from "../../wailsjs/go/main/App";
+  import { GitListChanges } from 'wailsjs/go/main/App';
 
   interface Change {
     File: string;

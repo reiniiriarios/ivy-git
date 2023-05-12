@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { repos, currentRepo } from '../stores/repos';
+  import { repos, currentRepo } from 'stores/repos';
 
   let listVisible: boolean = false;
 

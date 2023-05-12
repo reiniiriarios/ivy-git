@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Details from "./Details.svelte";
-  import Diff from "./Diff.svelte";
-  import Commits from "./Commits.svelte";
+  import Details from 'components/Details.svelte';
+  import Diff from 'components/Diff.svelte';
+  import Commits from 'components/Commits.svelte';
 
   let tab = "tree";
   (window as any).currentTab = tab;

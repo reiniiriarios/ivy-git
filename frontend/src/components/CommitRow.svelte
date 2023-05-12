@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { UNCOMMITED_HASH, type Commit, type Ref } from "../scripts/graph";
-  import CommitLabels from "./CommitLabels.svelte";
+  import { UNCOMMITED_HASH, type Commit, type Ref } from 'scripts/graph';
+  import CommitLabels from 'components/CommitLabels.svelte';
 
   export let commit: Commit;
   export let HEAD: Ref;

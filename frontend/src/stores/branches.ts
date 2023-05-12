@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { GetBranches, GetCurrentBranch, SwitchBranch } from '../../wailsjs/go/main/App';
+import { GetBranches, GetCurrentBranch, SwitchBranch } from 'wailsjs/go/main/App';
 
 interface Branch {
   Name: string;

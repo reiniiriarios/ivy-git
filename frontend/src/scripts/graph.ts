@@ -1,4 +1,4 @@
-import { vertexOut, vertexOver } from './vertex';
+import { vertexOut, vertexOver } from 'scripts/vertex';
 
 // Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";

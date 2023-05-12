@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from '../../wailsjs/go/main/App';
+import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from 'wailsjs/go/main/App';
 
 export interface Repo {
   Name: string;

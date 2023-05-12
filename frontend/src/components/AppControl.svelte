@@ -1,5 +1,5 @@
 <script lang="ts">
-  import octicons from "@primer/octicons";
+  import octicons from '@primer/octicons';
 
   export let os: string = "";
   export let position: string;

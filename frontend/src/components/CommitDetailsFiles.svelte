@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type FileStatDir } from "./CommitDetails.svelte";
+  import { type FileStatDir } from 'components/CommitDetails.svelte';
   export let files: FileStatDir;
 </script>
 

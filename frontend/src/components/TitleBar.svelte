@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { GoOs } from "../../wailsjs/go/main/App";
-  import AppControl from "./AppControl.svelte";
+  import { GoOs } from 'wailsjs/go/main/App';
+  import AppControl from 'components/AppControl.svelte';
 </script>
 
 <header>

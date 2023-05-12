@@ -1,8 +1,8 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
 
-  import { getLabelDist, type Commit, type Ref } from "../scripts/graph";
-  import { currentBranch } from '../../src/stores/branches';
+  import { getLabelDist, type Commit, type Ref } from 'scripts/graph';
+  import { currentBranch } from 'stores/branches';
 
   function isCurrent(n: string): boolean {
     return $currentBranch.Name == n;

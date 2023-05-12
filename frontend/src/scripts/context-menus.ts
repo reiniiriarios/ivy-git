@@ -1,4 +1,4 @@
-import { ClipboardSetText } from "../../wailsjs/runtime/runtime";
+import { ClipboardSetText } from 'wailsjs/runtime/runtime';
 
 interface Menus { [name: string]: Menu }
 

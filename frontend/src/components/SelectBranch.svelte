@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { branches, currentBranch } from "../../src/stores/branches";
+  import { branches, currentBranch } from 'stores/branches';
 
   let listVisible: boolean = false;
 
