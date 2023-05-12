@@ -2,9 +2,10 @@
   import octicons from '@primer/octicons';
 
   import { getLabelDist, type Commit, type Ref } from "../scripts/graph";
+  import { currentBranch } from '../../src/stores/branches';
 
-  function current(n: string): boolean {
-    return (window as any).currentBranch.Name == n;
+  function isCurrent(n: string): boolean {
+    return $currentBranch.Name == n;
   }
 
   export let commit: Commit;
@@ -16,7 +17,7 @@
     {#each commit.Branches as b}
       <div class="refs__label refs__label--branch"
         data-name="{b.Name}"
-        data-current="{current(b.Name)}"
+        data-current="{isCurrent(b.Name)}"
         data-menu="branch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__label-name">{b.Name}</div>

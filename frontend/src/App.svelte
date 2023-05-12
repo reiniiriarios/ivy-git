@@ -12,12 +12,13 @@
   import { tabUpDown } from "./scripts/keyboard-navigation";
 
   import { currentRepo, repos } from "./stores/repos";
+  import { branches, currentBranch } from "./stores/branches";
 
   // Load initial ui state.
   function init() {
     currentRepo.refresh();
-    (window as any).getCurrentBranch();
-    (window as any).getBranches();
+    currentBranch.refresh();
+    branches.refresh();
     repos.refresh();
     (window as any).getChanges();
     if ((window as any).currentTab == 'tree') {

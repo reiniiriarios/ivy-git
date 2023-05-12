@@ -37,27 +37,28 @@ function createRepos() {
 export const repos = createRepos();
 
 function createCurrentRepo() {
-  const { subscribe, update } = writable("");
+  const { subscribe, update, set } = writable("");
   
   return {
     subscribe,
     refresh: async () => {
       GetSelectedRepo().then(result => {
-        update(_ => result)
+        set(result);
       });
     },
     set: (r: string) => {
       update(c => {
-        if (c !== r) {
-          UpdateSelectedRepo(r).then(() => {
-            if ((window as any).currentTab == 'tree') {
-              (window as any).GetCommitList();
-              (window as any).hideCommitDetails();
-            }
-          });
-          c = r;
+        if (c === r) {
+          return c;
         }
-        return c;
+        UpdateSelectedRepo(r).then(() => {
+          if ((window as any).currentTab == 'tree') {
+            (window as any).GetCommitList();
+            (window as any).hideCommitDetails();
+          }
+          (window as any).getChanges();
+        });
+        return r;
       });
     },
   };

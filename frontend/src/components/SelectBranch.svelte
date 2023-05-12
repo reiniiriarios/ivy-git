@@ -1,60 +1,15 @@
 <script lang="ts">
-  import {
-    GetCurrentBranch,
-    GetBranches,
-    SwitchBranch,
-  } from "../../wailsjs/go/main/App";
+  import { branches, currentBranch } from "../../src/stores/branches";
 
-  interface Branch {
-    Name: string;
-  }
-
-  let selectedBranch: Branch;
-  let branches: Branch[] = [];
   let listVisible: boolean = false;
-
-  (window as any).getBranches = () => {
-    GetBranches().then((result) => {
-      switch (result.Response) {
-        case "error":
-          (window as any).messageModal(result.Message);
-          break;
-
-        case "success":
-          branches = result.Branches;
-          break;
-      }
-    });
-  };
-
-  (window as any).getCurrentBranch = () => {
-    GetCurrentBranch().then((result) => {
-      selectedBranch = result.Branch as Branch;
-      selectedBranch = selectedBranch;
-      (window as any).currentBranch = selectedBranch;
-    });
-  };
 
   function newBranch() {
     // ...
   }
 
-  function switchBranch(e: any) {
-    SwitchBranch(e.target.dataset.name).then((result) => {
-      switch (result.Response) {
-        case "error":
-          (window as any).messageModal(result.Message);
-          break;
-
-        case "success":
-          selectedBranch = {
-            Name: e.target.dataset.name,
-          };
-          hideList();
-          (window as any).getChanges();
-          break;
-      }
-    });
+  function switchBranch(b: string) {
+    currentBranch.set(b);
+    hideList();
   }
 
   function toggleList(e?: MouseEvent | KeyboardEvent) {
@@ -92,7 +47,7 @@
 
 <button class="btn btn-drop sidebar-big-button" id="current-branch" on:click={toggleList}>
   <div class="sidebar-big-button__label">Current Branch:</div>
-  <div class="sidebar-big-button__value">{selectedBranch?.Name ?? "none selected"}</div>
+  <div class="sidebar-big-button__value">{$currentBranch?.Name ?? "none selected"}</div>
 </button>
 
 <div id="all-branches" class="sidebar-dropdown">
@@ -104,13 +59,9 @@
         <button class="btn" on:click={newBranch}>Create Branch +</button>
       </div>
       <ul class="sidebar-dropdown__list">
-        {#each Object.entries(branches) as [_, branch]}
+        {#each Object.entries($branches) as [_, branch]}
           <li>
-            <button
-              class="list-btn name"
-              on:click={switchBranch}
-              data-name={branch?.Name}>{branch?.Name}</button
-            >
+            <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>{branch?.Name}</button>
           </li>
         {/each}
       </ul>
