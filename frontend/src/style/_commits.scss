@@ -3,6 +3,7 @@
   height: calc(100vh - var(--tabs-height) - var(--title-bar-height) - var(--resize-bar-width));
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   &__table-container {
     overflow: auto;
