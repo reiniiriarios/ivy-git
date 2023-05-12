@@ -54,6 +54,12 @@
     background-color: var(--color-commitlistitem-bg-hover);
   }
 
+  &:focus,
+  &:focus-within {
+    background-color: var(--color-commitlistitem-bg-hover);
+    outline: 0;
+  }
+
   &.active {
     background-color: var(--color-commitlistitem-bg-active);
   }
