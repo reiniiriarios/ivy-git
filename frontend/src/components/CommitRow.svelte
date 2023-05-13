@@ -36,7 +36,10 @@
   }
 </script>
 
-<tr class="commit c-{commit.Color} {u ? 'uncommitted' : ''} {commit.Merge ? 'merge' : ''} {commit.Stash ? 'stash' : ''}"
+<tr class="commit c-{commit.Color}"
+  class:uncommitted={u}
+  class:merge={commit.Merge}
+  class:stash={commit.Stash}
   data-id="{commit.Id}"
   data-hash="{commit.Hash}"
   data-head="{h}"

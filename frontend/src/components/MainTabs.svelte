@@ -22,7 +22,7 @@
 
 <nav class="tabs">
   {#each Object.entries(tabs) as [t, d]}
-    <button class="tabs__tab {$currentTab == t ? 'active' : ''}" id="tab-{t}" on:click={() => $currentTab = t}>
+    <button class="tabs__tab" class:active={$currentTab === t} id="tab-{t}" on:click={() => $currentTab = t}>
       {d.n}
     </button>
   {/each}

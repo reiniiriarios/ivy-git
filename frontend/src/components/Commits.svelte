@@ -13,7 +13,7 @@
         <thead>
           <tr>
             <th use:createResizableColumn data-name="branch" data-order="0" class="commits__th commits__th--branch">Branch</th>
-            <th use:createResizableColumn data-name="tree" data-order="1" class="commits__th commits__th--tree" style="min-width: {$tree.width};">Tree</th>
+            <th use:createResizableColumn data-name="tree" data-order="1" class="commits__th commits__th--tree" style:min-width={$tree.width}>Tree</th>
             <th use:createResizableColumn data-name="subject" data-order="2" class="commits__th commits__th--subject">Commit</th>
             <th use:createResizableColumn data-name="authorName" data-order="3" class="commits__th commits__th--author">Author</th>
             <th use:createResizableColumn data-name="authorDate" data-order="4" data-resizeflex class="commits__th commits__th--date">Date</th>

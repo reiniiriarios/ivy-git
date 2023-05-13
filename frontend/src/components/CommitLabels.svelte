@@ -83,5 +83,5 @@
     </div>
   {/if}
 
-  <div class="refs__line" style="width:{getLabelDist(commit.X)}; right: -{getLabelDist(commit.X)};"></div>
+  <div class="refs__line" style:width={getLabelDist(commit.X)} style:right={'-'+getLabelDist(commit.X)}></div>
 </div>
