@@ -8,6 +8,7 @@
   import MainTabs from "components/MainTabs.svelte";
   import TitleBar from "components/TitleBar.svelte";
   import ContextMenu from "components/ContextMenu.svelte";
+
   import { tabUpDown } from "scripts/keyboard-navigation";
 
   import { currentRepo, repos } from "stores/repos";
@@ -15,7 +16,9 @@
   import { changes } from "stores/changes";
   import { currentTab } from "stores/current-tab";
   import { commitData } from "stores/commit-data";
+
   import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
+  import { ResizeWindow } from "wailsjs/go/main/App";
 
   // Load initial ui state.
   function init() {
@@ -43,6 +46,8 @@
   });
 
   window.addEventListener('keydown', tabUpDown);
+
+  window.addEventListener('resize', ResizeWindow);
 </script>
 
 <TitleBar />

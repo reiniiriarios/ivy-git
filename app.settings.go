@@ -24,6 +24,11 @@ type Settings struct {
 	Version string
 }
 
+type AppData struct {
+	WindowWidth  int
+	WindowHeight int
+}
+
 // Load configuration yaml for app.
 func (a *App) loadConfig() {
 	rp := filepath.Join(a.settingsLocationLocal(), "repos.yaml")
@@ -38,11 +43,20 @@ func (a *App) loadConfig() {
 	sp := filepath.Join(a.settingsLocationRoaming(), "settings.yaml")
 	settings_data := a.initConfigFile(sp)
 	var settings Settings
-	err2 := yaml.Unmarshal(settings_data, &settings)
-	if err2 != nil {
-		runtime.LogError(a.ctx, err2.Error())
+	err = yaml.Unmarshal(settings_data, &settings)
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
 	}
 	a.Settings = settings
+
+	dp := filepath.Join(a.settingsLocationLocal(), "appdata.yaml")
+	app_data := a.initConfigFile(dp)
+	var data AppData
+	err = yaml.Unmarshal(app_data, &data)
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+	}
+	a.AppData = data
 }
 
 // Save repo data to config file.
@@ -61,12 +75,27 @@ func (a *App) saveRepoData() {
 
 // Save settings to config file.
 func (a *App) saveSettings() {
+	a.Settings.Version = VERSION
 	data, err := yaml.Marshal(&a.Settings)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 	}
 
 	rp := filepath.Join(a.settingsLocationRoaming(), "settings.yaml")
+	err2 := os.WriteFile(rp, []byte(data), 0644)
+	if err2 != nil {
+		runtime.LogError(a.ctx, err2.Error())
+	}
+}
+
+// Save app data to config file.
+func (a *App) saveData() {
+	data, err := yaml.Marshal(&a.AppData)
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+	}
+
+	rp := filepath.Join(a.settingsLocationLocal(), "appdata.yaml")
 	err2 := os.WriteFile(rp, []byte(data), 0644)
 	if err2 != nil {
 		runtime.LogError(a.ctx, err2.Error())
@@ -150,4 +179,13 @@ func (a *App) settingsDirName() string {
 	}
 	// For unix, use the shortname.
 	return SHORT_NAME
+}
+
+// When window resizes, save that info.
+func (a *App) ResizeWindow() bool {
+	w, h := runtime.WindowGetSize(a.ctx)
+	a.AppData.WindowWidth = w
+	a.AppData.WindowHeight = h
+	a.saveData()
+	return true
 }
