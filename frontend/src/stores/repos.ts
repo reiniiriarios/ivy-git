@@ -3,6 +3,7 @@ import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } fr
 import { commitData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from './current-tab';
+import { currentCommit } from './commit-details';
 
 export interface Repo {
   Name: string;
@@ -60,7 +61,7 @@ function createCurrentRepo() {
         UpdateSelectedRepo(r).then(() => {
           if (cTab === 'tree') {
             commitData.refresh();
-            (window as any).hideCommitDetails();
+            currentCommit.unset();
           }
           changes.refresh();
         });

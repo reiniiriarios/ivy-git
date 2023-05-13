@@ -39,6 +39,7 @@ type Commit struct {
 }
 
 type CommitAddl struct {
+	Hash               string
 	Body               string
 	CommitterName      string
 	CommitterEmail     string
@@ -461,6 +462,7 @@ func (a *App) GetCommitDetails(hash string) CommitResponse {
 	return CommitResponse{
 		Response: "success",
 		Commit: CommitAddl{
+			Hash:               hash,
 			Body:               parts[3],
 			CommitterName:      parts[0],
 			CommitterEmail:     parts[1],

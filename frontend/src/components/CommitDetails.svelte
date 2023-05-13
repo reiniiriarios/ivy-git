@@ -1,88 +1,26 @@
-<script lang="ts" context="module">
-  export interface FileStat {
-  	File: string;
-  	Name: string;
-  	Dir: string;
-  	Path: string[];
-    OldFile: string;
-    OldName: string;
-    OldDir: string;
-  	Added: number;
-  	Deleted: number;
-  	Status: string;
-  }
-
-  export interface FileStatDir {
-  	Name: string;
-    Path: string[];
-  	Files: FileStat[];
-  	Dirs: FileStatDir[];
-  }
-</script>
-
 <script lang="ts">
-  import type { Commit } from 'stores/commit-data';
-  import { GetCommitDetails, GetCommitDiffSummary } from 'wailsjs/go/main/App';
   import CommitDetailsFiles from 'components/CommitDetailsFiles.svelte';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
+  import { type Commit } from 'stores/commit-data';
+  import { currentCommit, commitDetails, commitDiffSummary } from 'stores/commit-details';
 
-  interface CommitDetails {
-  	Body: string;
-  	CommitterName: string;
-  	CommitterEmail: string;
-  	CommitterTimestamp: number;
-  	CommitterDatetime: string;
-  }
-
-  let commit: Commit;
-  let commitDetails: CommitDetails;
-  let commitFiles: FileStatDir;
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
-  (window as any).currentCommitDetails = (): string => {
-    return commit?.Hash ?? '';
-  }
-
-  (window as any).showCommitDetails = (c: Commit) => {
+  let commit: Commit;
+  currentCommit.subscribe(c => {
     commit = c;
-    document.documentElement.style.setProperty('--commit-details-height', height);
-
-    GetCommitDetails(c.Hash).then(r => {
-      switch (r.Response) {
-        case "error":
-          (window as any).messageModal(r.Message);
-          break;
-
-        case "success":
-          commitDetails = r.Commit as CommitDetails;
-          break;
-      }
-    });
-
-    GetCommitDiffSummary(c.Hash).then(r => {
-      switch (r.Response) {
-        case "error":
-          (window as any).messageModal(r.Message);
-          break;
-
-        case "success":
-          commitFiles = r.Files
-          console.log(r.Files);
-          break;
-      }
-    })
-  };
-
-  (window as any).hideCommitDetails = () => {
-    document.documentElement.style.setProperty('--commit-details-height', '0');
-    resetDetailsSizing();
-    commit = null;
-  }
-  (window as any).hideCommitDetails();
+    if (c?.Hash) {
+      document.documentElement.style.setProperty('--commit-details-height', height);
+    }
+    else {
+      document.documentElement.style.setProperty('--commit-details-height', '0');
+      resetDetailsSizing();
+    }
+  });
 </script>
 
 <div class="commit-details" use:setDetailsResizable>
-  {#if commit}
+  {#if commit?.Hash}
     <div class="commit-details__left">
       <table>
         <tr>
@@ -114,36 +52,30 @@
         <tr>
           <th>Committer</th>
           <td>
-            {#if commitDetails}
-              {commitDetails.CommitterName}
-              {#if commitDetails.CommitterEmail}
-                &lt;<a href="mailto:{commitDetails.CommitterEmail}">{commitDetails.CommitterEmail}</a>&gt;
-              {/if}
+            {$commitDetails?.CommitterName}
+            {#if $commitDetails?.CommitterEmail}
+              &lt;<a href="mailto:{$commitDetails.CommitterEmail}">{$commitDetails.CommitterEmail}</a>&gt;
             {/if}
           </td>
         </tr>
         <tr>
           <th>Committed Date</th>
           <td>
-            {#if commitDetails}
-              {commitDetails.CommitterDatetime}
-            {/if}
+            {$commitDetails?.CommitterDatetime}
           </td>
         </tr>
         <tr>
           <th>Message</th>
           <td>
             <div class="message__subject">{commit.Subject}</div>
-            {#if commitDetails}
-              <div class="message__body">{commitDetails.Body}</div>
-            {/if}
+            <div class="message__body">{$commitDetails?.Body}</div>
           </td>
         </tr>
       </table>
     </div>
     <div class="commit-details__right">
       <div class="filestatdir">
-        <CommitDetailsFiles files={commitFiles} />
+        <CommitDetailsFiles files={$commitDiffSummary} />
       </div>
     </div>
   {/if}

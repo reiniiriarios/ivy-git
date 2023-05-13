@@ -2,6 +2,7 @@
   import { UNCOMMITED_HASH } from 'scripts/graph';
   import CommitLabels from 'components/CommitLabels.svelte';
   import { HEAD, type Commit } from 'stores/commit-data';
+  import { currentCommit } from 'stores/commit-details';
 
   export let commit: Commit;
 
@@ -15,17 +16,15 @@
     }
   }
 
-  function showDetails(e: MouseEvent | KeyboardEvent) {
+  function showDetails(e: MouseEvent & { currentTarget: HTMLElement } | KeyboardEvent & { currentTarget: HTMLElement }) {
     if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
       return;
     }
     clearActive();
-    if ((window as any).currentCommitDetails() === commit.Hash) {
-      (window as any).hideCommitDetails();
-    } else {
-      (window as any).showCommitDetails(commit);
-      (document.querySelector(`.commit[data-id="${commit.Id}"]`) as HTMLElement).classList.add('active');
+    if ($currentCommit.Hash !== commit.Hash) {
+      e.currentTarget.classList.add('active');
     }
+    currentCommit.toggle(commit);
   }
 
   function setKeyboard(el: HTMLElement) {
