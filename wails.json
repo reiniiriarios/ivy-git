@@ -9,5 +9,12 @@
   "author": {
     "name": "Emma Litwa-Vulcu",
     "email": "emma@litwavulcu.com"
+  },
+  "info": {
+    "companyName": "Emma Litwa-Vulcu",
+    "productName": "Ivy Git",
+    "productVersion": "0.0.1",
+    "copyright": "Copyright (c) 2023 Emma Litwa-Vulcu",
+    "comments": "Ivy Git, Copyright (c) 2023 Emma Litwa-Vulcu"
   }
 }
