@@ -1,20 +1,11 @@
 package main
 
 import (
-	"errors"
-	"io/ioutil"
-	"os"
 	"path/filepath"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"gopkg.in/yaml.v3"
 )
-
-type RepoSaveData struct {
-	CurrentRepo string
-	Repos       map[string]Repo
-}
 
 type Repo struct {
 	Name      string
@@ -26,29 +17,6 @@ type RepoResponse struct {
 	Message  string
 	Id       string
 	Repo     Repo
-}
-
-// Load configuration yaml for app.
-func (a *App) LoadYaml() {
-	if _, err := os.Stat(a.repoYamlLocation()); errors.Is(err, os.ErrNotExist) {
-		a.initYaml()
-	}
-
-	yfile, err := ioutil.ReadFile(a.repoYamlLocation())
-
-	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
-	}
-
-	var data RepoSaveData
-
-	err2 := yaml.Unmarshal(yfile, &data)
-
-	if err2 != nil {
-		runtime.LogError(a.ctx, err2.Error())
-	}
-
-	a.RepoSaveData = data
 }
 
 // FRONTEND: Get repo information.
@@ -127,33 +95,4 @@ func (a *App) RemoveRepo(id string) map[string]Repo {
 	delete(a.RepoSaveData.Repos, id)
 	a.saveRepoData()
 	return a.RepoSaveData.Repos
-}
-
-// Save repo data to yaml config.
-func (a *App) saveRepoData() {
-	data, err := yaml.Marshal(&a.RepoSaveData)
-	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
-	}
-
-	err2 := os.WriteFile(a.repoYamlLocation(), []byte(data), 0644)
-	if err2 != nil {
-		runtime.LogError(a.ctx, err2.Error())
-	}
-}
-
-// Create yaml config.
-func (a *App) initYaml() {
-	f, e := os.Create(a.repoYamlLocation())
-	if e != nil {
-		runtime.LogError(a.ctx, e.Error())
-	}
-	defer f.Close()
-}
-
-// TODO: Return location of config yaml.
-// This should be different depending on os.
-func (a *App) repoYamlLocation() string {
-	// todo
-	return "repos.yaml"
 }

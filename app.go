@@ -9,6 +9,7 @@ import (
 type App struct {
 	ctx          context.Context
 	RepoSaveData RepoSaveData
+	Settings     Settings
 }
 
 type GenericResponse struct {
@@ -25,7 +26,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	a.LoadYaml()
+	a.loadConfig()
 }
 
 func (a *App) domready(ctx context.Context) {
