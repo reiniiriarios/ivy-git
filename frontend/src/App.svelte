@@ -8,7 +8,6 @@
   import MainTabs from "components/MainTabs.svelte";
   import TitleBar from "components/TitleBar.svelte";
   import ContextMenu from "components/ContextMenu.svelte";
-  import { GoOs } from "wailsjs/go/main/App";
   import { tabUpDown } from "scripts/keyboard-navigation";
 
   import { currentRepo, repos } from "stores/repos";
@@ -16,6 +15,7 @@
   import { changes } from "stores/changes";
   import { currentTab } from "stores/current-tab";
   import { commitData } from "stores/commit-data";
+  import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
 
   // Load initial ui state.
   function init() {
@@ -27,8 +27,8 @@
     if ($currentTab === 'tree') {
       commitData.refresh();
     }
-    GoOs().then(os => {
-      switch (os) {
+    (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
+      switch (env.platform) {
         case "darwin":
           document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
           break;

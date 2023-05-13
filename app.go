@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"runtime"
 )
 
 // App struct
@@ -31,10 +30,4 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) domready(ctx context.Context) {
 	// ...
-}
-
-// FRONTEND: Get the os string.
-// See https://github.com/golang/go/blob/master/src/go/build/syslist.go
-func (a *App) GoOs() string {
-	return runtime.GOOS
 }

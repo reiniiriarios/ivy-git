@@ -1,22 +1,23 @@
 <script lang="ts">
-  import { GoOs } from 'wailsjs/go/main/App';
   import AppControl from 'components/AppControl.svelte';
+  import type { EnvironmentInfo } from 'wailsjs/runtime/runtime';
+
+  let os: string;
+  (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
+    os = env.platform;
+  });
 </script>
 
 <header>
-  {#await GoOs()}
+  {#if !os}
     <div id="title">Ivy Git</div>
-  {:then os}
-    {#if os == "darwin"}
-      <AppControl os={os} position="left" />
-      <div id="title">Ivy Git</div>
-    {:else}
-      <div id="title">Ivy Git</div>
-      <AppControl os={os} position="right" />
-    {/if}
-  {:catch}
-    <AppControl position="right" />
-  {/await}
+  {:else if os == "darwin"}
+    <AppControl os={os} position="left" />
+    <div id="title">Ivy Git</div>
+  {:else}
+    <div id="title">Ivy Git</div>
+    <AppControl os={os} position="right" />
+  {/if}
 </header>
 
 <style lang="scss">
