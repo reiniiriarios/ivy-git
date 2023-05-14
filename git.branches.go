@@ -107,3 +107,34 @@ func (a *App) getAheadBehind(branch string, remote string) (uint32, uint32, erro
 	behind, _ := strconv.ParseInt(ab[1], 10, 32)
 	return uint32(ahead), uint32(behind), nil
 }
+
+func (a *App) PushBranch(remote string, branch string) GenericResponse {
+	_, err := a.GitCwd("push", remote, branch+":"+branch)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
+
+func (a *App) PullBranch(remote string, branch string, rebase bool) GenericResponse {
+	var err error
+	if rebase {
+		_, err = a.GitCwd("pull", remote, branch+":"+branch, "--rebase")
+	} else {
+		_, err = a.GitCwd("pull", remote, branch+":"+branch)
+	}
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}

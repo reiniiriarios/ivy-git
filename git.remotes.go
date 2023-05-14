@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -95,25 +96,32 @@ func (a *App) GetRemotes() RemotesResponse {
 					rn = urn[1]
 				}
 
-				m := a.getMainBranchForRemote(d[0])
 				var ad, bd uint32 = 0, 0
-				if a.BranchExists(m) {
-					ad, bd, _ = a.getAheadBehind(m, d[0])
+				currentBranch, err := a.GitCwd("rev-parse", "--abbrev-ref", "HEAD")
+				if err != nil {
+					currentBranch = strings.ReplaceAll(strings.ReplaceAll(currentBranch, "\r", ""), "\n", "")
+					ad, bd, err = a.getAheadBehind(currentBranch, d[0])
+					if err != nil {
+						numCommits, err := a.GitCwd("rev-list", "--count", currentBranch)
+						if err == nil {
+							n, _ := strconv.ParseInt(numCommits, 10, 32)
+							ad = uint32(n)
+						}
+					}
 				}
 
 				rmap[d[0]] = len(remotes)
 				remotes = append(remotes, Remote{
-					Name:       d[0],
-					Url:        d[1],
-					Fetch:      f,
-					Push:       p,
-					Site:       s,
-					Repo:       ur,
-					User:       u,
-					RepoName:   rn,
-					MainBranch: m,
-					Ahead:      ad,
-					Behind:     bd,
+					Name:     d[0],
+					Url:      d[1],
+					Fetch:    f,
+					Push:     p,
+					Site:     s,
+					Repo:     ur,
+					User:     u,
+					RepoName: rn,
+					Ahead:    ad,
+					Behind:   bd,
 				})
 			}
 		}
