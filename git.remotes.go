@@ -164,3 +164,16 @@ func (a *App) getMainBranchForRemote(remote string) string {
 	}
 	return maybe_main
 }
+
+func (a *App) FetchRemote(remote string) GenericResponse {
+	_, err := a.GitCwd("fetch", remote, "--prune")
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
