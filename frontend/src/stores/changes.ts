@@ -1,3 +1,4 @@
+import { parseResponse } from 'scripts/parse-response';
 import { writable } from 'svelte/store';
 import { GitListChanges } from 'wailsjs/go/main/App';
 
@@ -19,14 +20,10 @@ function createChanges() {
     subscribe,
     refresh: async () => {
       GitListChanges().then(result => {
-        if (result.Response === "error") {
-          (window as any).messageModal(result.Message);
-        } else {
-          set({
-            x: result.ChangesX ?? [],
-            y: result.ChangesY ?? [],
-          });
-        }
+        parseResponse(result, () => set({
+          x: result.ChangesX ?? [],
+          y: result.ChangesY ?? [],
+        }));
       });      
     },
   };

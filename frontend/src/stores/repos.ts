@@ -2,8 +2,11 @@ import { writable } from 'svelte/store';
 import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from 'wailsjs/go/main/App';
 import { commitData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
-import { currentTab } from './current-tab';
-import { currentCommit } from './commit-details';
+import { currentTab } from 'stores/current-tab';
+import { currentCommit } from 'stores/commit-details';
+import { branches } from 'stores/branches';
+import { remotes } from 'stores/remotes';
+import { parseResponse } from 'scripts/parse-response';
 
 export interface Repo {
   Name: string;
@@ -21,13 +24,7 @@ function createRepos() {
       });
     },
     add: async () => {
-      AddRepo().then((result) => {
-        if (result.Response === "error") {
-          (window as any).messageModal(result.Message);
-        } else {
-          repos.refresh();
-        }
-      });
+      AddRepo().then((result) => parseResponse(result, repos.refresh));
     },
     delete: async (id: string) => {
       (window as any).confirmModal(`Are you sure you want to remove ${repos[id].Name}?`, () => {
@@ -62,7 +59,10 @@ function createCurrentRepo() {
           if (cTab === 'tree') {
             commitData.refresh();
             currentCommit.unset();
+          } else if (cTab === 'details') {
+            remotes.refresh();
           }
+          branches.refresh();
           changes.refresh();
         });
         return r;

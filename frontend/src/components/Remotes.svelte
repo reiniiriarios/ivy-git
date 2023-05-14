@@ -1,5 +1,6 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
+  import { parseResponse } from "scripts/parse-response";
   import { remotes } from "stores/remotes";
   import { onMount } from 'svelte';
   import { FetchRemote } from "wailsjs/go/main/App";
@@ -8,13 +9,10 @@
     let el = e.target as HTMLElement;
     el.setAttribute('disabled', 'disabled');
     FetchRemote(remote).then((r) => {
-      if (r.Response === "error") {
-        (window as any).messageModal(r.Message);
+      parseResponse(r, checkIcon(el), () => {
         el.removeAttribute('disabled');
         remotes.refresh();
-      } else {
-        checkIcon(el);
-      }
+      });
     });
   }
 
@@ -22,13 +20,10 @@
     let el = e.target as HTMLElement;
     el.setAttribute('disabled', 'disabled');
     FetchRemote(remote).then((r) => {
-      if (r.Response === "error") {
-        (window as any).messageModal(r.Message);
+      parseResponse(r, checkIcon(el), () => {
         el.removeAttribute('disabled');
         remotes.refresh();
-      } else {
-        checkIcon(el);
-      }
+      });
     });
   }
 
@@ -36,13 +31,10 @@
     let el = e.target as HTMLElement;
     el.setAttribute('disabled', 'disabled');
     FetchRemote(remote).then((r) => {
-      if (r.Response === "error") {
-        (window as any).messageModal(r.Message);
+      parseResponse(r, checkIcon(el), () => {
         el.removeAttribute('disabled');
         remotes.refresh();
-      } else {
-        checkIcon(el);
-      }
+      });
     });
   }
 
@@ -111,13 +103,13 @@
                 <span class="icon">{@html octicons['arrow-down-left'].toSVG({ "width": 16 })}</span>
                 Fetch
               </button>
-              <button class="btn" on:click={e => pull(e, remote.Name)} disabled={remote.Behind == 0}>
-                <span class="icon">{@html octicons['arrow-down'].toSVG({ "width": 16 })}</span>
-                Pull
-              </button>
               <button class="btn" on:click={e => push(e, remote.Name)} disabled={remote.Ahead == 0}>
                 <span class="icon">{@html octicons['arrow-up'].toSVG({ "width": 16 })}</span>
                 Push
+              </button>
+              <button class="btn" on:click={e => pull(e, remote.Name)} disabled={remote.Behind == 0}>
+                <span class="icon">{@html octicons['arrow-down'].toSVG({ "width": 16 })}</span>
+                Pull
               </button>
             </td>
           </tr>

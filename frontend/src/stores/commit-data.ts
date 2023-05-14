@@ -1,4 +1,5 @@
 import { drawGraph, getSVGWidth } from 'scripts/graph';
+import { parseResponse } from 'scripts/parse-response';
 import { derived, writable } from 'svelte/store';
 import { GetCommitList } from 'wailsjs/go/main/App';
 
@@ -86,9 +87,7 @@ function createCommitData() {
     subscribe,
     refresh: async () => {
       GetCommitList().then(result => {
-        if (result.Response === "error") {
-          (window as any).messageModal(result.Message);
-        } else {
+        parseResponse(result, () => {
           set({
             commits: result.Commits,
             HEAD: result.HEAD,
@@ -98,7 +97,7 @@ function createCommitData() {
           console.log('commits', result.commits);
           console.log('branches', result.Graph.Branches);
           console.log('vertices', result.Graph.Vertices);
-        }
+        });
       });
     },
   };

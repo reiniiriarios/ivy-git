@@ -1,9 +1,11 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { GetBranches, GetCurrentBranch, SwitchBranch } from 'wailsjs/go/main/App';
 import { commitData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from 'stores/current-tab';
 import { currentCommit } from 'stores/commit-details';
+import { remotes } from 'stores/remotes';
+import { parseResponse } from 'scripts/parse-response';
 
 let cTab = '';
 currentTab.subscribe(t => cTab = t);
@@ -19,7 +21,7 @@ function createBranches() {
     subscribe,
     refresh: async () => {
       GetBranches().then(result => {
-        set(result as Branch[]);
+        set(result.Branches as Branch[]);
       });
     },
   };
@@ -37,24 +39,20 @@ function createCurrentBranch() {
       });
     },
     set: (b: string) => {
-      update(c => {
-        if (c.Name === b) {
-          return c;
-        }
+      if (b !== get(currentBranch).Name) {
         SwitchBranch(b).then(result => {
-          if (result.Response === "error") {
-            (window as any).messageModal(result.Message);
-          } else {
+          parseResponse(result, () => {
             if (cTab === 'tree') {
               commitData.refresh();
               currentCommit.unset();
+            } else if (cTab === 'details') {
+              remotes.refresh();
             }
             changes.refresh();
-            c = { Name: b };
-          }
-          return c;
+            set({ Name: b });
+          });
         });
-      });
+      }
     },
   };
 }

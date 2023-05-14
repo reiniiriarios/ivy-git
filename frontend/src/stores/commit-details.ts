@@ -1,6 +1,7 @@
-import { writable } from 'svelte/store';
-import { GetCommitDetails, GetCommitDiffSummary } from 'wailsjs/go/main/App';
-import type { Commit } from 'stores/commit-data';
+import { writable } from "svelte/store";
+import { GetCommitDetails, GetCommitDiffSummary } from "wailsjs/go/main/App";
+import type { Commit } from "stores/commit-data";
+import { parseResponse } from "scripts/parse-response";
 
 interface CommitDetails {
   Hash: string;
@@ -36,22 +37,23 @@ function createCurrentCommit() {
 
   return {
     subscribe,
-    toggle: (commit: Commit) => update(c => {
-      if (commit.Hash === c.Hash) {
-        commitDetails.set({} as CommitDetails);
-        commitDiffSummary.set({} as FileStatDir);
-        return {} as Commit;
-      }
-      commitDetails.fetch(commit.Hash);
-      commitDiffSummary.fetch(commit.Hash);
-      return commit;
-    }),
+    toggle: (commit: Commit) =>
+      update((c) => {
+        if (commit.Hash === c.Hash) {
+          commitDetails.set({} as CommitDetails);
+          commitDiffSummary.set({} as FileStatDir);
+          return {} as Commit;
+        }
+        commitDetails.fetch(commit.Hash);
+        commitDiffSummary.fetch(commit.Hash);
+        return commit;
+      }),
     unset: () => {
       commitDetails.set({} as CommitDetails);
       commitDiffSummary.set({} as FileStatDir);
       set({} as Commit);
     },
-  }
+  };
 }
 export const currentCommit = createCurrentCommit();
 
@@ -62,15 +64,11 @@ function createDetails() {
     subscribe,
     set,
     fetch: async (hash: string) => {
-      GetCommitDetails(hash).then(result => {
-        if (result.Response === "error") {
-          (window as any).messageModal(result.Message);
-          set({} as CommitDetails);
-        }
-        set(result.Commit);
-      });
-    }
-  }
+      GetCommitDetails(hash).then((result) =>
+        parseResponse(result, () => set(result.Commit), () => set({} as CommitDetails))
+      );
+    },
+  };
 }
 export const commitDetails = createDetails();
 
@@ -81,14 +79,10 @@ function createSummary() {
     subscribe,
     set,
     fetch: async (hash: string) => {
-      GetCommitDiffSummary(hash).then(result => {
-        if (result.Response === "error") {
-          (window as any).messageModal(result.Message);
-          set({} as FileStatDir);
-        }
-        set(result.Files);
-      });
-    }
-  }
+      GetCommitDiffSummary(hash).then((result) =>
+        parseResponse(result, () => set(result.Files), () => set({} as FileStatDir))
+      );
+    },
+  };
 }
 export const commitDiffSummary = createSummary();
