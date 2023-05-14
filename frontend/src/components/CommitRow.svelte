@@ -16,23 +16,29 @@
     }
   }
 
-  function showDetails(e: MouseEvent & { currentTarget: HTMLElement } | KeyboardEvent & { currentTarget: HTMLElement }) {
-    if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
-      return;
-    }
-    clearActive();
-    if ($currentCommit.Hash !== commit.Hash) {
-      e.currentTarget.classList.add('active');
-    }
-    currentCommit.toggle(commit);
+  function mouseShowDetails(e: MouseEvent & { currentTarget: HTMLElement }) {
+    toggleCommitDetails(e.currentTarget);
   }
 
-  function setKeyboard(el: HTMLElement) {
-    window.addEventListener('keydown', function(e: KeyboardEvent) {
-      if(e.key === ' ' && e.target === el) {
-        e.preventDefault();
-      }
-    });
+  function keyShowDetails(e: KeyboardEvent & { currentTarget: HTMLElement }) {
+    if (![' ', 'Enter', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'].includes(e.key)) {
+      return;
+    }
+    e.preventDefault();
+    if ([' ', 'Enter'].includes(e.key)) {
+      toggleCommitDetails(e.currentTarget);
+    } else if ($currentCommit.Hash) {
+      clearActive();
+      currentCommit.unset();
+    }
+  }
+
+  function toggleCommitDetails(el: HTMLElement) {
+    clearActive();
+    if ($currentCommit.Hash !== commit.Hash) {
+      el.classList.add('active');
+    }
+    currentCommit.toggle(commit);
   }
 </script>
 
@@ -45,9 +51,8 @@
   data-head="{h}"
   data-menu="{u ? '' : 'commit'}"
   tabindex="0"
-  on:click={showDetails}
-  on:keyup={showDetails}
-  use:setKeyboard>
+  on:click={mouseShowDetails}
+  on:keydown={keyShowDetails}>
   <td class="commit__td commit__td--refs">
     {#if commit.Labeled}
       <CommitLabels commit={commit} />
