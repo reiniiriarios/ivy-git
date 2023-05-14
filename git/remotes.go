@@ -1,11 +1,8 @@
-package main
+package git
 
 import (
 	"net/url"
-	"strconv"
 	"strings"
-
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Remote struct {
@@ -23,24 +20,15 @@ type Remote struct {
 	LastUpdate int64
 }
 
-type RemotesResponse struct {
-	Response string
-	Message  string
-	Remotes  []Remote
-}
-
-func (a *App) GetRemotes() RemotesResponse {
+func (g *Git) GetRemotes() ([]Remote, error) {
 	remotes := []Remote{}
 	rmap := make(map[string]int)
 
-	rs, err := a.GitCwd("remote", "-v")
+	rs, err := g.RunCwd("remote", "-v")
 	if err != nil {
-		return RemotesResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
+		return remotes, err
 	}
-	rl := a.getLines(rs)
+	rl := parseLines(rs)
 
 	for _, r := range rl {
 		d := strings.Fields(r)
@@ -63,10 +51,7 @@ func (a *App) GetRemotes() RemotesResponse {
 
 				url, err := url.Parse(d[1])
 				if err != nil {
-					return RemotesResponse{
-						Response: "error",
-						Message:  err.Error(),
-					}
+					return remotes, err
 				}
 
 				s := url.Hostname()
@@ -97,15 +82,13 @@ func (a *App) GetRemotes() RemotesResponse {
 				}
 
 				var ad, bd uint32 = 0, 0
-				currentBranch, err := a.GitCwd("rev-parse", "--abbrev-ref", "HEAD")
+				currentBranch, err := g.GetCurrentBranch()
 				if err != nil {
-					currentBranch = strings.ReplaceAll(strings.ReplaceAll(currentBranch, "\r", ""), "\n", "")
-					ad, bd, err = a.getAheadBehind(currentBranch, d[0])
+					ad, bd, err = g.getAheadBehind(currentBranch, d[0])
 					if err != nil {
-						numCommits, err := a.GitCwd("rev-list", "--count", currentBranch)
+						numCommits, err := g.getNumCommitsOnBranch(currentBranch)
 						if err == nil {
-							n, _ := strconv.ParseInt(numCommits, 10, 32)
-							ad = uint32(n)
+							ad = numCommits
 						}
 					}
 				}
@@ -127,20 +110,17 @@ func (a *App) GetRemotes() RemotesResponse {
 		}
 	}
 
-	return RemotesResponse{
-		Response: "success",
-		Remotes:  remotes,
-	}
+	return remotes, nil
 }
 
 // Get the name of the main branch for a specific remote.
-func (a *App) getMainBranchForRemote(remote string) string {
-	ls, err := a.GitCwd("ls-remote", remote)
+func (g *Git) getMainBranchForRemote(remote string) string {
+	ls, err := g.RunCwd("ls-remote", remote)
 	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
+		println(err.Error())
 		return ""
 	}
-	rs := a.getLines(ls)
+	rs := parseLines(ls)
 
 	head := ""
 	maybe_main := ""
@@ -173,15 +153,7 @@ func (a *App) getMainBranchForRemote(remote string) string {
 	return maybe_main
 }
 
-func (a *App) FetchRemote(remote string) GenericResponse {
-	_, err := a.GitCwd("fetch", remote, "--prune")
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+func (g *Git) FetchRemote(remote string) error {
+	_, err := g.RunCwd("fetch", remote, "--prune")
+	return err
 }

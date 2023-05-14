@@ -1,16 +1,17 @@
-package main
+package git
 
 import (
 	"bytes"
 	"errors"
 	"os/exec"
-	"strings"
-
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+type Git struct {
+	Repo
+}
+
 // Run a git command in a specific directory.
-func (a *App) Git(directory string, command ...string) (string, error) {
+func (g *Git) Run(directory string, command ...string) (string, error) {
 	// Run every git command in a specific directory.
 	command = append([]string{"-C", directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
@@ -27,8 +28,8 @@ func (a *App) Git(directory string, command ...string) (string, error) {
 	// error, errb should contain the relevant information.
 	err := cmd.Run()
 	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
-		runtime.LogError(a.ctx, errb.String())
+		println(err.Error())
+		println(errb.String())
 		return outb.String(), errors.New(errb.String())
 	}
 
@@ -36,31 +37,19 @@ func (a *App) Git(directory string, command ...string) (string, error) {
 }
 
 // Run a git command in the directory of the currently selected repo.
-func (a *App) GitCwd(command ...string) (string, error) {
-	repo, exists := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
-	if !exists {
+func (g *Git) RunCwd(command ...string) (string, error) {
+	if g.Repo == (Repo{}) {
 		return "", errors.New("no current git directory available")
 	}
-	return a.Git(repo.Directory, command...)
+	return g.Run(g.Repo.Directory, command...)
 }
 
-func (a *App) IsGitRepo(directory string) bool {
-	r, err := a.Git(directory, "rev-parse")
+func (g *Git) IsGitRepo(directory string) bool {
+	r, err := g.Run(directory, "rev-parse")
 	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
+		println(err.Error())
 		return false
 	}
 
 	return r == ""
-}
-
-// Parse a multiline string into an array.
-func (a *App) getLines(s string) []string {
-	var r []string
-	l := strings.Split(strings.ReplaceAll(s, "\r\n", "\n"), "\n")
-	for _, v := range l {
-		v = strings.Trim(v, "'")
-		r = append(r, v)
-	}
-	return r
 }

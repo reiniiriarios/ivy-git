@@ -1,48 +1,44 @@
 package main
 
 import (
+	"ivy-git/git"
 	"path/filepath"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-type Repo struct {
-	Name      string
-	Directory string
-}
-
 type RepoResponse struct {
 	Response string
 	Message  string
 	Id       string
-	Repo     Repo
+	Repo     git.Repo
 }
 
-// FRONTEND: Get repo information.
-func (a *App) GetRepos() map[string]Repo {
+// Get repo information.
+func (a *App) GetRepos() map[string]git.Repo {
 	return a.RepoSaveData.Repos
 }
 
-// FRONTEND: Update currently selected repo.
+// Update currently selected repo.
 func (a *App) UpdateSelectedRepo(repo string) {
 	a.RepoSaveData.CurrentRepo = repo
 	a.saveRepoData()
+	a.Git.Repo = a.RepoSaveData.Repos[repo]
 }
 
-// FRONTEND: Get the currently selected repo.
+// Get the currently selected repo.
 func (a *App) GetSelectedRepo() string {
 	return a.RepoSaveData.CurrentRepo
 }
 
-// FRONTEND: Add a new repo.
+// Add a new repo.
 func (a *App) AddRepo() RepoResponse {
 	d, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: "Select Git Repository",
 	})
 
 	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
 		return RepoResponse{
 			Response: "error",
 			Message:  err.Error(),
@@ -55,7 +51,7 @@ func (a *App) AddRepo() RepoResponse {
 		}
 	}
 
-	if !a.IsGitRepo(d) {
+	if !a.Git.IsGitRepo(d) {
 		return RepoResponse{
 			Response: "error",
 			Message:  "The directory selected is not a git repository.",
@@ -72,13 +68,13 @@ func (a *App) AddRepo() RepoResponse {
 	}
 
 	id := uuid.New().String()
-	newRepo := Repo{
+	newRepo := git.Repo{
 		Name:      filepath.Base(d),
 		Directory: d,
 	}
 
 	if a.RepoSaveData.Repos == nil {
-		a.RepoSaveData.Repos = make(map[string]Repo)
+		a.RepoSaveData.Repos = make(map[string]git.Repo)
 	}
 	a.RepoSaveData.Repos[id] = newRepo
 	a.saveRepoData()
@@ -90,8 +86,8 @@ func (a *App) AddRepo() RepoResponse {
 	}
 }
 
-// FRONTEND: Remove a repo from the list.
-func (a *App) RemoveRepo(id string) map[string]Repo {
+// Remove a repo from the list.
+func (a *App) RemoveRepo(id string) map[string]git.Repo {
 	delete(a.RepoSaveData.Repos, id)
 	a.saveRepoData()
 	return a.RepoSaveData.Repos

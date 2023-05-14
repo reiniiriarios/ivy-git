@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"ivy-git/git"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -12,11 +13,7 @@ type App struct {
 	RepoSaveData RepoSaveData
 	Settings     Settings
 	AppData      AppData
-}
-
-type GenericResponse struct {
-	Response string
-	Message  string
+	Git          git.Git
 }
 
 // NewApp creates a new App application struct
@@ -31,6 +28,9 @@ func (a *App) startup(ctx context.Context) {
 	a.loadConfig()
 	if a.AppData.WindowWidth > 1024 && a.AppData.WindowHeight > 600 {
 		runtime.WindowSetSize(a.ctx, a.AppData.WindowWidth, a.AppData.WindowHeight)
+	}
+	a.Git = git.Git{
+		Repo: a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo],
 	}
 }
 

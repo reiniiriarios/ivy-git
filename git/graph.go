@@ -1,4 +1,4 @@
-package main
+package git
 
 const NULL_VERTEX = -1
 
@@ -21,110 +21,48 @@ type Connection struct {
 	BranchId int64
 }
 
-// Get vertices to plot based on commits and HEAD.
-func (a *App) getVertices(commits []Commit, HEAD Ref) ([]Vertex, map[string]int64) {
-	vertices := []Vertex{}
+type Graph struct {
+	Vertices     []Vertex
+	CommitLookup map[string]int64
+	Branches     []GraphBranch
+	Width        uint16
+	Height       uint16
+}
 
-	lookup := make(map[string]int64)
+func (g *Git) BuildGraph(HEAD Ref, commits []Commit) Graph {
+	// Build all graph data.
+	graph := Graph{}
+	graph.addVertices(commits, HEAD)
+	graph.buildPaths()
+
+	return graph
+}
+
+// Get vertices to plot based on commits and HEAD.
+func (g *Graph) addVertices(commits []Commit, HEAD Ref) {
+	g.CommitLookup = make(map[string]int64)
 	for i, c := range commits {
-		vertices = append(vertices, Vertex{
+		g.Vertices = append(g.Vertices, Vertex{
 			Id:          int64(i),
 			BranchId:    -1,
 			Committed:   c.Hash != UNCOMMITED_HASH,
 			Connections: make(map[uint16]Connection),
 			Stash:       c.Stash,
 		})
-		lookup[c.Hash] = int64(i)
+		g.CommitLookup[c.Hash] = int64(i)
 	}
 
 	// Assign each vertex its parents.
 	for i, commit := range commits {
 		for _, parent_hash := range commit.Parents {
-			if parent_id, exists := lookup[parent_hash]; exists {
-				vertices[i].Parents = append(vertices[i].Parents, parent_id)
-				vertices[parent_id].Children = append(vertices[parent_id].Children, int64(i))
+			if parent_id, exists := g.CommitLookup[parent_hash]; exists {
+				g.Vertices[i].Parents = append(g.Vertices[i].Parents, parent_id)
+				g.Vertices[parent_id].Children = append(g.Vertices[parent_id].Children, int64(i))
 			} else {
-				vertices[i].Parents = append(vertices[i].Parents, NULL_VERTEX)
+				g.Vertices[i].Parents = append(g.Vertices[i].Parents, NULL_VERTEX)
 			}
 		}
 	}
-
-	return vertices, lookup
-}
-
-type Vertex struct {
-	Id          int64
-	Children    []int64
-	Parents     []int64
-	NextParent  int
-	BranchId    int64
-	X           uint16
-	XNext       uint16
-	Connections map[uint16]Connection
-	Committed   bool
-	Stash       bool
-}
-
-func (v *Vertex) hasNextParent() bool {
-	return v.NextParent < len(v.Parents)
-}
-
-func (v *Vertex) getNextParent() int64 {
-	return v.Parents[v.NextParent]
-}
-
-func (v *Vertex) getPoint() Point {
-	return Point{
-		X: v.X,
-		Y: v.Id,
-	}
-}
-
-func (v *Vertex) getNextPoint() Point {
-	return Point{
-		X: v.XNext,
-		Y: v.Id,
-	}
-}
-
-func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b int64) {
-	if x == v.XNext {
-		v.XNext = x + 1
-		var vId int64 = -1
-		if v2 != nil {
-			vId = v2.Id
-		}
-		v.Connections[x] = Connection{
-			VertexId: vId,
-			BranchId: b,
-		}
-	}
-}
-
-type GraphBranch struct {
-	Id               int64
-	Color            uint16
-	Lines            []Line
-	UncommitedPoints uint16
-}
-
-// Add line to branch.
-func (b *GraphBranch) addLine(l Line) {
-	b.Lines = append(b.Lines, l)
-	if l.Committed {
-		if l.P2.X == 0 && l.P2.X < b.UncommitedPoints {
-			b.UncommitedPoints = uint16(l.P2.Y)
-		}
-	} else {
-		b.UncommitedPoints++
-	}
-}
-
-type Graph struct {
-	Vertices []Vertex
-	Branches []GraphBranch
-	Width    uint16
-	Height   uint16
 }
 
 // Return whether the vertex is a merge commit.
@@ -150,7 +88,7 @@ func (g *Graph) isMergeCommit(v int64) bool {
 }
 
 // Build all paths for the graph.
-func (g *Graph) BuildPaths() {
+func (g *Graph) buildPaths() {
 	var color uint16 = 0
 	for i := 0; i < len(g.Vertices); {
 		// If the vertex has no parents or isn't on a branch yet, draw it.
@@ -334,4 +272,72 @@ func (g *Graph) getWidth() uint16 {
 // Get the height of the graph in commits.
 func (g *Graph) getHeight() uint16 {
 	return uint16(len(g.Vertices))
+}
+
+type Vertex struct {
+	Id          int64
+	Children    []int64
+	Parents     []int64
+	NextParent  int
+	BranchId    int64
+	X           uint16
+	XNext       uint16
+	Connections map[uint16]Connection
+	Committed   bool
+	Stash       bool
+}
+
+func (v *Vertex) hasNextParent() bool {
+	return v.NextParent < len(v.Parents)
+}
+
+func (v *Vertex) getNextParent() int64 {
+	return v.Parents[v.NextParent]
+}
+
+func (v *Vertex) getPoint() Point {
+	return Point{
+		X: v.X,
+		Y: v.Id,
+	}
+}
+
+func (v *Vertex) getNextPoint() Point {
+	return Point{
+		X: v.XNext,
+		Y: v.Id,
+	}
+}
+
+func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b int64) {
+	if x == v.XNext {
+		v.XNext = x + 1
+		var vId int64 = -1
+		if v2 != nil {
+			vId = v2.Id
+		}
+		v.Connections[x] = Connection{
+			VertexId: vId,
+			BranchId: b,
+		}
+	}
+}
+
+type GraphBranch struct {
+	Id               int64
+	Color            uint16
+	Lines            []Line
+	UncommitedPoints uint16
+}
+
+// Add line to branch.
+func (b *GraphBranch) addLine(l Line) {
+	b.Lines = append(b.Lines, l)
+	if l.Committed {
+		if l.P2.X == 0 && l.P2.X < b.UncommitedPoints {
+			b.UncommitedPoints = uint16(l.P2.Y)
+		}
+	} else {
+		b.UncommitedPoints++
+	}
 }

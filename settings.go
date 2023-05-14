@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"io/ioutil"
+	"ivy-git/git"
 	"os"
 	"path/filepath"
 
@@ -17,7 +18,7 @@ const VERSION = "0.0.1"
 
 type RepoSaveData struct {
 	CurrentRepo string
-	Repos       map[string]Repo
+	Repos       map[string]git.Repo
 }
 
 type Settings struct {
