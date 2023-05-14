@@ -1,6 +1,9 @@
 @use "!mixins" as *;
 
 .commit-details {
+  --width-details-left: 46%;
+  --width-details-right: 54%;
+
   height: var(--commit-details-height);
   display: flex;
   flex-direction: row;
@@ -16,13 +19,15 @@
 
   &__left,
   &__right {
-    flex: 1;
     overflow-y: auto;
     border-top: 1px solid var(--color-commitdetails-border);
     padding: 0.33rem 0.25rem;
+    box-sizing: border-box;
   }
 
   &__left {
+    width: var(--width-details-left);
+
     table {
       th {
         text-align: right;
@@ -41,6 +46,21 @@
         padding: 0.25rem 0.75rem 0.25rem 0.4rem;
       }
     }
+  }
+
+  &__right {
+    width: var(--width-details-right);
+    padding-left: 1.75rem;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    left: calc(var(--width-details-left) + 0.75rem);
+    height: calc(100% - 1rem);
+    width: 1px;
+    border-left: 1px solid var(--color-commitdetails-border);
   }
 }
 
