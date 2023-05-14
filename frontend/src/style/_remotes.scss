@@ -66,6 +66,10 @@
     width: 0;
     white-space: nowrap;
 
+    .icon {
+      pointer-events: none;
+    }
+
     svg {
       margin: 0 0.2rem 0 -0.25rem;
       position: relative;
