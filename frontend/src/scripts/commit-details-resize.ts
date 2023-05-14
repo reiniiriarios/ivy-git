@@ -25,7 +25,8 @@ export const setDetailsResizable = (el: HTMLElement) => {
 
   const mouseDownHandler = (e: MouseEvent) => {
     // Prevent accidentally scrolling the commits list.
-    commitsContainer.style.pointerEvents = 'none';
+    commitsContainer.classList.add('dragging');
+    commitDetailsContainer.classList.add('dragging');
 
     // Current x-coord of mouse.
     y = e.pageY;
@@ -48,7 +49,8 @@ export const setDetailsResizable = (el: HTMLElement) => {
   }
 
   const mouseUpHandler = () => {
-    commitsContainer.style.pointerEvents = 'all';
+    commitsContainer.classList.remove('dragging');
+    commitDetailsContainer.classList.remove('dragging');
 
     document.removeEventListener('mousemove', mouseMoveHandler);
     document.removeEventListener('mouseup', mouseUpHandler);

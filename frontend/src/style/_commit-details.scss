@@ -5,6 +5,13 @@
   text-align: left;
   position: relative;
 
+  &.dragging {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    pointer-events: none;
+  }
+
   &__left,
   &__right {
     flex: 1;

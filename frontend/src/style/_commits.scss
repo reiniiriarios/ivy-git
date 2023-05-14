@@ -5,6 +5,13 @@
   flex-direction: column;
   overflow: hidden;
 
+  &.dragging {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    pointer-events: none;
+  }
+
   &__table-container {
     overflow: auto;
     height: calc(100% - var(--commit-details-height));
