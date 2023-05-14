@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { toggleDir } from 'scripts/commit-details-collapse';
   import { type FileStatDir } from 'stores/commit-details';
   export let files: FileStatDir;
 </script>
 
 <div class="filestatdir__dir">
   {#if files?.Name}
-    <div class="filestatdir__dir-name">
+    <div class="filestatdir__dir-name" on:click={toggleDir} on:keypress={toggleDir}>
       {files.Name}
     </div>
   {/if}

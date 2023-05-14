@@ -1,5 +1,6 @@
 <script lang="ts">
   import CommitDetailsFiles from 'components/CommitDetailsFiles.svelte';
+  import { resetDirs } from 'scripts/commit-details-collapse';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
   import { type Commit } from 'stores/commit-data';
   import { currentCommit, commitDetails, commitDiffSummary } from 'stores/commit-details';
@@ -8,6 +9,7 @@
 
   let commit: Commit;
   currentCommit.subscribe(c => {
+    resetDirs();
     commit = c;
     if (c?.Hash) {
       document.documentElement.style.setProperty('--commit-details-height', height);

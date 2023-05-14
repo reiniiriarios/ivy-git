@@ -1,0 +1,15 @@
+@mixin carat-up {
+  background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 18 18 0 36 18 29 18 18 7 7 18 7 18 0 18'/></svg>");
+}
+
+@mixin carat-down {
+  background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 0 18 18 36 0 29 0 18 11 7 0 7 0 0 0'/></svg>");
+}
+
+@mixin carat-left {
+  background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 0 18 18 36 0 29 0 18 11 7 0 7 0 0 0'/></svg>");
+}
+
+@mixin carat-right {
+  background-image: url("data:image/svg+xml;utf8,<svg width='36' height='36' viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M9 0 27 18 9 36 9 29 20 18 9 7 9 7 9 0'/></svg>");
+}
