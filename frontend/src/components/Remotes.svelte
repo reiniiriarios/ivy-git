@@ -3,27 +3,27 @@
   import { parseResponse } from "scripts/parse-response";
   import { remotes } from "stores/remotes";
   import { onMount } from 'svelte';
-  import { FetchRemote } from "wailsjs/go/main/App";
+  import { FetchRemote, PullRemote, PushRemote } from "wailsjs/go/main/App";
 
   function pull(e: MouseEvent | KeyboardEvent, remote: string) {
     let el = e.target as HTMLElement;
     el.setAttribute('disabled', 'disabled');
-    FetchRemote(remote).then((r) => {
-      parseResponse(r, checkIcon(el), () => {
-        el.removeAttribute('disabled');
+    PullRemote(remote).then((r) => {
+      parseResponse(r, () => {
+        checkIcon(el);
         remotes.refresh();
-      });
+      }, () => el.removeAttribute('disabled'));
     });
   }
 
   function push(e: MouseEvent | KeyboardEvent, remote: string) {
     let el = e.target as HTMLElement;
     el.setAttribute('disabled', 'disabled');
-    FetchRemote(remote).then((r) => {
-      parseResponse(r, checkIcon(el), () => {
-        el.removeAttribute('disabled');
+    PushRemote(remote).then((r) => {
+      parseResponse(r, () => {
+        checkIcon(el);
         remotes.refresh();
-      });
+      }, () => el.removeAttribute('disabled'));
     });
   }
 
@@ -31,14 +31,14 @@
     let el = e.target as HTMLElement;
     el.setAttribute('disabled', 'disabled');
     FetchRemote(remote).then((r) => {
-      parseResponse(r, checkIcon(el), () => {
-        el.removeAttribute('disabled');
+      parseResponse(r, () => {
+        checkIcon(el, true);
         remotes.refresh();
-      });
+      }, () => el.removeAttribute('disabled'));
     });
   }
 
-  function checkIcon(el: HTMLElement) {
+  function checkIcon(el: HTMLElement, reenable: boolean = false) {
     let icon = el.getElementsByClassName('icon')[0];
     let normalSvg = icon.innerHTML;
     icon.innerHTML = octicons['check'].toSVG({ "width": 16 });
@@ -46,7 +46,9 @@
     setTimeout(() => {
       icon.classList.remove('success');
       icon.innerHTML = normalSvg;
-      el.removeAttribute('disabled');
+      if (reenable) {
+        el.removeAttribute('disabled');
+      }
     }, 1000);
   }
 

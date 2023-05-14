@@ -150,6 +150,47 @@ func (a *App) FetchRemote(remote string) GenericResponse {
 	}
 }
 
+func (a *App) PushRemote(remote string) GenericResponse {
+	branch, err := a.Git.GetCurrentBranch()
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	err = a.Git.PushBranch(remote, branch)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
+
+func (a *App) PullRemote(remote string) GenericResponse {
+	branch, err := a.Git.GetCurrentBranch()
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	// TODO: set rebase flag depending on user settings
+	err = a.Git.PullBranch(remote, branch, true)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
+
 type CommitResponse struct {
 	Response string
 	Message  string
