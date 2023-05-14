@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"strconv"
 	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -83,4 +85,25 @@ func (a *App) SwitchBranch(branch string) GenericResponse {
 	return GenericResponse{
 		Response: "success",
 	}
+}
+
+// If branch exists locally.
+func (a *App) BranchExists(name string) bool {
+	_, err := a.GitCwd("rev-parse", "--verify", name)
+	return err == nil
+}
+
+// Get commits ahead and behind branch is from specific remote.
+func (a *App) getAheadBehind(branch string, remote string) (uint32, uint32, error) {
+	rl, err := a.GitCwd("rev-list", "--left-right", "--count", branch+"..."+remote+"/"+branch)
+	if err != nil {
+		return 0, 0, err
+	}
+	ab := strings.Fields(rl)
+	if len(ab) != 2 {
+		return 0, 0, errors.New("error parsing rev-list --left-right")
+	}
+	ahead, _ := strconv.ParseInt(ab[0], 10, 32)
+	behind, _ := strconv.ParseInt(ab[1], 10, 32)
+	return uint32(ahead), uint32(behind), nil
 }

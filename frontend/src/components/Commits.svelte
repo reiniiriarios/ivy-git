@@ -3,7 +3,12 @@
   import CommitRow from 'components/CommitRow.svelte';
   import CommitDetails from 'components/CommitDetails.svelte';
   import { setCommitsContainer } from 'scripts/commit-details-resize';
-  import { commits, tree } from 'stores/commit-data';
+  import { commitData, commits, tree } from 'stores/commit-data';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    commitData.refresh();
+  })
 </script>
 
 <div class="commits" id="commits">

@@ -55,6 +55,7 @@
   --color-btn-border: var(--color-scale-a-8-100);
   --color-btn-bg-hover: var(--color-scale-a-6-100);
   --color-btn-bg-active: var(--color-scale-a-6-100);
+  --color-btn-bg-disabled: var(--color-scale-a-7-50);
 
   --color-context-bg: var(--color-scale-a-7-100);
   --color-context-bg-hover: var(--color-scale-a-6-100);
@@ -74,6 +75,9 @@
   --color-commitlistitem-bg-active: var(--color-scale-a-6-75);
 
   --color-commitdetails-border: var(--color-scale-a-7-100);
+
+  --color-details-border: var(--color-scale-a-7-100);
+  --color-details-border-2: var(--color-scale-a-6-100);
 
   --title-bar-height: 2.25rem;
   --sidebar-width: 20rem;

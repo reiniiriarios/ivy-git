@@ -27,9 +27,6 @@
     branches.refresh();
     repos.refresh();
     changes.refresh();
-    if ($currentTab === 'tree') {
-      commitData.refresh();
-    }
     (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
       switch (env.platform) {
         case "darwin":

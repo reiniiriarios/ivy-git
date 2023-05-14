@@ -1,0 +1,75 @@
+.remotes {
+  text-align: left;
+  cursor: default;
+  user-select: none;
+  --webkit-user-select: none;
+
+  h2 {
+    padding: 0 1.5rem;
+    font-weight: normal;
+  }
+
+  table {
+    width: calc(100% - 3rem);
+    border: 1px solid var(--color-details-border);
+    margin: 0 1.5rem;
+  }
+
+  th {
+    padding: 0.25rem 0.75rem;
+    font-weight: normal;
+    color: var(--color-text-muted);
+  }
+
+  td {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+.remote {
+  fill: var(--color-text);
+
+  td {
+    border-top: 1px solid var(--color-details-border);
+  }
+
+  &__name {
+    font-size: 1.25rem;
+  }
+
+  &__site {
+    font-size: 1.25rem;
+  }
+
+  &__ahead,
+  &__behind {
+    display: flex;
+    align-items: center;
+    font-size: 1.125rem;
+
+    svg {
+      margin: 0.125rem 0.25rem 0 0;
+    }
+  }
+
+  &__ahead {
+    color: var(--color-scale-g-3-100);
+    fill: var(--color-scale-g-3-100);
+  }
+
+  &__behind {
+    color: var(--color-scale-r-4-100);
+    fill: var(--color-scale-r-4-100);
+  }
+
+  &__actions {
+    width: 0;
+    white-space: nowrap;
+
+    svg {
+      margin: 0 0.2rem 0 -0.25rem;
+      position: relative;
+      top: 0.25rem;
+    }
+  }
+}
