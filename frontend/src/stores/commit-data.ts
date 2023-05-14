@@ -1,3 +1,4 @@
+import { removeTableSizing, updateSavedTableSizing } from 'scripts/commit-table-resize';
 import { drawGraph, getSVGWidth } from 'scripts/graph';
 import { parseResponse } from 'scripts/parse-response';
 import { derived, writable } from 'svelte/store';
@@ -88,15 +89,17 @@ function createCommitData() {
     refresh: async () => {
       GetCommitList().then(result => {
         parseResponse(result, () => {
-          set({
-            commits: result.Commits,
-            HEAD: result.HEAD,
-            Graph: result.Graph,
+          removeTableSizing().then(() => {
+            set({
+              commits: result.Commits,
+              HEAD: result.HEAD,
+              Graph: result.Graph,
+            });
+            console.log('HEAD', result.HEAD);
+            console.log('commits', result.commits);
+            console.log('branches', result.Graph.Branches);
+            console.log('vertices', result.Graph.Vertices);
           });
-          console.log('HEAD', result.HEAD);
-          console.log('commits', result.commits);
-          console.log('branches', result.Graph.Branches);
-          console.log('vertices', result.Graph.Vertices);
         });
       });
     },

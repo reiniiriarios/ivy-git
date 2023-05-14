@@ -1,3 +1,4 @@
+let commitsElement: HTMLElement;
 let tableElement: HTMLTableElement;
 let tableCols: Col[] = [];
 
@@ -94,10 +95,24 @@ export const createResizableColumn = (col: HTMLElement) => {
 }
 
 // Update all columns, setting their current width to their current computed width.
-const updateSavedTableSizing = async () => {
+export const updateSavedTableSizing = async () => {
   for (let i = 0; i < tableCols.length; i++) {
     if (!tableCols[i].flex) {
       tableCols[i].e.style.width = window.getComputedStyle(tableCols[i].e).width;
+    }
+  }
+}
+
+// Update all columns, setting their current width to their current computed width.
+export const removeTableSizing = async () => {
+  if (!tableElement) tableElement = document.getElementById('commits__table') as HTMLTableElement;
+  if (tableElement) tableElement.style.tableLayout = 'auto';
+  if (!commitsElement) commitsElement = document.getElementById('commits__scroll') as HTMLElement;
+  if (commitsElement) commitsElement.scrollTop = 0;
+  console.log(commitsElement);
+  for (let i = 0; i < tableCols.length; i++) {
+    if (!tableCols[i].flex) {
+      tableCols[i].e.style.width = '';
     }
   }
 }

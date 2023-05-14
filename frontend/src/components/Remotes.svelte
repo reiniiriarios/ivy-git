@@ -105,11 +105,11 @@
                 <span class="icon">{@html octicons['arrow-down-left'].toSVG({ "width": 16 })}</span>
                 Fetch
               </button>
-              <button class="btn" on:click={e => push(e, remote.Name)} disabled={remote.Ahead == 0}>
+              <button class="btn" on:click={e => push(e, remote.Name)} disabled={remote.Ahead == 0 || !remote.Push}>
                 <span class="icon">{@html octicons['arrow-up'].toSVG({ "width": 16 })}</span>
                 Push
               </button>
-              <button class="btn" on:click={e => pull(e, remote.Name)} disabled={remote.Behind == 0}>
+              <button class="btn" on:click={e => pull(e, remote.Name)} disabled={remote.Behind == 0 || !remote.Fetch}>
                 <span class="icon">{@html octicons['arrow-down'].toSVG({ "width": 16 })}</span>
                 Pull
               </button>

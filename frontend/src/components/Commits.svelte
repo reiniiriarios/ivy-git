@@ -12,7 +12,7 @@
 </script>
 
 <div class="commits" id="commits">
-  <div class="commits__table-container" use:setCommitsContainer>
+  <div class="commits__table-container" id="commits__scroll" use:setCommitsContainer>
     {#if Object.entries($commits).length}
       <table use:setCommitsTable class="commits__table" id="commits__table">
         <thead>
