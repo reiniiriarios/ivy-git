@@ -12,3 +12,19 @@ func parseLines(s string) []string {
 	}
 	return r
 }
+
+func getSiteName(hostname string) string {
+	if hostname == "github.com" {
+		return "GitHub"
+	}
+	if hostname == "bitbucket.org" {
+		return "Bitbucket"
+	}
+	if hostname == "gitlab.com" {
+		return "GitLab"
+	}
+	if hostname == "dev.azure.com" {
+		return "Azure"
+	}
+	return hostname
+}

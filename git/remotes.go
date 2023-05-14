@@ -40,13 +40,13 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 					remotes[i].Push = true
 				}
 			} else {
-				var f, p bool
+				var fetch, push bool
 				if d[2] == "(fetch)" {
-					f = true
-					p = false
+					fetch = true
+					push = false
 				} else if d[2] == "(push)" {
-					f = false
-					p = true
+					fetch = false
+					push = true
 				}
 
 				url, err := url.Parse(d[1])
@@ -54,41 +54,32 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 					return remotes, err
 				}
 
-				s := url.Hostname()
-				if s == "github.com" {
-					s = "GitHub"
-				} else if s == "bitbucket.org" {
-					s = "Bitbucket"
-				} else if s == "gitlab.com" {
-					s = "GitLab"
-				} else if s == "dev.azure.com" {
-					s = "Azure"
+				site := getSiteName(url.Hostname())
+
+				userRepo := url.Path
+				if userRepo[:1] == "/" {
+					userRepo = userRepo[1:]
+				}
+				if len(userRepo) > 4 && userRepo[len(userRepo)-4:] == ".git" {
+					userRepo = userRepo[:len(userRepo)-4]
 				}
 
-				ur := url.Path
-				if ur[:1] == "/" {
-					ur = ur[1:]
-				}
-				if len(ur) > 4 && ur[len(ur)-4:] == ".git" {
-					ur = ur[:len(ur)-4]
-				}
-
-				u := ""
-				rn := ""
-				if strings.Count(ur, "/") == 1 {
-					urn := strings.Split(ur, "/")
-					u = urn[0]
-					rn = urn[1]
+				user := ""
+				repoName := ""
+				if strings.Count(userRepo, "/") == 1 {
+					urn := strings.Split(userRepo, "/")
+					user = urn[0]
+					repoName = urn[1]
 				}
 
-				var ad, bd uint32 = 0, 0
+				var ahead, behind uint32 = 0, 0
 				currentBranch, err := g.GetCurrentBranch()
-				if err != nil {
-					ad, bd, err = g.getAheadBehind(currentBranch, d[0])
+				if err == nil {
+					ahead, behind, err = g.getAheadBehind(currentBranch, d[0])
 					if err != nil {
 						numCommits, err := g.getNumCommitsOnBranch(currentBranch)
 						if err == nil {
-							ad = numCommits
+							ahead = numCommits
 						}
 					}
 				}
@@ -97,14 +88,14 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 				remotes = append(remotes, Remote{
 					Name:     d[0],
 					Url:      d[1],
-					Fetch:    f,
-					Push:     p,
-					Site:     s,
-					Repo:     ur,
-					User:     u,
-					RepoName: rn,
-					Ahead:    ad,
-					Behind:   bd,
+					Fetch:    fetch,
+					Push:     push,
+					Site:     site,
+					Repo:     userRepo,
+					User:     user,
+					RepoName: repoName,
+					Ahead:    ahead,
+					Behind:   behind,
 				})
 			}
 		}
