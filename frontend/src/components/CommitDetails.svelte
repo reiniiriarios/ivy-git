@@ -15,7 +15,7 @@
       document.documentElement.style.setProperty('--commit-details-height', height);
     }
     else {
-      document.documentElement.style.setProperty('--commit-details-height', '0');
+      document.documentElement.style.setProperty('--commit-details-height', '0px');
       resetDetailsSizing();
     }
   });

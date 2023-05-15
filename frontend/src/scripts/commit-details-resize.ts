@@ -69,7 +69,7 @@ export const resetDetailsSizing = () => {
 
 // Resize window handler. Update as a percentage with min height.
 const makeDetailsSizingPercentage = async (e: UIEvent) => {
-  if (document.documentElement.style.getPropertyValue('--commit-details-height') !== '0') {
+  if (document.documentElement.style.getPropertyValue('--commit-details-height') !== '0px') {
     let ch = parseInt(window.getComputedStyle(commitsContainer).height);
     let dh = parseInt(window.getComputedStyle(commitDetailsContainer).height);
     if (ch < minCommits) ch = minCommits;
