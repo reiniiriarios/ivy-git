@@ -22,10 +22,10 @@
   // Load initial ui state.
   function init() {
     currentRepo.refresh();
+    repos.refresh();
     if ($currentRepo) {
       currentBranch.refresh();
       branches.refresh();
-      repos.refresh();
       changes.refresh();
     }
     (window as any).runtime.Environment().then((env: EnvironmentInfo) => {

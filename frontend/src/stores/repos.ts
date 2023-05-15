@@ -4,7 +4,7 @@ import { commitData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from 'stores/current-tab';
 import { currentCommit } from 'stores/commit-details';
-import { branches } from 'stores/branches';
+import { branches, currentBranch } from 'stores/branches';
 import { remotes } from 'stores/remotes';
 import { parseResponse } from 'scripts/parse-response';
 
@@ -48,6 +48,7 @@ function createCurrentRepo() {
     refresh: async () => {
       GetSelectedRepo().then(result => {
         set(result);
+        currentBranch.refresh();
       });
     },
     set: async (r: string) => {
