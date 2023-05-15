@@ -27,6 +27,7 @@ type Graph struct {
 	Branches     []GraphBranch
 	Width        uint16
 	Height       uint16
+	Continues    bool
 }
 
 func (g *Git) BuildGraph(HEAD Ref, commits []Commit) Graph {
@@ -65,6 +66,7 @@ func (g *Graph) addVertices(commits []Commit, HEAD Ref) {
 				g.Vertices[parent_id].Children = append(g.Vertices[parent_id].Children, int64(i))
 			} else {
 				g.Vertices[i].Parents = append(g.Vertices[i].Parents, NULL_VERTEX)
+				g.Continues = true
 			}
 		}
 	}
@@ -126,8 +128,11 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	// Current vertex and current parent.
 	v1 := &g.Vertices[v.Id]
 	var p *Vertex = nil
+	null_parent := false
 	if v.hasNextParent() && v.getNextParent() != NULL_VERTEX {
 		p = &g.Vertices[v.getNextParent()]
+	} else if v.getNextParent() == NULL_VERTEX {
+		null_parent = true
 	}
 
 	// Previous point.
@@ -183,10 +188,27 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 			// Move the current parent to the current vertex.
 			v1 = &g.Vertices[p.Id]
 			// Move the next parent to the current parent.
-			if v1.hasNextParent() {
+			println(v1.Id)
+			if v1.hasNextParent() && v1.getNextParent() != NULL_VERTEX && int(v1.getNextParent()) < len(g.Vertices) {
 				p = &g.Vertices[v1.getNextParent()]
+				null_parent = false
 			} else {
 				p = nil
+				if v1.hasNextParent() && v1.getNextParent() == NULL_VERTEX {
+					null_parent = true
+				}
+				null_point := Point{
+					X: p2.X,
+					Y: -1,
+				}
+
+				g.Branches[b.Id].addLine(Line{
+					P1:              p2,
+					P2:              null_point,
+					Committed:       true,
+					LockedDirection: false,
+					Merge:           false,
+				})
 			}
 
 			// If there's no next parent or if the new current vertex already has a branch.
@@ -196,8 +218,24 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 		}
 	}
 
+	if i == len(g.Vertices) && len(g.Branches[b.Id].Lines) > 0 {
+		p1 := g.Branches[b.Id].Lines[len(g.Branches[b.Id].Lines)-1].P2
+		null_point := Point{
+			X: p1.X,
+			Y: -1,
+		}
+
+		g.Branches[b.Id].addLine(Line{
+			P1:              p1,
+			P2:              null_point,
+			Committed:       true,
+			LockedDirection: false,
+			Merge:           false,
+		})
+	}
+
 	// If we looped through every vertex and the parent is a null vertex.
-	if i == len(g.Vertices) && p != nil && p.Id == NULL_VERTEX {
+	if i == len(g.Vertices) && null_parent {
 		v.NextParent++
 	}
 }
@@ -293,10 +331,12 @@ type Vertex struct {
 }
 
 func (v *Vertex) hasNextParent() bool {
+	println("next", v.NextParent, "len", len(v.Parents), v.NextParent < len(v.Parents))
 	return v.NextParent < len(v.Parents)
 }
 
 func (v *Vertex) getNextParent() int64 {
+	println("get next", v.NextParent, "len", len(v.Parents))
 	return v.Parents[v.NextParent]
 }
 
@@ -339,7 +379,7 @@ type GraphBranch struct {
 func (b *GraphBranch) addLine(l Line) {
 	b.Lines = append(b.Lines, l)
 	if l.Committed {
-		if l.P2.X == 0 && l.P2.X < b.UncommitedPoints {
+		if l.P2.X == 0 && l.P2.X < b.UncommitedPoints && l.P2.Y != NULL_VERTEX {
 			b.UncommitedPoints = uint16(l.P2.Y)
 		}
 	} else {

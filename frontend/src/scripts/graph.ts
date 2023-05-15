@@ -1,8 +1,10 @@
 import { vertexOut, vertexOver } from 'scripts/vertex';
-import { type Graph, type Branch, type Vertex } from 'stores/commit-data';
+import { type Graph, type Branch, type Vertex, tree } from 'stores/commit-data';
+import { get } from 'svelte/store';
 
 // Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";
+const NULL_VERTEX = -1;
 
 // Match to _tree.scss.
 const NUM_COLORS = 10;
@@ -83,7 +85,7 @@ function drawBranch(g: SVGGElement, b: Branch) {
   let path = "";
   for (let i = 0; i < b.Lines.length; i++) {
     // If there's a current path and the new point is a different type of path.
-    if (path && i && b.Lines[i].Committed !== b.Lines[i - 1].Committed) {
+    if (path && i && (b.Lines[i].Committed !== b.Lines[i - 1].Committed || b.Lines[i].P2.Y === NULL_VERTEX)) {
       let c = b.Lines[i - 1].Committed ? color : 'u';
       drawBranchPath(g, path, c);
       path = "";
@@ -92,7 +94,9 @@ function drawBranch(g: SVGGElement, b: Branch) {
     let x1 = scaleX(b.Lines[i].P1.X).toFixed(0);
     let x2 = scaleX(b.Lines[i].P2.X).toFixed(0);
     let y1 = scaleY(b.Lines[i].P1.Y).toFixed(1);
-    let y2 = scaleY(b.Lines[i].P2.Y).toFixed(1);
+
+    // Draw lines that end in a null vertex one step down from the first point.
+    let y2 = b.Lines[i].P2.Y === NULL_VERTEX ? scaleY(b.Lines[i].P1.Y + 1).toFixed(1) : scaleY(b.Lines[i].P2.Y).toFixed(1);
 
     // If no path or on different path
     if (
@@ -160,4 +164,21 @@ function scaleX(x: number): number {
 
 function scaleY(y: number): number {
   return y * SCALE_Y + OFFSET_Y;
+}
+
+export function setFade(el: HTMLElement) {
+  tree.subscribe((t) => {
+    if (t.continues) {
+      if (!el.classList.contains('tree__graph--continues')) {
+        el.classList.add('tree__graph--continues');
+      }
+      // Start fade at last commit before null vertex.
+      let fadeAt = (t.height - 1) / t.height * 100.0;
+      el.style.setProperty('--null-fade', fadeAt + '%');
+    } else {
+      if (el.classList.contains('tree__graph--continues')) {
+        el.classList.remove('tree__graph--continues');
+      }
+    }
+  });
 }

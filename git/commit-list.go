@@ -57,7 +57,7 @@ type CommitDetails struct {
 }
 
 // Get commit details from `git log`.
-func (g *Git) getLog() ([]Commit, map[string]uint64, error) {
+func (g *Git) getLog(limit uint64, offset uint64) ([]Commit, map[string]uint64, error) {
 	var commits []Commit
 	lookup := make(map[string]uint64)
 
@@ -77,7 +77,9 @@ func (g *Git) getLog() ([]Commit, map[string]uint64, error) {
 	// - commits mentioned by reflogs
 	// - all remotes
 	// - HEAD
-	c, err := g.RunCwd("--no-pager", "log", "--format='"+format+"'", "--branches", "--tags", "--glob=refs/remotes", "HEAD")
+	count := "--max-count=" + strconv.FormatUint(limit, 10)
+	skip := "--skip=" + strconv.FormatUint(offset, 10)
+	c, err := g.RunCwd("--no-pager", "log", "--format='"+format+"'", count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD")
 	if err != nil {
 		return commits, lookup, err
 	}
@@ -286,8 +288,8 @@ func (g *Git) getNumUncommitedChanges() int {
 }
 
 // Compile commits and refs for tree view.
-func (g *Git) getCommits() ([]Commit, map[string]uint64, Ref, error) {
-	commits, lookup, err := g.getLog()
+func (g *Git) getCommits(limit uint64, offset uint64) ([]Commit, map[string]uint64, Ref, error) {
+	commits, lookup, err := g.getLog(limit, offset)
 	if err != nil {
 		println(err.Error())
 		return commits, lookup, Ref{}, err
@@ -328,8 +330,8 @@ func (g *Git) getCommits() ([]Commit, map[string]uint64, Ref, error) {
 
 // Get list of commits and all associated details for display.
 // Returns HEAD, []Commit
-func (g *Git) getCommitList() (Ref, []Commit, error) {
-	commits, lookup, HEAD, err := g.getCommits()
+func (g *Git) getCommitList(limit uint64, offset uint64) (Ref, []Commit, error) {
+	commits, lookup, HEAD, err := g.getCommits(limit, offset)
 	if err != nil {
 		return Ref{}, nil, err
 	}
@@ -373,8 +375,8 @@ func (g *Git) getCommitList() (Ref, []Commit, error) {
 }
 
 // Get HEAD, Commits List, and Graph
-func (g *Git) GetCommitsAndGraph() (Ref, []Commit, Graph, error) {
-	HEAD, commits, err := g.getCommitList()
+func (g *Git) GetCommitsAndGraph(limit uint64, offset uint64) (Ref, []Commit, Graph, error) {
+	HEAD, commits, err := g.getCommitList(limit, offset)
 	if err != nil {
 		return HEAD, commits, Graph{}, err
 	}

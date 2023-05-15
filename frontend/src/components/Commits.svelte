@@ -5,6 +5,8 @@
   import { setCommitsContainer } from 'scripts/commit-details-resize';
   import { commitData, commits, tree } from 'stores/commit-data';
   import { onMount } from 'svelte';
+  import { setFade } from 'scripts/graph';
+  import LoadMoreCommits from 'components/LoadMoreCommits.svelte';
 
   onMount(() => {
     commitData.refresh();
@@ -29,7 +31,7 @@
             <td></td>
             <td>
               <div class="tree">
-                <div class="tree__graph">{@html $tree.svg.outerHTML}</div>
+                <div class="tree__graph" use:setFade data-fade="{$tree.continues}" data-height="{$tree.height}">{@html $tree.svg.outerHTML}</div>
               </div>
             </td>
           </tr>
@@ -38,6 +40,9 @@
           {/each}
         </tbody>
       </table>
+      {#if $tree.continues}
+        <LoadMoreCommits />
+      {/if}
     {/if}
   </div>
   <CommitDetails />

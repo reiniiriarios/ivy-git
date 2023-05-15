@@ -1,8 +1,10 @@
-import { removeTableSizing, updateSavedTableSizing } from 'scripts/commit-table-resize';
+import { removeTableSizing } from 'scripts/commit-table-resize';
 import { drawGraph, getSVGWidth } from 'scripts/graph';
 import { parseResponse } from 'scripts/parse-response';
 import { derived, writable } from 'svelte/store';
 import { GetCommitList } from 'wailsjs/go/main/App';
+
+const COMMIT_LIST_PAGING = 500;
 
 export interface Commit {
   Id: number;
@@ -75,6 +77,7 @@ export interface Graph {
   Branches: Branch[];
   Width: number;
   Height: number;
+  Continues: boolean;
 }
 
 function createCommitData() {
@@ -82,18 +85,21 @@ function createCommitData() {
     commits: [] as Commit[],
     HEAD: {} as Ref,
     Graph: {} as Graph,
+    page: 0,
   });
   
   return {
     subscribe,
-    refresh: async () => {
-      GetCommitList().then(result => {
+    refresh: async (page: number = 0) => {
+      // todo: page instead of count
+      GetCommitList(COMMIT_LIST_PAGING * (page + 1), 0).then(result => {
         parseResponse(result, () => {
           removeTableSizing().then(() => {
             set({
               commits: result.Commits,
               HEAD: result.HEAD,
               Graph: result.Graph,
+              page: page,
             });
             console.log('HEAD', result.HEAD);
             console.log('commits', result.commits);
@@ -109,7 +115,10 @@ export const commitData = createCommitData();
 export const commits = derived(commitData, $commitData => $commitData.commits);
 export const HEAD = derived(commitData, $commitData => $commitData.HEAD);
 export const graph = derived(commitData, $commitData => $commitData.Graph);
+export const commitsPage = derived(commitData, $commitData => $commitData.page);
 export const tree = derived(commitData, $commitData => ({
   svg: drawGraph($commitData.Graph),
   width: getSVGWidth($commitData.Graph),
+  height: $commitData.Graph.Height,
+  continues: $commitData.Graph.Continues,
 }));

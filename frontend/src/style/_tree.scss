@@ -12,6 +12,12 @@ $num-colors: 10;
     overflow-x: hidden;
     position: absolute;
     z-index: 150;
+    --null-fade: 90%;
+
+    &--continues {
+      -webkit-mask-image: linear-gradient(rgba(0 0 0 / 100%),rgba(0 0 0 / 100%) var(--null-fade), rgba(0 0 0 / 0%));
+      mask-image: linear-gradient(rgba(0 0 0 / 100%),rgba(0 0 0 / 100%) var(--null-fade), rgba(0 0 0 / 0%));
+    }
   }
 
   circle {
