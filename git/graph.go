@@ -9,6 +9,7 @@ type Line struct {
 	// true = P1, false = P2
 	LockedDirection bool
 	Merge           bool
+	NullParent      bool
 }
 
 type Point struct {
@@ -188,7 +189,6 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 			// Move the current parent to the current vertex.
 			v1 = &g.Vertices[p.Id]
 			// Move the next parent to the current parent.
-			println(v1.Id)
 			if v1.hasNextParent() && v1.getNextParent() != NULL_VERTEX && int(v1.getNextParent()) < len(g.Vertices) {
 				p = &g.Vertices[v1.getNextParent()]
 				null_parent = false
@@ -294,6 +294,8 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 
 		g.Vertices[i].addUnavailPoint(p2.X, p, p.BranchId)
 
+		p1 = p2
+
 		// If point was found connected to parent, move vertex to next parent and be done.
 		if found {
 			v1.NextParent++
@@ -357,7 +359,7 @@ func (v *Vertex) getNextPoint() Point {
 func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b int64) {
 	if x == v.XNext {
 		v.XNext = x + 1
-		var vId int64 = -1
+		var vId int64 = NULL_VERTEX
 		if v2 != nil {
 			vId = v2.Id
 		}
