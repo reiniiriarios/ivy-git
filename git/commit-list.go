@@ -230,12 +230,23 @@ func (g *Git) getStashes() []Commit {
 		parts := strings.Split(st, GIT_LOG_SEP)
 		if len(parts) == len(data) {
 
-			// Get parents
+			// Get parents.
+			// Stashes may have two or three parents. In the following diagrams,
+			//   I = index at time of stash
+			//   S = stash
+			//   U = uncommitted files at time of stash (-u flag)
+			//
+			//          .----S
+			//         /    /
+			//   -----H----I
+			//
+			//          .----S----.
+			//         /    /    /
+			//   -----H----I    U
+			//
 			parents := []string{}
 			if parts[1] != "" {
 				parents = strings.Split(parts[1], " ")
-				// Only keep the first parent for stashes.
-				parents = parents[0:1]
 			}
 
 			// Get timestamp and formatted datetime for author

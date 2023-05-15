@@ -244,6 +244,7 @@ type CommitsResponse struct {
 
 // FRONTEND: Get list of commits and all associated details for display.
 func (a *App) GetCommitList() CommitsResponse {
+	println("here")
 	HEAD, commits, graph, err := a.Git.GetCommitsAndGraph()
 	if err != nil {
 		return CommitsResponse{

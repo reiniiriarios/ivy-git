@@ -54,7 +54,12 @@ func (g *Graph) addVertices(commits []Commit, HEAD Ref) {
 
 	// Assign each vertex its parents.
 	for i, commit := range commits {
-		for _, parent_hash := range commit.Parents {
+		for n, parent_hash := range commit.Parents {
+			// Only use the first stash parent to build the graph. The second
+			// is the stash's commit and should not be drawn.
+			if commit.Stash && n > 0 {
+				break
+			}
 			if parent_id, exists := g.CommitLookup[parent_hash]; exists {
 				g.Vertices[i].Parents = append(g.Vertices[i].Parents, parent_id)
 				g.Vertices[parent_id].Children = append(g.Vertices[parent_id].Children, int64(i))
