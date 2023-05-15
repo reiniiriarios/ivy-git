@@ -197,7 +197,8 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 				if v1.hasNextParent() && v1.getNextParent() == NULL_VERTEX {
 					null_parent = true
 				}
-				if int(p2.Y) == len(g.Vertices)-1 {
+				// If p2 is the final commit in the displayed commits and it has a parent.
+				if int(p2.Y) == len(g.Vertices)-1 && len(g.Vertices[len(g.Vertices)-1].Parents) > 0 {
 					null_point := Point{
 						X: p2.X,
 						Y: -1,
