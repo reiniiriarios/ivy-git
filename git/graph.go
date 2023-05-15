@@ -197,18 +197,20 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 				if v1.hasNextParent() && v1.getNextParent() == NULL_VERTEX {
 					null_parent = true
 				}
-				null_point := Point{
-					X: p2.X,
-					Y: -1,
-				}
+				if int(p2.Y) == len(g.Vertices)-1 {
+					null_point := Point{
+						X: p2.X,
+						Y: -1,
+					}
 
-				g.Branches[b.Id].addLine(Line{
-					P1:              p2,
-					P2:              null_point,
-					Committed:       true,
-					LockedDirection: false,
-					Merge:           false,
-				})
+					g.Branches[b.Id].addLine(Line{
+						P1:              p2,
+						P2:              null_point,
+						Committed:       true,
+						LockedDirection: false,
+						Merge:           false,
+					})
+				}
 			}
 
 			// If there's no next parent or if the new current vertex already has a branch.
@@ -331,12 +333,10 @@ type Vertex struct {
 }
 
 func (v *Vertex) hasNextParent() bool {
-	println("next", v.NextParent, "len", len(v.Parents), v.NextParent < len(v.Parents))
 	return v.NextParent < len(v.Parents)
 }
 
 func (v *Vertex) getNextParent() int64 {
-	println("get next", v.NextParent, "len", len(v.Parents))
 	return v.Parents[v.NextParent]
 }
 
