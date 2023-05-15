@@ -55,6 +55,14 @@
       e.preventDefault();
     }
   });
+
+  // Development: If hot updating a module, re-init the app for correct data cascade.
+  if (import.meta.hot) {
+    import.meta.hot.on('vite:afterUpdate', () => {
+      console.log('Hot update, re-init app...');
+      init();
+    });
+  }
 </script>
 
 <TitleBar />

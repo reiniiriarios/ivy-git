@@ -88,7 +88,6 @@ function createCommitData() {
     subscribe,
     refresh: async () => {
       GetCommitList().then(result => {
-        console.log('um');
         parseResponse(result, () => {
           removeTableSizing().then(() => {
             set({
