@@ -1,0 +1,12 @@
+.getting-started {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - var(--title-bar-height));
+  width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+  // Gravity
+  padding-bottom: 2rem;
+}

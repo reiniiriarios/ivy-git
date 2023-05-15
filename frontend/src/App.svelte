@@ -14,19 +14,20 @@
   import { currentRepo, repos } from "stores/repos";
   import { branches, currentBranch } from "stores/branches";
   import { changes } from "stores/changes";
-  import { currentTab } from "stores/current-tab";
-  import { commitData } from "stores/commit-data";
 
   import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
   import { ResizeWindow } from "wailsjs/go/main/App";
+  import GetStarted from "components/GetStarted.svelte";
 
   // Load initial ui state.
   function init() {
     currentRepo.refresh();
-    currentBranch.refresh();
-    branches.refresh();
-    repos.refresh();
-    changes.refresh();
+    if ($currentRepo) {
+      currentBranch.refresh();
+      branches.refresh();
+      repos.refresh();
+      changes.refresh();
+    }
     (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
       switch (env.platform) {
         case "darwin":
@@ -45,17 +46,32 @@
   window.addEventListener('keydown', tabUpDown);
 
   window.addEventListener('resize', ResizeWindow);
+
+  // Fixes an issue on macOS where when dragging the cursor will change to
+  // the text selector. By only attaching this to HTMLElements, text itself
+  // is still selectable.
+  window.addEventListener('selectstart', (e: Event) => {
+    if (e.target instanceof HTMLElement) {
+      e.preventDefault();
+    }
+  });
 </script>
 
 <TitleBar />
 <div id="container">
   <div id="sidebar">
     <SelectRepo />
-    <SelectBranch />
+    {#if $currentRepo}
+      <SelectBranch />
+    {/if}
     <Changes />
   </div>
   <main>
-    <MainTabs />
+    {#if $currentRepo}
+      <MainTabs />
+    {:else}
+      <GetStarted />
+    {/if}
   </main>
   <Confirm />
   <Message />
