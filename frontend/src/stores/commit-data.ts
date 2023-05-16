@@ -31,6 +31,7 @@ export interface Ref {
   Hash: string;
   Name: string;
   ShortName: string;
+  AbbrName: string;
 }
 
 interface Line {

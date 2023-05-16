@@ -23,7 +23,7 @@
         <div class="refs__label-name">{b.Name}</div>
         {#if commit.Remotes && commit.Remotes.length}
           {#each commit.Remotes as r}
-            <div class="refs__leaf">{r.ShortName}</div>
+            <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.ShortName}</div>
           {/each}
         {/if}
       </div>
@@ -31,11 +31,12 @@
   {:else if commit.Remotes && commit.Remotes.length}
     {#each commit.Remotes as r}
       <div class="refs__label refs__label--branch"
+        title={r.AbbrName == "" ? "" : r.Name}
         data-name="{r.Name}"
         data-remote="{r.ShortName}"
         data-menu="remoteBranch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
-        <div class="refs__leaf">{r.Name}</div>
+        <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Name}</div>
       </div>
     {/each}
   {/if}
@@ -47,17 +48,18 @@
       <div class="refs__label-name">HEAD</div>
       {#if commit.Heads && commit.Heads.length}
         {#each commit.Heads as h}
-          <div class="refs__leaf">{h.ShortName}</div>
+          <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.ShortName}</div>
         {/each}
       {/if}
     </div>
   {:else if commit.Heads && commit.Heads.length}
     {#each commit.Heads as h}
       <div class="refs__label refs__label--head"
+        title={h.AbbrName == "" ? "" : h.Name}
         data-remote="{h.ShortName}"
         data-menu="remoteHead">
         <div class="refs__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
-        <div class="refs__leaf">{h.Name}</div>
+        <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Name}</div>
       </div>
     {/each}
   {/if}
@@ -65,10 +67,11 @@
   {#if commit.Tags && commit.Tags.length}
     {#each commit.Tags as t}
       <div class="refs__label refs__label--tag"
+        title={t.AbbrName == "" ? "" : t.Name}
         data-name="{t.Name}"
         data-menu="tag">
         <div class="refs__icon">{@html octicons['tag'].toSVG({ "width": 14 })}</div>
-        <div class="refs__label-name">{t.Name}</div>
+        <div class="refs__label-name">{t.AbbrName != "" ? t.AbbrName : t.Name}</div>
       </div>
     {/each}
   {/if}

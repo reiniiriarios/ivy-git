@@ -14,6 +14,8 @@ const DATE_FORMAT = "Jan 2, 2006, 03:04:05 pm"
 
 const GIT_LOG_SEP = "-act45j3o9y78__jyo9ct-a4ojy9actyo_ct4oy9j-"
 
+const REF_MAX_NAME_LENGTH = 50
+
 type Commit struct {
 	Id              uint64
 	Hash            string
@@ -39,6 +41,7 @@ type Ref struct {
 	Hash      string
 	Name      string
 	ShortName string
+	AbbrName  string
 	Annotated bool
 }
 
@@ -156,10 +159,15 @@ func (g *Git) getRefs() (Refs, error) {
 				if len(rrr) >= 2 {
 					s = rrr[0]
 				}
+				abbr := ""
+				if len(s) > REF_MAX_NAME_LENGTH {
+					abbr = s[:REF_MAX_NAME_LENGTH] + "..."
+				}
 				refs.Branches = append(refs.Branches, Ref{
 					Hash:      hash,
 					Name:      n,
 					ShortName: s,
+					AbbrName:  abbr,
 				})
 			} else if strings.HasPrefix(name, "refs/tags/") {
 				annotated := strings.HasSuffix(name, "^{}")
@@ -180,10 +188,15 @@ func (g *Git) getRefs() (Refs, error) {
 				if len(rrr) >= 2 {
 					s = rrr[0]
 				}
+				abbr := ""
+				if len(n) > REF_MAX_NAME_LENGTH {
+					abbr = n[:REF_MAX_NAME_LENGTH] + "..."
+				}
 				ref := Ref{
 					Hash:      hash,
 					Name:      n,
 					ShortName: s,
+					AbbrName:  abbr,
 				}
 				if name[len(name)-4:] == "HEAD" {
 					refs.Heads = append(refs.Remotes, ref)
