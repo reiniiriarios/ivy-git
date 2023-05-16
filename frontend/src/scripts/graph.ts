@@ -7,7 +7,7 @@ export const UNCOMMITED_HASH = "#";
 const NULL_VERTEX = -1;
 
 // Match to _tree.scss.
-const NUM_COLORS = 10;
+export const NUM_COLORS = 10;
 
 // Adjust start of graph from top left.
 const OFFSET_X = 12;

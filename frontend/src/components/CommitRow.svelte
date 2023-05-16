@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UNCOMMITED_HASH } from 'scripts/graph';
+  import { NUM_COLORS, UNCOMMITED_HASH } from 'scripts/graph';
   import CommitLabels from 'components/CommitLabels.svelte';
   import { HEAD, type Commit } from 'stores/commit-data';
   import { currentCommit } from 'stores/commit-details';
@@ -39,7 +39,7 @@
   }
 </script>
 
-<tr class="commit c-{commit.Color}"
+<tr class="commit c-{commit.Color % NUM_COLORS}"
   class:uncommitted={commit.Hash === UNCOMMITED_HASH}
   class:merge={commit.Merge}
   class:stash={commit.Stash}
