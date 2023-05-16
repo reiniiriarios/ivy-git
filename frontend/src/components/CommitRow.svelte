@@ -6,10 +6,6 @@
 
   export let commit: Commit;
 
-  let u = commit.Hash === UNCOMMITED_HASH;
-  let h = commit.Hash === $HEAD.Hash;
-  HEAD.subscribe(v => h = commit.Hash === v.Hash);
-
   function clearActive() {
     let all = document.getElementsByClassName('commit');
     for (let i = 0; i < all.length; i++) {
@@ -44,14 +40,14 @@
 </script>
 
 <tr class="commit c-{commit.Color}"
-  class:uncommitted={u}
+  class:uncommitted={commit.Hash === UNCOMMITED_HASH}
   class:merge={commit.Merge}
   class:stash={commit.Stash}
-  class:head={h}
+  class:head={commit.Hash === $HEAD.Hash}
   data-id="{commit.Id}"
   data-hash="{commit.Hash}"
-  data-head="{h}"
-  data-menu="{u ? '' : 'commit'}"
+  data-head="{commit.Hash === $HEAD.Hash}"
+  data-menu="{commit.Hash === UNCOMMITED_HASH ? '' : 'commit'}"
   tabindex="0"
   on:click={mouseShowDetails}
   on:keydown={keyShowDetails}>

@@ -47,7 +47,7 @@ func (a *App) AddRepo() RepoResponse {
 
 	if d == "" {
 		return RepoResponse{
-			Response: "",
+			Response: "none",
 		}
 	}
 

@@ -29,9 +29,11 @@ function createRepos() {
     },
     add: async () => {
       AddRepo().then((result) => parseResponse(result, () => {
-        repos.refresh();
-        currentRepo.set(result.Repo.Id);
-        repoSelect.set(false);
+        if (result.Response !== 'none') {
+          repos.refresh();
+          currentRepo.set(result.Id);
+          repoSelect.set(false);
+        }
       }));
     },
     delete: async (id: string) => {
@@ -72,6 +74,7 @@ function createCurrentRepo() {
             remotes.refresh();
           }
           branches.refresh();
+          currentBranch.refresh();
           changes.refresh();
         });
         return r;
