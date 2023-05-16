@@ -1,11 +1,15 @@
 import { writable } from 'svelte/store';
+
 import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from 'wailsjs/go/main/App';
+
 import { commitData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from 'stores/current-tab';
 import { currentCommit } from 'stores/commit-details';
 import { branches, currentBranch } from 'stores/branches';
 import { remotes } from 'stores/remotes';
+import { repoSelect } from 'stores/ui';
+
 import { parseResponse } from 'scripts/parse-response';
 
 export interface Repo {
@@ -24,7 +28,11 @@ function createRepos() {
       });
     },
     add: async () => {
-      AddRepo().then((result) => parseResponse(result, repos.refresh));
+      AddRepo().then((result) => parseResponse(result, () => {
+        repos.refresh();
+        currentRepo.set(result.Repo.Id);
+        repoSelect.set(false);
+      }));
     },
     delete: async (id: string) => {
       (window as any).confirmModal(`Are you sure you want to remove ${repos[id].Name}?`, () => {

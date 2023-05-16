@@ -1,10 +1,13 @@
 import { writable, get } from 'svelte/store';
+
 import { GetBranches, GetCurrentBranch, SwitchBranch } from 'wailsjs/go/main/App';
+
 import { commitData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from 'stores/current-tab';
 import { currentCommit } from 'stores/commit-details';
 import { remotes } from 'stores/remotes';
+
 import { parseResponse } from 'scripts/parse-response';
 
 let cTab = '';
@@ -29,7 +32,7 @@ function createBranches() {
 export const branches = createBranches();
 
 function createCurrentBranch() {
-  const { subscribe, update, set } = writable({} as Branch);
+  const { subscribe, set } = writable({} as Branch);
   
   return {
     subscribe,

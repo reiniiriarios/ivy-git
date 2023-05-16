@@ -1,38 +1,37 @@
 <script lang="ts">
   import { repos, currentRepo } from 'stores/repos';
-
-  let listVisible: boolean = false;
+  import { branchSelect, repoSelect } from 'stores/ui';
 
   function selectRepo(id: string) {
     currentRepo.set(id);
-    hideList();
+    repoSelect.set(false);
   }
 
   function toggleList(e?: MouseEvent | KeyboardEvent) {
     if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
       return;
     }
-    listVisible ? hideList() : showList();
-  }
-
-  function showList() {
-    document.getElementById("all-repos").style.display = "block";
-    document.getElementById("current-repo").classList.add('active');
-    listVisible = true;
-  }
-
-  function hideList(e?: MouseEvent | KeyboardEvent) {
-    if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
-      return;
-    }
-    document.getElementById("all-repos").style.display = "none";
-    document.getElementById("current-repo").classList.remove('active');
-    listVisible = false;
+    repoSelect.set(!$repoSelect);
+    if ($repoSelect) branchSelect.set(false);
   }
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {
-    if(['Escape'].includes(e.key) && listVisible) {
-      hideList();
+    if(['Escape'].includes(e.key) && $repoSelect) {
+      repoSelect.set(false);
+    }
+  });
+
+  repoSelect.subscribe(v => {
+    let list = document.getElementById("all-repos");
+    let btn = document.getElementById("current-repo");
+    if (list && btn) {
+      if (v) {
+        list.style.display = "block";
+        btn.classList.add("active");
+      } else {
+        list.style.display = "none";
+        btn.classList.remove("active");
+      }
     }
   });
 </script>
@@ -44,7 +43,7 @@
 
 <div id="all-repos" class="sidebar-dropdown">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="overlay" on:click={hideList}></div>
+  <div class="overlay" on:click={() => repoSelect.set(false)}></div>
   <div class="sidebar-dropdown__container">
     <div class="sidebar-dropdown__bar">
       <div class="sidebar-dropdown__add">
