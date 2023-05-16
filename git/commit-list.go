@@ -199,7 +199,7 @@ func (g *Git) getRefs() (Refs, error) {
 					AbbrName:  abbr,
 				}
 				if name[len(name)-4:] == "HEAD" {
-					refs.Heads = append(refs.Remotes, ref)
+					refs.Heads = append(refs.Heads, ref)
 				} else {
 					refs.Remotes = append(refs.Remotes, ref)
 				}
