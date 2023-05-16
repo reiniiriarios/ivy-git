@@ -7,8 +7,10 @@
   import MainTabs from "components/MainTabs.svelte";
   import TitleBar from "components/TitleBar.svelte";
   import ContextMenu from "components/ContextMenu.svelte";
+  import GetStarted from "components/GetStarted.svelte";
 
   import { tabUpDown } from "scripts/keyboard-navigation";
+  import { addLinkListener } from "scripts/links";
 
   import { currentRepo, repos } from "stores/repos";
   import { branches, currentBranch } from "stores/branches";
@@ -16,7 +18,6 @@
 
   import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
   import { ResizeWindow } from "wailsjs/go/main/App";
-  import GetStarted from "components/GetStarted.svelte";
 
   // Load initial ui state.
   function init() {
@@ -45,6 +46,8 @@
   window.addEventListener('keydown', tabUpDown);
 
   window.addEventListener('resize', ResizeWindow);
+
+  addLinkListener();
 
   // Fixes an issue on macOS where when dragging the cursor will change to
   // the text selector. By only attaching this to HTMLElements, text itself
