@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 
 import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from 'wailsjs/go/main/App';
 
@@ -11,6 +11,7 @@ import { remotes } from 'stores/remotes';
 import { repoSelect } from 'stores/ui';
 
 import { parseResponse } from 'scripts/parse-response';
+import { messageDialog } from './message-dialog';
 
 export interface Repo {
   Name: string;
@@ -33,15 +34,23 @@ function createRepos() {
           repos.refresh();
           currentRepo.set(result.Id);
           repoSelect.set(false);
+          messageDialog.clear();
         }
       }));
     },
     delete: async (id: string) => {
-      (window as any).confirmModal(`Are you sure you want to remove ${repos[id].Name}?`, () => {
-        RemoveRepo(id).then(() => {
-          repos.refresh();
-        });
-      }, 'Remove', 'Cancel');
+      let name = get(repos)[id]?.Name ?? 'this repo';
+      messageDialog.confirm({
+        heading: 'Remove Repo',
+        message: `Are you sure you want to remove ${name}?`,
+        confirm: 'Remove',
+        okay: 'Cancel',
+        callbackConfirm: () => {
+          RemoveRepo(id).then(() => {
+            repos.refresh();
+          })
+        },
+      });
     }
   };
 }

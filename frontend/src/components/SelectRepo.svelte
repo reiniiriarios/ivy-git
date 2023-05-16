@@ -1,4 +1,6 @@
 <script lang="ts">
+  import octicons from '@primer/octicons';
+  import { messageDialog } from 'stores/message-dialog';
   import { repos, currentRepo } from 'stores/repos';
   import { branchSelect, repoSelect } from 'stores/ui';
 
@@ -13,6 +15,29 @@
     }
     repoSelect.set(!$repoSelect);
     if ($repoSelect) branchSelect.set(false);
+  }
+
+  function addRepo() {
+    messageDialog.options({
+      heading: 'Add Repo',
+      options: [
+        {
+          text: 'Add Existing Repo',
+          icon: octicons['project-symlink'].toSVG({ width: 32 }),
+          callback: repos.add,
+        },
+        {
+          text: 'Clone Repo',
+          icon: octicons['repo-clone'].toSVG({ width: 32 }),
+          callback: () => console.warn('todo'),
+        },
+        {
+          text: 'Create New Repo',
+          icon: octicons['plus-circle'].toSVG({ width: 32 }),
+          callback: () => console.warn('todo'),
+        },
+      ],
+    });
   }
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {
@@ -47,7 +72,7 @@
   <div class="sidebar-dropdown__container">
     <div class="sidebar-dropdown__bar">
       <div class="sidebar-dropdown__add">
-        <button class="btn" on:click={repos.add}>Add Repo +</button>
+        <button class="btn" on:click={addRepo}>Add Repo +</button>
       </div>
       <ul class="sidebar-dropdown__list">
         {#each Object.entries($repos) as [id, repo]}

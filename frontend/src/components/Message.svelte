@@ -1,26 +1,44 @@
 <script lang="ts">
-  let cb: Function = () => {};
+  import { messageDialog } from 'stores/message-dialog';
 
-  (window as any).messageModal = (message: string, callback: Function = cb) => {
-    let c = document.getElementById("modal-message");
-    let q = document.getElementById("modal-message-text");
-    q.innerText = message;
-    c.style.display = "block";
-    cb = callback;
-  };
-
-  function close() {
-    document.getElementById("modal-message").style.display = "none";
-  }
+  window.addEventListener('keydown', function(e: KeyboardEvent) {
+    if(['Escape'].includes(e.key) && ($messageDialog.message || $messageDialog.options?.length)) {
+      messageDialog.okay();
+    }
+  });
 </script>
 
-<div class="modal" id="modal-message">
-  <div class="overlay">
-    <div class="modal__box">
-      <div class="modal__text" id="modal-message-text">...</div>
-      <div class="modal__response">
-        <button class="btn okay" on:click={close} on:keyup={close}>Okay</button>
+{#if $messageDialog.message || $messageDialog.options?.length}
+  <div role="dialog" class="modal" id="modal-message">
+    <div class="overlay">
+      <div class="modal__box">
+        {#if $messageDialog.heading}
+          <div class="modal__heading">{$messageDialog.heading}</div>
+        {/if}
+        {#if $messageDialog.message}
+          <div class="modal__text">{$messageDialog.message}</div>
+        {/if}
+        {#if $messageDialog.options}
+          <div class="modal__options">
+            {#each $messageDialog.options as option}
+              <button class="modal__option btn option" on:click={option.callback}>
+                {#if option.icon}
+                  <div class="modal__option-icon">
+                    {@html option.icon}
+                  </div>
+                {/if}
+                {@html option.text}
+              </button>
+            {/each}
+          </div>
+        {/if}
+        <div class="modal__response">
+          {#if $messageDialog.confirm}
+            <button class="btn yes" on:click={messageDialog.yes}>{$messageDialog.confirm}</button>
+          {/if}
+          <button class="btn okay" on:click={messageDialog.okay}>{$messageDialog.okay}</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+{/if}
