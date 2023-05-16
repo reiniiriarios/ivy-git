@@ -72,6 +72,12 @@ ul {
   padding-left: 2em;
 }
 
+code {
+  border-radius: 0.25rem;
+  padding: 0.08rem 0.35rem;
+  background-color: var(--color-scale-a-4-25);
+}
+
 .overlay {
   z-index: 10;
   position: absolute;
