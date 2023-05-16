@@ -68,9 +68,9 @@
         </tr>
         <tr>
           <th>Message</th>
-          <td>
+          <td class="message">
             <div class="message__subject">{commit.Subject}</div>
-            <div class="message__body">{$commitDetails?.Body}</div>
+            <div class="message__body">{@html $commitDetails?.BodyHtml}</div>
           </td>
         </tr>
       </table>

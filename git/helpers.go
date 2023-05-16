@@ -1,6 +1,13 @@
 package git
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
+	"github.com/microcosm-cc/bluemonday"
+)
 
 // Parse a multiline string into an array.
 func parseLines(s string) []string {
@@ -27,4 +34,25 @@ func getSiteName(hostname string) string {
 		return "Azure"
 	}
 	return hostname
+}
+
+func mdToHTML(md string) string {
+	// create markdown parser with extensions
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	p := parser.NewWithExtensions(extensions)
+	mdb := []byte(md)
+	doc := p.Parse(mdb)
+
+	// create HTML renderer with extensions
+	htmlFlags := html.CommonFlags | html.HrefTargetBlank
+	opts := html.RendererOptions{Flags: htmlFlags}
+	renderer := html.NewRenderer(opts)
+
+	// render
+	maybeUnsafeHTML := markdown.Render(doc, renderer)
+
+	// safe
+	html := bluemonday.UGCPolicy().SanitizeBytes(maybeUnsafeHTML)
+
+	return string(html)
 }

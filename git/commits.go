@@ -11,6 +11,7 @@ import (
 type CommitAddl struct {
 	Hash               string
 	Body               string
+	BodyHtml           string
 	CommitterName      string
 	CommitterEmail     string
 	CommitterTimestamp int64
@@ -50,6 +51,7 @@ func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 	return CommitAddl{
 		Hash:               hash,
 		Body:               parts[3],
+		BodyHtml:           mdToHTML(parts[3]),
 		CommitterName:      parts[0],
 		CommitterEmail:     parts[1],
 		CommitterTimestamp: ts,

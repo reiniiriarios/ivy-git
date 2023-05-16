@@ -6,6 +6,7 @@ import { parseResponse } from "scripts/parse-response";
 interface CommitDetails {
   Hash: string;
   Body: string;
+  BodyHtml: string;
   CommitterName: string;
   CommitterEmail: string;
   CommitterTimestamp: number;
