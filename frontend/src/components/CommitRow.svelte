@@ -8,6 +8,7 @@
 
   let u = commit.Hash === UNCOMMITED_HASH;
   let h = commit.Hash === $HEAD.Hash;
+  HEAD.subscribe(v => h = commit.Hash === v.Hash);
 
   function clearActive() {
     let all = document.getElementsByClassName('commit');
@@ -46,6 +47,7 @@
   class:uncommitted={u}
   class:merge={commit.Merge}
   class:stash={commit.Stash}
+  class:head={h}
   data-id="{commit.Id}"
   data-hash="{commit.Hash}"
   data-head="{h}"
