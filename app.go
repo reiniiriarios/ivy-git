@@ -41,8 +41,5 @@ func (a *App) startup(ctx context.Context) {
 
 // called when the DOM is ready
 func (a *App) domready(ctx context.Context) {
-	// set data for watcher
-	a.updateLastCommit()
-	a.updateUncommittedDiff()
 	go a.watcher()
 }
