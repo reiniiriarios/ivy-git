@@ -7,9 +7,11 @@
   import { onMount } from 'svelte';
   import { setFade } from 'scripts/graph';
   import LoadMoreCommits from 'components/LoadMoreCommits.svelte';
+  import { currentCommit } from 'stores/commit-details';
 
   onMount(() => {
     commitData.refresh();
+    currentCommit.unset();
   })
 </script>
 
