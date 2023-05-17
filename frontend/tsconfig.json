@@ -18,6 +18,9 @@
         "components/*": [
             "src/components/*"
         ],
+        "events/*": [
+            "src/events/*"
+        ],
         "scripts/*": [
             "src/scripts/*"
         ],

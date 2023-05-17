@@ -18,6 +18,7 @@
 
   import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
   import { ResizeWindow } from "wailsjs/go/main/App";
+  import { enableWatcher } from "events/watcher";
 
   // Load initial ui state.
   function init() {
@@ -48,6 +49,8 @@
   window.addEventListener('resize', ResizeWindow);
 
   addLinkListener();
+
+  enableWatcher();
 
   // Fixes an issue on macOS where when dragging the cursor will change to
   // the text selector. By only attaching this to HTMLElements, text itself

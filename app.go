@@ -9,11 +9,16 @@ import (
 
 // App struct
 type App struct {
-	ctx          context.Context
-	RepoSaveData RepoSaveData
-	Settings     Settings
-	AppData      AppData
-	Git          git.Git
+	ctx                  context.Context
+	RepoSaveData         RepoSaveData
+	Settings             Settings
+	AppData              AppData
+	Git                  git.Git
+	CurrentHash          string
+	UncommittedDiff      string
+	RemoteDiff           string
+	StagedDiff           string
+	WatcherSemiSemaphore uint64
 }
 
 // NewApp creates a new App application struct
@@ -34,6 +39,10 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
+// called when the DOM is ready
 func (a *App) domready(ctx context.Context) {
-	// ...
+	// set data for watcher
+	a.updateLastCommit()
+	a.updateUncommittedDiff()
+	go a.watcher()
 }

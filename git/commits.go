@@ -18,6 +18,15 @@ type CommitAddl struct {
 	CommitterDatetime  string
 }
 
+func (g *Git) GetLastCommitHash() (string, error) {
+	h, err := g.RunCwd("--no-pager", "log", "--format='%H'", "--max-count=1")
+	if err != nil {
+		return "", err
+	}
+	h = strings.Trim(strings.ReplaceAll(strings.ReplaceAll(h, "\r", ""), "\n", ""), "'")
+	return h, nil
+}
+
 // Get additional commit details not listed in the table.
 func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 	// Include:
