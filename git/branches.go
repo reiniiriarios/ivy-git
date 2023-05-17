@@ -71,12 +71,27 @@ func (g *Git) getAheadBehind(branch string, remote string) (uint32, uint32, erro
 	return uint32(ahead), uint32(behind), nil
 }
 
-func (g *Git) PushBranch(remote string, branch string) error {
+func (g *Git) PushBranch(branch string) error {
+	_, err := g.RunCwd("push", branch+":"+branch)
+	return err
+}
+
+func (g *Git) PushRemoteBranch(remote string, branch string) error {
 	_, err := g.RunCwd("push", remote, branch+":"+branch)
 	return err
 }
 
-func (g *Git) PullBranch(remote string, branch string, rebase bool) error {
+func (g *Git) PullBranch(branch string, rebase bool) error {
+	var err error
+	if rebase {
+		_, err = g.RunCwd("pull", branch+":"+branch, "--rebase")
+	} else {
+		_, err = g.RunCwd("pull", branch+":"+branch)
+	}
+	return err
+}
+
+func (g *Git) PullRemoteBranch(remote string, branch string, rebase bool) error {
 	var err error
 	if rebase {
 		_, err = g.RunCwd("pull", remote, branch+":"+branch, "--rebase")

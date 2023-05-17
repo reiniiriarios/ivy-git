@@ -1,4 +1,8 @@
 import { ClipboardSetText } from 'wailsjs/runtime/runtime';
+import { parseResponse } from 'scripts/parse-response';
+import { commitData } from 'stores/commit-data';
+import { currentBranch } from 'stores/branches';
+import { PushBranch, PullRemoteBranch } from 'wailsjs/go/main/App';
 
 interface Menus { [name: string]: Menu }
 
@@ -18,13 +22,21 @@ export const menus: Menus = {
     if (e.dataset.current !== "true") {
       m.push({
         text: "Checkout Branch",
-        callback: () => alert("todo: checkout"),
+        callback: () => {
+          currentBranch.set(e.dataset.name);
+        },
       });
     }
     m = m.concat([
       {
         text: "Push Branch",
-        callback: () => alert("todo: push"),
+        callback: (e) => {
+          PushBranch(e.dataset.name).then(r => {
+            parseResponse(r, () => {
+              commitData.refresh();
+            });
+          })
+        },
       },
       {
         text: "Rename Branch",
@@ -147,12 +159,14 @@ export const menus: Menus = {
   remoteBranch: (e: HTMLElement) => {
     return [
       {
-        text: "Push Branch",
-        callback: () => alert("push"),
-      },
-      {
         text: "Pull Branch",
-        callback: () => alert("pull"),
+        callback: () => {
+          PullRemoteBranch(e.dataset.remote, e.dataset.name).then(r => {
+            parseResponse(r, () => {
+              commitData.refresh();
+            });
+          })
+        },
       },
       {
         text: "Reset Local Branch to Remote",

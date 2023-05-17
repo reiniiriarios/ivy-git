@@ -79,8 +79,8 @@ func (a *App) BranchExists(name string) bool {
 }
 
 // Pull branch.
-func (a *App) PullBranch(remote string, branch string, rebase bool) GenericResponse {
-	err := a.Git.PullBranch(remote, branch, rebase)
+func (a *App) PullRemoteBranch(remote string, branch string, rebase bool) GenericResponse {
+	err := a.Git.PullRemoteBranch(remote, branch, rebase)
 	if err != nil {
 		return GenericResponse{
 			Response: "error",
@@ -158,7 +158,7 @@ func (a *App) PushRemote(remote string) GenericResponse {
 			Message:  err.Error(),
 		}
 	}
-	err = a.Git.PushBranch(remote, branch)
+	err = a.Git.PushRemoteBranch(remote, branch)
 	if err != nil {
 		return GenericResponse{
 			Response: "error",
@@ -178,8 +178,35 @@ func (a *App) PullRemote(remote string) GenericResponse {
 			Message:  err.Error(),
 		}
 	}
-	// TODO: set rebase flag depending on user settings
-	err = a.Git.PullBranch(remote, branch, true)
+	// todo: set rebase flag depending on user settings
+	err = a.Git.PullRemoteBranch(remote, branch, true)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
+
+func (a *App) PushBranch(branch string) GenericResponse {
+	err := a.Git.PushBranch(branch)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
+
+func (a *App) PullBranch(branch string) GenericResponse {
+	// todo: set rebase flag depending on user settings
+	err := a.Git.PullBranch(branch, true)
 	if err != nil {
 		return GenericResponse{
 			Response: "error",
