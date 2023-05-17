@@ -161,7 +161,7 @@ export const menus: Menus = {
       {
         text: "Pull Branch",
         callback: () => {
-          PullRemoteBranch(e.dataset.remote, e.dataset.name).then(r => {
+          PullRemoteBranch(e.dataset.remote, e.dataset.branch).then(r => {
             parseResponse(r, () => {
               commitData.refresh();
             });

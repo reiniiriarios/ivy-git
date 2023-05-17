@@ -30,7 +30,8 @@ export interface Commit {
 export interface Ref {
   Hash: string;
   Name: string;
-  ShortName: string;
+  Branch: string;
+  Remote: string;
   AbbrName: string;
 }
 

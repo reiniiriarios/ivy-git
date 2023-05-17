@@ -17,13 +17,14 @@
     {#each commit.Branches as b}
       <div class="refs__label refs__label--branch"
         data-name="{b.Name}"
+        data-branch="{b.Branch}"
         data-current="{isCurrent(b.Name)}"
         data-menu="branch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__label-name">{b.Name}</div>
         {#if commit.Remotes && commit.Remotes.length}
           {#each commit.Remotes as r}
-            <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.ShortName}</div>
+            <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Remote}</div>
           {/each}
         {/if}
       </div>
@@ -33,7 +34,8 @@
       <div class="refs__label refs__label--branch"
         title={r.AbbrName == "" ? "" : r.Name}
         data-name="{r.Name}"
-        data-remote="{r.ShortName}"
+        data-branch="{r.Branch}"
+        data-remote="{r.Remote}"
         data-menu="remoteBranch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
         <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Name}</div>
@@ -48,7 +50,7 @@
       <div class="refs__label-name">HEAD</div>
       {#if commit.Heads && commit.Heads.length}
         {#each commit.Heads as h}
-          <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.ShortName}</div>
+          <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Remote}</div>
         {/each}
       {/if}
     </div>
@@ -56,7 +58,7 @@
     {#each commit.Heads as h}
       <div class="refs__label refs__label--head"
         title={h.AbbrName == "" ? "" : h.Name}
-        data-remote="{h.ShortName}"
+        data-remote="{h.Remote}"
         data-menu="remoteHead">
         <div class="refs__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
         <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Name}</div>

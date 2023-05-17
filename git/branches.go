@@ -72,7 +72,11 @@ func (g *Git) getAheadBehind(branch string, remote string) (uint32, uint32, erro
 }
 
 func (g *Git) PushBranch(branch string) error {
-	_, err := g.RunCwd("push", branch+":"+branch)
+	remote, err := g.getBranchRemote(branch)
+	if err != nil {
+		return err
+	}
+	err = g.PushRemoteBranch(remote, branch)
 	return err
 }
 
@@ -82,12 +86,11 @@ func (g *Git) PushRemoteBranch(remote string, branch string) error {
 }
 
 func (g *Git) PullBranch(branch string, rebase bool) error {
-	var err error
-	if rebase {
-		_, err = g.RunCwd("pull", branch+":"+branch, "--rebase")
-	} else {
-		_, err = g.RunCwd("pull", branch+":"+branch)
+	remote, err := g.getBranchRemote(branch)
+	if err != nil {
+		return err
 	}
+	err = g.PullRemoteBranch(remote, branch, rebase)
 	return err
 }
 
@@ -108,4 +111,13 @@ func (g *Git) getNumCommitsOnBranch(branch string) (uint32, error) {
 	}
 	num, _ := strconv.ParseInt(n, 10, 32)
 	return uint32(num), nil
+}
+
+func (g *Git) getBranchRemote(branch string) (string, error) {
+	r, err := g.RunCwd("config", "branch."+branch+".remote")
+	if err != nil {
+		return "", err
+	}
+	r = strings.Trim(strings.ReplaceAll(strings.ReplaceAll(r, "\r", ""), "\n", ""), "'")
+	return r, nil
 }
