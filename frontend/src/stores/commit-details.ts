@@ -23,6 +23,7 @@ interface FileStat {
   OldDir: string;
   Added: number;
   Deleted: number;
+  Binary: boolean;
   Status: string;
 }
 

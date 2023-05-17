@@ -78,6 +78,7 @@ type FileStat struct {
 	OldDir  string
 	Added   uint32
 	Deleted uint32
+	Binary  bool
 	Status  string
 }
 
@@ -104,9 +105,19 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	// The first line is the hash, skip.
 	for i := 1; i < len(nl); i++ {
 		nf := strings.Fields(nl[i])
+		binary := false
+		var a int64 = 0
+		var d int64 = 0
+		if len(nf) >= 2 {
+			if nf[0] == "-" && nf[1] == "-" {
+				binary = true
+			} else {
+				a, _ = strconv.ParseInt(nf[0], 10, 32)
+				d, _ = strconv.ParseInt(nf[1], 10, 32)
+			}
+		}
+
 		if len(nf) == 3 {
-			a, _ := strconv.ParseInt(nf[0], 10, 32)
-			d, _ := strconv.ParseInt(nf[1], 10, 32)
 			name := filepath.Base(nf[2])
 			dir := filepath.Dir(nf[2])
 			path := strings.Split(strings.ReplaceAll(dir, "\\", "/"), "/")
@@ -117,12 +128,10 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 				Path:    path,
 				Added:   uint32(a),
 				Deleted: uint32(d),
+				Binary:  binary,
 			})
 		} else if len(nf) == 2 {
-			// If there are two fields parsed, the next two lines are the
-			// previous name and the new name.
-			a, _ := strconv.ParseInt(nf[0], 10, 32)
-			d, _ := strconv.ParseInt(nf[1], 10, 32)
+			// If there are two fields parsed, the next two lines are the previous name and the new name.
 			i++
 			oldfile := nl[i]
 			i++
@@ -142,6 +151,7 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 				OldDir:  olddir,
 				Added:   uint32(a),
 				Deleted: uint32(d),
+				Binary:  binary,
 			})
 		}
 	}
