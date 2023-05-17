@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 
 import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from 'wailsjs/go/main/App';
 
-import { commitData } from 'stores/commit-data';
+import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from 'stores/current-tab';
 import { currentCommit } from 'stores/commit-details';
@@ -80,6 +80,7 @@ function createCurrentRepo() {
         UpdateSelectedRepo(r).then(() => {
           if (cTab === 'tree') {
             commitData.refresh();
+            commitSignData.refresh();
             currentCommit.unset();
           } else if (cTab === 'details') {
             remotes.refresh();

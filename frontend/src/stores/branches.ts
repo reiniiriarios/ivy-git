@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 
 import { GetBranches, GetCurrentBranch, SwitchBranch } from 'wailsjs/go/main/App';
 
-import { commitData } from 'stores/commit-data';
+import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from 'stores/current-tab';
 import { currentCommit } from 'stores/commit-details';
@@ -47,6 +47,7 @@ function createCurrentBranch() {
           parseResponse(result, () => {
             if (cTab === 'tree') {
               commitData.refresh();
+              commitSignData.refresh();
               currentCommit.unset();
             } else if (cTab === 'details') {
               remotes.refresh();

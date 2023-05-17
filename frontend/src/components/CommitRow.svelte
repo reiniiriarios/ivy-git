@@ -1,10 +1,12 @@
 <script lang="ts">
   import { NUM_COLORS, UNCOMMITED_HASH } from 'scripts/graph';
   import CommitLabels from 'components/CommitLabels.svelte';
-  import { HEAD, type Commit } from 'stores/commit-data';
+  import { HEAD, type Commit, commitSignData } from 'stores/commit-data';
   import { currentCommit } from 'stores/commit-details';
+  import octicons from '@primer/octicons';
 
   export let commit: Commit;
+  export let signStatus: string;
 
   function clearActive() {
     let all = document.getElementsByClassName('commit');
@@ -58,6 +60,13 @@
   </td>
   <td class="commit__td commit__td--tree"></td>
   <td class="commit__td commit__td--subject">{commit.Subject}</td>
+  <td class="commit__td commit__td--gpg">
+    {#if commit.Hash === UNCOMMITED_HASH}
+      *
+    {:else if signStatus && signStatus !== "L" && signStatus !== "N"}
+      <span class="gpg-status gpg-status--{signStatus}">{@html octicons.verified.toSVG({width: 16})}</span>
+    {/if}
+  </td>
   <td class="commit__td commit__td--author">{commit.AuthorName ?? commit.AuthorEmail}</td>
   <td class="commit__td commit__td--authortime">{commit.AuthorDatetime}</td>
 </tr>

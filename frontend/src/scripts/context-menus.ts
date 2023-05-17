@@ -1,6 +1,6 @@
 import { ClipboardSetText } from 'wailsjs/runtime/runtime';
 import { parseResponse } from 'scripts/parse-response';
-import { commitData } from 'stores/commit-data';
+import { commitData, commitSignData } from 'stores/commit-data';
 import { currentBranch } from 'stores/branches';
 import { PushBranch, PullRemoteBranch } from 'wailsjs/go/main/App';
 
@@ -34,6 +34,7 @@ export const menus: Menus = {
           PushBranch(e.dataset.name).then(r => {
             parseResponse(r, () => {
               commitData.refresh();
+              commitSignData.refresh();
             });
           })
         },
@@ -161,9 +162,10 @@ export const menus: Menus = {
       {
         text: "Pull Branch",
         callback: () => {
-          PullRemoteBranch(e.dataset.remote, e.dataset.branch).then(r => {
+          PullRemoteBranch(e.dataset.remote, e.dataset.branch, true).then(r => {
             parseResponse(r, () => {
               commitData.refresh();
+              commitSignData.refresh();
             });
           })
         },

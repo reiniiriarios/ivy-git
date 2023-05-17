@@ -286,3 +286,24 @@ func (a *App) GetCommitList(limit uint64, offset uint64) CommitsResponse {
 		Graph:    graph,
 	}
 }
+
+type CommitsSignResponse struct {
+	Response string
+	Message  string
+	Commits  git.CommitsSigned
+}
+
+// FRONTEND: Get list of commit hashes and their signature status.
+func (a *App) GetCommitsSignStatus(limit uint64, offset uint64) CommitsSignResponse {
+	commits, err := a.Git.GetCommitsSignStatus(limit, offset)
+	if err != nil {
+		return CommitsSignResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return CommitsSignResponse{
+		Response: "success",
+		Commits:  commits,
+	}
+}

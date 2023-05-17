@@ -122,6 +122,42 @@ func (g *Git) getLog(limit uint64, offset uint64) ([]Commit, map[string]uint64, 
 	return commits, lookup, nil
 }
 
+type CommitsSigned map[string]string
+
+// Get simple signature status of commit list.
+func (g *Git) GetCommitsSignStatus(limit uint64, offset uint64) (CommitsSigned, error) {
+	commits := make(CommitsSigned)
+
+	// Include:
+	// %G?
+	//   G = good (valid)
+	//   B = bad
+	//   U = unknown validity
+	//   X = expired
+	//   Y = good signature, expired key
+	//   E = missing key
+	//   N = no signature
+	// https://git-scm.com/docs/pretty-formats
+	data := []string{"%H", "%G?"}
+	format := strings.Join(data, GIT_LOG_SEP)
+	count := "--max-count=" + strconv.FormatUint(limit, 10)
+	skip := "--skip=" + strconv.FormatUint(offset, 10)
+	c, err := g.RunCwd("--no-pager", "log", "--format='"+format+"'", count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD")
+	if err != nil {
+		return commits, err
+	}
+
+	lines := parseLines(c)
+	for _, commit := range lines {
+		parts := strings.Split(commit, GIT_LOG_SEP)
+		if len(parts) == len(data) {
+			commits[parts[0]] = parts[1]
+		}
+	}
+
+	return commits, nil
+}
+
 // Get the number of changed files that are uncommitted.
 func (g *Git) getNumUncommitedChanges() int {
 	c, err := g.RunCwd("status", "--untracked-files=all", "--porcelain")

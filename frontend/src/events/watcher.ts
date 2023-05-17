@@ -1,6 +1,6 @@
 import { branches } from 'stores/branches';
 import { changes } from 'stores/changes';
-import { commitData } from 'stores/commit-data';
+import { commitData, commitSignData } from 'stores/commit-data';
 import { EventsOn } from 'wailsjs/runtime/runtime';
 
 interface WatcherEvent {
@@ -14,5 +14,6 @@ export function enableWatcher() {
     branches.refresh();
     changes.refresh();
     commitData.refresh();
+    commitSignData.refresh();
   });
 }

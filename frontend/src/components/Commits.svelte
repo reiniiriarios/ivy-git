@@ -3,20 +3,32 @@
   import CommitRow from 'components/CommitRow.svelte';
   import CommitDetails from 'components/CommitDetails.svelte';
   import { setCommitsContainer } from 'scripts/commit-details-resize';
-  import { commitData, commits, tree } from 'stores/commit-data';
-  import { onMount } from 'svelte';
+  import { commitData, commits, tree, commitSignData } from 'stores/commit-data';
+  import { afterUpdate, beforeUpdate, onMount } from 'svelte';
   import { setFade } from 'scripts/graph';
   import LoadMoreCommits from 'components/LoadMoreCommits.svelte';
   import { currentCommit } from 'stores/commit-details';
 
+  let scrollDiv: HTMLElement;
+  let scrollPosition: number;
+
   onMount(() => {
     commitData.refresh();
     currentCommit.unset();
-  })
+  });
+
+  function stickyScroll(el: HTMLElement) {
+    scrollDiv = el;
+    scrollDiv.addEventListener("scroll", () => scrollPosition = scrollDiv.scrollTop);
+  }
+
+	afterUpdate(() => {
+		scrollDiv.scrollTo(0, scrollPosition);
+	});
 </script>
 
 <div class="commits" id="commits">
-  <div class="commits__table-container" id="commits__scroll" use:setCommitsContainer>
+  <div class="commits__table-container" id="commits__scroll" use:stickyScroll use:setCommitsContainer>
     {#if Object.entries($commits).length}
       <table use:setCommitsTable class="commits__table" id="commits__table">
         <thead>
@@ -24,8 +36,9 @@
             <th use:createResizableColumn data-name="branch" data-order="0" class="commits__th commits__th--branch">Branch</th>
             <th use:createResizableColumn data-name="tree" data-order="1" class="commits__th commits__th--tree" style:min-width={$tree.width}>Tree</th>
             <th use:createResizableColumn data-name="subject" data-order="2" class="commits__th commits__th--subject">Commit</th>
-            <th use:createResizableColumn data-name="authorName" data-order="3" class="commits__th commits__th--author">Author</th>
-            <th use:createResizableColumn data-name="authorDate" data-order="4" data-resizeflex class="commits__th commits__th--date">Date</th>
+            <th use:createResizableColumn data-name="gpg" data-order="3" class="commits__th commits__th--gpg">GPG</th>
+            <th use:createResizableColumn data-name="authorName" data-order="4" class="commits__th commits__th--author">Author</th>
+            <th use:createResizableColumn data-name="authorDate" data-order="5" data-resizeflex class="commits__th commits__th--date">Date</th>
           </tr>
         </thead>
         <tbody>
@@ -38,7 +51,7 @@
             </td>
           </tr>
           {#each Object.entries($commits) as [_, commit]}
-            <CommitRow {commit} />
+            <CommitRow {commit} signStatus={$commitSignData.commits[commit.Hash]} />
           {/each}
         </tbody>
       </table>

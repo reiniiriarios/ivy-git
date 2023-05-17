@@ -73,6 +73,48 @@
   }
 }
 
+.gpg-status {
+  &--G {
+    // Good
+    fill: var(--color-scale-g-4-100);
+  }
+
+  &--B {
+    // Bad
+    fill: var(--color-scale-r-4-100);
+  }
+
+  &--U {
+    // Good signature, unknown validity
+    fill: var(--color-scale-l-4-100);
+  }
+
+  &--E {
+    // Missing key, unable to verify
+    fill: var(--color-scale-y-4-100);
+  }
+
+  &--X {
+    // Good signature, expired
+    fill: var(--color-scale-y-4-100);
+  }
+
+  &--Y {
+    // Good signature, expired key
+    fill: var(--color-scale-y-4-100);
+  }
+
+  &--R {
+    // Good signature, revoked key
+    fill: var(--color-scale-o-4-100);
+  }
+
+  &--N {
+    // No signature
+    fill: var(--color-scale-a-6-100);
+  }
+}
+
 .load-more-commits {
   margin-bottom: 2.5rem;
 }

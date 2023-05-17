@@ -2,7 +2,7 @@ import { removeTableSizing } from 'scripts/commit-table-resize';
 import { drawGraph, getSVGWidth } from 'scripts/graph';
 import { parseResponse } from 'scripts/parse-response';
 import { derived, writable } from 'svelte/store';
-import { GetCommitList } from 'wailsjs/go/main/App';
+import { GetCommitList, GetCommitsSignStatus } from 'wailsjs/go/main/App';
 
 const COMMIT_LIST_PAGING = 500;
 
@@ -104,12 +104,13 @@ function createCommitData() {
               page: page,
             });
             console.log('HEAD', result.HEAD);
-            console.log('commits', result.commits);
+            console.log('commits', result.Commits);
             console.log('branches', result.Graph.Branches);
             console.log('vertices', result.Graph.Vertices);
           });
         });
       });
+      commitSignData.refresh();
     },
   };
 }
@@ -124,3 +125,39 @@ export const tree = derived(commitData, $commitData => ({
   height: $commitData.Graph.Height,
   continues: $commitData.Graph.Continues,
 }));
+
+export type CommitsSigned = {[hash: string]: string};
+
+function createCommitSignData() {
+  const { subscribe, set, update } = writable({
+    commits: {} as CommitsSigned,
+    page: 0,
+  });
+  
+  return {
+    subscribe,
+    refresh: async (page: number = 0) => {
+      set({
+        commits: {},
+        page: 0,
+      });
+      let miniPaging = 10;
+      // todo: page instead of count
+      for (let i = 0; i < COMMIT_LIST_PAGING; i += miniPaging) {
+        await GetCommitsSignStatus(miniPaging * (page + 1), i * (page + 1)).then(result => {
+          parseResponse(result, () => {
+            removeTableSizing().then(() => {
+              update(cs => {
+                return {
+                  commits: {...cs.commits, ...result.Commits},
+                  page: page,
+                }
+              });
+            });
+          });
+        });
+      }
+    },
+  };
+}
+export const commitSignData = createCommitSignData();
