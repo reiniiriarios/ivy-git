@@ -13,8 +13,6 @@
   import { addLinkListener } from "scripts/links";
 
   import { currentRepo, repos } from "stores/repos";
-  import { branches, currentBranch } from "stores/branches";
-  import { changes } from "stores/changes";
 
   import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
   import { ResizeWindow } from "wailsjs/go/main/App";
@@ -24,11 +22,6 @@
   function init() {
     currentRepo.refresh();
     repos.refresh();
-    if ($currentRepo) {
-      currentBranch.refresh();
-      branches.refresh();
-      changes.refresh();
-    }
     (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
       switch (env.platform) {
         case "darwin":

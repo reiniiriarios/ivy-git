@@ -68,6 +68,8 @@ function createCurrentRepo() {
       GetSelectedRepo().then(result => {
         set(result);
         currentBranch.refresh();
+        branches.refresh();
+        changes.refresh();
       });
     },
     set: async (r: string) => {
