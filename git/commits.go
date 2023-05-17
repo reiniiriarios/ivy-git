@@ -93,15 +93,30 @@ type FileStatDir struct {
 func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	filestats := []FileStat{}
 
-	// Get the number of lines added and deleted from each file.
-	n, err := g.RunCwd("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash)
+	parents, err := g.getCommitParents(hash)
 	if err != nil {
 		return FileStatDir{}, err
 	}
 
-	n = strings.Trim(strings.Trim(strings.Trim(n, "\n"), "\r"), "'")
+	// Get the number of lines added and deleted from each file.
+	var numstat string
+	var merge_base string
+	if len(parents) > 1 {
+		merge_base, err = g.findMergeBase(parents[0], parents[1])
+		if err != nil {
+			return FileStatDir{}, err
+		}
+		numstat, err = g.RunCwd("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash, merge_base)
+	} else {
+		numstat, err = g.RunCwd("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash)
+	}
+	if err != nil {
+		return FileStatDir{}, err
+	}
+
+	numstat = strings.Trim(strings.Trim(strings.Trim(numstat, "\n"), "\r"), "'")
 	// The -z option splits lines by NUL.
-	nl := strings.Split(n, "\x00")
+	nl := strings.Split(numstat, "\x00")
 	// The first line is the hash, skip.
 	for i := 1; i < len(nl); i++ {
 		nf := strings.Fields(nl[i])
@@ -157,17 +172,26 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	}
 
 	// Get the status of each file in the commit.
-	s, err := g.RunCwd("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash)
+	var name_status string
+	if len(parents) > 1 {
+		name_status, err = g.RunCwd("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash, merge_base)
+	} else {
+		name_status, err = g.RunCwd("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash)
+	}
 	if err != nil {
 		return FileStatDir{}, err
 	}
 
-	s = strings.Trim(strings.Trim(strings.Trim(s, "\n"), "\r"), "'")
+	name_status = strings.Trim(strings.Trim(strings.Trim(name_status, "\n"), "\r"), "'")
 	// The -z option splits lines by NUL.
-	sl := strings.Split(s, "\x00")
-	// The first line is the hash, skip.
+	sl := strings.Split(name_status, "\x00")
+	// If not a merge commit, he first line is the hash, skip.
+	start := 1
+	if len(parents) > 1 {
+		start = 0
+	}
 	// Each line is either the status or the file. Parse two lines at a time.
-	for i := 1; i < len(sl)-1; i += 2 {
+	for i := start; i < len(sl)-1; i += 2 {
 		for f := range filestats {
 			// Renames get three lines of data.
 			if sl[i][:1] == "R" {
@@ -216,6 +240,18 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	trimDirs(&files)
 
 	return files, nil
+}
+
+// Get commit parents hashes
+func (g *Git) getCommitParents(hash string) ([]string, error) {
+	c, err := g.RunCwd("--no-pager", "log", "--format=%P", "--max-count=1", hash)
+	if err != nil {
+		return []string{}, err
+	}
+	c = strings.Trim(strings.Trim(c, "\r"), "\n")
+	parents := strings.Split(c, " ")
+
+	return parents, nil
 }
 
 // Trim dirs with no contents except one dir.

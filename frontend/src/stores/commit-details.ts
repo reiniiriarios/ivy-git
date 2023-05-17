@@ -47,6 +47,7 @@ function createCurrentCommit() {
           return {} as Commit;
         }
         commitDetails.fetch(commit.Hash);
+        commitDiffSummary.set({} as FileStatDir);
         commitDiffSummary.fetch(commit.Stash ? commit.Parents[1] : commit.Hash);
         return commit;
       }),
