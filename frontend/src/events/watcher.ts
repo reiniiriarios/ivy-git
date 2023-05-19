@@ -5,7 +5,10 @@ import { EventsOn } from 'wailsjs/runtime/runtime';
 
 interface WatcherEvent {
 	CommitChange: boolean;
+	ShowRefChange: boolean;
 	UncommittedDiffChange: boolean;
+	RemoteDiffChange: boolean;
+	StagedDiffChange: boolean;
 }
 
 export function enableWatcher() {

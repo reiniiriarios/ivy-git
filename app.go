@@ -15,6 +15,7 @@ type App struct {
 	AppData              AppData
 	Git                  git.Git
 	CurrentHash          string
+	ShowRefAll           string
 	UncommittedDiff      string
 	RemoteDiff           string
 	StagedDiff           string

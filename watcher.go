@@ -13,6 +13,7 @@ const WATCHER_INTERVAL = 2
 
 type WatcherEvent struct {
 	CommitChange          bool
+	ShowRefChange         bool
 	UncommittedDiffChange bool
 	RemoteDiffChange      bool
 	StagedDiffChange      bool
@@ -43,22 +44,25 @@ func (a *App) watcher() {
 		}
 
 		// Get new data
-		wg.Add(4)
+		wg.Add(5)
 		var lc_new bool
+		var sr_new bool
 		var ud_new bool
 		var rd_new bool
 		var sd_new bool
 		go a.updateLastCommit(&lc_new, &wg)
+		go a.updateShowRefAll(&sr_new, &wg)
 		go a.updateUncommittedDiff(&ud_new, &wg)
 		go a.updateRemoteDiff(&rd_new, &wg)
 		go a.updateStagedDiff(&sd_new, &wg)
 		wg.Wait()
 
 		// If data changed, emit event.
-		if lc_new || ud_new || rd_new || sd_new {
+		if lc_new || sr_new || ud_new || rd_new || sd_new {
 			runtime.LogInfo(a.ctx, "Watcher updating")
 			runtime.EventsEmit(a.ctx, "watcher", WatcherEvent{
 				CommitChange:          lc_new,
+				ShowRefChange:         sr_new,
 				UncommittedDiffChange: ud_new,
 				RemoteDiffChange:      rd_new,
 				StagedDiffChange:      sd_new,
@@ -82,6 +86,12 @@ func (a *App) updateLastCommit(new *bool, wg *sync.WaitGroup) {
 		*new = a.CurrentHash != last_commit
 	}
 	a.CurrentHash = last_commit
+}
+
+// Update md5 of show refs for watcher.
+func (a *App) updateShowRefAll(new *bool, wg *sync.WaitGroup) {
+	diff, err := a.Git.ShowRefAll()
+	a.updateWatcherDiff(new, wg, &a.ShowRefAll, diff, err)
 }
 
 // Update md5 of uncommitted diff for watcher.
