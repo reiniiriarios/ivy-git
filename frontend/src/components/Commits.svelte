@@ -80,8 +80,10 @@
 
   function setAutoCols() {
     if (commitsTable) {
-      let len = $settings.DisplayCommitSignatureInList ? 6 : 5;
-      commitsTable.style.gridTemplateColumns = `repeat(${len}, auto)`;
+      commitsTable.style.gridTemplateColumns =
+        $settings.DisplayCommitSignatureInList
+          ? "auto auto 5fr auto auto auto"
+          : "auto auto 5fr auto auto";
     }
   }
 
@@ -135,7 +137,8 @@
 <div class="commits" id="commits">
   <div class="commits__table-container" id="commits__scroll" use:stickyScroll use:setCommitsContainer>
     {#if Object.entries($commits).length}
-      <table bind:this={commitsTable} style="grid-template-columns: repeat({$settings.DisplayCommitSignatureInList ? 6 : 5}, auto)" class="commits__table" id="commits__table">
+      <table bind:this={commitsTable} class="commits__table" id="commits__table"
+        style="grid-template-columns: {$settings.DisplayCommitSignatureInList ? "auto auto 5fr auto auto auto" : "auto auto 5fr auto auto"}">
         <thead>
           <tr>
             {#each columns as col, i}
