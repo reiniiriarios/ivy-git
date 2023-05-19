@@ -13,7 +13,7 @@ export function parseResponse(response: DataResponse, success?: ResponseCallback
     messageDialog.error({
       message: response.Message
     });
-    failure();
+    if (failure) failure();
     return
   }
   success();

@@ -33,10 +33,6 @@
       text-overflow: ellipsis;
     }
 
-    &--subject {
-      max-width: 25vw;
-    }
-
     &:not(:first-child) {
       .uncommitted & {
         color: var(--color-scale-a-3-100);

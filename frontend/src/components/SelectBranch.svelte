@@ -53,11 +53,13 @@
         <button class="btn" on:click={newBranch}>Create Branch +</button>
       </div>
       <ul class="sidebar-dropdown__list">
-        {#each Object.entries($branches) as [_, branch]}
-          <li>
-            <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>{branch?.Name}</button>
-          </li>
-        {/each}
+        {#if $branches?.length}
+          {#each Object.entries($branches) as [_, branch]}
+            <li>
+              <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>{branch?.Name}</button>
+            </li>
+          {/each}
+        {/if}
       </ul>
     </div>
   </div>

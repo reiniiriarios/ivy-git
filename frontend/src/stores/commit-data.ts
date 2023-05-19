@@ -1,4 +1,3 @@
-import { removeTableSizing } from 'scripts/commit-table-resize';
 import { drawGraph, getSVGWidth } from 'scripts/graph';
 import { parseResponse } from 'scripts/parse-response';
 import { derived, writable } from 'svelte/store';
@@ -96,18 +95,16 @@ function createCommitData() {
       // todo: page instead of count
       GetCommitList(COMMIT_LIST_PAGING * (page + 1), 0).then(result => {
         parseResponse(result, () => {
-          removeTableSizing().then(() => {
-            set({
-              commits: result.Commits,
-              HEAD: result.HEAD,
-              Graph: result.Graph,
-              page: page,
-            });
-            console.log('HEAD', result.HEAD);
-            console.log('commits', result.Commits);
-            console.log('branches', result.Graph.Branches);
-            console.log('vertices', result.Graph.Vertices);
+          set({
+            commits: result.Commits,
+            HEAD: result.HEAD,
+            Graph: result.Graph,
+            page: page,
           });
+          console.log('HEAD', result.HEAD);
+          console.log('commits', result.Commits);
+          console.log('branches', result.Graph.Branches);
+          console.log('vertices', result.Graph.Vertices);
         });
       });
       commitSignData.refresh();
@@ -146,13 +143,11 @@ function createCommitSignData() {
       for (let i = 0; i < COMMIT_LIST_PAGING; i += miniPaging) {
         await GetCommitsSignStatus(miniPaging * (page + 1), i * (page + 1)).then(result => {
           parseResponse(result, () => {
-            removeTableSizing().then(() => {
-              update(cs => {
-                return {
-                  commits: {...cs.commits, ...result.Commits},
-                  page: page,
-                }
-              });
+            update(cs => {
+              return {
+                commits: {...cs.commits, ...result.Commits},
+                page: page,
+              }
             });
           });
         });
