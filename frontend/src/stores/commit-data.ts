@@ -1,7 +1,8 @@
 import { drawGraph, getSVGWidth } from 'scripts/graph';
 import { parseResponse } from 'scripts/parse-response';
-import { derived, writable } from 'svelte/store';
+import { derived, writable, get } from 'svelte/store';
 import { GetCommitList, GetCommitsSignStatus } from 'wailsjs/go/main/App';
+import { settings } from 'stores/settings';
 
 const COMMIT_LIST_PAGING = 500;
 
@@ -134,6 +135,9 @@ function createCommitSignData() {
   return {
     subscribe,
     refresh: async (page: number = 0) => {
+      if (!get(settings).DisplayCommitSignatureInList) {
+        return;
+      }
       set({
         commits: {},
         page: 0,

@@ -1,13 +1,17 @@
 <script lang="ts">
+  import { afterUpdate, beforeUpdate, onMount } from 'svelte';
+  import { get } from 'svelte/store';
+
   import CommitRow from 'components/CommitRow.svelte';
   import CommitDetails from 'components/CommitDetails.svelte';
-  import { setCommitsContainer } from 'scripts/commit-details-resize';
-  import { commitData, commits, tree, commitSignData } from 'stores/commit-data';
-  import { afterUpdate, beforeUpdate, onMount } from 'svelte';
-  import { setFade } from 'scripts/graph';
   import LoadMoreCommits from 'components/LoadMoreCommits.svelte';
+
+  import { setCommitsContainer } from 'scripts/commit-details-resize';
+
+  import { commitData, commits, tree, commitSignData } from 'stores/commit-data';
+  import { setFade } from 'scripts/graph';
   import { currentCommit } from 'stores/commit-details';
-  import { get } from 'svelte/store';
+  import { settings } from 'stores/settings';
 
   let scrollDiv: HTMLElement;
   let scrollPosition: number;
@@ -38,11 +42,15 @@
       name: "Commit",
       min: COL_MIN_WIDTH,
     },
-    {
+  ];
+  if ($settings.DisplayCommitSignatureInList) {
+    columns.push({
       id: "gpg",
       name: "GPG",
       min: COL_MIN_WIDTH,
-    },
+    });
+  }
+  columns = columns.concat([
     {
       id: "author",
       name: "Author",
@@ -53,7 +61,7 @@
       name: "Date",
       min: COL_MIN_WIDTH,
     },
-  ];
+  ]);
 
   tree.subscribe(t => {
     columns[1].min = parseInt(t.width);
@@ -63,15 +71,19 @@
   onMount(() => {
     commitData.refresh();
     currentCommit.unset();
-
-    commitData.subscribe(_ => {
-      if (commitsTable) commitsTable.style.gridTemplateColumns = "auto auto auto auto auto auto";
-    });
+    commitData.subscribe(() => setAutoCols());
   });
 
   afterUpdate(() => {
     scrollDiv.scrollTo(0, scrollPosition);
   });
+
+  function setAutoCols() {
+    if (commitsTable) {
+      let len = $settings.DisplayCommitSignatureInList ? 6 : 5;
+      commitsTable.style.gridTemplateColumns = `repeat(${len}, auto)`;
+    }
+  }
 
   function stickyScroll(el: HTMLElement) {
     scrollDiv = el;
@@ -123,21 +135,23 @@
 <div class="commits" id="commits">
   <div class="commits__table-container" id="commits__scroll" use:stickyScroll use:setCommitsContainer>
     {#if Object.entries($commits).length}
-      <table bind:this={commitsTable} class="commits__table" id="commits__table">
+      <table bind:this={commitsTable} style="grid-template-columns: repeat({$settings.DisplayCommitSignatureInList ? 6 : 5}, auto)" class="commits__table" id="commits__table">
         <thead>
           <tr>
             {#each columns as col, i}
-              <th class="commits__th commits__th--{col.id}"
-                bind:this={columns[i].el}
-                on:mousedown={resizeDown}
-                data-index={i}
-                data-id="{col.id}"
-                style="min-width: {COL_MIN_WIDTH}px">
-                {col.name}
-                {#if i < columns.length - 1}
-                  <div on:mousedown={resizeDown} data-index={i} class="resize-handle" style:height="24px"></div>
-                {/if}
-              </th>
+              {#if col.id !== 'gpg' || $settings.DisplayCommitSignatureInList}
+                <th class="commits__th commits__th--{col.id}"
+                  bind:this={columns[i].el}
+                  on:mousedown={resizeDown}
+                  data-index={i}
+                  data-id="{col.id}"
+                  style="min-width: {COL_MIN_WIDTH}px">
+                  {col.name}
+                  {#if i < columns.length - 1}
+                    <div on:mousedown={resizeDown} data-index={i} class="resize-handle" style:height="24px"></div>
+                  {/if}
+                </th>
+              {/if}
             {/each}
           </tr>
         </thead>
@@ -152,7 +166,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
+            {#if $settings.DisplayCommitSignatureInList}<td></td>{/if}
           </tr>
           {#each Object.entries($commits) as [_, commit]}
             <CommitRow {commit} signStatus={$commitSignData.commits[commit.Hash]} />

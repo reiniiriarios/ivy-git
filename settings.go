@@ -22,7 +22,8 @@ type RepoSaveData struct {
 }
 
 type Settings struct {
-	Version string
+	Version                      string
+	DisplayCommitSignatureInList bool
 }
 
 type AppData struct {
@@ -189,4 +190,9 @@ func (a *App) ResizeWindow() bool {
 	a.AppData.WindowHeight = h
 	a.saveData()
 	return true
+}
+
+// Get settings in frontend.
+func (a *App) GetSettings() Settings {
+	return a.Settings
 }
