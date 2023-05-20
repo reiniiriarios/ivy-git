@@ -9,6 +9,7 @@ type Ref struct {
 	Name      string
 	Branch    string
 	Remote    string
+	Upstream  string
 	AbbrName  string
 	Annotated bool
 }
@@ -18,6 +19,12 @@ func (g *Git) getRefs() (Refs, error) {
 	var refs Refs
 
 	show_refs, err := g.RunCwd("show-ref", "--dereference", "--head")
+	if err != nil {
+		println(err.Error())
+		return refs, err
+	}
+
+	upstream, err := g.getUpstreamsForRefs()
 	if err != nil {
 		println(err.Error())
 		return refs, err
@@ -36,11 +43,22 @@ func (g *Git) getRefs() (Refs, error) {
 			hash := ref_details[0]
 			name := strings.Join(ref_details[1:], " ")
 			if strings.HasPrefix(name, "refs/heads/") {
-				refs.Branches = append(refs.Branches, parseRefHead(hash, name[11:]))
+				ref := parseRefHead(hash, name[11:])
+				if up, exists := upstream[name]; exists {
+					ref.Upstream = up
+				}
+				refs.Branches = append(refs.Branches, ref)
 			} else if strings.HasPrefix(name, "refs/tags/") {
-				refs.Tags = append(refs.Tags, parseRefTag(hash, name[10:]))
+				ref := parseRefTag(hash, name[10:])
+				if up, exists := upstream[name]; exists {
+					ref.Upstream = up
+				}
+				refs.Tags = append(refs.Tags, ref)
 			} else if strings.HasPrefix(name, "refs/remotes/") {
 				ref := parseRefRemote(hash, name[13:])
+				if up, exists := upstream[name]; exists {
+					ref.Upstream = up
+				}
 				if name[len(name)-4:] == "HEAD" {
 					refs.Heads = append(refs.Heads, ref)
 				} else {
@@ -127,4 +145,23 @@ func (g *Git) ShowRefAll() (string, error) {
 		return "", err
 	}
 	return refs, nil
+}
+
+func (g *Git) getUpstreamsForRefs() (map[string]string, error) {
+	upstream := make(map[string]string)
+
+	refs, err := g.RunCwd("for-each-ref", "--format='%(refname)"+GIT_LOG_SEP+"%(upstream:short)'")
+	if err != nil {
+		return upstream, err
+	}
+
+	refs_lines := parseLines(refs)
+	for _, line := range refs_lines {
+		parts := strings.Split(line, GIT_LOG_SEP)
+		if len(parts) == 2 {
+			upstream[parts[0]] = parts[1]
+		}
+	}
+
+	return upstream, nil
 }

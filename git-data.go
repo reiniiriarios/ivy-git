@@ -59,17 +59,27 @@ func (a *App) GetBranches() BranchesResponse {
 }
 
 // Switch branch on currently selected repo.
-func (a *App) SwitchBranch(branch string) GenericResponse {
+func (a *App) SwitchBranch(branch string) BranchResponse {
 	err := a.Git.SwitchBranch(branch)
 	if err != nil {
-		return GenericResponse{
+		return BranchResponse{
 			Response: "error",
 			Message:  err.Error(),
 		}
 	}
 
-	return GenericResponse{
+	b := git.Branch{
+		Name: branch,
+	}
+
+	upstream, err := a.Git.GetBranchUpstream(branch)
+	if err == nil {
+		b.Upstream = upstream
+	}
+
+	return BranchResponse{
 		Response: "success",
+		Branch:   b,
 	}
 }
 
@@ -207,6 +217,19 @@ func (a *App) PushBranch(branch string) GenericResponse {
 func (a *App) PullBranch(branch string) GenericResponse {
 	// todo: set rebase flag depending on user settings
 	err := a.Git.PullBranch(branch, true)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
+
+func (a *App) ResetBranchToRemote(branch string) GenericResponse {
+	err := a.Git.ResetBranchToRemote(branch)
 	if err != nil {
 		return GenericResponse{
 			Response: "error",

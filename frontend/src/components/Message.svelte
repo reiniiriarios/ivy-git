@@ -16,7 +16,7 @@
           <div class="modal__heading">{$messageDialog.heading}</div>
         {/if}
         {#if $messageDialog.message}
-          <div class="modal__text">{$messageDialog.message}</div>
+          <div class="modal__text">{@html $messageDialog.message}</div>
         {/if}
         {#if $messageDialog.options}
           <div class="modal__options">

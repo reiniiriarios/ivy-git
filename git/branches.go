@@ -7,7 +7,8 @@ import (
 )
 
 type Branch struct {
-	Name string
+	Name     string
+	Upstream string
 }
 
 // Get current branch for currently selected repo.
@@ -26,7 +27,7 @@ func (g *Git) GetCurrentBranch() (string, error) {
 func (g *Git) GetBranches() (map[string]Branch, error) {
 	branch_list := make(map[string]Branch)
 
-	branches, err := g.RunCwd("branch", "--list", "--format", "'%(refname:short)'")
+	branches, err := g.RunCwd("branch", "--list", "--format", "'%(refname:short)"+GIT_LOG_SEP+"%(upstream:short)'")
 	if err != nil {
 		println(err.Error())
 		return branch_list, err
@@ -34,14 +35,26 @@ func (g *Git) GetBranches() (map[string]Branch, error) {
 
 	bs := parseLines(branches)
 	for _, branch := range bs {
-		if strings.Trim(branch, " ") != "" {
+		parts := strings.Split(branch, GIT_LOG_SEP)
+		if len(parts) == 2 {
 			branch_list[branch] = Branch{
-				Name: branch,
+				Name:     parts[0],
+				Upstream: parts[1],
 			}
 		}
 	}
 
 	return branch_list, nil
+}
+
+func (g *Git) GetBranchUpstream(branch string) (string, error) {
+	b, err := g.RunCwd("branch", "--format", "'%(upstream:short)'", "--list", branch)
+	if err != nil {
+		println(err.Error())
+		return "", err
+	}
+	b = strings.Trim(strings.ReplaceAll(strings.ReplaceAll(b, "\r", ""), "\n", ""), "'")
+	return b, nil
 }
 
 // Switch branch on currently selected repo.
@@ -120,4 +133,35 @@ func (g *Git) getBranchRemote(branch string) (string, error) {
 	}
 	r = strings.Trim(strings.ReplaceAll(strings.ReplaceAll(r, "\r", ""), "\n", ""), "'")
 	return r, nil
+}
+
+func (g *Git) fetchBranchRemote(branch string, remote string) error {
+	_, err := g.RunCwd("fetch", remote, branch)
+	return err
+}
+
+func (g *Git) ResetBranchToRemote(branch string) error {
+	remote, err := g.getBranchRemote(branch)
+	if err != nil {
+		return err
+	}
+	err = g.fetchBranchRemote(branch, remote)
+	if err != nil {
+		return err
+	}
+
+	current_branch, err := g.GetCurrentBranch()
+	if err != nil {
+		return err
+	}
+	err = g.SwitchBranch(branch)
+	if err != nil {
+		return err
+	}
+
+	_, err = g.RunCwd("reset", "--hard", remote+"/"+branch)
+
+	g.SwitchBranch(current_branch)
+
+	return err
 }

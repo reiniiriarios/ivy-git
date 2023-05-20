@@ -15,6 +15,7 @@ currentTab.subscribe(t => cTab = t);
 
 interface Branch {
   Name: string;
+  Upstream: string;
 }
 
 function createBranches() {
@@ -53,7 +54,7 @@ function createCurrentBranch() {
               remotes.refresh();
             }
             changes.refresh();
-            set({ Name: b });
+            set(result.Branch);
           });
         });
       }

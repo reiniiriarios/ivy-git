@@ -1,4 +1,4 @@
-import type { Menu } from "context-menus/_all";
+import type { Menu, MenuItem } from "context-menus/_all";
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commit-data";
 import { PullRemoteBranch } from "wailsjs/go/main/App";
@@ -6,7 +6,7 @@ import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 
 export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
-  return [
+  let m: MenuItem[] = [
     {
       text: "Pull Branch",
       callback: () => {
@@ -17,10 +17,6 @@ export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
           });
         })
       },
-    },
-    {
-      text: "Reset Local Branch to Remote",
-      callback: () => alert("reset"),
     },
     {
       sep: true,
@@ -38,4 +34,6 @@ export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
       },
     },
   ];
+
+  return m;
 }

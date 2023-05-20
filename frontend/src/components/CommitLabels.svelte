@@ -18,6 +18,7 @@
       <div class="refs__label refs__label--branch"
         data-name="{b.Name}"
         data-branch="{b.Branch}"
+        data-upstream="{b.Upstream}"
         data-current="{isCurrent(b.Name)}"
         data-menu="branch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>

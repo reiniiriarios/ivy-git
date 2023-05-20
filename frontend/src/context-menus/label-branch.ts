@@ -2,7 +2,8 @@ import { type Menu, type MenuItem } from "context-menus/_all";
 import { parseResponse } from "scripts/parse-response";
 import { currentBranch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
-import { PushBranch } from "wailsjs/go/main/App";
+import { messageDialog } from "stores/message-dialog";
+import { PushBranch, ResetBranchToRemote } from "wailsjs/go/main/App";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
@@ -38,6 +39,27 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
       callback: () => alert("todo: delete"),
     });
   }
+
+  if (e.dataset.upstream) {
+    m.push({
+      text: "Reset Local Branch to Remote",
+      callback: (e) => {
+        messageDialog.confirm({
+          heading: 'Reset Local Branch to Remote',
+          message: `Are you sure you want to reset the local branch <strong>${e.dataset.branch}</strong> to its default remote?`,
+          confirm: 'Reset',
+          okay: 'Cancel',
+          callbackConfirm: () => {
+            ResetBranchToRemote(e.dataset.branch).then(() => {
+              commitData.refresh();
+              commitSignData.refresh();
+            });
+          },
+        });
+      },
+    });
+  }
+
   if (e.dataset.current !== "true") {
     m = m.concat([
       {

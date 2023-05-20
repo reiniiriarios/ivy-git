@@ -32,6 +32,7 @@ export interface Ref {
   Name: string;
   Branch: string;
   Remote: string;
+  Upstream: string;
   AbbrName: string;
 }
 
