@@ -131,16 +131,17 @@
   position: absolute;
   cursor: col-resize;
   width: 7px;
-  right: 0;
+  right: -1px;
   top: 0;
   z-index: 1;
   border-right: 2px solid transparent;
+  height: var(--commit-row-height);
 }
 
 .resize-handle:hover {
-  border-color: #ccc;
+  border-color: var(--color-scale-a-1-75);
 }
 
 .resize-handle.active {
-  border-color: #517ea5;
+  border-color: var(--color-scale-a-2-75);
 }

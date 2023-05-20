@@ -97,9 +97,13 @@
   let startX: number;
   let max: number;
   let min: number;
+  let resizer: HTMLElement;
 
   const resizeDown = (e: MouseEvent & { currentTarget: HTMLElement }) => {
-    resizeIndex = parseInt(e.currentTarget.dataset.index);
+    resizer = e.currentTarget;
+    resizer.classList.add('active');
+
+    resizeIndex = parseInt(resizer.dataset.index);
     w1 = columns[resizeIndex].el.offsetWidth;
     w2 = columns[resizeIndex + 1].el.offsetWidth;
     startX = e.pageX;
@@ -128,7 +132,9 @@
   }
 
   const resizeUp = () => {
+    resizer.classList.remove('active');
     resizeIndex = null;
+    resizer = null;
     window.removeEventListener('mousemove', resizeMove);
     window.removeEventListener('mouseup', resizeUp);
   }
@@ -145,7 +151,6 @@
               {#if col.id !== 'gpg' || $settings.DisplayCommitSignatureInList}
                 <th class="commits__th commits__th--{col.id}"
                   bind:this={columns[i].el}
-                  on:mousedown={resizeDown}
                   data-index={i}
                   data-id="{col.id}"
                   style="min-width: {COL_MIN_WIDTH}px">

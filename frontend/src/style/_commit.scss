@@ -64,7 +64,7 @@
     outline: 0;
   }
 
-  &.active {
+  &.active td {
     background-color: var(--color-commitlistitem-bg-active);
   }
 }
