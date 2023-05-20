@@ -3,7 +3,7 @@ import { parseResponse } from "scripts/parse-response";
 import { currentBranch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { PushBranch, ResetBranchToRemote, DeleteBranch, RenameBranch } from "wailsjs/go/main/App";
+import { PushBranch, ResetBranchToRemote, DeleteBranch, RenameBranch, RebaseOnBranch } from "wailsjs/go/main/App";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
@@ -107,7 +107,14 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
       },
       {
         text: "Rebase on Branch",
-        callback: () => alert("todo: rebase"),
+        callback: () => {
+          RebaseOnBranch(e.dataset.branch).then(r => {
+            parseResponse(r, () => {
+              commitData.refresh();
+              commitSignData.refresh();
+            });
+          });
+        },
       },
     ]);
   }

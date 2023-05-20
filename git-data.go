@@ -393,3 +393,17 @@ func (a *App) RenameBranch(branch string, new_name string) GenericResponse {
 		Response: "success",
 	}
 }
+
+// FRONTEND: Rebase current branch on branch.
+func (a *App) RebaseOnBranch(branch string) GenericResponse {
+	err := a.Git.RebaseOnBranch(branch)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}

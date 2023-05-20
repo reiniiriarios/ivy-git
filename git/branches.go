@@ -240,3 +240,8 @@ func (g *Git) RenameBranch(branch string, new_name string) error {
 
 	return nil
 }
+
+func (g *Git) RebaseOnBranch(branch string) error {
+	_, err := g.RunCwd("rebase", branch)
+	return err
+}
