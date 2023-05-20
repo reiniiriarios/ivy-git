@@ -185,7 +185,6 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) er
 			return err
 		}
 		for _, remote := range remotes {
-			println("here")
 			if g.branchExistsOnRemote(branch, remote) {
 				_, err := g.RunCwd("push", delete, remote, branch)
 				if err != nil {
@@ -196,6 +195,16 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) er
 	}
 
 	return nil
+}
+
+// Delete a remote branch.
+func (g *Git) DeleteRemoteBranch(branch string, remote string, force bool) error {
+	delete := "-d"
+	if force {
+		delete = "-D"
+	}
+	_, err := g.RunCwd("push", delete, remote, branch)
+	return err
 }
 
 // If a branch exists on a specific remote.

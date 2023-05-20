@@ -366,6 +366,20 @@ func (a *App) DeleteBranch(branch string, force bool, remote bool) GenericRespon
 	}
 }
 
+// FRONTEND: Delete a remote branch.
+func (a *App) DeleteRemoteBranch(branch string, remote string, force bool) GenericResponse {
+	err := a.Git.DeleteRemoteBranch(branch, remote, force)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}
+
 // FRONTEND: Rename a branch.
 func (a *App) RenameBranch(branch string, new_name string) GenericResponse {
 	err := a.Git.RenameBranch(branch, new_name)
