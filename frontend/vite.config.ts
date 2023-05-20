@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       wailsjs: resolve('./wailsjs'),
       components: resolve('./src/components'),
+      'context-menus': resolve('./src/context-menus'),
       events: resolve('./src/events'),
       scripts: resolve('./src/scripts'),
       stores: resolve('./src/stores'),

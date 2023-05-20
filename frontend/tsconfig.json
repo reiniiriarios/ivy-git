@@ -18,6 +18,9 @@
         "components/*": [
             "src/components/*"
         ],
+        "context-menus/*": [
+            "src/context-menus/*"
+        ],
         "events/*": [
             "src/events/*"
         ],

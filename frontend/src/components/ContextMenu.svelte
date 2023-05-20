@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { menus, type MenuItem } from 'scripts/context-menus';
+  import { menus, type MenuItem } from 'context-menus/_all';
 
   const X_OFFSET = 3;
 
