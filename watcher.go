@@ -102,8 +102,9 @@ func (a *App) updateUncommittedDiff(new *bool, wg *sync.WaitGroup) {
 
 // Update md5 of remote diff for watcher.
 func (a *App) updateRemoteDiff(new *bool, wg *sync.WaitGroup) {
-	diff, err := a.Git.GetDiffRemoteCurrent()
-	a.updateWatcherDiff(new, wg, &a.RemoteDiff, diff, err)
+	// This will error when the local branch doesn't have a remote, so we ignore.
+	diff, _ := a.Git.GetDiffRemoteCurrent()
+	a.updateWatcherDiff(new, wg, &a.RemoteDiff, diff, nil)
 }
 
 // Update md5 of staged diff for watcher.

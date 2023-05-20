@@ -28,8 +28,6 @@ func (g *Git) Run(directory string, command ...string) (string, error) {
 	// error, errb should contain the relevant information.
 	err := cmd.Run()
 	if err != nil {
-		println(err.Error())
-		println(errb.String())
 		return outb.String(), errors.New(errb.String())
 	}
 

@@ -141,7 +141,7 @@ func parseRefRemote(hash string, name string) Ref {
 func (g *Git) ShowRefAll() (string, error) {
 	refs, err := g.RunCwd("show-ref", "--dereference", "--head")
 	if err != nil {
-		println(err.Error())
+		println("wut", err.Error())
 		return "", err
 	}
 	return refs, nil
