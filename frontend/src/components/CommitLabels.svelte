@@ -35,15 +35,17 @@
   {/if}
   {#if commit.Remotes && commit.Remotes.length}
     {#each commit.Remotes as r}
-      <div class="refs__label refs__label--branch"
-        title={r.AbbrName == "" ? "" : r.Name}
-        data-name="{r.Name}"
-        data-branch="{r.Branch}"
-        data-remote="{r.Remote}"
-        data-menu="remoteBranch">
-        <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
-        <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Name}</div>
-      </div>
+      {#if !r.SyncedLocally}
+        <div class="refs__label refs__label--branch"
+          title={r.AbbrName == "" ? "" : r.Name}
+          data-name="{r.Name}"
+          data-branch="{r.Branch}"
+          data-remote="{r.Remote}"
+          data-menu="remoteBranch">
+          <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
+          <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Name}</div>
+        </div>
+      {/if}
     {/each}
   {/if}
 

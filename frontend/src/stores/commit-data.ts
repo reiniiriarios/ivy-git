@@ -34,6 +34,9 @@ export interface Ref {
   Remote: string;
   Upstream: string;
   AbbrName: string;
+  SyncedRemotes: string[];
+  SyncedLocally: boolean;
+  Head: boolean;
 }
 
 interface Line {

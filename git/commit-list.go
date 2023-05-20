@@ -37,14 +37,6 @@ type Commit struct {
 	X               uint16
 }
 
-type Refs struct {
-	HEAD     Ref
-	Branches []Ref
-	Tags     []Ref
-	Remotes  []Ref
-	Heads    []Ref
-}
-
 type CommitDetails struct {
 	Commits []Commit
 	Lookup  map[string]uint64

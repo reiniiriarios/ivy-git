@@ -5,13 +5,24 @@ import (
 )
 
 type Ref struct {
-	Hash      string
-	Name      string
-	Branch    string
-	Remote    string
-	Upstream  string
-	AbbrName  string
-	Annotated bool
+	Hash          string
+	Name          string
+	Branch        string
+	Remote        string
+	SyncedRemotes []string
+	SyncedLocally bool
+	Head          bool
+	Upstream      string
+	AbbrName      string
+	Annotated     bool
+}
+
+type Refs struct {
+	HEAD     Ref
+	Branches []Ref
+	Tags     []Ref
+	Remotes  []Ref
+	Heads    []Ref
 }
 
 // Get ref details from `git show-ref`.
@@ -68,11 +79,33 @@ func (g *Git) getRefs() (Refs, error) {
 				refs.HEAD = Ref{
 					Hash: hash,
 					Name: name,
+					Head: true,
 				}
 			} else if !strings.HasPrefix(name, "refs/stash") {
 				// Ignore stash, but anything else log a warning.
 				println("Error parsing ref:", name)
 			}
+		}
+	}
+
+	// Add to remote branches which local branches are in sync.
+	// Add to local branches which remote branches are in sync.
+	// Add to remote branches which remote heads are in sync.
+	// Add to HEAD which remote branches are in sync.
+	for n := range refs.Remotes {
+		for i := range refs.Branches {
+			if refs.Branches[i].Hash == refs.Remotes[n].Hash {
+				refs.Branches[i].SyncedRemotes = append(refs.Branches[i].SyncedRemotes, refs.Remotes[n].Remote)
+				refs.Remotes[n].SyncedLocally = true
+			}
+		}
+		for h := range refs.Heads {
+			if refs.Heads[h].Hash == refs.Remotes[n].Hash {
+				refs.Remotes[n].Head = true
+			}
+		}
+		if refs.Remotes[n].Hash == refs.HEAD.Hash {
+			refs.HEAD.SyncedRemotes = append(refs.HEAD.SyncedRemotes, refs.Remotes[n].Remote)
 		}
 	}
 
@@ -115,6 +148,7 @@ func parseRefRemote(hash string, name string) Ref {
 			Hash:   hash,
 			Name:   name,
 			Remote: remote,
+			Head:   true,
 		}
 	} else {
 		branch := name
