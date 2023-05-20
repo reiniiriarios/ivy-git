@@ -365,3 +365,17 @@ func (a *App) DeleteBranch(branch string, force bool, remote bool) GenericRespon
 		Response: "success",
 	}
 }
+
+// FRONTEND: Rename a branch.
+func (a *App) RenameBranch(branch string, new_name string) GenericResponse {
+	err := a.Git.RenameBranch(branch, new_name)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}

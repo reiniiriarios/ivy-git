@@ -20,6 +20,21 @@ type Remote struct {
 	LastUpdate int64
 }
 
+func (g *Git) getRemoteNames() ([]string, error) {
+	r, err := g.RunCwd("remote")
+	if err != nil {
+		return []string{}, err
+	}
+	lines := parseLines(r)
+	remotes := []string{}
+	for _, l := range lines {
+		if l != "" {
+			remotes = append(remotes, l)
+		}
+	}
+	return remotes, nil
+}
+
 func (g *Git) GetRemotes() ([]Remote, error) {
 	remotes := []Remote{}
 	rmap := make(map[string]int)

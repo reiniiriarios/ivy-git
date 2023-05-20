@@ -64,4 +64,14 @@
       margin-bottom: 1rem;
     }
   }
+
+  &__blank {
+    padding: 0 0.75rem;
+    margin-bottom: 1.5rem;
+    min-width: 30rem;
+
+    input[type="text"] {
+      width: calc(100% - 0.5rem);
+    }
+  }
 }

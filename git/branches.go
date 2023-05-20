@@ -47,6 +47,7 @@ func (g *Git) GetBranches() (map[string]Branch, error) {
 	return branch_list, nil
 }
 
+// TODO: multiple upstreams
 func (g *Git) GetBranchUpstream(branch string) (string, error) {
 	b, err := g.RunCwd("branch", "--format", "'%(upstream:short)'", "--list", branch)
 	if err != nil {
@@ -167,19 +168,64 @@ func (g *Git) ResetBranchToRemote(branch string) error {
 }
 
 // Delete a branch.
-func (g *Git) DeleteBranch(branch string, force bool, remote bool) error {
+func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) error {
 	delete := "-d"
 	if force {
 		delete = "-D"
 	}
+
 	_, err := g.RunCwd("branch", delete, branch)
 	if err != nil {
 		return err
 	}
-	if remote {
-		_, err := g.RunCwd("branch", delete, "-r", branch)
+
+	if delete_on_remotes {
+		remotes, err := g.getRemoteNames()
 		if err != nil {
 			return err
+		}
+		for _, remote := range remotes {
+			println("here")
+			if g.branchExistsOnRemote(branch, remote) {
+				_, err := g.RunCwd("push", delete, remote, branch)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+// If a branch exists on a specific remote.
+func (g *Git) branchExistsOnRemote(branch string, remote string) bool {
+	ls, _ := g.RunCwd("ls-remote", "--heads", remote, branch)
+	ls = strings.Trim(strings.Trim(ls, "\r"), "\n")
+	return ls != ""
+}
+
+// Rename a branch locally and on all remotes.
+func (g *Git) RenameBranch(branch string, new_name string) error {
+	_, err := g.RunCwd("branch", "-m", branch, new_name)
+	if err != nil {
+		return err
+	}
+
+	remotes, err := g.getRemoteNames()
+	if err != nil {
+		return err
+	}
+	for _, remote := range remotes {
+		if g.branchExistsOnRemote(branch, remote) {
+			_, err := g.RunCwd("push", remote, ":"+branch, new_name)
+			if err != nil {
+				return err
+			}
+			_, err = g.RunCwd("push", "--set-upstream", remote, new_name)
+			if err != nil {
+				return err
+			}
 		}
 	}
 

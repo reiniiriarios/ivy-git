@@ -3,7 +3,7 @@ import { parseResponse } from "scripts/parse-response";
 import { currentBranch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { PushBranch, ResetBranchToRemote, DeleteBranch } from "wailsjs/go/main/App";
+import { PushBranch, ResetBranchToRemote, DeleteBranch, RenameBranch } from "wailsjs/go/main/App";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
@@ -30,7 +30,23 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     },
     {
       text: "Rename Branch",
-      callback: () => alert("todo: rename"),
+      callback: () => {
+        messageDialog.fillBlank({
+          heading: 'Rename Branch',
+          message: `Rename <strong>${e.dataset.branch}</strong> locally and on all remotes to:`,
+          confirm: 'Rename',
+          blank: 'New Name',
+          okay: 'Cancel',
+          callbackConfirm: () => {
+            RenameBranch(e.dataset.branch, messageDialog.blankValue()).then(r => {
+              parseResponse(r, () => {
+                commitData.refresh();
+                commitSignData.refresh();
+              });
+            });
+          },
+        });
+      },
     },
   ]);
   if (e.dataset.current !== "true") {

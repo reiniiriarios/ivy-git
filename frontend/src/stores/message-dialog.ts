@@ -19,6 +19,7 @@ interface Message {
     label: string;
     checked?: boolean;
   }[],
+  blank?: string,
 }
 
 function createMessage() {
@@ -57,12 +58,23 @@ function createMessage() {
     },
     confirm: async(message: Message) => {
       set({
-        heading: message.heading ?? 'Error',
-        message: message.message ?? 'Unknown error occurred.',
+        heading: message.heading ?? 'Confirm',
+        message: message.message ?? 'Confirm?',
         confirm: message.confirm ?? 'Yes',
         checkboxes: message.checkboxes ?? [],
         callbackConfirm: message.callbackConfirm ?? (() => {}),
         okay: message.okay ?? 'No',
+        callback: message.callback ?? (() => {}),
+      });
+    },
+    fillBlank: async(message: Message) => {
+      set({
+        heading: message.heading ?? 'Enter Data',
+        message: message.message ?? 'Enter data:',
+        confirm: message.confirm ?? 'Send',
+        blank: message.blank ?? 'Data',
+        callbackConfirm: message.callbackConfirm ?? (() => {}),
+        okay: message.okay ?? 'Cancel',
         callback: message.callback ?? (() => {}),
       });
     },
@@ -85,6 +97,11 @@ function createMessage() {
     tickboxTicked: (id: string) => {
       let el = document.getElementById(`checkbox-${id}`) as HTMLInputElement;
       return el ? el.checked : false;
+    },
+    // Shortcut for getting blank field value.
+    blankValue: () => {
+      let el = document.getElementById('message-dialog-blank') as HTMLInputElement;
+      return el ? el.value : '';
     }
   };
 }

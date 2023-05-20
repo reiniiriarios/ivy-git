@@ -43,6 +43,14 @@
             {/each}
           </div>
         {/if}
+        {#if $messageDialog.blank}
+          <div class="modal__blank">
+            <label class="blank-field">
+              <span>{$messageDialog.blank}</span>
+              <input type="text" id="message-dialog-blank">
+            </label>
+          </div>
+        {/if}
         <div class="modal__response">
           {#if $messageDialog.confirm}
             <button class="btn yes" on:click={messageDialog.yes}>{$messageDialog.confirm}</button>

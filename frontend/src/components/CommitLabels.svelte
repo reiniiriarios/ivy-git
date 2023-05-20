@@ -25,12 +25,15 @@
         <div class="refs__label-name">{b.Name}</div>
         {#if commit.Remotes && commit.Remotes.length}
           {#each commit.Remotes as r}
-            <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Remote}</div>
+            {#if r.Branch == b.Branch}
+              <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Remote}</div>
+            {/if}
           {/each}
         {/if}
       </div>
     {/each}
-  {:else if commit.Remotes && commit.Remotes.length}
+  {/if}
+  {#if commit.Remotes && commit.Remotes.length}
     {#each commit.Remotes as r}
       <div class="refs__label refs__label--branch"
         title={r.AbbrName == "" ? "" : r.Name}

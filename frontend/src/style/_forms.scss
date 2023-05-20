@@ -1,3 +1,18 @@
+input[type="text"] {
+  border: 1px solid var(--color-scale-a-5-100);
+  background-color: var(--color-scale-a-6-75);
+  padding: 0.125rem 0.25rem;
+}
+
+.blank-field {
+  span {
+    display: block;
+    padding: 0 0 0.125rem 0.25rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+}
+
 .checkbox {
   display: block;
   position: relative;
