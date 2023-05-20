@@ -1,9 +1,10 @@
 <script lang="ts">
+  import octicons from '@primer/octicons';
   import CommitDetailsFiles from 'components/CommitDetailsFiles.svelte';
   import { resetDirs } from 'scripts/commit-details-collapse';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
   import { type Commit } from 'stores/commit-data';
-  import { currentCommit, commitDetails, commitDiffSummary } from 'stores/commit-details';
+  import { currentCommit, commitDetails, commitDiffSummary, commitSignature } from 'stores/commit-details';
 
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
@@ -64,6 +65,25 @@
           <th>Committed Date</th>
           <td>
             {$commitDetails?.CommitterDatetime}
+          </td>
+        </tr>
+        <tr>
+          <th>Signature</th>
+          <td class="commit-details__gpg">
+            {#if $commitSignature?.Status}
+              {#if $commitSignature.Status !== 'N'}
+                <span class="gpg-status gpg-status--{$commitSignature.Status}">
+                  {@html octicons.verified.toSVG({width: 16})}
+                </span>
+                <span class="commit-details__gpg-key">{$commitSignature.Key}</span>
+                {#if $commitSignature.Name}
+                  <span class="commit-details__gpg-name">{$commitSignature.Name}</span>
+                {/if}
+              {:else}
+                None
+              {/if}
+            {/if}
+            &nbsp;
           </td>
         </tr>
         <tr>

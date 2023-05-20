@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { GetCommitDetails, GetCommitDiffSummary } from "wailsjs/go/main/App";
+import { GetCommitDetails, GetCommitDiffSummary, GetCommitSignature } from "wailsjs/go/main/App";
 import type { Commit } from "stores/commit-data";
 import { parseResponse } from "scripts/parse-response";
 
@@ -34,6 +34,13 @@ export interface FileStatDir {
   Dirs: FileStatDir[];
 }
 
+interface CommitSignature {
+  Status: string;
+  Name: string;
+  Key: string;
+  Description: string;
+}
+
 function createCurrentCommit() {
   const { subscribe, update, set } = writable({} as Commit);
 
@@ -44,16 +51,22 @@ function createCurrentCommit() {
         if (commit.Hash === c.Hash) {
           commitDetails.set({} as CommitDetails);
           commitDiffSummary.set({} as FileStatDir);
+          commitSignature.set({} as CommitSignature);
           return {} as Commit;
         }
         commitDetails.fetch(commit.Hash);
+        // Clear first, wait for data to display.
         commitDiffSummary.set({} as FileStatDir);
         commitDiffSummary.fetch(commit.Stash ? commit.Parents[1] : commit.Hash);
+        // Clear first, wait for data to display.
+        commitSignature.set({} as CommitSignature);
+        commitSignature.fetch(commit.Hash);
         return commit;
       }),
     unset: () => {
       commitDetails.set({} as CommitDetails);
       commitDiffSummary.set({} as FileStatDir);
+      commitSignature.set({} as CommitSignature);
       set({} as Commit);
     },
   };
@@ -89,3 +102,21 @@ function createSummary() {
   };
 }
 export const commitDiffSummary = createSummary();
+
+function createSignData() {
+  const { subscribe, set } = writable({} as CommitSignature);
+
+  return {
+    subscribe,
+    set,
+    fetch: async (hash: string) => {
+      console.log('fetch', hash)
+      GetCommitSignature(hash).then((result) => {
+        console.log(result)
+        parseResponse(result, () => set(result.Signature), () => set({} as CommitSignature))
+      }
+      );
+    },
+  };
+}
+export const commitSignature = createSignData();

@@ -272,3 +272,65 @@ func trimDirs(dir *FileStatDir) {
 		}
 	}
 }
+
+type CommitSignature struct {
+	Status      string
+	Name        string
+	Key         string
+	Description string
+}
+
+// Get simple signature status of commit list.
+func (g *Git) GetCommitSignature(hash string) (CommitSignature, error) {
+	// Include:
+	// %G?
+	//   G = good (valid)
+	//   B = bad
+	//   U = unknown validity
+	//   X = expired
+	//   Y = good signature, expired key
+	//   E = missing key
+	//   N = no signature
+	// %GS
+	//   Signer name
+	// %GK
+	//   Key
+	// https://git-scm.com/docs/pretty-formats
+	data := []string{"%G?", "%GS", "%GK"}
+	format := strings.Join(data, GIT_LOG_SEP)
+	c, err := g.RunCwd("--no-pager", "log", hash, "--format='"+format+"'", "--max-count=1")
+	if err != nil {
+		return CommitSignature{}, err
+	}
+
+	c = strings.Trim(strings.Trim(strings.Trim(c, "\r"), "\n"), "'")
+	parts := strings.Split(c, GIT_LOG_SEP)
+	if len(parts) != len(data) {
+		return CommitSignature{}, errors.New("error parsing commit signature")
+	}
+
+	var desc string
+	switch parts[0] {
+	case "G":
+		desc = "Good"
+	case "B":
+		desc = "Bad"
+	case "U":
+		desc = "Unknown Validity"
+	case "X":
+		desc = "Expired"
+	case "Y":
+		desc = "Expired Key"
+	case "E":
+		desc = "Missing Key"
+	case "N":
+		desc = "None"
+	}
+
+	return CommitSignature{
+		Status:      parts[0],
+		Name:        parts[1],
+		Key:         parts[2],
+		Description: desc,
+	}, nil
+}

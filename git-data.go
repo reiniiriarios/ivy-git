@@ -330,3 +330,24 @@ func (a *App) GetCommitsSignStatus(limit uint64, offset uint64) CommitsSignRespo
 		Commits:  commits,
 	}
 }
+
+type CommitSignResponse struct {
+	Response  string
+	Message   string
+	Signature git.CommitSignature
+}
+
+// FRONTEND: Get commit signature data.
+func (a *App) GetCommitSignature(hash string) CommitSignResponse {
+	commit, err := a.Git.GetCommitSignature(hash)
+	if err != nil {
+		return CommitSignResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return CommitSignResponse{
+		Response:  "success",
+		Signature: commit,
+	}
+}
