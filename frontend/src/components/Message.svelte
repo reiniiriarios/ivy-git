@@ -6,6 +6,10 @@
       messageDialog.okay();
     }
   });
+
+  const focusBlank = (e: HTMLInputElement) => {
+    e.focus();
+  }
 </script>
 
 {#if $messageDialog.message || $messageDialog.options?.length}
@@ -47,7 +51,7 @@
           <div class="modal__blank">
             <label class="blank-field">
               <span>{$messageDialog.blank}</span>
-              <input type="text" id="message-dialog-blank">
+              <input use:focusBlank type="text" id="message-dialog-blank">
             </label>
           </div>
         {/if}
