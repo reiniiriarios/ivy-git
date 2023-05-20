@@ -56,6 +56,11 @@
   &__leaf {
     padding: 0.15rem 0.5rem 0.25rem 0.5rem;
     background-color: rgba(0 0 0 / 25%);
+
+    // icon, name, leaf, leaf...
+    &:nth-child(n + 4) {
+      border-left: 1px solid rgba(255 255 255 / 15%);
+    }
   }
 
   &__icon {
