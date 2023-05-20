@@ -351,3 +351,17 @@ func (a *App) GetCommitSignature(hash string) CommitSignResponse {
 		Signature: commit,
 	}
 }
+
+// FRONTEND: Delete a branch.
+func (a *App) DeleteBranch(branch string, force bool, remote bool) GenericResponse {
+	err := a.Git.DeleteBranch(branch, force, remote)
+	if err != nil {
+		return GenericResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return GenericResponse{
+		Response: "success",
+	}
+}

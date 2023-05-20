@@ -1,0 +1,48 @@
+.checkbox {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+    height: 1.25rem;
+    width: 1.25rem;
+    margin: 0 0.25rem 0.2rem 0;
+    background-color: var(--color-scale-a-5-75);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      display: none;
+      left: 0.45rem;
+      top: 0.2rem;
+      width: 0.25rem;
+      height: 0.5rem;
+      border: solid white;
+      border-width: 0 0.25rem 0.25rem 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+
+  &:hover span {
+    background-color: var(--color-scale-a-4-75);
+  }
+
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+
+    &:checked ~ span::after {
+      display: block;
+    }
+  }
+}

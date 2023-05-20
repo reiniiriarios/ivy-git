@@ -56,4 +56,12 @@
     border-top: 1px solid var(--color-modal-border);
     padding: 1rem;
   }
+
+  &__checkboxes {
+    padding: 0 0.75rem;
+
+    .checkbox {
+      margin-bottom: 1rem;
+    }
+  }
 }

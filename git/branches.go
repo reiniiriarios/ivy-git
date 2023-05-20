@@ -165,3 +165,23 @@ func (g *Git) ResetBranchToRemote(branch string) error {
 
 	return err
 }
+
+// Delete a branch.
+func (g *Git) DeleteBranch(branch string, force bool, remote bool) error {
+	delete := "-d"
+	if force {
+		delete = "-D"
+	}
+	_, err := g.RunCwd("branch", delete, branch)
+	if err != nil {
+		return err
+	}
+	if remote {
+		_, err := g.RunCwd("branch", delete, "-r", branch)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

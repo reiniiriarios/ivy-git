@@ -32,6 +32,17 @@
             {/each}
           </div>
         {/if}
+        {#if $messageDialog.checkboxes}
+          <div class="modal__checkboxes">
+            {#each $messageDialog.checkboxes as checkbox}
+              <label class="checkbox">
+                <input type="checkbox" name="{checkbox.id}" id="checkbox-{checkbox.id}" checked={checkbox.checked}>
+                <span></span>
+                {checkbox.label}
+              </label>
+            {/each}
+          </div>
+        {/if}
         <div class="modal__response">
           {#if $messageDialog.confirm}
             <button class="btn yes" on:click={messageDialog.yes}>{$messageDialog.confirm}</button>

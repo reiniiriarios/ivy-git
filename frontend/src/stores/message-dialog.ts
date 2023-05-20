@@ -14,6 +14,11 @@ interface Message {
     icon?: string;
     callback: MessageCallback;
   }[],
+  checkboxes?: {
+    id: string;
+    label: string;
+    checked?: boolean;
+  }[],
 }
 
 function createMessage() {
@@ -55,6 +60,7 @@ function createMessage() {
         heading: message.heading ?? 'Error',
         message: message.message ?? 'Unknown error occurred.',
         confirm: message.confirm ?? 'Yes',
+        checkboxes: message.checkboxes ?? [],
         callbackConfirm: message.callbackConfirm ?? (() => {}),
         okay: message.okay ?? 'No',
         callback: message.callback ?? (() => {}),
@@ -74,6 +80,11 @@ function createMessage() {
     },
     clear: async() => {
       set({});
+    },
+    // Shortcut for getting form option value.
+    tickboxTicked: (id: string) => {
+      let el = document.getElementById(`checkbox-${id}`) as HTMLInputElement;
+      return el ? el.checked : false;
     }
   };
 }

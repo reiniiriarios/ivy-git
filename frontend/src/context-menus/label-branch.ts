@@ -3,7 +3,7 @@ import { parseResponse } from "scripts/parse-response";
 import { currentBranch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { PushBranch, ResetBranchToRemote } from "wailsjs/go/main/App";
+import { PushBranch, ResetBranchToRemote, DeleteBranch } from "wailsjs/go/main/App";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
@@ -36,7 +36,31 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
   if (e.dataset.current !== "true") {
     m.push({
       text: "Delete Branch",
-      callback: () => alert("todo: delete"),
+      callback: () => {
+        let opts = [{id: 'force', label: 'Force Delete'}];
+        if (e.dataset.upstream) {
+          opts.push({id: 'remote', label: 'Delete on Remote'});
+        }
+        messageDialog.confirm({
+          heading: 'Delete Branch',
+          message: `Are you sure you want to delete the branch <strong>${e.dataset.branch}</strong>?`,
+          confirm: 'Delete',
+          okay: 'Cancel',
+          checkboxes: opts,
+          callbackConfirm: () => {
+            DeleteBranch(
+              e.dataset.branch,
+              messageDialog.tickboxTicked('force'),
+              messageDialog.tickboxTicked('remote')
+            ).then(r => {
+              parseResponse(r, () => {
+                commitData.refresh();
+                commitSignData.refresh();
+              });
+            });
+          },
+        });
+      },
     });
   }
 
