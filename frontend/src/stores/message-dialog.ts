@@ -63,17 +63,7 @@ function createMessage() {
         message: message.message ?? 'Confirm?',
         confirm: message.confirm ?? 'Yes',
         checkboxes: message.checkboxes ?? [],
-        callbackConfirm: message.callbackConfirm ?? (() => {}),
-        okay: message.okay ?? 'No',
-        callback: message.callback ?? (() => {}),
-      });
-    },
-    fillBlank: async(message: Message) => {
-      set({
-        heading: message.heading ?? 'Enter Data',
-        message: message.message ?? 'Enter data:',
-        confirm: message.confirm ?? 'Send',
-        blank: message.blank ?? 'Data',
+        blank: message.blank ?? '',
         callbackConfirm: message.callbackConfirm ?? (() => {}),
         okay: message.okay ?? 'Cancel',
         callback: message.callback ?? (() => {}),

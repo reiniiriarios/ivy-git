@@ -199,3 +199,23 @@ func (a *App) AddTag(hash string, name string, annotated bool, message string, p
 	err := a.Git.AddTag(hash, name, annotated, message, push)
 	return dataResponse(err, true)
 }
+
+func (a *App) MergeCommit(target_branch string, no_commit bool, no_ff bool) DataResponse {
+	err := a.Git.MergeCommit(target_branch, no_commit, no_ff)
+	return dataResponse(err, true)
+}
+
+func (a *App) MergeSquash(target_branch string) DataResponse {
+	err := a.Git.MergeSquash(target_branch)
+	return dataResponse(err, true)
+}
+
+func (a *App) MergeRebase(target_branch string) DataResponse {
+	err := a.Git.MergeRebase(target_branch)
+	return dataResponse(err, true)
+}
+
+func (a *App) MergeFastForward(target_branch string) DataResponse {
+	err := a.Git.MergeFastForward(target_branch)
+	return dataResponse(err, true)
+}

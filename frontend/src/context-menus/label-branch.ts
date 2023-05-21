@@ -1,7 +1,17 @@
 import { type Menu, type MenuItem } from "context-menus/_all";
 
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { PushBranch, ResetBranchToRemote, DeleteBranch, RenameBranch, RebaseOnBranch } from "wailsjs/go/main/App";
+import {
+  PushBranch,
+  ResetBranchToRemote,
+  DeleteBranch,
+  RenameBranch,
+  RebaseOnBranch,
+  MergeCommit,
+  MergeRebase,
+  MergeSquash,
+  MergeFastForward
+} from "wailsjs/go/main/App";
 
 import { get } from 'svelte/store';
 import { currentBranch } from "stores/branches";
@@ -36,7 +46,7 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     {
       text: "Rename Branch",
       callback: () => {
-        messageDialog.fillBlank({
+        messageDialog.confirm({
           heading: 'Rename Branch',
           message: `Rename <strong>${e.dataset.branch}</strong> locally and on all remotes to:`,
           confirm: 'Rename',
@@ -126,20 +136,100 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     }
     if (workflow === 'rebase') {
       m.push({
+        text: "Rebase and Merge into Current Branch",
+        callback: () => {
+          messageDialog.confirm({
+            heading: 'Rebase and Merge into Current Branch',
+            message: `Rebase <strong>${e.dataset.branch}</strong> onto current branch and merge?`,
+            confirm: 'Merge',
+            okay: 'Cancel',
+            callbackConfirm: () => {
+              MergeRebase(e.dataset.branch).then(r => {
+                parseResponse(r, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                });
+              });
+            },
+          });
+        },
+      });
+      m.push({
         text: "Fast-forward Merge",
-        callback: () => {},
+        callback: () => {
+          messageDialog.confirm({
+            heading: 'Fast-forward Merge',
+            message: `Merge the current branch into <strong>${e.dataset.branch}</strong> via fast-forward only?`,
+            confirm: 'Merge',
+            okay: 'Cancel',
+            callbackConfirm: () => {
+              MergeFastForward(e.dataset.branch).then(r => {
+                parseResponse(r, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                });
+              });
+            },
+          });
+        },
       });
     }
     if (workflow === 'squash' || workflow === 'merge') {
       m.push({
         text: "Merge into Current Branch",
-        callback: () => {},
+        callback: () => {
+          messageDialog.confirm({
+            heading: 'Merge into Current Branch',
+            message: `Merge <strong>${e.dataset.branch}</strong> into current branch?`,
+            confirm: 'Merge',
+            okay: 'Cancel',
+            checkboxes: [
+              {
+                id: 'no-ff',
+                label: 'Create a new commit even if fast-forward is possible',
+                checked: true,
+              },
+              {
+                id: 'no-commit',
+                label: 'No Commit',
+                checked: false,
+              },
+            ],
+            callbackConfirm: () => {
+              MergeCommit(
+                e.dataset.branch,
+                messageDialog.tickboxTicked('no-commit'),
+                messageDialog.tickboxTicked('no-ff')
+              ).then(r => {
+                parseResponse(r, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                });
+              });
+            },
+          });
+        },
       });
     }
     if (workflow === 'squash') {
       m.push({
         text: "Squash & Merge onto Current Branch",
-        callback: () => {},
+        callback: () => {
+          messageDialog.confirm({
+            heading: 'Squash & Merge onto Current Branch',
+            message: `Squash <strong>${e.dataset.branch}</strong> and merge onto current branch?`,
+            confirm: 'Merge',
+            okay: 'Cancel',
+            callbackConfirm: () => {
+              MergeSquash(e.dataset.branch).then(r => {
+                parseResponse(r, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                });
+              });
+            },
+          });
+        },
       });
     }
   }

@@ -45,7 +45,16 @@
               </button>
             {/each}
           </div>
-        {:else if $messageDialog.checkboxes}
+        {/if}
+        {#if $messageDialog.blank}
+          <div class="modal__blank">
+            <label class="blank-field">
+              <span>{$messageDialog.blank}</span>
+              <input use:focusBlank type="text" id="message-dialog-blank">
+            </label>
+          </div>
+        {/if}
+        {#if $messageDialog.checkboxes}
           <div class="modal__checkboxes">
             {#each $messageDialog.checkboxes as checkbox}
               <label class="checkbox">
@@ -55,14 +64,8 @@
               </label>
             {/each}
           </div>
-        {:else if $messageDialog.blank}
-          <div class="modal__blank">
-            <label class="blank-field">
-              <span>{$messageDialog.blank}</span>
-              <input use:focusBlank type="text" id="message-dialog-blank">
-            </label>
-          </div>
-        {:else if $messageDialog.addTag}
+        {/if}
+        {#if $messageDialog.addTag}
           <div class="modal__add-tag">
             <label class="blank-field">
               <span>Tag Name</span>
