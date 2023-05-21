@@ -150,19 +150,20 @@ func (g *Git) getRefs() (Refs, error) {
 	}
 
 	// Add to tags which remotes they are on.
-	remote_names, err := g.getRemoteNames()
-	if err == nil && len(remote_names) > 0 {
-		for _, remote := range remote_names {
-			tags, err := g.getRemoteTags(remote)
-			if err == nil && len(tags) > 0 {
-				for _, tag := range tags {
-					if i, exists := tag_lookup[tag]; exists {
-						refs.Tags[i].SyncedRemotes = append(refs.Tags[i].SyncedRemotes, remote)
-					}
-				}
-			}
-		}
-	}
+	// todo: THIS IS SLOW as it's running ls-remote. Async or faster way of doing this?
+	// remote_names, err := g.getRemoteNames()
+	// if err == nil && len(remote_names) > 0 {
+	// 	for _, remote := range remote_names {
+	// 		tags, err := g.getRemoteTags(remote)
+	// 		if err == nil && len(tags) > 0 {
+	// 			for _, tag := range tags {
+	// 				if i, exists := tag_lookup[tag]; exists {
+	// 					refs.Tags[i].SyncedRemotes = append(refs.Tags[i].SyncedRemotes, remote)
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	return refs, nil
 }
