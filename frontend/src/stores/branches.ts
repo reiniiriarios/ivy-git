@@ -25,7 +25,7 @@ function createBranches() {
     subscribe,
     refresh: async () => {
       GetBranches().then(result => {
-        set(result.Branches as Branch[]);
+        set(result.Data as Branch[]);
       });
     },
   };
@@ -39,7 +39,7 @@ function createCurrentBranch() {
     subscribe,
     refresh: async () => {
       GetCurrentBranch().then(result => {
-        set(result.Branch as Branch);
+        set(result.Data as Branch);
       });
     },
     set: (b: string) => {
@@ -54,7 +54,7 @@ function createCurrentBranch() {
               remotes.refresh();
             }
             changes.refresh();
-            set(result.Branch);
+            set(result.Data);
           });
         });
       }

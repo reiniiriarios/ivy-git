@@ -23,7 +23,7 @@ function createRemotes() {
     refresh: async () => {
       GetRemotes().then(result => {
         console.log(result);
-        set(result.Remotes as Remote[]);
+        set(result.Data as Remote[]);
       });
     },
   };

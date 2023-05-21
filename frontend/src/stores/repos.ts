@@ -24,8 +24,8 @@ function createRepos() {
   return {
     subscribe,
     refresh: async () => {
-      GetRepos().then(result => {
-        set(result as Repo[])
+      GetRepos().then((result: Repo[]) => {
+        set(result)
       });
     },
     add: async () => {
@@ -65,7 +65,7 @@ function createCurrentRepo() {
   return {
     subscribe,
     refresh: async () => {
-      GetSelectedRepo().then(result => {
+      GetSelectedRepo().then((result: string) => {
         set(result);
         currentBranch.refresh();
         branches.refresh();

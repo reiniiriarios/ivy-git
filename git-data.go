@@ -7,80 +7,58 @@ import (
 // This file has commands for the frontend to use to get
 // data from the git package.
 
-type GenericResponse struct {
+type DataResponse struct {
 	Response string
 	Message  string
+	Data     Data
 }
 
-type BranchResponse struct {
-	Response string
-	Message  string
-	Branch   git.Branch
+type Data any
+
+func dataResponse(err error, data Data) DataResponse {
+	if err != nil {
+		return DataResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+	return DataResponse{
+		Response: "success",
+		Data:     data,
+	}
 }
 
 // Get current branch for currently selected repo.
-func (a *App) GetCurrentBranch() BranchResponse {
+func (a *App) GetCurrentBranch() DataResponse {
 	branch, err := a.Git.GetCurrentBranch()
-	if err != nil {
-		return BranchResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-
-	return BranchResponse{
-		Response: "success",
-		Branch: git.Branch{
-			Name: branch,
-		},
-	}
-}
-
-type BranchesResponse struct {
-	Response string
-	Message  string
-	Branches map[string]git.Branch
+	return dataResponse(err, git.Branch{
+		Name: branch,
+	})
 }
 
 // Get list of all branches for currently selected repo.
-func (a *App) GetBranches() BranchesResponse {
+func (a *App) GetBranches() DataResponse {
+	var branches Data
 	branches, err := a.Git.GetBranches()
-	if err != nil {
-		return BranchesResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-
-	return BranchesResponse{
-		Response: "success",
-		Branches: branches,
-	}
+	return dataResponse(err, branches)
 }
 
 // Switch branch on currently selected repo.
-func (a *App) SwitchBranch(branch string) BranchResponse {
+func (a *App) SwitchBranch(branch string) DataResponse {
 	err := a.Git.SwitchBranch(branch)
 	if err != nil {
-		return BranchResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
+		return dataResponse(err, false)
 	}
 
 	b := git.Branch{
 		Name: branch,
 	}
-
 	upstream, err := a.Git.GetBranchUpstream(branch)
 	if err == nil {
 		b.Upstream = upstream
 	}
 
-	return BranchResponse{
-		Response: "success",
-		Branch:   b,
-	}
+	return dataResponse(err, b)
 }
 
 // If branch exists locally.
@@ -89,321 +67,126 @@ func (a *App) BranchExists(name string) bool {
 }
 
 // Pull branch.
-func (a *App) PullRemoteBranch(remote string, branch string, rebase bool) GenericResponse {
+func (a *App) PullRemoteBranch(remote string, branch string, rebase bool) DataResponse {
 	err := a.Git.PullRemoteBranch(remote, branch, rebase)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
-}
-
-type ChangesResponse struct {
-	Response string
-	Message  string
-	ChangesX []git.Change
-	ChangesY []git.Change
+	return dataResponse(err, true)
 }
 
 // Get list of changed files.
-func (a *App) GitListChanges() ChangesResponse {
+func (a *App) GitListChanges() DataResponse {
 	changesX, changesY, err := a.Git.GitListChanges()
-	if err != nil {
-		return ChangesResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-
-	return ChangesResponse{
-		Response: "success",
+	return dataResponse(err, struct {
+		ChangesX []git.Change
+		ChangesY []git.Change
+	}{
 		ChangesX: changesX,
 		ChangesY: changesY,
-	}
+	})
 }
 
-type RemotesResponse struct {
-	Response string
-	Message  string
-	Remotes  []git.Remote
-}
-
-func (a *App) GetRemotes() RemotesResponse {
+func (a *App) GetRemotes() DataResponse {
 	remotes, err := a.Git.GetRemotes()
-	if err != nil {
-		return RemotesResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-
-	return RemotesResponse{
-		Response: "success",
-		Remotes:  remotes,
-	}
+	return dataResponse(err, remotes)
 }
 
-func (a *App) FetchRemote(remote string) GenericResponse {
+func (a *App) FetchRemote(remote string) DataResponse {
 	err := a.Git.FetchRemote(remote)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
-func (a *App) PushRemote(remote string) GenericResponse {
+func (a *App) PushRemote(remote string) DataResponse {
 	branch, err := a.Git.GetCurrentBranch()
 	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
+		return dataResponse(err, true)
 	}
 	err = a.Git.PushRemoteBranch(remote, branch)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
-func (a *App) PullRemote(remote string) GenericResponse {
+func (a *App) PullRemote(remote string) DataResponse {
 	branch, err := a.Git.GetCurrentBranch()
 	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
+		return dataResponse(err, true)
 	}
 	// todo: set rebase flag depending on user settings
 	err = a.Git.PullRemoteBranch(remote, branch, true)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
-func (a *App) PushBranch(branch string) GenericResponse {
+func (a *App) PushBranch(branch string) DataResponse {
 	err := a.Git.PushBranch(branch)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
-func (a *App) PullBranch(branch string) GenericResponse {
+func (a *App) PullBranch(branch string) DataResponse {
 	// todo: set rebase flag depending on user settings
 	err := a.Git.PullBranch(branch, true)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
-func (a *App) ResetBranchToRemote(branch string) GenericResponse {
+func (a *App) ResetBranchToRemote(branch string) DataResponse {
 	err := a.Git.ResetBranchToRemote(branch)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
-}
-
-type CommitResponse struct {
-	Response string
-	Message  string
-	Commit   git.CommitAddl
+	return dataResponse(err, true)
 }
 
 // FRONTEND: Get additional commit details not listed in the table.
-func (a *App) GetCommitDetails(hash string) CommitResponse {
+func (a *App) GetCommitDetails(hash string) DataResponse {
 	commit, err := a.Git.GetCommitDetails(hash)
-	if err != nil {
-		return CommitResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return CommitResponse{
-		Response: "success",
-		Commit:   commit,
-	}
-}
-
-type CommitDiffSummaryResponse struct {
-	Response string
-	Message  string
-	Files    git.FileStatDir
+	return dataResponse(err, commit)
 }
 
 // FRONTEND: Get commit diff summary from diff-tree --numstat and --name-status.
-func (a *App) GetCommitDiffSummary(hash string) CommitDiffSummaryResponse {
+func (a *App) GetCommitDiffSummary(hash string) DataResponse {
 	files, err := a.Git.GetCommitDiffSummary(hash)
-	if err != nil {
-		return CommitDiffSummaryResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-
-	return CommitDiffSummaryResponse{
-		Response: "success",
-		Files:    files,
-	}
-}
-
-type CommitsResponse struct {
-	Response string
-	Message  string
-	HEAD     git.Ref
-	Commits  []git.Commit
-	Graph    git.Graph
+	return dataResponse(err, files)
 }
 
 // FRONTEND: Get list of commits and all associated details for display.
-func (a *App) GetCommitList(limit uint64, offset uint64) CommitsResponse {
+func (a *App) GetCommitList(limit uint64, offset uint64) DataResponse {
 	HEAD, commits, graph, err := a.Git.GetCommitsAndGraph(limit, offset)
-	if err != nil {
-		return CommitsResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-
-	return CommitsResponse{
-		Response: "success",
-		HEAD:     HEAD,
-		Commits:  commits,
-		Graph:    graph,
-	}
-}
-
-type CommitsSignResponse struct {
-	Response string
-	Message  string
-	Commits  git.CommitsSigned
+	return dataResponse(err, struct {
+		HEAD    git.Ref
+		Commits []git.Commit
+		Graph   git.Graph
+	}{
+		HEAD:    HEAD,
+		Commits: commits,
+		Graph:   graph,
+	})
 }
 
 // FRONTEND: Get list of commit hashes and their signature status.
-func (a *App) GetCommitsSignStatus(limit uint64, offset uint64) CommitsSignResponse {
+func (a *App) GetCommitsSignStatus(limit uint64, offset uint64) DataResponse {
 	commits, err := a.Git.GetCommitsSignStatus(limit, offset)
-	if err != nil {
-		return CommitsSignResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return CommitsSignResponse{
-		Response: "success",
-		Commits:  commits,
-	}
-}
-
-type CommitSignResponse struct {
-	Response  string
-	Message   string
-	Signature git.CommitSignature
+	return dataResponse(err, commits)
 }
 
 // FRONTEND: Get commit signature data.
-func (a *App) GetCommitSignature(hash string) CommitSignResponse {
+func (a *App) GetCommitSignature(hash string) DataResponse {
 	commit, err := a.Git.GetCommitSignature(hash)
-	if err != nil {
-		return CommitSignResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return CommitSignResponse{
-		Response:  "success",
-		Signature: commit,
-	}
+	return dataResponse(err, commit)
 }
 
 // FRONTEND: Delete a branch.
-func (a *App) DeleteBranch(branch string, force bool, remote bool) GenericResponse {
+func (a *App) DeleteBranch(branch string, force bool, remote bool) DataResponse {
 	err := a.Git.DeleteBranch(branch, force, remote)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
 // FRONTEND: Delete a remote branch.
-func (a *App) DeleteRemoteBranch(branch string, remote string, force bool) GenericResponse {
+func (a *App) DeleteRemoteBranch(branch string, remote string, force bool) DataResponse {
 	err := a.Git.DeleteRemoteBranch(branch, remote, force)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
 // FRONTEND: Rename a branch.
-func (a *App) RenameBranch(branch string, new_name string) GenericResponse {
+func (a *App) RenameBranch(branch string, new_name string) DataResponse {
 	err := a.Git.RenameBranch(branch, new_name)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }
 
 // FRONTEND: Rebase current branch on branch.
-func (a *App) RebaseOnBranch(branch string) GenericResponse {
+func (a *App) RebaseOnBranch(branch string) DataResponse {
 	err := a.Git.RebaseOnBranch(branch)
-	if err != nil {
-		return GenericResponse{
-			Response: "error",
-			Message:  err.Error(),
-		}
-	}
-	return GenericResponse{
-		Response: "success",
-	}
+	return dataResponse(err, true)
 }

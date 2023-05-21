@@ -21,8 +21,8 @@ function createChanges() {
     refresh: async () => {
       GitListChanges().then(result => {
         parseResponse(result, () => set({
-          x: result.ChangesX ?? [],
-          y: result.ChangesY ?? [],
+          x: result.Data.ChangesX ?? [],
+          y: result.Data.ChangesY ?? [],
         }));
       });      
     },

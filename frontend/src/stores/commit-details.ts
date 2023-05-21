@@ -80,8 +80,8 @@ function createDetails() {
     subscribe,
     set,
     fetch: async (hash: string) => {
-      GetCommitDetails(hash).then((result) =>
-        parseResponse(result, () => set(result.Commit), () => set({} as CommitDetails))
+      GetCommitDetails(hash).then(result =>
+        parseResponse(result, () => set(result.Data), () => set({} as CommitDetails))
       );
     },
   };
@@ -95,8 +95,8 @@ function createSummary() {
     subscribe,
     set,
     fetch: async (hash: string) => {
-      GetCommitDiffSummary(hash).then((result) =>
-        parseResponse(result, () => set(result.Files), () => set({} as FileStatDir))
+      GetCommitDiffSummary(hash).then(result =>
+        parseResponse(result, () => set(result.Data), () => set({} as FileStatDir))
       );
     },
   };
@@ -111,9 +111,9 @@ function createSignData() {
     set,
     fetch: async (hash: string) => {
       console.log('fetch', hash)
-      GetCommitSignature(hash).then((result) => {
+      GetCommitSignature(hash).then(result => {
         console.log(result)
-        parseResponse(result, () => set(result.Signature), () => set({} as CommitSignature))
+        parseResponse(result, () => set(result.Data), () => set({} as CommitSignature))
       }
       );
     },

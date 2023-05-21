@@ -101,15 +101,15 @@ function createCommitData() {
       GetCommitList(COMMIT_LIST_PAGING * (page + 1), 0).then(result => {
         parseResponse(result, () => {
           set({
-            commits: result.Commits,
-            HEAD: result.HEAD,
-            Graph: result.Graph,
+            commits: result.Data.Commits,
+            HEAD: result.Data.HEAD,
+            Graph: result.Data.Graph,
             page: page,
           });
-          console.log('HEAD', result.HEAD);
-          console.log('commits', result.Commits);
-          console.log('branches', result.Graph.Branches);
-          console.log('vertices', result.Graph.Vertices);
+          console.log('HEAD', result.Data.HEAD);
+          console.log('commits', result.Data.Commits);
+          console.log('branches', result.Data.Graph.Branches);
+          console.log('vertices', result.Data.Graph.Vertices);
         });
       });
       commitSignData.refresh();
@@ -153,7 +153,7 @@ function createCommitSignData() {
           parseResponse(result, () => {
             update(cs => {
               return {
-                commits: {...cs.commits, ...result.Commits},
+                commits: {...cs.commits, ...result.Data},
                 page: page,
               }
             });
