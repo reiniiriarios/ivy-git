@@ -53,13 +53,13 @@
     }
   }
 
-  &:hover,
-  &.hover {
+  &:hover td,
+  &.hover td {
     background-color: var(--color-commitlistitem-bg-hover);
   }
 
-  &:focus,
-  &:focus-within {
+  &:focus td,
+  &:focus-within td {
     background-color: var(--color-commitlistitem-bg-hover);
     outline: 0;
   }
