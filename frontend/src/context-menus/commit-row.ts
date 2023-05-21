@@ -3,10 +3,42 @@ import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { AddTag } from "wailsjs/go/main/App";
+import { CreateBranch, AddTag } from "wailsjs/go/main/App";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
+
+  m = m.concat([
+    {
+      text: "Create Branch",
+      callback: () => {
+        messageDialog.confirm({
+          message: `Create a branch at commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
+          blank: "Name of Branch",
+          checkboxes: [{
+            id: 'checkout',
+            label: 'Checkout Branch',
+            checked: true,
+          }],
+          callbackConfirm: () => {
+            CreateBranch(
+              messageDialog.blankValue(),
+              e.dataset.hash,
+              messageDialog.tickboxTicked('checkout')
+            ).then(r => {
+              parseResponse(r, () => {
+                commitData.refresh();
+                commitSignData.refresh();
+              })
+            });
+          }
+        })
+      }
+    },
+    {
+      sep: true,
+    }
+  ]);
 
   if (e.dataset.head !== 'true') {
     m = m.concat([
@@ -16,7 +48,7 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
       },
       {
         text: "Cherry Pick Commit",
-        callback: () => alert("todo: checkout"),
+        callback: () => alert("todo: cherry pick"),
       },
     ]);
   }

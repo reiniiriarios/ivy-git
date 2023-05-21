@@ -245,3 +245,13 @@ func (g *Git) RebaseOnBranch(branch string) error {
 	_, err := g.RunCwd("rebase", branch)
 	return err
 }
+
+func (g *Git) CreateBranch(name string, at_hash string, checkout bool) error {
+	var err error
+	if checkout {
+		_, err = g.RunCwd("checkout", "-b", name, at_hash)
+	} else {
+		_, err = g.RunCwd("branch", name, at_hash)
+	}
+	return err
+}

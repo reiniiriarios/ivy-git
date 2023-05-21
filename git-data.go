@@ -219,3 +219,8 @@ func (a *App) MergeFastForward(target_branch string) DataResponse {
 	err := a.Git.MergeFastForward(target_branch)
 	return dataResponse(err, true)
 }
+
+func (a *App) CreateBranch(name string, at_hash string, checkout bool) DataResponse {
+	err := a.Git.CreateBranch(name, at_hash, checkout)
+	return dataResponse(err, true)
+}
