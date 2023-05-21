@@ -1,10 +1,15 @@
 import { type Menu, type MenuItem } from "context-menus/_all";
-import { parseResponse } from "scripts/parse-response";
+
+import { ClipboardSetText } from "wailsjs/runtime/runtime";
+import { PushBranch, ResetBranchToRemote, DeleteBranch, RenameBranch, RebaseOnBranch } from "wailsjs/go/main/App";
+
+import { get } from 'svelte/store';
 import { currentBranch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { PushBranch, ResetBranchToRemote, DeleteBranch, RenameBranch, RebaseOnBranch } from "wailsjs/go/main/App";
-import { ClipboardSetText } from "wailsjs/runtime/runtime";
+import { settings } from "stores/settings";
+
+import { parseResponse } from "scripts/parse-response";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -101,11 +106,13 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
   }
 
   if (e.dataset.current !== "true") {
-    m = m.concat([
-      {
-        sep: true,
-      },
-      {
+    m.push({
+      sep: true,
+    });
+
+    let workflow = get(settings).Workflow;
+    if (workflow === 'rebase' || workflow === 'squash') {
+      m.push({
         text: "Rebase on Branch",
         callback: () => {
           RebaseOnBranch(e.dataset.branch).then(r => {
@@ -115,8 +122,26 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
             });
           });
         },
-      },
-    ]);
+      });
+    }
+    if (workflow === 'rebase') {
+      m.push({
+        text: "Fast-forward Merge",
+        callback: () => {},
+      });
+    }
+    if (workflow === 'squash' || workflow === 'merge') {
+      m.push({
+        text: "Merge into Current Branch",
+        callback: () => {},
+      });
+    }
+    if (workflow === 'squash') {
+      m.push({
+        text: "Squash & Merge onto Current Branch",
+        callback: () => {},
+      });
+    }
   }
   m = m.concat([
     {

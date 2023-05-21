@@ -17,11 +17,13 @@
   import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
   import { ResizeWindow } from "wailsjs/go/main/App";
   import { enableWatcher } from "events/watcher";
+  import { settings } from "stores/settings";
 
   // Load initial ui state.
   function init() {
     currentRepo.refresh();
     repos.refresh();
+    settings.refresh();
     (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
       switch (env.platform) {
         case "darwin":
@@ -57,8 +59,7 @@
   // Development: If hot updating a module, re-init the app for correct data cascade.
   if (import.meta.hot) {
     import.meta.hot.on('vite:afterUpdate', () => {
-      console.log('Hot update, re-init app...');
-      init();
+      window.location.reload();
     });
   }
 </script>

@@ -16,5 +16,5 @@ export function parseResponse(response: DataResponse, success?: ResponseCallback
     if (failure) failure();
     return
   }
-  success();
+  if (success) success();
 }
