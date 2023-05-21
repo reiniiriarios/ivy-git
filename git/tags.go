@@ -1,5 +1,7 @@
 package git
 
+import "strings"
+
 func (g *Git) PushTag(name string) error {
 	remote, err := g.getRemoteForCurrentBranch()
 	if err != nil {
@@ -43,4 +45,20 @@ func (g *Git) AddTag(hash string, name string, annotated bool, message string, p
 	}
 
 	return nil
+}
+
+func (g *Git) getRemoteTags(remote string) ([]string, error) {
+	tags := []string{}
+	t, err := g.RunCwd("ls-remote", "--tags", remote)
+	if err != nil {
+		return tags, err
+	}
+	lines := parseLines(t)
+	for _, line := range lines {
+		parts := strings.Fields(line)
+		if len(parts) == 2 {
+			tags = append(tags, parts[1])
+		}
+	}
+	return tags, nil
 }

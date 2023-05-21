@@ -80,6 +80,11 @@
         data-menu="tag">
         <div class="refs__icon">{@html octicons['tag'].toSVG({ "width": 14 })}</div>
         <div class="refs__label-name">{t.AbbrName != "" ? t.AbbrName : t.Name}</div>
+        {#if t.SyncedRemotes && t.SyncedRemotes.length}
+          {#each t.SyncedRemotes as remote}
+            <div class="refs__leaf">{remote}</div>
+          {/each}
+        {/if}
       </div>
     {/each}
   {/if}

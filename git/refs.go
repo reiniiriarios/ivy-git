@@ -41,6 +41,7 @@ func (g *Git) getRefs() (Refs, error) {
 		return refs, err
 	}
 
+	tag_lookup := make(map[string]int)
 	// For the purposes of displaying a coherent tree,
 	// we're denoting the following:
 	// - refs/heads/[...]                 = branches
@@ -64,6 +65,7 @@ func (g *Git) getRefs() (Refs, error) {
 				if up, exists := upstream[name]; exists {
 					ref.Upstream = up
 				}
+				tag_lookup[name] = len(refs.Tags)
 				refs.Tags = append(refs.Tags, ref)
 			} else if strings.HasPrefix(name, "refs/remotes/") {
 				ref := parseRefRemote(hash, name[13:])
@@ -88,24 +90,31 @@ func (g *Git) getRefs() (Refs, error) {
 		}
 	}
 
-	// Add to remote branches which local branches are in sync.
-	// Add to local branches which remote branches are in sync.
-	// Add to remote branches which remote heads are in sync.
-	// Add to HEAD which remote branches are in sync.
 	for n := range refs.Remotes {
+		// Add to remote branches which local branches are in sync.
+		// Add to local branches which remote branches are in sync.
 		for i := range refs.Branches {
 			if refs.Branches[i].Hash == refs.Remotes[n].Hash {
 				refs.Branches[i].SyncedRemotes = append(refs.Branches[i].SyncedRemotes, refs.Remotes[n].Remote)
 				refs.Remotes[n].SyncedLocally = true
 			}
 		}
+		// Add to remote branches which remote heads are in sync.
 		for h := range refs.Heads {
 			if refs.Heads[h].Hash == refs.Remotes[n].Hash {
 				refs.Remotes[n].Head = true
 			}
 		}
+		// Add to HEAD which remote branches are in sync.
 		if refs.Remotes[n].Hash == refs.HEAD.Hash {
 			refs.HEAD.SyncedRemotes = append(refs.HEAD.SyncedRemotes, refs.Remotes[n].Remote)
+		}
+		// Add to tags which remotes they are on.
+		tags, err := g.getRemoteTags(refs.Remotes[n].Remote)
+		if err == nil && len(tags) > 0 {
+			for _, tag := range tags {
+				refs.Tags[tag_lookup[tag]].SyncedRemotes = append(refs.Tags[tag_lookup[tag]].SyncedRemotes, refs.Remotes[n].Remote)
+			}
 		}
 	}
 
