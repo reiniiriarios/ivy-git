@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"ivy-git/git"
 	"path/filepath"
 
@@ -21,10 +22,14 @@ func (a *App) GetRepos() map[string]git.Repo {
 }
 
 // Update currently selected repo.
-func (a *App) UpdateSelectedRepo(repo string) {
+func (a *App) UpdateSelectedRepo(repo string) DataResponse {
+	if !a.Git.IsGitRepo(a.RepoSaveData.Repos[repo].Directory) {
+		return dataResponse(errors.New("directory not found, or not identifiable as git repo"), false)
+	}
 	a.RepoSaveData.CurrentRepo = repo
 	a.saveRepoData()
 	a.Git.Repo = a.RepoSaveData.Repos[repo]
+	return dataResponse(nil, false)
 }
 
 // Get the currently selected repo.

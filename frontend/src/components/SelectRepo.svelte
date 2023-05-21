@@ -5,7 +5,7 @@
   import { branchSelect, repoSelect } from 'stores/ui';
 
   function selectRepo(id: string) {
-    currentRepo.set(id);
+    currentRepo.switch(id);
     repoSelect.set(false);
   }
 

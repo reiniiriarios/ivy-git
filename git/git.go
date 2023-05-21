@@ -41,13 +41,3 @@ func (g *Git) RunCwd(command ...string) (string, error) {
 	}
 	return g.Run(g.Repo.Directory, command...)
 }
-
-func (g *Git) IsGitRepo(directory string) bool {
-	r, err := g.Run(directory, "rev-parse")
-	if err != nil {
-		println(err.Error())
-		return false
-	}
-
-	return r == ""
-}

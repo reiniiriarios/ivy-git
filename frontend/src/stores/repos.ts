@@ -32,7 +32,7 @@ function createRepos() {
       AddRepo().then((result) => parseResponse(result, () => {
         if (result.Response !== 'none') {
           repos.refresh();
-          currentRepo.set(result.Id);
+          currentRepo.switch(result.Id);
           repoSelect.set(false);
           messageDialog.clear();
         }
@@ -60,7 +60,7 @@ let cTab = '';
 currentTab.subscribe(t => cTab = t);
 
 function createCurrentRepo() {
-  const { subscribe, update, set } = writable("");
+  const { subscribe, set } = writable("");
   
   return {
     subscribe,
@@ -72,12 +72,13 @@ function createCurrentRepo() {
         changes.refresh();
       });
     },
-    set: async (r: string) => {
-      update(c => {
-        if (c === r) {
-          return c;
-        }
-        UpdateSelectedRepo(r).then(() => {
+    switch: async (repo_id: string) => {
+      let current_repo_id = get(currentRepo);
+      if (current_repo_id === repo_id) {
+        return;
+      }
+      UpdateSelectedRepo(repo_id).then(result => {
+        parseResponse(result, () => {
           if (cTab === 'tree') {
             commitData.refresh();
             commitSignData.refresh();
@@ -88,8 +89,8 @@ function createCurrentRepo() {
           branches.refresh();
           currentBranch.refresh();
           changes.refresh();
+          set(repo_id);
         });
-        return r;
       });
     },
   };
