@@ -29,6 +29,10 @@ func (g *Git) GetLastCommitHash() (string, error) {
 
 // Get additional commit details not listed in the table.
 func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
+	if hash == "" {
+		return CommitAddl{}, errors.New("no commit hash specified")
+	}
+
 	// Include:
 	// %an - Committer Name
 	// %ae - Committer Email
@@ -91,6 +95,10 @@ type FileStatDir struct {
 
 // Get commit diff summary from diff-tree --numstat and --name-status.
 func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
+	if hash == "" {
+		return FileStatDir{}, errors.New("no commit hash specified")
+	}
+
 	filestats := []FileStat{}
 
 	parents, err := g.getCommitParents(hash)
@@ -244,6 +252,10 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 
 // Get commit parents hashes
 func (g *Git) getCommitParents(hash string) ([]string, error) {
+	if hash == "" {
+		return []string{}, errors.New("no commit hash specified")
+	}
+
 	c, err := g.RunCwd("--no-pager", "log", "--format=%P", "--max-count=1", hash)
 	if err != nil {
 		return []string{}, err
@@ -282,6 +294,10 @@ type CommitSignature struct {
 
 // Get simple signature status of commit list.
 func (g *Git) GetCommitSignature(hash string) (CommitSignature, error) {
+	if hash == "" {
+		return CommitSignature{}, errors.New("no commit hash specified")
+	}
+
 	// Include:
 	// %G?
 	//   G = good (valid)

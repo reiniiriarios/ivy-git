@@ -1,6 +1,12 @@
 package git
 
+import "errors"
+
 func (g *Git) MergeCommit(target_branch string, no_commit bool, no_ff bool) error {
+	if target_branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	var err error
 	cmd := []string{"merge"}
 	if no_commit {
@@ -20,6 +26,10 @@ func (g *Git) MergeCommit(target_branch string, no_commit bool, no_ff bool) erro
 }
 
 func (g *Git) MergeSquash(target_branch string) error {
+	if target_branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	_, err := g.RunCwd("merge", "--squash", target_branch)
 	if err != nil {
 		return err
@@ -30,6 +40,10 @@ func (g *Git) MergeSquash(target_branch string) error {
 }
 
 func (g *Git) MergeRebase(target_branch string) error {
+	if target_branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	_, err := g.RunCwd("rebase", "--merge", target_branch)
 	if err != nil {
 		return err
@@ -40,6 +54,10 @@ func (g *Git) MergeRebase(target_branch string) error {
 }
 
 func (g *Git) MergeFastForward(target_branch string) error {
+	if target_branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	_, err := g.RunCwd("merge", "--ff-only", target_branch)
 	if err != nil {
 		return err

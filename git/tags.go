@@ -1,8 +1,15 @@
 package git
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
 
 func (g *Git) PushTag(name string) error {
+	if name == "" {
+		return errors.New("no tag name specified")
+	}
+
 	remote, err := g.getRemoteForCurrentBranch()
 	if err != nil {
 		return err
@@ -12,6 +19,10 @@ func (g *Git) PushTag(name string) error {
 }
 
 func (g *Git) DeleteTag(name string) error {
+	if name == "" {
+		return errors.New("no tag name specified")
+	}
+
 	remote, err := g.getRemoteForCurrentBranch()
 	if err != nil {
 		return err
@@ -25,6 +36,13 @@ func (g *Git) DeleteTag(name string) error {
 }
 
 func (g *Git) AddTag(hash string, name string, annotated bool, message string, push bool) error {
+	if hash == "" {
+		return errors.New("no commit hash specified")
+	}
+	if name == "" {
+		return errors.New("no tag name specified")
+	}
+
 	var err error
 	if annotated {
 		if message == "" {
@@ -48,6 +66,10 @@ func (g *Git) AddTag(hash string, name string, annotated bool, message string, p
 }
 
 func (g *Git) getRemoteTags(remote string) ([]string, error) {
+	if remote == "" {
+		return []string{}, errors.New("no remote name specified")
+	}
+
 	tags := []string{}
 	t, err := g.RunCwd("ls-remote", "--tags", remote)
 	if err != nil {

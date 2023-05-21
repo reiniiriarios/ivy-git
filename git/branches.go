@@ -47,8 +47,11 @@ func (g *Git) GetBranches() ([]Branch, error) {
 	return branch_list, nil
 }
 
-// TODO: multiple upstreams
 func (g *Git) GetBranchUpstream(branch string) (string, error) {
+	if branch == "" {
+		return "", errors.New("no branch name specified")
+	}
+
 	b, err := g.RunCwd("branch", "--format", "'%(upstream:short)'", "--list", branch)
 	if err != nil {
 		println(err.Error())
@@ -60,18 +63,32 @@ func (g *Git) GetBranchUpstream(branch string) (string, error) {
 
 // Switch branch on currently selected repo.
 func (g *Git) SwitchBranch(branch string) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	_, err := g.RunCwd("checkout", branch)
 	return err
 }
 
 // If branch exists locally.
 func (g *Git) BranchExists(name string) bool {
+	if name == "" {
+		return false
+	}
 	_, err := g.RunCwd("rev-parse", "--verify", name)
 	return err == nil
 }
 
 // Get commits ahead and behind branch is from specific remote.
 func (g *Git) getAheadBehind(branch string, remote string) (uint32, uint32, error) {
+	if branch == "" {
+		return 0, 0, errors.New("no branch name specified")
+	}
+	if remote == "" {
+		return 0, 0, errors.New("no remote name specified")
+	}
+
 	rl, err := g.RunCwd("rev-list", "--left-right", "--count", branch+"..."+remote+"/"+branch)
 	if err != nil {
 		return 0, 0, err
@@ -86,6 +103,10 @@ func (g *Git) getAheadBehind(branch string, remote string) (uint32, uint32, erro
 }
 
 func (g *Git) PushBranch(branch string) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	remote, err := g.getBranchRemote(branch)
 	if err != nil {
 		return err
@@ -95,11 +116,22 @@ func (g *Git) PushBranch(branch string) error {
 }
 
 func (g *Git) PushRemoteBranch(remote string, branch string) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+	if remote == "" {
+		return errors.New("no remote name specified")
+	}
+
 	_, err := g.RunCwd("push", remote, branch+":"+branch)
 	return err
 }
 
 func (g *Git) PullBranch(branch string, rebase bool) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	remote, err := g.getBranchRemote(branch)
 	if err != nil {
 		return err
@@ -109,6 +141,13 @@ func (g *Git) PullBranch(branch string, rebase bool) error {
 }
 
 func (g *Git) PullRemoteBranch(remote string, branch string, rebase bool) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+	if remote == "" {
+		return errors.New("no remote name specified")
+	}
+
 	var err error
 	if rebase {
 		_, err = g.RunCwd("pull", remote, branch+":"+branch, "--rebase")
@@ -119,6 +158,10 @@ func (g *Git) PullRemoteBranch(remote string, branch string, rebase bool) error 
 }
 
 func (g *Git) getNumCommitsOnBranch(branch string) (uint32, error) {
+	if branch == "" {
+		return 0, errors.New("no branch name specified")
+	}
+
 	n, err := g.RunCwd("rev-list", "--count", branch)
 	if err != nil {
 		return 0, err
@@ -128,6 +171,10 @@ func (g *Git) getNumCommitsOnBranch(branch string) (uint32, error) {
 }
 
 func (g *Git) getBranchRemote(branch string) (string, error) {
+	if branch == "" {
+		return "", errors.New("no branch name specified")
+	}
+
 	r, err := g.RunCwd("config", "branch."+branch+".remote")
 	if err != nil {
 		return "", err
@@ -137,11 +184,22 @@ func (g *Git) getBranchRemote(branch string) (string, error) {
 }
 
 func (g *Git) fetchBranchRemote(branch string, remote string) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+	if remote == "" {
+		return errors.New("no remote name specified")
+	}
+
 	_, err := g.RunCwd("fetch", remote, branch)
 	return err
 }
 
 func (g *Git) ResetBranchToRemote(branch string) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	remote, err := g.getBranchRemote(branch)
 	if err != nil {
 		return err
@@ -169,6 +227,10 @@ func (g *Git) ResetBranchToRemote(branch string) error {
 
 // Delete a branch.
 func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+
 	delete := "-d"
 	if force {
 		delete = "-D"
@@ -199,6 +261,13 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) er
 
 // Delete a remote branch.
 func (g *Git) DeleteRemoteBranch(branch string, remote string, force bool) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+	if remote == "" {
+		return errors.New("no remote name specified")
+	}
+
 	delete := "-d"
 	if force {
 		delete = "-D"
@@ -209,6 +278,10 @@ func (g *Git) DeleteRemoteBranch(branch string, remote string, force bool) error
 
 // If a branch exists on a specific remote.
 func (g *Git) branchExistsOnRemote(branch string, remote string) bool {
+	if branch == "" || remote == "" {
+		return false
+	}
+
 	ls, _ := g.RunCwd("ls-remote", "--heads", remote, branch)
 	ls = parseOneLine(ls)
 	return ls != ""
@@ -216,6 +289,13 @@ func (g *Git) branchExistsOnRemote(branch string, remote string) bool {
 
 // Rename a branch locally and on all remotes.
 func (g *Git) RenameBranch(branch string, new_name string) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
+	if new_name == "" {
+		return errors.New("no new branch name specified")
+	}
+
 	_, err := g.RunCwd("branch", "-m", branch, new_name)
 	if err != nil {
 		return err
@@ -242,11 +322,20 @@ func (g *Git) RenameBranch(branch string, new_name string) error {
 }
 
 func (g *Git) RebaseOnBranch(branch string) error {
+	if branch == "" {
+		return errors.New("no branch name specified")
+	}
 	_, err := g.RunCwd("rebase", branch)
 	return err
 }
 
 func (g *Git) CreateBranch(name string, at_hash string, checkout bool) error {
+	if name == "" {
+		return errors.New("no branch name specified")
+	}
+	if at_hash == "" {
+		return errors.New("no commit hash specified")
+	}
 	var err error
 	if checkout {
 		_, err = g.RunCwd("checkout", "-b", name, at_hash)

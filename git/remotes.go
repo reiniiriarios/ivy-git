@@ -49,6 +49,10 @@ func (g *Git) getRemoteForCurrentBranch() (string, error) {
 }
 
 func (g *Git) getRemoteForBranch(branch string) (string, error) {
+	if branch == "" {
+		return "", errors.New("no branch name specified")
+	}
+
 	r, err := g.RunCwd("config", "branch."+branch+".remote")
 	r = parseOneLine(r)
 	// If not found configured, get first remote. This won't ordinarily happen?
@@ -152,6 +156,10 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 
 // Get the name of the main branch for a specific remote.
 func (g *Git) getMainBranchForRemote(remote string) string {
+	if remote == "" {
+		return ""
+	}
+
 	ls, err := g.RunCwd("ls-remote", remote)
 	if err != nil {
 		println(err.Error())
@@ -191,6 +199,9 @@ func (g *Git) getMainBranchForRemote(remote string) string {
 }
 
 func (g *Git) FetchRemote(remote string) error {
+	if remote == "" {
+		return errors.New("no remote name specified")
+	}
 	_, err := g.RunCwd("fetch", remote, "--prune")
 	return err
 }
