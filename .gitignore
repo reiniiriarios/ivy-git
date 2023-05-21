@@ -11,3 +11,7 @@ Thumbs.db
 
 # config
 /repos.yaml
+
+# profiling
+pprof.sh
+pprof.pdf
