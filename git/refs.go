@@ -109,11 +109,19 @@ func (g *Git) getRefs() (Refs, error) {
 		if refs.Remotes[n].Hash == refs.HEAD.Hash {
 			refs.HEAD.SyncedRemotes = append(refs.HEAD.SyncedRemotes, refs.Remotes[n].Remote)
 		}
-		// Add to tags which remotes they are on.
-		tags, err := g.getRemoteTags(refs.Remotes[n].Remote)
-		if err == nil && len(tags) > 0 {
-			for _, tag := range tags {
-				refs.Tags[tag_lookup[tag]].SyncedRemotes = append(refs.Tags[tag_lookup[tag]].SyncedRemotes, refs.Remotes[n].Remote)
+	}
+
+	// Add to tags which remotes they are on.
+	remote_names, err := g.getRemoteNames()
+	if err == nil && len(remote_names) > 0 {
+		for _, remote := range remote_names {
+			tags, err := g.getRemoteTags(remote)
+			if err == nil && len(tags) > 0 {
+				for _, tag := range tags {
+					if i, exists := tag_lookup[tag]; exists {
+						refs.Tags[i].SyncedRemotes = append(refs.Tags[i].SyncedRemotes, remote)
+					}
+				}
 			}
 		}
 	}
@@ -184,7 +192,6 @@ func parseRefRemote(hash string, name string) Ref {
 func (g *Git) ShowRefAll() (string, error) {
 	refs, err := g.RunCwd("show-ref", "--dereference", "--head")
 	if err != nil {
-		println("wut", err.Error())
 		return "", err
 	}
 	return refs, nil
