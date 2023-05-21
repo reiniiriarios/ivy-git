@@ -91,5 +91,28 @@
     </div>
   {/if}
 
+  {#if !commit.Branches?.length && commit.Hash == $HEAD.Hash}
+    <div class="refs__label refs__label--head"
+      data-menu="head">
+      <div class="refs__icon">@</div>
+      <div class="refs__label-name">HEAD</div>
+      {#if commit.Heads && commit.Heads.length}
+        {#each commit.Heads as h}
+          <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Remote}</div>
+        {/each}
+      {/if}
+    </div>
+  {:else if !commit.Remotes?.length && commit.Heads && commit.Heads.length}
+    {#each commit.Heads as h}
+      <div class="refs__label refs__label--head"
+        title={h.AbbrName == "" ? "" : h.Name}
+        data-remote="{h.Remote}"
+        data-menu="remoteHead">
+        <div class="refs__icon">@</div>
+        <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Name}</div>
+      </div>
+    {/each}
+  {/if}
+
   <div class="refs__line" style:width={getLabelDist(commit.X)} style:right={'-'+getLabelDist(commit.X)}></div>
 </div>

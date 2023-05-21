@@ -45,7 +45,7 @@ func (g *Git) headRef() Ref {
 		Head: true,
 	}
 	h := g.symbolicRefHead()
-	if h[:11] == "refs/heads/" {
+	if strings.HasPrefix(h, "refs/heads/") {
 		head.Branch = h[11:]
 	}
 
