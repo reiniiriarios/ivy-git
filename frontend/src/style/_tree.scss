@@ -80,7 +80,7 @@ $num-colors: 10;
   .c-#{$c} {
     .refs {
       &__label {
-        border-color: var(--color-branch-#{$c}-bg) !important;
+        border-color: var(--color-branch-#{$c}-bg);
         background-color: var(--color-branch-#{$c}-bg--translucent) !important;
     
         &::after {

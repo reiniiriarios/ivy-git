@@ -22,11 +22,19 @@
         data-current="{isCurrent(b.Name)}"
         data-menu="branch">
         <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
+        {#if b.Head}
+          <div class="refs__head">@</div>
+        {/if}
         <div class="refs__label-name">{b.Name}</div>
         {#if commit.Remotes && commit.Remotes.length}
           {#each commit.Remotes as r}
             {#if r.Branch == b.Branch}
-              <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Remote}</div>
+              <div class="refs__leaf">
+                {#if r.Head}
+                  <div class="refs__head">@</div>
+                {/if}
+                <span>{r.AbbrName != "" ? r.AbbrName : r.Remote}</span>
+              </div>
             {/if}
           {/each}
         {/if}
@@ -43,32 +51,14 @@
           data-remote="{r.Remote}"
           data-menu="remoteBranch">
           <div class="refs__icon">{@html octicons['git-branch'].toSVG({ "width": 14 })}</div>
-          <div class="refs__leaf">{r.AbbrName != "" ? r.AbbrName : r.Name}</div>
+          <div class="refs__leaf">
+            {#if r.Head}
+              <div class="refs__head">@</div>
+            {/if}
+            <span>{r.AbbrName != "" ? r.AbbrName : r.Name}</span>
+          </div>
         </div>
       {/if}
-    {/each}
-  {/if}
-
-  {#if commit.Hash == $HEAD.Hash}
-    <div class="refs__label refs__label--head"
-      data-menu="head">
-      <div class="refs__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
-      <div class="refs__label-name">HEAD</div>
-      {#if commit.Heads && commit.Heads.length}
-        {#each commit.Heads as h}
-          <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Remote}</div>
-        {/each}
-      {/if}
-    </div>
-  {:else if commit.Heads && commit.Heads.length}
-    {#each commit.Heads as h}
-      <div class="refs__label refs__label--head"
-        title={h.AbbrName == "" ? "" : h.Name}
-        data-remote="{h.Remote}"
-        data-menu="remoteHead">
-        <div class="refs__icon">{@html octicons['arrow-right'].toSVG({ "width": 14 })}</div>
-        <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Name}</div>
-      </div>
     {/each}
   {/if}
 
@@ -82,7 +72,9 @@
         <div class="refs__label-name">{t.AbbrName != "" ? t.AbbrName : t.Name}</div>
         {#if t.SyncedRemotes && t.SyncedRemotes.length}
           {#each t.SyncedRemotes as remote}
-            <div class="refs__leaf">{remote}</div>
+            <div class="refs__leaf">
+              <span>{remote}</span>
+            </div>
           {/each}
         {/if}
       </div>

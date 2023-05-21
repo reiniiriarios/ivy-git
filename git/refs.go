@@ -25,11 +25,48 @@ type Refs struct {
 	Heads    []Ref
 }
 
-// Get ref details from `git show-ref`.
+// Get the symbolic ref for the HEAD or an empty string if it isn't symbolic.
+func (g *Git) symbolicRefHead() string {
+	h, err := g.RunCwd("symbolic-ref", "HEAD")
+	// e.g.
+	//   refs/heads/main
+	// or
+	//   fatal: ref HEAD is not a symbolic ref
+	if err != nil {
+		return ""
+	}
+	return parseOneLine(h)
+}
+
+// Get a Ref struct for the HEAD.
+func (g *Git) headRef() Ref {
+	head := Ref{
+		Name: "HEAD",
+		Head: true,
+	}
+	h := g.symbolicRefHead()
+	if h[:11] == "refs/heads/" {
+		head.Branch = h[11:]
+	}
+
+	return head
+}
+
+// Get ref details from `git show-ref`, build Refs struct for
+// HEAD, branches, tags, remote branches, and heads. This is
+// the primary data used to build the labels in the commit list.
 func (g *Git) getRefs() (Refs, error) {
 	var refs Refs
 
 	show_refs, err := g.RunCwd("show-ref", "--dereference", "--head")
+	// e.g.
+	// a67ea1dbf2b31ebd354604cdc60574950c7fe905 HEAD
+	// a67ea1dbf2b31ebd354604cdc60574950c7fe905 refs/heads/main
+	// 11522e4f2d94b5043861f5b4e6899ffd5482ac6d refs/heads/test
+	// a67ea1dbf2b31ebd354604cdc60574950c7fe905 refs/remotes/origin/HEAD
+	// a67ea1dbf2b31ebd354604cdc60574950c7fe905 refs/remotes/origin/main
+	// e35785a1e71efbb7a48a1be286236f93f5aeded6 refs/stash
+	// e1a3558374dbe85a7eab5094185b1b3e30391f96 refs/tags/testTag
 	if err != nil {
 		println(err.Error())
 		return refs, err
@@ -41,13 +78,15 @@ func (g *Git) getRefs() (Refs, error) {
 		return refs, err
 	}
 
+	refs.HEAD = g.headRef()
+
 	tag_lookup := make(map[string]int)
 	// For the purposes of displaying a coherent tree,
 	// we're denoting the following:
-	// - refs/heads/[...]                 = branches
-	// - refs/tags/[...]                  = tags
-	// - HEAD and refs/remotes/[...]/HEAD = heads
-	// - refs/remotes/[...]/[...]         = remotes
+	//   refs/heads/[...]                 = branches
+	//   refs/tags/[...]                  = tags
+	//   HEAD and refs/remotes/[...]/HEAD = heads
+	//   refs/remotes/[...]/[...]         = remotes
 	show_refs_lines := parseLines(show_refs)
 	for _, r := range show_refs_lines {
 		ref_details := strings.Split(r, " ")
@@ -58,6 +97,9 @@ func (g *Git) getRefs() (Refs, error) {
 				ref := parseRefHead(hash, name[11:])
 				if up, exists := upstream[name]; exists {
 					ref.Upstream = up
+				}
+				if ref.Branch == refs.HEAD.Branch {
+					ref.Head = true
 				}
 				refs.Branches = append(refs.Branches, ref)
 			} else if strings.HasPrefix(name, "refs/tags/") {
@@ -78,11 +120,7 @@ func (g *Git) getRefs() (Refs, error) {
 					refs.Remotes = append(refs.Remotes, ref)
 				}
 			} else if name == "HEAD" {
-				refs.HEAD = Ref{
-					Hash: hash,
-					Name: name,
-					Head: true,
-				}
+				refs.HEAD.Hash = hash
 			} else if !strings.HasPrefix(name, "refs/stash") {
 				// Ignore stash, but anything else log a warning.
 				println("Error parsing ref:", name)

@@ -12,7 +12,7 @@
     display: inline-flex;
     justify-content: left;
     align-items: center;
-    border-left: 2px solid red;
+    border-left: 2px solid;
     background-color: rgba(255 0 0 / 25%);
     position: relative;
     margin-right: 0.5rem;
@@ -38,7 +38,7 @@
 
     &-name {
       padding: 0.15rem 0.5rem 0.25rem 0.5rem;
-      border-left: 1px solid;
+      border-left: 1px solid rgba(255 255 255 / 20%) !important;
       border-color: inherit;
     }
   }
@@ -54,12 +54,26 @@
   }
 
   &__leaf {
-    padding: 0.15rem 0.5rem 0.25rem 0.5rem;
     background-color: rgba(0 0 0 / 25%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    // icon, name, leaf, leaf...
-    &:nth-child(n + 4) {
-      border-left: 1px solid rgba(255 255 255 / 15%);
+    & + & {
+      border-left: 1px solid rgba(255 255 255 / 10%);
+    }
+
+    span {
+      padding: 0.15rem 0.5rem 0.25rem 0.5rem;
+    }
+
+    .refs__head {
+      padding: 0.15rem 0 0.25rem 0.45rem;
+      border-left: 0;
+
+      ~ span {
+        padding-left: 0.4rem;
+      }
     }
   }
 
@@ -72,5 +86,14 @@
     justify-content: center;
     align-items: center;
     fill: var(--color-text);
+  }
+
+  &__head {
+    height: 100%;
+    padding: 0.15rem 0.5rem 0.25rem 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid rgba(255 255 255 / 20%);
   }
 }
