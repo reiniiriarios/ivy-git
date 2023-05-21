@@ -24,8 +24,8 @@ func (g *Git) GetCurrentBranch() (string, error) {
 }
 
 // Get list of all branches for currently selected repo.
-func (g *Git) GetBranches() (map[string]Branch, error) {
-	branch_list := make(map[string]Branch)
+func (g *Git) GetBranches() ([]Branch, error) {
+	branch_list := []Branch{}
 
 	branches, err := g.RunCwd("branch", "--list", "--format", "'%(refname:short)"+GIT_LOG_SEP+"%(upstream:short)'")
 	if err != nil {
@@ -37,10 +37,10 @@ func (g *Git) GetBranches() (map[string]Branch, error) {
 	for _, branch := range bs {
 		parts := strings.Split(branch, GIT_LOG_SEP)
 		if len(parts) == 2 {
-			branch_list[branch] = Branch{
+			branch_list = append(branch_list, Branch{
 				Name:     parts[0],
 				Upstream: parts[1],
-			}
+			})
 		}
 	}
 
