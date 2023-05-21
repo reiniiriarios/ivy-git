@@ -23,7 +23,7 @@ func (g *Git) GetLastCommitHash() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	h = strings.Trim(strings.ReplaceAll(strings.ReplaceAll(h, "\r", ""), "\n", ""), "'")
+	h = parseOneLine(h)
 	return h, nil
 }
 
@@ -42,7 +42,7 @@ func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 		return CommitAddl{}, err
 	}
 
-	c = strings.Trim(strings.Trim(strings.Trim(c, "\n"), "\r"), "'")
+	c = parseOneLine(c)
 	parts := strings.Split(c, GIT_LOG_SEP)
 	if len(parts) != len(data) {
 		return CommitAddl{}, errors.New("error parsing git log")
@@ -114,7 +114,7 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 		return FileStatDir{}, err
 	}
 
-	numstat = strings.Trim(strings.Trim(strings.Trim(numstat, "\n"), "\r"), "'")
+	numstat = parseOneLine(numstat)
 	// The -z option splits lines by NUL.
 	nl := strings.Split(numstat, "\x00")
 	// The first line is the hash, skip.
@@ -182,7 +182,7 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 		return FileStatDir{}, err
 	}
 
-	name_status = strings.Trim(strings.Trim(strings.Trim(name_status, "\n"), "\r"), "'")
+	name_status = parseOneLine(name_status)
 	// The -z option splits lines by NUL.
 	sl := strings.Split(name_status, "\x00")
 	// If not a merge commit, he first line is the hash, skip.
@@ -248,7 +248,7 @@ func (g *Git) getCommitParents(hash string) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	c = strings.Trim(strings.Trim(c, "\r"), "\n")
+	c = parseOneLine(c)
 	parents := strings.Split(c, " ")
 
 	return parents, nil
@@ -303,7 +303,7 @@ func (g *Git) GetCommitSignature(hash string) (CommitSignature, error) {
 		return CommitSignature{}, err
 	}
 
-	c = strings.Trim(strings.Trim(strings.Trim(c, "\r"), "\n"), "'")
+	c = parseOneLine(c)
 	parts := strings.Split(c, GIT_LOG_SEP)
 	if len(parts) != len(data) {
 		return CommitSignature{}, errors.New("error parsing commit signature")

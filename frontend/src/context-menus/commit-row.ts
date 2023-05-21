@@ -1,5 +1,9 @@
 import type { Menu, MenuItem } from "context-menus/_all";
+import { parseResponse } from "scripts/parse-response";
+import { commitData, commitSignData } from "stores/commit-data";
+import { messageDialog } from "stores/message-dialog";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
+import { AddTag } from "wailsjs/go/main/App";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -24,7 +28,20 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
     },
     {
       text: "Add Tag",
-      callback: () => alert("todo: add tag"),
+      callback: () => {
+        messageDialog.addTag({
+          message: `Add tag to commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
+          callbackConfirm: () => {
+            let data = messageDialog.addTagData();
+            AddTag(e.dataset.hash, data.name, data.type === 'annotated', data.message, data.push).then(r => {
+              parseResponse(r, () => {
+                commitData.refresh();
+                commitSignData.refresh();
+              });
+            });
+          },
+        });
+      },
     },
     {
       sep: true,

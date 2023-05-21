@@ -13,13 +13,14 @@ interface Message {
     text: string;
     icon?: string;
     callback: MessageCallback;
-  }[],
+  }[];
   checkboxes?: {
     id: string;
     label: string;
     checked?: boolean;
-  }[],
-  blank?: string,
+  }[];
+  blank?: string;
+  addTag?: boolean;
 }
 
 function createMessage() {
@@ -78,6 +79,17 @@ function createMessage() {
         callback: message.callback ?? (() => {}),
       });
     },
+    addTag: async(message: Message) => {
+      set({
+        heading: message.heading ?? 'Add Tag',
+        message: message.message ?? 'Enter data:',
+        confirm: message.confirm ?? 'Add',
+        addTag: true,
+        callbackConfirm: message.callbackConfirm ?? (() => {}),
+        okay: message.okay ?? 'Cancel',
+        callback: message.callback ?? (() => {}),
+      });
+    },
     yes: async() => {
       update(message => {
         message.callbackConfirm();
@@ -102,6 +114,15 @@ function createMessage() {
     blankValue: () => {
       let el = document.getElementById('message-dialog-blank') as HTMLInputElement;
       return el ? el.value : '';
+    },
+    // Shortcut for getting add tag data.
+    addTagData: () => {
+      return {
+        name: (document.getElementById('message-dialog-tag-name') as HTMLInputElement).value,
+        type: (document.querySelector('input[name="message-dialog-tag-type"]:checked') as HTMLInputElement).value,
+        message: (document.getElementById('message-dialog-tag-message') as HTMLInputElement).value,
+        push: (document.getElementById('message-dialog-tag-push') as HTMLInputElement).checked,
+      }
     }
   };
 }

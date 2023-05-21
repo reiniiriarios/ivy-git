@@ -17,7 +17,6 @@
     justify-content: space-between;
     flex-direction: column;
     text-align: left;
-    white-space: pre-wrap;
   }
 
   &__heading {
@@ -28,6 +27,7 @@
 
   &__text {
     padding: 1rem;
+    white-space: pre-wrap;
   }
 
   &__options {
@@ -71,7 +71,22 @@
     min-width: 30rem;
 
     input[type="text"] {
-      width: calc(100% - 0.5rem);
+      width: 100%;
+    }
+  }
+
+  &__add-tag {
+    padding: 0 0.75rem;
+    margin-bottom: 1.5rem;
+    min-width: 30rem;
+
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    .checkbox {
+      margin-top: 0.75rem;
     }
   }
 }

@@ -10,12 +10,10 @@ import (
 type DataResponse struct {
 	Response string
 	Message  string
-	Data     Data
+	Data     any
 }
 
-type Data any
-
-func dataResponse(err error, data Data) DataResponse {
+func dataResponse(err error, data any) DataResponse {
 	if err != nil {
 		return DataResponse{
 			Response: "error",
@@ -38,7 +36,6 @@ func (a *App) GetCurrentBranch() DataResponse {
 
 // Get list of all branches for currently selected repo.
 func (a *App) GetBranches() DataResponse {
-	var branches Data
 	branches, err := a.Git.GetBranches()
 	return dataResponse(err, branches)
 }
@@ -124,24 +121,25 @@ func (a *App) PullBranch(branch string) DataResponse {
 	return dataResponse(err, true)
 }
 
+// Hard reset the current branch to its default remote.
 func (a *App) ResetBranchToRemote(branch string) DataResponse {
 	err := a.Git.ResetBranchToRemote(branch)
 	return dataResponse(err, true)
 }
 
-// FRONTEND: Get additional commit details not listed in the table.
+// Get additional commit details not listed in the table.
 func (a *App) GetCommitDetails(hash string) DataResponse {
 	commit, err := a.Git.GetCommitDetails(hash)
 	return dataResponse(err, commit)
 }
 
-// FRONTEND: Get commit diff summary from diff-tree --numstat and --name-status.
+// Get commit diff summary from diff-tree --numstat and --name-status.
 func (a *App) GetCommitDiffSummary(hash string) DataResponse {
 	files, err := a.Git.GetCommitDiffSummary(hash)
 	return dataResponse(err, files)
 }
 
-// FRONTEND: Get list of commits and all associated details for display.
+// Get list of commits and all associated details for display.
 func (a *App) GetCommitList(limit uint64, offset uint64) DataResponse {
 	HEAD, commits, graph, err := a.Git.GetCommitsAndGraph(limit, offset)
 	return dataResponse(err, struct {
@@ -155,38 +153,49 @@ func (a *App) GetCommitList(limit uint64, offset uint64) DataResponse {
 	})
 }
 
-// FRONTEND: Get list of commit hashes and their signature status.
+// Get list of commit hashes and their signature status.
 func (a *App) GetCommitsSignStatus(limit uint64, offset uint64) DataResponse {
 	commits, err := a.Git.GetCommitsSignStatus(limit, offset)
 	return dataResponse(err, commits)
 }
 
-// FRONTEND: Get commit signature data.
 func (a *App) GetCommitSignature(hash string) DataResponse {
 	commit, err := a.Git.GetCommitSignature(hash)
 	return dataResponse(err, commit)
 }
 
-// FRONTEND: Delete a branch.
 func (a *App) DeleteBranch(branch string, force bool, remote bool) DataResponse {
 	err := a.Git.DeleteBranch(branch, force, remote)
 	return dataResponse(err, true)
 }
 
-// FRONTEND: Delete a remote branch.
 func (a *App) DeleteRemoteBranch(branch string, remote string, force bool) DataResponse {
 	err := a.Git.DeleteRemoteBranch(branch, remote, force)
 	return dataResponse(err, true)
 }
 
-// FRONTEND: Rename a branch.
 func (a *App) RenameBranch(branch string, new_name string) DataResponse {
 	err := a.Git.RenameBranch(branch, new_name)
 	return dataResponse(err, true)
 }
 
-// FRONTEND: Rebase current branch on branch.
+// Rebase current branch on branch.
 func (a *App) RebaseOnBranch(branch string) DataResponse {
 	err := a.Git.RebaseOnBranch(branch)
+	return dataResponse(err, true)
+}
+
+func (a *App) DeleteTag(name string) DataResponse {
+	err := a.Git.DeleteTag(name)
+	return dataResponse(err, true)
+}
+
+func (a *App) PushTag(name string) DataResponse {
+	err := a.Git.PushTag(name)
+	return dataResponse(err, true)
+}
+
+func (a *App) AddTag(hash string, name string, annotated bool, message string, push bool) DataResponse {
+	err := a.Git.AddTag(hash, name, annotated, message, push)
 	return dataResponse(err, true)
 }

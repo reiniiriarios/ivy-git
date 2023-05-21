@@ -54,7 +54,7 @@ func (g *Git) GetBranchUpstream(branch string) (string, error) {
 		println(err.Error())
 		return "", err
 	}
-	b = strings.Trim(strings.ReplaceAll(strings.ReplaceAll(b, "\r", ""), "\n", ""), "'")
+	b = parseOneLine(b)
 	return b, nil
 }
 
@@ -132,7 +132,7 @@ func (g *Git) getBranchRemote(branch string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	r = strings.Trim(strings.ReplaceAll(strings.ReplaceAll(r, "\r", ""), "\n", ""), "'")
+	r = parseOneLine(r)
 	return r, nil
 }
 
@@ -210,7 +210,7 @@ func (g *Git) DeleteRemoteBranch(branch string, remote string, force bool) error
 // If a branch exists on a specific remote.
 func (g *Git) branchExistsOnRemote(branch string, remote string) bool {
 	ls, _ := g.RunCwd("ls-remote", "--heads", remote, branch)
-	ls = strings.Trim(strings.Trim(ls, "\r"), "\n")
+	ls = parseOneLine(ls)
 	return ls != ""
 }
 

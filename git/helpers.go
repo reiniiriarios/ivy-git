@@ -20,6 +20,11 @@ func parseLines(s string) []string {
 	return r
 }
 
+// Parse a single line result.
+func parseOneLine(s string) string {
+	return strings.Trim(strings.Trim(strings.ReplaceAll(s, "\r\n", "\n"), "\n"), "'")
+}
+
 func getSiteName(hostname string) string {
 	if hostname == "github.com" {
 		return "GitHub"

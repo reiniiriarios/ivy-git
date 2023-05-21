@@ -1,6 +1,7 @@
 package git
 
 import (
+	"errors"
 	"net/url"
 	"strings"
 )
@@ -33,6 +34,36 @@ func (g *Git) getRemoteNames() ([]string, error) {
 		}
 	}
 	return remotes, nil
+}
+
+func (g *Git) getRemoteForCurrentBranch() (string, error) {
+	b, err := g.GetCurrentBranch()
+	if err != nil {
+		return "", err
+	}
+	r, err := g.getRemoteForBranch(b)
+	if err != nil {
+		return "", err
+	}
+	return r, nil
+}
+
+func (g *Git) getRemoteForBranch(branch string) (string, error) {
+	r, err := g.RunCwd("config", "branch."+branch+".remote")
+	r = parseOneLine(r)
+	// If not found configured, get first remote. This won't ordinarily happen?
+	if err != nil || r == "" {
+		all, err := g.getRemoteNames()
+		if err != nil {
+			return "", err
+		}
+		if len(all) < 1 {
+			return "", errors.New("no remotes found")
+		}
+		r = all[0]
+	}
+
+	return r, nil
 }
 
 func (g *Git) GetRemotes() ([]Remote, error) {

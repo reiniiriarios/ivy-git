@@ -1,7 +1,5 @@
 package git
 
-import "strings"
-
 func (g *Git) GetUncommittedDiff() (string, error) {
 	diff, err := g.RunCwd("--no-pager", "diff", "HEAD^")
 	if err != nil {
@@ -47,6 +45,6 @@ func (g *Git) findMergeBase(hash1 string, hash2 string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	b = strings.Trim(strings.Trim(b, "\r"), "\n")
+	b = parseOneLine(b)
 	return b, nil
 }
