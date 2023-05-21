@@ -1,0 +1,36 @@
+.settings {
+  text-align: left;
+  padding: 2rem;
+
+  h2 {
+    margin: 0 0 1rem;
+  }
+}
+
+.big-option {
+  display: flex;
+  column-gap: 1.5rem;
+
+  &__option {
+    flex: 1;
+    border: 0.25rem solid var(--color-scale-a-7-100);
+
+    &--active {
+      background-color: var(--color-scale-a-6-100);
+      border-color: var(--color-scale-a-5-100);
+    }
+  }
+
+  &__icon {
+    margin: 0.2rem 0.5rem 0.5rem;
+  }
+
+  &__name {
+    font-size: 1.2rem;
+    margin: 0.2rem;
+  }
+
+  &__desc {
+    color: var(--color-text-muted);
+  }
+}

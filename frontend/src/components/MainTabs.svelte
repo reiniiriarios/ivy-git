@@ -2,7 +2,9 @@
   import Details from 'components/Details.svelte';
   import Diff from 'components/Diff.svelte';
   import Commits from 'components/Commits.svelte';
+  import Settings from 'components/Settings.svelte';
   import { currentTab } from 'stores/current-tab';
+  import octicons from '@primer/octicons';
 
   let tabs = {
     changes: {
@@ -17,13 +19,17 @@
       n:'Details',
       c: Details,
     },
+    settings: {
+      n: '<span aria-label="Settings">' + octicons.gear.toSVG({width: 18}) + '</span>',
+      c: Settings,
+    }
   };
 </script>
 
 <nav class="tabs">
   {#each Object.entries(tabs) as [t, d]}
-    <button class="tabs__tab" class:active={$currentTab === t} id="tab-{t}" on:click={() => $currentTab = t}>
-      {d.n}
+    <button class="tabs__tab tabs__tab--{t}" class:active={$currentTab === t} id="tab-{t}" on:click={() => $currentTab = t}>
+      {@html d.n}
     </button>
   {/each}
 </nav>

@@ -5,7 +5,7 @@
   height: var(--tabs-height);
 
   &__tab {
-    width: 33.333%;
+    flex: 1;
     border: none;
     color: var(--color-text);
     background-color: var(--color-btn-bg);
@@ -24,6 +24,16 @@
 
     &:hover {
       background-color: var(--color-btn-bg-hover);
+    }
+
+    &--settings {
+      flex: initial;
+      padding: 0 0.75rem;
+
+      svg {
+        fill: var(--color-text-muted);
+        vertical-align: middle;
+      }
     }
   }
 }

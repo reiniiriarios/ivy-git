@@ -24,6 +24,7 @@ type RepoSaveData struct {
 type Settings struct {
 	Version                      string
 	DisplayCommitSignatureInList bool
+	Workflow                     string
 }
 
 type AppData struct {
@@ -76,18 +77,37 @@ func (a *App) saveRepoData() {
 }
 
 // Save settings to config file.
-func (a *App) saveSettings() {
-	a.Settings.Version = VERSION
+func (a *App) saveSettings(new_settings Settings) error {
+	// Always save the current version in settings.
+	new_settings.Version = VERSION
+
+	// Only three viable options for this.
+	if new_settings.Workflow != "squash" && new_settings.Workflow != "rebase" {
+		new_settings.Workflow = "merge"
+	}
+
+	a.Settings = new_settings
+
 	data, err := yaml.Marshal(&a.Settings)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
+		return err
 	}
 
 	rp := filepath.Join(a.settingsLocationRoaming(), "settings.yaml")
-	err2 := os.WriteFile(rp, []byte(data), 0644)
-	if err2 != nil {
-		runtime.LogError(a.ctx, err2.Error())
+	err = os.WriteFile(rp, []byte(data), 0644)
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+		return err
 	}
+
+	return nil
+}
+
+// Handler for frontend.
+func (a *App) SaveSettingsGui(new_settings Settings) DataResponse {
+	err := a.saveSettings(new_settings)
+	return dataResponse(err, false)
 }
 
 // Save app data to config file.
