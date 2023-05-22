@@ -5,6 +5,16 @@ import (
 	"strings"
 )
 
+func (g *Git) NumTags() uint64 {
+	b, err := g.RunCwd("tag")
+	if err != nil {
+		println(err.Error())
+		return 0
+	}
+	lines := parseLines(b)
+	return uint64(len(lines))
+}
+
 func (g *Git) PushTag(name string) error {
 	if name == "" {
 		return errors.New("no tag name specified")

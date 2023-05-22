@@ -127,9 +127,9 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 				if err == nil {
 					ahead, behind, err = g.getAheadBehind(currentBranch, d[0])
 					if err != nil {
-						numCommits, err := g.getNumCommitsOnBranch(currentBranch)
+						numCommits, err := g.NumCommitsOnBranch(currentBranch)
 						if err == nil {
-							ahead = numCommits
+							ahead = uint32(numCommits)
 						}
 					}
 				}

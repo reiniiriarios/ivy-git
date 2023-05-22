@@ -244,3 +244,25 @@ func (a *App) UnstageAll() DataResponse {
 	err := a.Git.UnstageAll()
 	return dataResponse(err, true)
 }
+
+func (a *App) NumBranches() DataResponse {
+	n := a.Git.NumBranches()
+	return dataResponse(nil, n)
+}
+
+func (a *App) NumTags() DataResponse {
+	n := a.Git.NumTags()
+	return dataResponse(nil, n)
+}
+
+func (a *App) NumMainBranchCommits() DataResponse {
+	main := a.Git.NameOfMainBranch()
+	n, err := a.Git.NumCommitsOnBranch(main)
+	return dataResponse(err, struct {
+		Count uint64
+		Name  string
+	}{
+		Count: n,
+		Name:  main,
+	})
+}

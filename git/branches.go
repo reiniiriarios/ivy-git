@@ -11,6 +11,35 @@ type Branch struct {
 	Upstream string
 }
 
+func (g *Git) NumBranches() uint64 {
+	b, err := g.RunCwd("branch")
+	if err != nil {
+		println(err.Error())
+		return 0
+	}
+	lines := parseLines(b)
+	return uint64(len(lines))
+}
+
+// Check common names for main branch.
+func (g *Git) NameOfMainBranch() string {
+	r, err := g.RunCwd("for-each-ref", "--format='%(refname:short)'", "refs/heads/main", "refs/heads/master", "refs/heads/trunk")
+	if err != nil {
+		// Screw it, return something.
+		return "main"
+	}
+	r = parseOneLine(r)
+	if !strings.Contains(r, "\n") {
+		return r
+	}
+	// More than one result.
+	if strings.Contains(r, "master") {
+		return "master"
+	}
+	// Default to main.
+	return "main"
+}
+
 // Get current branch for currently selected repo.
 func (g *Git) GetCurrentBranch() (string, error) {
 	branch, err := g.RunCwd("rev-parse", "--abbrev-ref", "HEAD")
@@ -157,17 +186,29 @@ func (g *Git) PullRemoteBranch(remote string, branch string, rebase bool) error 
 	return err
 }
 
-func (g *Git) getNumCommitsOnBranch(branch string) (uint32, error) {
+func (g *Git) NumMainBranchCommits() uint64 {
+	main := g.NameOfMainBranch()
+	num, err := g.NumCommitsOnBranch(main)
+	if err != nil {
+		println(err.Error())
+		return 0
+	}
+	return uint64(num)
+}
+
+func (g *Git) NumCommitsOnBranch(branch string) (uint64, error) {
 	if branch == "" {
 		return 0, errors.New("no branch name specified")
 	}
 
 	n, err := g.RunCwd("rev-list", "--count", branch)
 	if err != nil {
+		println(err.Error())
 		return 0, err
 	}
+	n = parseOneLine(n)
 	num, _ := strconv.ParseInt(n, 10, 32)
-	return uint32(num), nil
+	return uint64(num), nil
 }
 
 func (g *Git) getBranchRemote(branch string) (string, error) {
