@@ -28,7 +28,8 @@ export function tabUpDown(e: KeyboardEvent) {
 // This resolves that issue, but is hacky / should be investigated further.
 export function addInputListener() {
   document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.target instanceof HTMLInputElement && ['input', 'textarea'].includes(document.activeElement?.tagName.toLowerCase())) {
+    console.log(e);
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
       if ((e.ctrlKey || e.metaKey) && (e.key === 'A' || e.key === 'a')) {
         e.target.select();
       }
