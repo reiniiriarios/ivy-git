@@ -23,3 +23,15 @@ export function tabUpDown(e: KeyboardEvent) {
     }
   }
 }
+
+// Something is breaking Cmd/Ctrl+A to select all text within input elements.
+// This resolves that issue, but is hacky / should be investigated further.
+export function addInputListener() {
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.target instanceof HTMLInputElement && ['input', 'textarea'].includes(document.activeElement?.tagName.toLowerCase())) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'A' || e.key === 'a')) {
+        e.target.select();
+      }
+    }
+  })
+}

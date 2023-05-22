@@ -9,7 +9,7 @@
   import ContextMenu from "components/ContextMenu.svelte";
   import GetStarted from "components/GetStarted.svelte";
 
-  import { tabUpDown } from "scripts/keyboard-navigation";
+  import { tabUpDown, addInputListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";
 
   import { currentRepo, repos } from "stores/repos";
@@ -45,6 +45,7 @@
   window.addEventListener('resize', ResizeWindow);
 
   addLinkListener();
+  addInputListener();
 
   enableWatcher();
 
