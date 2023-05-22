@@ -20,6 +20,7 @@ import { messageDialog } from "stores/message-dialog";
 import { settings } from "stores/settings";
 
 import { parseResponse } from "scripts/parse-response";
+import { checkRef } from "scripts/check-ref";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -51,6 +52,7 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
           message: `Rename <strong>${e.dataset.branch}</strong> locally and on all remotes to:`,
           confirm: 'Rename',
           blank: 'New Name',
+          validateBlank: checkRef,
           okay: 'Cancel',
           callbackConfirm: () => {
             RenameBranch(e.dataset.branch, messageDialog.blankValue()).then(r => {

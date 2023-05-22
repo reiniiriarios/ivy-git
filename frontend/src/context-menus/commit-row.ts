@@ -4,6 +4,7 @@ import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 import { CreateBranch, AddTag } from "wailsjs/go/main/App";
+import { checkRef } from "scripts/check-ref";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -15,6 +16,8 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
         messageDialog.confirm({
           message: `Create a branch at commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
           blank: "Name of Branch",
+          validateBlank: checkRef,
+          confirm: 'Create',
           checkboxes: [{
             id: 'checkout',
             label: 'Checkout Branch',

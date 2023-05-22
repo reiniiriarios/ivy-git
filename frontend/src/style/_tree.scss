@@ -7,6 +7,7 @@ $num-colors: 10;
   position: relative;
   pointer-events: none;
   user-select: none;
+  -webkit-user-select: none;
 
   &__graph {
     overflow-x: hidden;

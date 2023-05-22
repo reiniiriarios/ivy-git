@@ -20,6 +20,7 @@ interface Message {
     checked?: boolean;
   }[];
   blank?: string;
+  validateBlank?: (input: string) => boolean,
   addTag?: boolean;
 }
 
@@ -64,6 +65,7 @@ function createMessage() {
         confirm: message.confirm ?? 'Yes',
         checkboxes: message.checkboxes ?? [],
         blank: message.blank ?? '',
+        validateBlank: message.validateBlank ?? null,
         callbackConfirm: message.callbackConfirm ?? (() => {}),
         okay: message.okay ?? 'Cancel',
         callback: message.callback ?? (() => {}),

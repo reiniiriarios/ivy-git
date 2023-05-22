@@ -3,6 +3,15 @@ textarea {
   border: 1px solid var(--color-scale-a-5-100);
   background-color: var(--color-scale-a-6-75);
   padding: 0.125rem 0.25rem;
+
+  &:focus {
+    border-color: var(--color-scale-g-5-100);
+    outline: 0;
+  }
+
+  &.invalid {
+    border-color: var(--color-scale-r-5-100);
+  }
 }
 
 textarea {

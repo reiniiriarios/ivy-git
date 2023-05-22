@@ -1,12 +1,17 @@
 <script lang="ts">
   import { messageDialog } from 'stores/message-dialog';
+  import { checkRef } from 'scripts/check-ref';
 
   let confirmButton: HTMLButtonElement;
+
+  let blankValue: string;
+  let blankValid: boolean = true;
 
   let tagMessage: HTMLElement;
   let tagAnnotatedField: HTMLInputElement;
   let tagNameField: string;
   let tagMessageField: string;
+  let tagValid: boolean = false;
 
   let annotated = true;
 
@@ -31,12 +36,20 @@
   }
 
   const isConfirmDisabled = () => {
-    console.log('is')
     if ($messageDialog.addTag) {
-      console.log('..', tagNameField)
       return tagNameField.length > 0 && (!tagAnnotatedField.checked || tagMessageField.length > 0);
     }
     return false;
+  }
+
+  const validateRef = (e: InputEvent) => {
+    tagValid = checkRef(e.currentTarget.value);
+  }
+
+  const validateBlank = (e: InputEvent) => {
+    if ($messageDialog.validateBlank) {
+      blankValid = !e.currentTarget.value ? true : $messageDialog.validateBlank(e.currentTarget.value);
+    }
   }
 </script>
 
@@ -68,7 +81,7 @@
           <div class="modal__blank">
             <label class="blank-field">
               <span>{$messageDialog.blank}</span>
-              <input use:focusBlank type="text" id="message-dialog-blank">
+              <input use:focusBlank type="text" id="message-dialog-blank" bind:value={blankValue} class:invalid={blankValue && !blankValid} on:input={validateBlank}>
             </label>
           </div>
         {/if}
@@ -87,7 +100,7 @@
           <div class="modal__add-tag">
             <label class="blank-field">
               <span>Tag Name</span>
-              <input use:focusBlank type="text" id="message-dialog-tag-name" bind:value={tagNameField}>
+              <input use:focusBlank type="text" id="message-dialog-tag-name" class:invalid={tagNameField && !tagValid} bind:value={tagNameField} on:input={validateRef}>
             </label>
             <div class="radio">
               <span class="radio__label">Type</span>
@@ -111,8 +124,11 @@
         <div class="modal__response">
           {#if $messageDialog.confirm}
             <button class="btn yes" on:click={messageDialog.yes} bind:this={confirmButton} disabled={
-              $messageDialog.addTag ?
-                !tagNameField || (annotated && !tagMessageField)
+              $messageDialog.validateBlank
+                ? !blankValue || !blankValid
+                :
+              $messageDialog.addTag
+                ? !tagNameField || !tagValid || (annotated && !tagMessageField)
                 : false
             }>
               {$messageDialog.confirm}
