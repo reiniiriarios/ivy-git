@@ -24,7 +24,18 @@ function createRepos() {
     subscribe,
     refresh: async () => {
       GetRepos().then((result: Repo[]) => {
-        set(result)
+        // Sort
+        set(Object.entries(result).sort(([_aId, aRepo], [_bId, bRepo]) => {
+          if (aRepo.Name < bRepo.Name) return -1;
+          if (aRepo.Name > bRepo.Name) return 1;
+          return 0;
+        }).reduce(
+          (obj, [id, repo]) => { 
+            obj[id] = repo; 
+            return obj;
+          }, 
+          {} as Repo[]
+        ));
       });
     },
     add: async () => {
