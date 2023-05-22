@@ -1,7 +1,14 @@
 <script lang="ts">
   import { messageDialog } from 'stores/message-dialog';
 
-  let tagMessageField: HTMLElement;
+  let confirmButton: HTMLButtonElement;
+
+  let tagMessage: HTMLElement;
+  let tagAnnotatedField: HTMLInputElement;
+  let tagNameField: string;
+  let tagMessageField: string;
+
+  let annotated = true;
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {
     if(['Escape'].includes(e.key) && ($messageDialog.message || $messageDialog.options?.length)) {
@@ -14,11 +21,22 @@
   }
 
   const tagAnnotated = () => {
-    tagMessageField.style.display = 'block';
+    tagMessage.style.display = 'block';
+    annotated = true;
   }
 
   const tagLightweight = () => {
-    tagMessageField.style.display = 'none';
+    tagMessage.style.display = 'none';
+    annotated = false;
+  }
+
+  const isConfirmDisabled = () => {
+    console.log('is')
+    if ($messageDialog.addTag) {
+      console.log('..', tagNameField)
+      return tagNameField.length > 0 && (!tagAnnotatedField.checked || tagMessageField.length > 0);
+    }
+    return false;
   }
 </script>
 
@@ -69,20 +87,20 @@
           <div class="modal__add-tag">
             <label class="blank-field">
               <span>Tag Name</span>
-              <input use:focusBlank type="text" id="message-dialog-tag-name">
+              <input use:focusBlank type="text" id="message-dialog-tag-name" bind:value={tagNameField}>
             </label>
             <div class="radio">
               <span class="radio__label">Type</span>
               <label class="radio__option">
-                <input type="radio" value="annotated" name="message-dialog-tag-type" checked on:click={tagAnnotated}><span></span> Annotated
+                <input type="radio" value="annotated" name="message-dialog-tag-type" checked on:click={tagAnnotated} bind:this={tagAnnotatedField}><span></span> Annotated
               </label>
               <label class="radio__option">
                 <input type="radio" value="lightweight" name="message-dialog-tag-type" on:click={tagLightweight}><span></span> Lightweight
               </label>
             </div>
-            <label class="blank-field" bind:this={tagMessageField}>
+            <label class="blank-field" bind:this={tagMessage}>
               <span>Message</span>
-              <input type="text" id="message-dialog-tag-message">
+              <input type="text" id="message-dialog-tag-message" bind:value={tagMessageField}>
             </label>
             <label class="checkbox">
               <input type="checkbox" id="message-dialog-tag-push">
@@ -92,9 +110,17 @@
         {/if}
         <div class="modal__response">
           {#if $messageDialog.confirm}
-            <button class="btn yes" on:click={messageDialog.yes}>{$messageDialog.confirm}</button>
+            <button class="btn yes" on:click={messageDialog.yes} bind:this={confirmButton} disabled={
+              $messageDialog.addTag ?
+                !tagNameField || (annotated && !tagMessageField)
+                : false
+            }>
+              {$messageDialog.confirm}
+            </button>
           {/if}
-          <button class="btn okay" on:click={messageDialog.okay}>{$messageDialog.okay}</button>
+          <button class="btn okay" on:click={messageDialog.okay}>
+            {$messageDialog.okay}
+          </button>
         </div>
       </div>
     </div>

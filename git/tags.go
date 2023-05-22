@@ -56,10 +56,9 @@ func (g *Git) AddTag(hash string, name string, annotated bool, message string, p
 	var err error
 	if annotated {
 		if message == "" {
-			_, err = g.RunCwd("tag", "-a", name, hash)
-		} else {
-			_, err = g.RunCwd("tag", "-a", name, hash, "-m", message)
+			message = name
 		}
+		_, err = g.RunCwd("tag", "-a", name, hash, "-m", message)
 	} else {
 		_, err = g.RunCwd("tag", name, hash)
 	}
