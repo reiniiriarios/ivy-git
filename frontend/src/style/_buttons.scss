@@ -33,6 +33,24 @@
   }
 }
 
+.textbtn {
+  border: none;
+  background: none;
+  color: var(--color-text);
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  margin: 0;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  svg {
+    fill: var(--color-text);
+    vertical-align: middle;
+  }
+}
+
 .btn-drop {
   position: relative;
 

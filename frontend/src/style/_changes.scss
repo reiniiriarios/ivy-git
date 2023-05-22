@@ -2,12 +2,49 @@
   text-align: left;
   background-color: var(--color-changes-bg);
   flex: 2;
+  user-select: none;
+  -webkit-user-select: none;
 
   &__header {
     font-size: 0.9rem;
     color: var(--color-scale-a-3-100);
-    padding: 0.5rem 0.75rem 0.5rem;
     border-bottom: 1px solid var(--color-changes-border);
+    display: flex;
+    justify-content: space-between;
+
+    &-section,
+    &-stage-all .textbtn {
+      vertical-align: middle;
+      padding: 0.25rem 0.75rem;
+    }
+
+    &-stage-all {
+      .textbtn {
+        font-size: 0.9rem;
+        color: var(--color-scale-a-3-100);
+
+        svg {
+          margin-top: -0.125rem;
+          fill: var(--color-scale-a-3-100);
+        }
+      }
+
+      &--stage .textbtn:hover {
+        color: var(--color-scale-g-3-100);
+
+        svg {
+          fill: var(--color-scale-g-3-100);
+        }
+      }
+
+      &--unstage .textbtn:hover {
+        color: var(--color-scale-r-3-100);
+
+        svg {
+          fill: var(--color-scale-r-3-100);
+        }
+      }
+    }
   }
 
   &__list {
@@ -23,57 +60,39 @@
   align-items: center;
   border-bottom: 1px solid var(--color-changes-border);
   background-color: var(--color-changes-list-bg);
-  padding: 0.30rem 1.5rem 0.36rem;
+  padding: 0 1.5rem 0 0;
   min-height: 3rem;
   cursor: pointer;
 
-  &:hover {
+  &.active {
     background-color: var(--color-changes-list-bg-hover);
   }
 
-  &__tick {
-    padding-right: 1rem;
+  &__stage {
+    padding: 0.75rem;
 
-    &-box {
-      display: inline-block;
+    svg {
+      margin-bottom: 0.125rem;
       vertical-align: middle;
-      height: 1.25rem;
-      width: 1.25rem;
-      margin: 0 0.25rem 0.2rem 0;
-      background-color: var(--color-scale-a-5-75);
-      position: relative;
-  
-      &::after {
-        content: '';
-        position: absolute;
-        display: none;
+      fill: var(--color-scale-a-3-100);
+    }
 
-        .change[data-state="checked"] & {
-          display: block;
-          border: solid var(--color-text);
-          border-width: 0 0.25rem 0.25rem 0;
-          -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
-          left: 0.4rem;
-          top: 0.125rem;
-          width: 0.25rem;
-          height: 0.5rem;
-        }
+    &:hover svg {
+      fill: var(--color-scale-g-3-100);
+    }
 
-        .change[data-state="partial"] & {
-          display: block;
-          background-color: var(--color-text);
-          border-radius: 50%;
-          left: 0.4rem;
-          top: 0.35rem;
-          width: 0.5rem;
-          height: 0.5rem;
-        }
-      }
+    &--unstage:hover svg {
+      fill: var(--color-scale-r-3-100);
     }
   }
 
   &__file {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  &__filename {
     display: flex;
     flex-direction: column;
   }

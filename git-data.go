@@ -224,3 +224,23 @@ func (a *App) CreateBranch(name string, at_hash string, checkout bool) DataRespo
 	err := a.Git.CreateBranch(name, at_hash, checkout)
 	return dataResponse(err, true)
 }
+
+func (a *App) StageFile(file string) DataResponse {
+	err := a.Git.StageFiles(file)
+	return dataResponse(err, true)
+}
+
+func (a *App) UnstageFile(file string) DataResponse {
+	err := a.Git.UnstageFile(file)
+	return dataResponse(err, true)
+}
+
+func (a *App) StageAll() DataResponse {
+	err := a.Git.StageAll()
+	return dataResponse(err, true)
+}
+
+func (a *App) UnstageAll() DataResponse {
+	err := a.Git.UnstageAll()
+	return dataResponse(err, true)
+}

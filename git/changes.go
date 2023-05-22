@@ -45,7 +45,8 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 	for _, change := range cs {
 		if strings.Trim(change, " ") != "" {
 			x := change[0:1]
-			file := change[2:]
+			y := change[1:2]
+			file := change[3:]
 			if x != " " && x != "?" {
 				changesX = append(changesX, Change{
 					File:     file,
@@ -55,7 +56,6 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 					Flag:     getStatusFlag(x),
 				})
 			}
-			y := change[1:2]
 			if y != " " {
 				changesY = append(changesY, Change{
 					File:     file,
