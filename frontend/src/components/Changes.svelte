@@ -2,6 +2,7 @@
   import octicons from '@primer/octicons';
   import { parseResponse } from 'scripts/parse-response';
   import { changes } from 'stores/changes';
+  import { currentFile } from 'stores/current-file';
   import { currentTab } from 'stores/current-tab';
   import { StageFile, UnstageFile, StageAll, UnstageAll } from 'wailsjs/go/main/App'
 
@@ -39,6 +40,7 @@
 
   function selectFile(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     currentTab.set('changes');
+    currentFile.select(e.currentTarget.dataset.file, e.currentTarget.dataset.staged === 'true');
   }
 </script>
 
@@ -52,7 +54,7 @@
     </div>
     <ul class="changes__list changes__list--x">
       {#each $changes.x as change}
-        <li class="change">
+        <li class="change" class:active={$currentFile.File === change.File && $currentFile.Staged}>
           <span class="change__stage change__stage--unstage"
             aria-label="Unstage File"
             data-file="{change.File}"
@@ -62,6 +64,7 @@
           </span>
           <div class="change__file"
             data-file="{change.File}"
+            data-staged="true"
             on:click={selectFile}
             on:keypress={selectFile}>
             <span class="change__filename">
@@ -83,7 +86,7 @@
     </div>
     <ul class="changes__list changes__list--y">
       {#each $changes.y as change}
-        <li class="change">
+        <li class="change" class:active={$currentFile.File === change.File && !$currentFile.Staged}>
           <span class="change__stage"
             aria-label="Stage File"
             data-file="{change.File}"
@@ -93,6 +96,7 @@
           </span>
           <div class="change__file"
             data-file="{change.File}"
+            data-staged="false"
             on:click={selectFile}
             on:keypress={selectFile}>
             <div class="change__filename">

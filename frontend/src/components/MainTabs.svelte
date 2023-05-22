@@ -5,6 +5,7 @@
   import Settings from 'components/Settings.svelte';
   import { currentTab } from 'stores/current-tab';
   import octicons from '@primer/octicons';
+  import { currentFile } from 'stores/current-file';
 
   let tabs = {
     changes: {
@@ -24,11 +25,16 @@
       c: Settings,
     }
   };
+
+  function setTab(t: string) {
+    currentTab.set(t);
+    currentFile.reset();
+  }
 </script>
 
 <nav class="tabs">
   {#each Object.entries(tabs) as [t, d]}
-    <button class="tabs__tab tabs__tab--{t}" class:active={$currentTab === t} id="tab-{t}" on:click={() => $currentTab = t}>
+    <button class="tabs__tab tabs__tab--{t}" class:active={$currentTab === t} id="tab-{t}" on:click={() => setTab(t)}>
       {@html d.n}
     </button>
   {/each}
