@@ -18,6 +18,7 @@
   import { ResizeWindow } from "wailsjs/go/main/App";
   import { enableWatcher } from "events/watcher";
   import { settings } from "stores/settings";
+  import MakeCommit from "components/MakeCommit.svelte";
 
   // Load initial ui state.
   function init() {
@@ -66,12 +67,13 @@
 
 <TitleBar />
 <div id="container">
-  <div id="sidebar">
+  <div class="sidebar">
     <SelectRepo />
     {#if $currentRepo}
       <SelectBranch />
     {/if}
     <Changes />
+    <MakeCommit />
   </div>
   <main>
     {#if $currentRepo}

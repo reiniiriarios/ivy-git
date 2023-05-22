@@ -53,13 +53,6 @@ a {
   width: 100vw;
 }
 
-#sidebar {
-  width: var(--sidebar-width);
-  overflow: visible;
-  height: calc(100% - var(--title-bar-height));
-  border-right: 1px solid var(--color-sidebar-border);
-}
-
 main {
   z-index: 1;
   width: calc(100% - var(--sidebar-width));
