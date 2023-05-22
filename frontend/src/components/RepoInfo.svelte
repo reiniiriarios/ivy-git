@@ -28,7 +28,7 @@
       <strong>{$mainInfo.Count}</strong>
       {$mainInfo.Count === 1 ? 'commit' : 'commits'}
       on
-      <strong>{$mainInfo.Name}</strong>
+      <strong>{$mainInfo.Name ?? '???'}</strong>
     </div>
   </div>
 </div>

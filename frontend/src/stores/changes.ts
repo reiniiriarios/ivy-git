@@ -1,6 +1,7 @@
 import { parseResponse } from 'scripts/parse-response';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { GitListChanges } from 'wailsjs/go/main/App';
+import { currentRepo } from 'stores/repos';
 
 interface Change {
   File: string;
@@ -19,12 +20,16 @@ function createChanges() {
   return {
     subscribe,
     refresh: async () => {
-      GitListChanges().then(result => {
-        parseResponse(result, () => set({
-          x: result.Data.ChangesX ?? [],
-          y: result.Data.ChangesY ?? [],
-        }));
-      });      
+      if (get(currentRepo)) {
+        GitListChanges().then(result => {
+          parseResponse(result, () => set({
+            x: result.Data.ChangesX ?? [],
+            y: result.Data.ChangesY ?? [],
+          }));
+        });
+      } else {
+        set({x: [], y: []});
+      }
     },
   };
 }

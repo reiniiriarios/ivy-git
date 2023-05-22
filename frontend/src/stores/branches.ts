@@ -7,6 +7,7 @@ import { changes } from 'stores/changes';
 import { currentTab } from 'stores/ui';
 import { currentCommit } from 'stores/commit-details';
 import { remotes } from 'stores/remotes';
+import { currentRepo } from 'stores/repos';
 
 import { parseResponse } from 'scripts/parse-response';
 
@@ -38,12 +39,19 @@ function createCurrentBranch() {
   return {
     subscribe,
     refresh: async () => {
-      GetCurrentBranch().then(result => {
-        set(result.Data as Branch);
-      });
+      if (get(currentRepo)) {
+        GetCurrentBranch().then(result => {
+          parseResponse(result, () => {
+            set(result.Data as Branch);
+          });
+        });
+      }
+      else {
+        set({} as Branch);
+      }
     },
     set: (b: string) => {
-      if (b !== get(currentBranch).Name) {
+      if (b !== get(currentBranch)?.Name) {
         SwitchBranch(b).then(result => {
           parseResponse(result, () => {
             if (cTab === 'tree') {

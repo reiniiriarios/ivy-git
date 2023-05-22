@@ -52,12 +52,15 @@ function createRepos() {
       let name = get(repos)[id]?.Name ?? 'this repo';
       messageDialog.confirm({
         heading: 'Remove Repo',
-        message: `Are you sure you want to remove ${name}?`,
+        message: `Are you sure you want to remove <strong>${name}</strong>?<br><br>This will not affect the repo or its files except to remove it from this app.`,
         confirm: 'Remove',
         okay: 'Cancel',
         callbackConfirm: () => {
           RemoveRepo(id).then(() => {
             repos.refresh();
+            if (id === get(currentRepo)) {
+              currentRepo.clear();
+            }
           })
         },
       });
@@ -80,6 +83,23 @@ function createCurrentRepo() {
         currentBranch.refresh();
         branches.refresh();
         changes.refresh();
+      });
+    },
+    clear: async () => {
+      UpdateSelectedRepo("").then(result => {
+        parseResponse(result, () => {
+          if (cTab === 'tree') {
+            commitData.refresh();
+            commitSignData.refresh();
+            currentCommit.unset();
+          } else if (cTab === 'details') {
+            remotes.refresh();
+          }
+          branches.refresh();
+          currentBranch.refresh();
+          changes.refresh();
+          set("");
+        });
       });
     },
     switch: async (repo_id: string) => {

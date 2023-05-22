@@ -29,18 +29,25 @@ func (a *App) watcher() {
 	var wg sync.WaitGroup
 
 	// Set initial data.
-	wg.Add(4)
-	go a.updateLastCommit(nil, &wg)
-	go a.updateUncommittedDiff(nil, &wg)
-	go a.updateRemoteDiff(nil, &wg)
-	go a.updateStagedDiff(nil, &wg)
-	wg.Wait()
+	if a.isCurrentRepo() {
+		wg.Add(4)
+		go a.updateLastCommit(nil, &wg)
+		go a.updateUncommittedDiff(nil, &wg)
+		go a.updateRemoteDiff(nil, &wg)
+		go a.updateStagedDiff(nil, &wg)
+		wg.Wait()
+	}
 
 	for range time.Tick(time.Second * WATCHER_INTERVAL) {
 		// If this variable has changed, it means another instance of this
 		// loop is running and this one should quit.
 		if semi_semaphore != a.WatcherSemiSemaphore {
 			return
+		}
+
+		// If no repo is selected, don't do anything.
+		if !a.isCurrentRepo() {
+			continue
 		}
 
 		// Get new data

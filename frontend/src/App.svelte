@@ -74,7 +74,9 @@
       <SelectBranch />
     {/if}
     <Changes />
-    <MakeCommit />
+    {#if $currentRepo}
+      <MakeCommit />
+    {/if}
   </div>
   <main>
     {#if $currentRepo}

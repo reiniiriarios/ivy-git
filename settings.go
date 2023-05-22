@@ -34,6 +34,7 @@ type AppData struct {
 
 // Load configuration yaml for app.
 func (a *App) loadConfig() {
+	// Get repo data.
 	rp := filepath.Join(a.settingsLocationLocal(), "repos.yaml")
 	repo_data := a.initConfigFile(rp)
 	var repos RepoSaveData
@@ -41,8 +42,17 @@ func (a *App) loadConfig() {
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 	}
+	// Validate repo data.
+	if _, exists := repos.Repos[repos.CurrentRepo]; !exists {
+		// If the current repo isn't in the list of repos (unlikely, but possible due to bugs).
+		repos.CurrentRepo = ""
+	} else if !a.Git.IsGitRepo(repos.Repos[repos.CurrentRepo].Directory) {
+		// If the current repo isn't found or is no longer a git repo.
+		repos.CurrentRepo = ""
+	}
 	a.RepoSaveData = repos
 
+	// Get settings.
 	sp := filepath.Join(a.settingsLocationRoaming(), "settings.yaml")
 	settings_data := a.initConfigFile(sp)
 	var settings Settings
@@ -53,6 +63,7 @@ func (a *App) loadConfig() {
 	// Call the save method to validate and correct outdated settings.
 	a.saveSettings(settings)
 
+	// Get app data.
 	dp := filepath.Join(a.settingsLocationLocal(), "appdata.yaml")
 	app_data := a.initConfigFile(dp)
 	var data AppData

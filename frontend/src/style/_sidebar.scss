@@ -32,8 +32,8 @@
   }
 
   .overlay {
-    left: 20rem;
-    width: calc(100% - 20rem);
+    left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
   }
 
   &__container {

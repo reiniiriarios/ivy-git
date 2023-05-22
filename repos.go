@@ -16,6 +16,10 @@ type RepoResponse struct {
 	Repo     git.Repo
 }
 
+func (a *App) isCurrentRepo() bool {
+	return a.Git.Repo != (git.Repo{})
+}
+
 // Get repo information.
 func (a *App) GetRepos() map[string]git.Repo {
 	return a.RepoSaveData.Repos
@@ -23,6 +27,17 @@ func (a *App) GetRepos() map[string]git.Repo {
 
 // Update currently selected repo.
 func (a *App) UpdateSelectedRepo(repo string) DataResponse {
+	if repo == "" {
+		a.RepoSaveData.CurrentRepo = ""
+		a.Git.Repo = git.Repo{}
+		a.saveRepoData()
+		return dataResponse(nil, false)
+	}
+
+	if _, exists := a.RepoSaveData.Repos[repo]; !exists {
+		return dataResponse(errors.New("repo not found in list"), false)
+	}
+
 	if !a.Git.IsGitRepo(a.RepoSaveData.Repos[repo].Directory) {
 		return dataResponse(errors.New("directory not found, or not identifiable as git repo"), false)
 	}
