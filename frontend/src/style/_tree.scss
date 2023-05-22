@@ -1,3 +1,5 @@
+@use "!mixins" as *;
+
 $num-colors: 10;
 
 .tree {
@@ -6,8 +8,7 @@ $num-colors: 10;
   text-align: left;
   position: relative;
   pointer-events: none;
-  user-select: none;
-  -webkit-user-select: none;
+  @include no-select;
 
   &__graph {
     overflow-x: hidden;

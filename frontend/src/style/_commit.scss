@@ -1,7 +1,7 @@
+@use "!mixins" as *;
+
 .commit {
-  cursor: default !important;
-  user-select: none;
-  -webkit-user-select: none;
+  @include no-select;
   position: relative;
 
   &__td {

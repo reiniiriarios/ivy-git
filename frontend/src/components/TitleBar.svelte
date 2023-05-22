@@ -21,11 +21,11 @@
 </header>
 
 <style lang="scss">
+  @use "../style/!mixins" as *;
+
   header {
     --wails-draggable: drag;
-    cursor: default !important;
-    user-select: none;
-    -webkit-user-select: none;
+    @include no-select;
 
     height: var(--title-bar-height);
     width: 100vw;
@@ -36,7 +36,7 @@
     padding-bottom: 0.1rem;
 
     #title {
-      user-select: none;
+      @include no-select;
       width: 8rem;
     }
   }

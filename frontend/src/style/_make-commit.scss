@@ -37,6 +37,12 @@
     .btn {
       background-color: var(--color-scale-g-6-100);
       width: 100%;
+      margin-top: 0.125rem;
+      margin-bottom: 0.075rem;
+
+      &:hover {
+        background-color: var(--color-scale-g-5-100);
+      }
 
       &:disabled {
         background-color: var(--color-scale-g-8-100);

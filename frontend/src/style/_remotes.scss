@@ -1,8 +1,8 @@
+@use "!mixins" as *;
+
 .remotes {
   text-align: left;
-  cursor: default;
-  user-select: none;
-  --webkit-user-select: none;
+  @include no-select;
 
   h2 {
     padding: 0 1.5rem;

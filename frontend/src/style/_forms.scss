@@ -1,8 +1,11 @@
+@use "!mixins" as *;
+
 input[type="text"],
 textarea {
   border: 1px solid var(--color-scale-a-5-100);
   background-color: var(--color-scale-a-6-75);
   padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
 
   &:focus {
     border-color: var(--color-scale-g-5-100);
@@ -30,9 +33,7 @@ textarea {
 .checkbox {
   display: block;
   position: relative;
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
+  @include no-select-click;
 
   span {
     display: inline-block;
@@ -42,6 +43,7 @@ textarea {
     margin: 0 0.25rem 0.2rem 0;
     background-color: var(--color-scale-a-5-75);
     position: relative;
+    border-radius: 0.25rem;
 
     &::after {
       content: '';
@@ -83,14 +85,13 @@ textarea {
     padding: 0 0.5rem 0.5rem 0;
     color: var(--color-text-muted);
     font-size: 0.9rem;
+    @include no-select;
   }
 
   &__option {
     display: inline-block;
     position: relative;
-    cursor: pointer;
-    -webkit-user-select: none;
-    user-select: none;
+    @include no-select-click;
     margin-right: 0.75rem;
 
     span {

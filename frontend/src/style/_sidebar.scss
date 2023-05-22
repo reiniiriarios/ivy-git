@@ -27,6 +27,10 @@
   display: none;
   flex: 2;
 
+  .btn {
+    border-radius: 0;
+  }
+
   .overlay {
     left: 20rem;
     width: calc(100% - 20rem);

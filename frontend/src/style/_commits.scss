@@ -1,3 +1,5 @@
+@use "!mixins" as *;
+
 .commits {
   width: calc(100% - var(--resize-bar-width));
   height: calc(100vh - var(--tabs-height) - var(--title-bar-height) - var(--resize-bar-width));
@@ -6,9 +8,7 @@
   overflow: hidden;
 
   &.dragging {
-    user-select: none;
-    -webkit-user-select: none;
-    cursor: default;
+    @include no-select;
     pointer-events: none;
   }
 
@@ -43,9 +43,7 @@
     padding: 0.25rem 0.5rem 0.25rem 0.67rem;
     white-space: nowrap;
     background-color: var(--color-scale-a-7-100);
-    cursor: default !important;
-    user-select: none;
-    -webkit-user-select: none;
+    @include no-select;
     position: sticky;
     top: 0;
     z-index: 500;

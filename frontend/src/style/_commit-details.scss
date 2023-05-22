@@ -11,9 +11,7 @@
   position: relative;
 
   &.dragging {
-    user-select: none;
-    -webkit-user-select: none;
-    cursor: default;
+    @include no-select;
     pointer-events: none;
   }
 
@@ -34,9 +32,7 @@
         padding: 0.3rem 0.4rem 0.2rem 0.75rem;
         white-space: nowrap;
         vertical-align: top;
-        cursor: default !important;
-        user-select: none;
-        -webkit-user-select: none;
+        @include no-select;
         font-weight: normal;
         color: var(--color-text-muted);
         font-size: 0.9rem;
@@ -109,8 +105,7 @@
   // The first dir is the root, skip styling that one.
   &__dir &__dir {
     margin-left: 1rem;
-    user-select: none;
-    -webkit-user-select: none;
+    @include no-select;
 
     &-name {
       color: var(--color-text-muted);

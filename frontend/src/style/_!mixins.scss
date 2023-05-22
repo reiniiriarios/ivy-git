@@ -1,3 +1,15 @@
+@mixin no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+@mixin no-select-click {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
 @mixin carat-up {
   background-image: url("data:image/svg+xml;utf8,<svg width='36' height='18' viewBox='0 0 36 18' xmlns='http://www.w3.org/2000/svg'><path fill='rgb(176, 190, 197)' d='M0 18 18 0 36 18 29 18 18 7 7 18 7 18 0 18'/></svg>");
 }

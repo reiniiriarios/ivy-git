@@ -1,11 +1,11 @@
+@use "!mixins" as *;
+
 .refs {
   display: flex;
   justify-content: right;
   align-items: center;
   position: relative;
-  cursor: default !important;
-  user-select: none;
-  -webkit-user-select: none;
+  @include no-select;
   white-space: nowrap;
 
   &__label {
