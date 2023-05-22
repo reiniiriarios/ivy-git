@@ -10,6 +10,7 @@ type Change struct {
 	File     string
 	Basename string
 	Dir      string
+	OldFile  string
 	Letter   string
 	Flag     string
 }
@@ -35,36 +36,52 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 	var changesX []Change
 	var changesY []Change
 
-	c, err := g.RunCwd("status", "--untracked-files", "--porcelain")
+	c, err := g.RunCwd("status", "--untracked-files", "--porcelain", "-z")
 	if err != nil {
 		return changesX, changesY, err
 	}
 
 	// https://git-scm.com/docs/git-status
-	cs := parseLines(c)
-	for _, change := range cs {
-		if strings.Trim(change, " ") != "" {
-			x := change[0:1]
-			y := change[1:2]
-			file := change[3:]
-			if x != " " && x != "?" {
-				changesX = append(changesX, Change{
-					File:     file,
-					Basename: filepath.Base(file),
-					Dir:      filepath.Dir(file),
-					Letter:   x,
-					Flag:     getStatusFlag(x),
-				})
-			}
-			if y != " " {
-				changesY = append(changesY, Change{
-					File:     file,
-					Basename: filepath.Base(file),
-					Dir:      filepath.Dir(file),
-					Letter:   y,
-					Flag:     getStatusFlag(y),
-				})
-			}
+	c = parseOneLine(c)
+	// The -z option splits lines by NUL.
+	changes := strings.Split(c, "\x00")
+
+	for i := 0; i < len(changes); i++ {
+		if strings.Trim(changes[i], " ") == "" {
+			continue
+		}
+
+		println(changes[i])
+		// Renames get three lines of data.
+		x := changes[i][0:1]
+		y := changes[i][1:2]
+		file := changes[i][3:]
+
+		old_file := ""
+		if x == "R" || y == "R" {
+			old_file = changes[i+1]
+			i++
+		}
+
+		if x != " " && x != "?" {
+			changesX = append(changesX, Change{
+				File:     file,
+				Basename: filepath.Base(file),
+				Dir:      filepath.Dir(file),
+				OldFile:  old_file,
+				Letter:   x,
+				Flag:     getStatusFlag(x),
+			})
+		}
+		if y != " " {
+			changesY = append(changesY, Change{
+				File:     file,
+				Basename: filepath.Base(file),
+				Dir:      filepath.Dir(file),
+				OldFile:  old_file,
+				Letter:   y,
+				Flag:     getStatusFlag(y),
+			})
 		}
 	}
 

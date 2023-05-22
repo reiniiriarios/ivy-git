@@ -91,6 +91,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
   }
 
   &__filename {
@@ -99,6 +100,11 @@
   }
 
   &__dir {
+    color: var(--color-scale-a-3-100);
+    font-size: 0.85rem;
+  }
+
+  &__oldfile {
     color: var(--color-scale-a-3-100);
     font-size: 0.85rem;
   }
@@ -148,7 +154,7 @@
     &--renamed {
       &::after {
         content: 'R';
-        color: var(--color-scale-b-7-100);
+        color: var(--color-scale-b-5-100);
       }
     }
 
