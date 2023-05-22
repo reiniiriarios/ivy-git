@@ -4,7 +4,7 @@ import { GetBranches, GetCurrentBranch, SwitchBranch } from 'wailsjs/go/main/App
 
 import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
-import { currentTab } from 'stores/current-tab';
+import { currentTab } from 'stores/ui';
 import { currentCommit } from 'stores/commit-details';
 import { remotes } from 'stores/remotes';
 

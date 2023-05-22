@@ -1,5 +1,6 @@
 <script lang="ts">
   import { currentBranch } from "stores/branches";
+  import { repoSelect, branchSelect } from "stores/ui";
 
   let subject: string;
   let body: string;
@@ -11,7 +12,7 @@
   }
 </script>
 
-<div class="make-commit">
+<div class="make-commit" style:display={$repoSelect || $branchSelect ? 'none' : 'block'}>
   <div class="make-commit__subject">
     <label class="make-commit__label">
       <span class="make-commit__label-desc">Summary</span>

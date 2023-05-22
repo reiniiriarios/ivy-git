@@ -3,7 +3,7 @@
   import { parseResponse } from 'scripts/parse-response';
   import { changes } from 'stores/changes';
   import { currentFile } from 'stores/current-file';
-  import { currentTab } from 'stores/current-tab';
+  import { currentTab, branchSelect, repoSelect } from 'stores/ui';
   import { StageFile, UnstageFile, StageAll, UnstageAll } from 'wailsjs/go/main/App'
 
   function stage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
@@ -44,7 +44,7 @@
   }
 </script>
 
-<div class="changes">
+<div class="changes" style:display={$repoSelect || $branchSelect ? 'none' : 'block'}>
   {#if $changes.x.length}
     <div class="changes__header">
       <div class="changes__header-section">Staged</div>

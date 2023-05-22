@@ -4,11 +4,10 @@ import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } fr
 
 import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
-import { currentTab } from 'stores/current-tab';
 import { currentCommit } from 'stores/commit-details';
 import { branches, currentBranch } from 'stores/branches';
 import { remotes } from 'stores/remotes';
-import { repoSelect } from 'stores/ui';
+import { currentTab, repoSelect } from 'stores/ui';
 
 import { parseResponse } from 'scripts/parse-response';
 import { messageDialog } from './message-dialog';

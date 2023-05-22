@@ -45,28 +45,14 @@
       repoSelect.set(false);
     }
   });
-
-  repoSelect.subscribe(v => {
-    let list = document.getElementById("all-repos");
-    let btn = document.getElementById("current-repo");
-    if (list && btn) {
-      if (v) {
-        list.style.display = "block";
-        btn.classList.add("active");
-      } else {
-        list.style.display = "none";
-        btn.classList.remove("active");
-      }
-    }
-  });
 </script>
 
-<button class="btn btn-drop sidebar-big-button" id="current-repo" on:click={toggleList}>
+<button class="btn btn-drop sidebar-big-button" id="current-repo" on:click={toggleList} class:active={$repoSelect}>
   <div class="sidebar-big-button__label">Current Repo:</div>
   <div class="sidebar-big-button__value">{$repos[$currentRepo]?.Name ?? 'none selected'}</div>
 </button>
 
-<div id="all-repos" class="sidebar-dropdown">
+<div id="all-repos" class="sidebar-dropdown" style:display={$repoSelect ? 'block' : 'none'}>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="overlay" on:click={() => repoSelect.set(false)}></div>
   <div class="sidebar-dropdown__container">

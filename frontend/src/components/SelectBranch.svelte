@@ -24,26 +24,13 @@
       branchSelect.set(false);
     }
   });
-
-  branchSelect.subscribe(v => {
-    let list = document.getElementById("all-branches");
-    let btn = document.getElementById("current-branch");
-    if (list && btn) {
-      if (v) {
-        list.style.display = "block";
-        btn.classList.add("active");
-      } else {
-        list.style.display = "none";
-        btn.classList.remove("active");
-      }
-    }
-  });
 </script>
 
-<button class="btn btn-drop sidebar-big-button" id="current-branch" on:click={toggleList} class:active={$branchSelect}>
+<button class="btn btn-drop sidebar-big-button" id="current-branch" on:click={toggleList} class:active={$branchSelect} style:display={$repoSelect ? 'none' : 'flex'}>
   <div class="sidebar-big-button__label">Current Branch:</div>
   <div class="sidebar-big-button__value">{$currentBranch?.Name ?? "none selected"}</div>
 </button>
+
 <div id="all-branches" class="sidebar-dropdown" style:display={$branchSelect ? 'block' : 'none'}>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="overlay" on:click={() => branchSelect.set(false)} />

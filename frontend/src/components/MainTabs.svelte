@@ -3,7 +3,7 @@
   import Diff from 'components/Diff.svelte';
   import Commits from 'components/Commits.svelte';
   import Settings from 'components/Settings.svelte';
-  import { currentTab } from 'stores/current-tab';
+  import { currentTab } from 'stores/ui';
   import octicons from '@primer/octicons';
   import { currentFile } from 'stores/current-file';
 
