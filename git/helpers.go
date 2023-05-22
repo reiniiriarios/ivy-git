@@ -14,7 +14,6 @@ func parseLines(s string) []string {
 	r := []string{}
 	l := strings.Split(strings.ReplaceAll(s, "\r\n", "\n"), "\n")
 	for _, v := range l {
-		v = strings.Trim(v, "'")
 		if strings.Trim(v, " ") != "" {
 			r = append(r, v)
 		}
@@ -24,7 +23,7 @@ func parseLines(s string) []string {
 
 // Parse a single line result.
 func parseOneLine(s string) string {
-	return strings.Trim(strings.Trim(strings.ReplaceAll(s, "\r\n", "\n"), "\n"), "'")
+	return strings.Trim(strings.ReplaceAll(s, "\r\n", "\n"), "\n")
 }
 
 func getSiteName(hostname string) string {

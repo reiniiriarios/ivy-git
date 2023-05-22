@@ -22,7 +22,7 @@ func (g *Git) getStashes() []Commit {
 	data := []string{"%H", "%P", "%gd", "%an", "%ae", "%at", "%s"}
 	format := strings.Join(data, GIT_LOG_SEP)
 	// todo: consider replacing with `git stash list` to prevent "bad revision" errors
-	s, err := g.RunCwd("reflog", "--format='"+format+"'", "refs/stash", "--")
+	s, err := g.RunCwd("reflog", "--format="+format, "refs/stash", "--")
 	if err != nil {
 		// if no stashes:
 		// fatal: bad revision 'refs/stash'

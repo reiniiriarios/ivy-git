@@ -23,7 +23,7 @@ func (g *Git) NumBranches() uint64 {
 
 // Check common names for main branch.
 func (g *Git) NameOfMainBranch() string {
-	r, err := g.RunCwd("for-each-ref", "--format='%(refname:short)'", "refs/heads/main", "refs/heads/master", "refs/heads/trunk")
+	r, err := g.RunCwd("for-each-ref", "--format=%(refname:short)", "refs/heads/main", "refs/heads/master", "refs/heads/trunk")
 	if err != nil {
 		// Screw it, return something.
 		return "main"
@@ -56,7 +56,7 @@ func (g *Git) GetCurrentBranch() (string, error) {
 func (g *Git) GetBranches() ([]Branch, error) {
 	branch_list := []Branch{}
 
-	branches, err := g.RunCwd("branch", "--list", "--format", "'%(refname:short)"+GIT_LOG_SEP+"%(upstream:short)'")
+	branches, err := g.RunCwd("branch", "--list", "--format", "%(refname:short)"+GIT_LOG_SEP+"%(upstream:short)")
 	if err != nil {
 		println(err.Error())
 		return branch_list, err
@@ -81,7 +81,7 @@ func (g *Git) GetBranchUpstream(branch string) (string, error) {
 		return "", errors.New("no branch name specified")
 	}
 
-	b, err := g.RunCwd("branch", "--format", "'%(upstream:short)'", "--list", branch)
+	b, err := g.RunCwd("branch", "--format", "%(upstream:short)", "--list", branch)
 	if err != nil {
 		println(err.Error())
 		return "", err

@@ -239,7 +239,7 @@ func (g *Git) ShowRefAll() (string, error) {
 func (g *Git) getUpstreamsForRefs() (map[string]string, error) {
 	upstream := make(map[string]string)
 
-	refs, err := g.RunCwd("for-each-ref", "--format='%(refname)"+GIT_LOG_SEP+"%(upstream:short)'")
+	refs, err := g.RunCwd("for-each-ref", "--format=%(refname)"+GIT_LOG_SEP+"%(upstream:short)")
 	if err != nil {
 		return upstream, err
 	}

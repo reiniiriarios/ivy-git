@@ -19,7 +19,7 @@ type CommitAddl struct {
 }
 
 func (g *Git) GetLastCommitHash() (string, error) {
-	h, err := g.RunCwd("--no-pager", "log", "--format='%H'", "--max-count=1")
+	h, err := g.RunCwd("--no-pager", "log", "--format=%H", "--max-count=1")
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +41,7 @@ func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 	// https://git-scm.com/docs/pretty-formats
 	data := []string{"%cn", "%ce", "%ct", "%b"}
 	format := strings.Join(data, GIT_LOG_SEP)
-	c, err := g.RunCwd("--no-pager", "log", hash, "--format='"+format+"'", "--max-count=1")
+	c, err := g.RunCwd("--no-pager", "log", hash, "--format="+format, "--max-count=1")
 	if err != nil {
 		return CommitAddl{}, err
 	}
@@ -314,7 +314,7 @@ func (g *Git) GetCommitSignature(hash string) (CommitSignature, error) {
 	// https://git-scm.com/docs/pretty-formats
 	data := []string{"%G?", "%GS", "%GK"}
 	format := strings.Join(data, GIT_LOG_SEP)
-	c, err := g.RunCwd("--no-pager", "log", hash, "--format='"+format+"'", "--max-count=1")
+	c, err := g.RunCwd("--no-pager", "log", hash, "--format="+format, "--max-count=1")
 	if err != nil {
 		return CommitSignature{}, err
 	}
