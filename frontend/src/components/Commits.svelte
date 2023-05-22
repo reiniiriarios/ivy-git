@@ -35,7 +35,7 @@
     {
       id: "tree",
       name: "Tree",
-      min: $tree.width,
+      min: parseInt($tree.width),
     },
     {
       id: "subject",

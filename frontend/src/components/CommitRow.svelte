@@ -20,10 +20,16 @@
   }
 
   function mouseShowDetails(e: MouseEvent & { currentTarget: HTMLElement }) {
+    if (e.currentTarget.dataset.uncommitted === 'true') {
+      return;
+    }
     toggleCommitDetails(e.currentTarget);
   }
 
   function keyShowDetails(e: KeyboardEvent & { currentTarget: HTMLElement }) {
+    if (e.currentTarget.dataset.uncommitted === 'true') {
+      return;
+    }
     if (![' ', 'Enter', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'].includes(e.key)) {
       return;
     }
@@ -53,6 +59,7 @@
   data-id="{commit.Id}"
   data-hash="{commit.Hash}"
   data-head="{commit.Hash === $HEAD.Hash}"
+  data-uncommitted="{commit.Hash === UNCOMMITED_HASH}"
   data-menu="{commit.Hash === UNCOMMITED_HASH ? '' : 'commit'}"
   tabindex="0"
   on:click={mouseShowDetails}
