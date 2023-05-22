@@ -49,6 +49,10 @@
     }
     currentCommit.toggle(commit);
   }
+
+  function codify(s: string): string {
+    return s.replaceAll(/`([^`]+?)`/g, '<code>$1</code>');
+  }
 </script>
 
 <tr class="commit c-{commit.Color % NUM_COLORS}"
@@ -70,7 +74,7 @@
     {/if}
   </td>
   <td class="commit__td commit__td--tree"></td>
-  <td class="commit__td commit__td--subject">{commit.Subject}</td>
+  <td class="commit__td commit__td--subject">{@html codify(commit.Subject)}</td>
   {#if $settings.DisplayCommitSignatureInList}
     <td class="commit__td commit__td--gpg">
       {#if commit.Hash === UNCOMMITED_HASH}

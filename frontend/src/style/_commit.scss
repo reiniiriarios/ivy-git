@@ -33,6 +33,15 @@
       text-overflow: ellipsis;
     }
 
+    &--subject {
+      code {
+        font-size: 0.9rem;
+        padding: 0;
+        background: none;
+        color: var(--color-scale-l-1-100);
+      }
+    }
+
     &:not(:first-child) {
       .uncommitted & {
         color: var(--color-scale-a-3-100);
