@@ -50,7 +50,8 @@ func (a *App) loadConfig() {
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 	}
-	a.Settings = settings
+	// Call the save method to validate and correct outdated settings.
+	a.saveSettings(settings)
 
 	dp := filepath.Join(a.settingsLocationLocal(), "appdata.yaml")
 	app_data := a.initConfigFile(dp)
