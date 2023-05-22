@@ -51,14 +51,13 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 			continue
 		}
 
-		println(changes[i])
-		// Renames get three lines of data.
 		x := changes[i][0:1]
 		y := changes[i][1:2]
 		file := changes[i][3:]
 
 		old_file := ""
 		if x == "R" || y == "R" {
+			// Renames get two lines of data, the second line is the old filename.
 			old_file = changes[i+1]
 			i++
 		}

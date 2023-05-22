@@ -110,9 +110,7 @@ function createSignData() {
     subscribe,
     set,
     fetch: async (hash: string) => {
-      console.log('fetch', hash)
       GetCommitSignature(hash).then(result => {
-        console.log(result)
         parseResponse(result, () => set(result.Data), () => set({} as CommitSignature))
       }
       );

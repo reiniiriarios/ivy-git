@@ -40,7 +40,6 @@ function createMainInfo() {
     subscribe,
     fetch: async () => {
       NumMainBranchCommits().then(result => {
-        console.log(result)
         parseResponse(result, () => {
           set(result.Data);
         });
