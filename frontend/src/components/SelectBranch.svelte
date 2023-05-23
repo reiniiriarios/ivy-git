@@ -1,9 +1,32 @@
 <script lang="ts">
-  import { branches, currentBranch } from 'stores/branches';
+  import { CreateBranch } from 'wailsjs/go/main/App';
+
+  import { checkRef } from 'scripts/check-ref';
+  import { parseResponse } from 'scripts/parse-response';
+
+  import { branches, currentBranch, type Branch } from 'stores/branches';
+  import { commitData, commitSignData } from 'stores/commit-data';
+  import { messageDialog } from 'stores/message-dialog';
   import { branchSelect, repoSelect } from 'stores/ui';
 
   function newBranch() {
-    // ...
+    messageDialog.confirm({
+      heading: 'Create Branch',
+      message: `Create a branch?`,
+      blank: "Name of Branch",
+      validateBlank: checkRef,
+      confirm: 'Create',
+      callbackConfirm: () => {
+        CreateBranch(messageDialog.blankValue(), "", true).then(r => {
+          parseResponse(r, () => {
+            currentBranch.set({Name: messageDialog.blankValue()} as Branch);
+            branchSelect.set(false);
+            commitData.refresh();
+            commitSignData.refresh();
+          })
+        });
+      }
+    });
   }
 
   function switchBranch(b: string) {
