@@ -2,7 +2,7 @@
   import octicons from "@primer/octicons";
   import { parseResponse } from "scripts/parse-response";
   import { currentRemote, remoteData } from "stores/remotes";
-  import { onMount } from 'svelte';
+  import { branchSelect, repoSelect } from "stores/ui";
   import { FetchRemote, PullRemote, PushRemote } from "wailsjs/go/main/App";
 
   function pull(e: MouseEvent | KeyboardEvent, remote: string) {
@@ -54,7 +54,7 @@
 </script>
 
 <!-- todo: single sync action -->
-<div class="sidebar-remote-actions">
+<div class="sidebar-remote-actions" style:display={$repoSelect || $branchSelect ? 'none' : 'flex'}>
   <button class="btn" on:click={e => fetch(e, $currentRemote.Name)}>
     <span class="icon">{@html octicons['arrow-down-left'].toSVG({ "width": 14 })}</span>
     Fetch
