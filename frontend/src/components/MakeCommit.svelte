@@ -25,7 +25,7 @@
 
   function makeCommitKeypress(e: KeyboardEvent & { currentTarget: HTMLElement }) {
     let cmd = (isDarwin() && e.metaKey) || (!isDarwin() && e.ctrlKey);
-    if (cmd && e.key === '\n') {
+    if (cmd && (e.key === '\n' || e.key === 'Enter')) {
       make();
       e.currentTarget.blur();
     }

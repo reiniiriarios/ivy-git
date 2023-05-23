@@ -30,11 +30,11 @@
     if (e.currentTarget.dataset.uncommitted === 'true') {
       return;
     }
-    if (![' ', 'Enter', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'].includes(e.key)) {
+    if (![' ', '\n', 'Enter', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'].includes(e.key)) {
       return;
     }
     e.preventDefault();
-    if ([' ', 'Enter'].includes(e.key)) {
+    if ([' ', '\n', 'Enter'].includes(e.key)) {
       toggleCommitDetails(e.currentTarget);
     } else if ($currentCommit.Hash) {
       clearActive();

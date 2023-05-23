@@ -10,7 +10,7 @@
   }
 
   function toggleList(e?: MouseEvent | KeyboardEvent) {
-    if (e instanceof KeyboardEvent && ![' ', 'Enter'].includes(e.key)) {
+    if (e instanceof KeyboardEvent && ![' ', '\n', 'Enter'].includes(e.key)) {
       return;
     }
     repoSelect.set(!$repoSelect);
