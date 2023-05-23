@@ -55,13 +55,6 @@
     <ul class="changes__list changes__list--x">
       {#each $changes.x as change}
         <li class="change" class:active={$currentFile.File === change.File && $currentFile.Staged}>
-          <span class="change__stage change__stage--unstage"
-            aria-label="Unstage File"
-            data-file="{change.File}"
-            on:click={unstage}
-            on:keypress={unstage}>
-            {@html octicons['arrow-down'].toSVG({width: 16})}
-          </span>
           <div class="change__file"
             data-file="{change.File}"
             data-staged="true"
@@ -73,6 +66,13 @@
             </span>
             <span class="change__status change__status--{change.Flag}" aria-label="{change.Letter}"></span>
           </div>
+          <span class="change__stage change__stage--unstage"
+            aria-label="Unstage File"
+            data-file="{change.File}"
+            on:click={unstage}
+            on:keypress={unstage}>
+            {@html octicons['arrow-down'].toSVG({width: 16})}
+          </span>
         </li>
       {/each}
     </ul>
@@ -87,13 +87,6 @@
     <ul class="changes__list changes__list--y">
       {#each $changes.y as change}
         <li class="change" class:active={$currentFile.File === change.File && !$currentFile.Staged}>
-          <span class="change__stage"
-            aria-label="Stage File"
-            data-file="{change.File}"
-            on:click={stage}
-            on:keypress={stage}>
-            {@html octicons['arrow-up'].toSVG({width: 16})}
-          </span>
           <div class="change__file"
             data-file="{change.File}"
             data-staged="false"
@@ -105,6 +98,13 @@
             </div>
             <span class="change__status change__status--{change.Flag}" aria-label="{change.Letter}"></span>
           </div>
+          <span class="change__stage"
+            aria-label="Stage File"
+            data-file="{change.File}"
+            on:click={stage}
+            on:keypress={stage}>
+            {@html octicons['arrow-up'].toSVG({width: 16})}
+          </span>
         </li>
       {/each}
     </ul>
