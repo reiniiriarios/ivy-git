@@ -5,6 +5,7 @@
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
   import { type Commit } from 'stores/commit-data';
   import { currentCommit, commitDetails, commitDiffSummary, commitSignature } from 'stores/commit-details';
+  import { commitDetailsWindow } from 'stores/ui';
 
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
@@ -14,9 +15,11 @@
     commit = c;
     if (c?.Hash) {
       document.documentElement.style.setProperty('--commit-details-height', height);
+      commitDetailsWindow.set(true);
     }
     else {
       document.documentElement.style.setProperty('--commit-details-height', '0px');
+      commitDetailsWindow.set(false);
       resetDetailsSizing();
     }
   });
@@ -26,7 +29,7 @@
   }
 </script>
 
-<div class="commit-details" use:setDetailsResizable>
+<div class="commit-details" use:setDetailsResizable class:hidden={!$commitDetailsWindow}>
   {#if commit?.Hash}
     <div class="commit-details__left">
       <table>

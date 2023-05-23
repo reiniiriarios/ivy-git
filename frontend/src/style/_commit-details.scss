@@ -15,6 +15,11 @@
     pointer-events: none;
   }
 
+  // display: none breaks the resizer, so hide off screen
+  &.hidden {
+    top: 100px;
+  }
+
   &__left,
   &__right {
     overflow-y: auto;
