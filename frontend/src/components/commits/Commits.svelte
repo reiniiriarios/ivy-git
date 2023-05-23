@@ -2,8 +2,8 @@
   import { afterUpdate, beforeUpdate, onMount } from 'svelte';
   import { get } from 'svelte/store';
 
-  import CommitRow from 'components/CommitRow.svelte';
-  import CommitDetails from 'components/CommitDetails.svelte';
+  import CommitRow from 'components/commits/CommitRow.svelte';
+  import CommitDetails from 'components/commits/CommitDetails.svelte';
   import LoadMoreCommits from 'components/LoadMoreCommits.svelte';
 
   import { setCommitsContainer } from 'scripts/commit-details-resize';

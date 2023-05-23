@@ -1,7 +1,7 @@
 <script lang="ts">
   import Details from 'components/Details.svelte';
   import Diff from 'components/Diff.svelte';
-  import Commits from 'components/Commits.svelte';
+  import Commits from 'components/commits/Commits.svelte';
   import Settings from 'components/Settings.svelte';
   import { currentTab } from 'stores/ui';
   import octicons from '@primer/octicons';

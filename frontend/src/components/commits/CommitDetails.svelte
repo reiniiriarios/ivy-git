@@ -1,6 +1,6 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
-  import CommitDetailsFiles from 'components/CommitDetailsFiles.svelte';
+  import CommitDetailsFiles from 'components/commits/CommitDetailsFiles.svelte';
   import { resetDirs } from 'scripts/commit-details-collapse';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
   import { type Commit } from 'stores/commit-data';

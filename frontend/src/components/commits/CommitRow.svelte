@@ -1,7 +1,7 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
 
-  import CommitLabels from 'components/CommitLabels.svelte';
+  import CommitLabels from 'components/commits/CommitLabels.svelte';
 
   import { NUM_COLORS, UNCOMMITED_HASH } from 'scripts/graph';
 
