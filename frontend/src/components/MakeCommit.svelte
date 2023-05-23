@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { isDarwin } from "scripts/env";
   import { parseResponse } from "scripts/parse-response";
   import { currentBranch } from "stores/branches";
+  import { changes } from "stores/changes";
   import { repoSelect, branchSelect } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
 
@@ -22,7 +24,8 @@
   }
 
   function makeCommitKeypress(e: KeyboardEvent & { currentTarget: HTMLElement }) {
-    if ((e.metaKey || e.ctrlKey) && e.key === '\n') {
+    let cmd = (isDarwin() && e.metaKey) || (!isDarwin() && e.ctrlKey);
+    if (cmd && e.key === '\n') {
       make();
       e.currentTarget.blur();
     }
@@ -43,7 +46,7 @@
     </label>
   </div>
   <div class="make-commit__button">
-    <button class="btn" id="make-commit-button" disabled={!subject || running} on:click={make}>
+    <button class="btn" id="make-commit-button" disabled={!subject || running || (!$changes.x.length && !$changes.y.length)} on:click={make}>
       Commit to <strong>{$currentBranch.Name}</strong>
     </button>
   </div>

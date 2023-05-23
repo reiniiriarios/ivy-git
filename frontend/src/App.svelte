@@ -14,19 +14,19 @@
 
   import { currentRepo, repos } from "stores/repos";
 
-  import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
   import { ResizeWindow } from "wailsjs/go/main/App";
   import { enableWatcher } from "events/watcher";
   import { settings } from "stores/settings";
   import MakeCommit from "components/MakeCommit.svelte";
+  import { envInit, getPlatform } from "scripts/env";
 
   // Load initial ui state.
   function init() {
     currentRepo.refresh();
     repos.refresh();
     settings.refresh();
-    (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
-      switch (env.platform) {
+    envInit().then(() => {
+      switch (getPlatform()) {
         case "darwin":
           document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
           break;

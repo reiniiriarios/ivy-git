@@ -1,3 +1,5 @@
+import { isDarwin } from "scripts/env";
+
 export function keyboardNavListener() {
   window.addEventListener('keydown', (e: KeyboardEvent) => {
     if (!['input', 'select', 'textarea'].includes(document.activeElement?.tagName.toLowerCase())) {
@@ -31,7 +33,8 @@ export function keyboardNavListener() {
 export function addInputListener() {
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'A' || e.key === 'a')) {
+      let cmd = (isDarwin() && e.metaKey) || (!isDarwin() && e.ctrlKey);
+      if (cmd && (e.key === 'A' || e.key === 'a')) {
         e.target.select();
       }
     }
