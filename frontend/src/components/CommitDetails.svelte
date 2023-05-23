@@ -90,7 +90,6 @@
                 None
               {/if}
             {/if}
-            &nbsp;
           </td>
         </tr>
         <tr>
