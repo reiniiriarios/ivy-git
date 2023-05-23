@@ -281,3 +281,8 @@ func (a *App) MakeCommit(subject string, body string) DataResponse {
 	err := a.Git.MakeCommit(subject, body)
 	return dataResponse(err, true)
 }
+
+func (a *App) CheckoutCommit(hash string) DataResponse {
+	err := a.Git.CheckoutCommit(hash)
+	return dataResponse(err, true)
+}

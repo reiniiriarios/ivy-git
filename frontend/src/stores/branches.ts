@@ -6,7 +6,7 @@ import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentTab } from 'stores/ui';
 import { currentCommit } from 'stores/commit-details';
-import { remotes } from 'stores/remotes';
+import { remoteData } from 'stores/remotes';
 import { currentRepo } from 'stores/repos';
 
 import { parseResponse } from 'scripts/parse-response';
@@ -14,7 +14,7 @@ import { parseResponse } from 'scripts/parse-response';
 let cTab = '';
 currentTab.subscribe(t => cTab = t);
 
-interface Branch {
+export interface Branch {
   Name: string;
   Upstream: string;
 }
@@ -59,7 +59,7 @@ function createCurrentBranch() {
               commitSignData.refresh();
               currentCommit.unset();
             } else if (cTab === 'details') {
-              remotes.refresh();
+              remoteData.refresh();
             }
             changes.refresh();
             set(result.Data);
@@ -67,6 +67,9 @@ function createCurrentBranch() {
         });
       }
     },
+    clear: () => {
+      set({} as Branch);
+    }
   };
 }
 export const currentBranch = createCurrentBranch();

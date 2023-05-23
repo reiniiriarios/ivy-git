@@ -42,11 +42,11 @@
     return false;
   }
 
-  const validateRef = (e: InputEvent) => {
+  const validateRef = (e: InputEvent & { currentTarget: EventTarget & HTMLInputElement }) => {
     tagValid = checkRef(e.currentTarget.value);
   }
 
-  const validateBlank = (e: InputEvent) => {
+  const validateBlank = (e: InputEvent & { currentTarget: EventTarget & HTMLInputElement }) => {
     if ($messageDialog.validateBlank) {
       blankValid = !e.currentTarget.value ? true : $messageDialog.validateBlank(e.currentTarget.value);
     }

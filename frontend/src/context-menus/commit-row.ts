@@ -3,8 +3,9 @@ import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { CreateBranch, AddTag } from "wailsjs/go/main/App";
+import { CreateBranch, AddTag, CheckoutCommit } from "wailsjs/go/main/App";
 import { checkRef } from "scripts/check-ref";
+import { currentBranch } from "stores/branches";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -47,7 +48,15 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
     m = m.concat([
       {
         text: "Checkout Commit",
-        callback: () => alert("todo: checkout"),
+        callback: () => {
+          CheckoutCommit(e.dataset.hash).then(result => {
+            parseResponse(result, () => {
+              commitData.refresh();
+              commitSignData.refresh();
+              currentBranch.clear();
+            });
+          });
+        },
       },
       {
         text: "Cherry Pick Commit",
