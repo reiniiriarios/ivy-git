@@ -66,7 +66,6 @@
   data-head="{commit.Hash === $HEAD.Hash}"
   data-uncommitted="{commit.Hash === UNCOMMITED_HASH}"
   data-menu="{commit.Hash === UNCOMMITED_HASH ? '' : 'commit'}"
-  tabindex="0"
   on:click={mouseShowDetails}
   on:keydown={keyShowDetails}>
   <td class="commit__td commit__td--refs">
@@ -75,7 +74,9 @@
     {/if}
   </td>
   <td class="commit__td commit__td--tree"></td>
-  <td class="commit__td commit__td--subject">{@html codify(commit.Subject)}</td>
+  <!-- The following is interactive via the tr, which doesn't take a tabindex because it's set to display: contents. -->
+  <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+  <td class="commit__td commit__td--subject" tabindex="0">{@html codify(commit.Subject)}</td>
   {#if $settings.DisplayCommitSignatureInList}
     <td class="commit__td commit__td--gpg">
       {#if commit.Hash === UNCOMMITED_HASH}
