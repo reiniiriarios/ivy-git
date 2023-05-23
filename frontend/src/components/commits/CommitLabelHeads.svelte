@@ -12,7 +12,7 @@
     <div class="refs__label-name">HEAD</div>
     {#if heads?.length}
       {#each heads as h}
-        <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Remote}</div>
+        <div class="refs__leaf"><span>{h.AbbrName != "" ? h.AbbrName : h.Remote}</span></div>
       {/each}
     {/if}
   </div>
@@ -23,7 +23,7 @@
       data-remote="{h.Remote}"
       data-menu="remoteHead">
       <div class="refs__icon">@</div>
-      <div class="refs__leaf">{h.AbbrName != "" ? h.AbbrName : h.Name}</div>
+      <div class="refs__leaf"><span>{h.AbbrName != "" ? h.AbbrName : h.Name}</span></div>
     </div>
   {/each}
 {/if}
