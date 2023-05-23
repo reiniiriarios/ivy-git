@@ -29,7 +29,7 @@
           </span>
         {/if}
         {f.Name}
-        {#if !f.Binary}
+        {#if !f.Binary && f.Added || f.Deleted}
           <span class="diff">
             ({#if f.Status !== 'D'}<span class="added">+{f.Added}</span>{/if}{#if !['A','D'].includes(f.Status)}, {/if}{#if f.Status !== 'A'}<span class="deleted">-{f.Deleted}</span>{/if})
           </span>
