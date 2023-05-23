@@ -10,7 +10,7 @@ import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData, HEAD } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { checkRef } from "scripts/check-ref";
-import { currentBranch } from "stores/branches";
+import { currentBranch, type Branch } from "stores/branches";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -37,12 +37,13 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
               messageDialog.tickboxTicked('checkout')
             ).then(r => {
               parseResponse(r, () => {
+                currentBranch.set({Name: messageDialog.blankValue()} as Branch);
                 commitData.refresh();
                 commitSignData.refresh();
               })
             });
           }
-        })
+        });
       }
     },
     {
@@ -72,23 +73,34 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
       {
         text: "Checkout Commit",
         callback: () => {
-          CheckoutCommit(e.dataset.hash).then(result => {
+          let co = () => CheckoutCommit(e.dataset.hash).then(result => {
             parseResponse(result, () => {
               commitData.refresh();
               commitSignData.refresh();
               currentBranch.clear();
             });
           });
+          if (get(currentBranch).Name === 'HEAD') {
+            messageDialog.confirm({
+              heading: 'Checkout Commit',
+              message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a different commit could result in lost work. Continue?',
+              confirm: 'Checkout',
+              callbackConfirm: co,
+            });
+          }
+          else {
+            co();
+          }
         },
-      },
-      {
-        text: "Cherry Pick Commit",
-        callback: () => {},
       },
     ]);
   }
 
   m = m.concat([
+    {
+      text: "Cherry Pick Commit",
+      callback: () => {},
+    },
     {
       sep: true,
     },

@@ -28,7 +28,17 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     m.push({
       text: "Checkout Branch",
       callback: () => {
-        currentBranch.set(e.dataset.name);
+        if (get(currentBranch).Name === 'HEAD') {
+          messageDialog.confirm({
+            heading: 'Checkout Branch',
+            message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a branch could result in lost work. Continue?',
+            confirm: 'Checkout',
+            callbackConfirm: () => currentBranch.switch(e.dataset.name),
+          });
+        }
+        else {
+          currentBranch.switch(e.dataset.name);
+        }
       },
     });
   }
