@@ -17,6 +17,7 @@ type App struct {
 	CurrentHash          string
 	ShowRefAll           string
 	UncommittedDiff      string
+	UntrackedFiles       string
 	RemoteDiff           string
 	StagedDiff           string
 	WatcherSemiSemaphore uint64

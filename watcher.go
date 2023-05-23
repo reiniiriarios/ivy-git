@@ -15,6 +15,7 @@ type WatcherEvent struct {
 	CommitChange          bool
 	ShowRefChange         bool
 	UncommittedDiffChange bool
+	UntrackedFilesChange  bool
 	RemoteDiffChange      bool
 	StagedDiffChange      bool
 }
@@ -30,9 +31,11 @@ func (a *App) watcher() {
 
 	// Set initial data.
 	if a.isCurrentRepo() {
-		wg.Add(4)
+		wg.Add(6)
 		go a.updateLastCommit(nil, &wg)
+		go a.updateShowRefAll(nil, &wg)
 		go a.updateUncommittedDiff(nil, &wg)
+		go a.updateUntrackedFiles(nil, &wg)
 		go a.updateRemoteDiff(nil, &wg)
 		go a.updateStagedDiff(nil, &wg)
 		wg.Wait()
@@ -51,26 +54,29 @@ func (a *App) watcher() {
 		}
 
 		// Get new data
-		wg.Add(5)
+		wg.Add(6)
 		var lc_new bool
 		var sr_new bool
 		var ud_new bool
+		var uf_new bool
 		var rd_new bool
 		var sd_new bool
 		go a.updateLastCommit(&lc_new, &wg)
 		go a.updateShowRefAll(&sr_new, &wg)
 		go a.updateUncommittedDiff(&ud_new, &wg)
+		go a.updateUntrackedFiles(&uf_new, &wg)
 		go a.updateRemoteDiff(&rd_new, &wg)
 		go a.updateStagedDiff(&sd_new, &wg)
 		wg.Wait()
 
 		// If data changed, emit event.
-		if lc_new || sr_new || ud_new || rd_new || sd_new {
+		if lc_new || sr_new || ud_new || uf_new || rd_new || sd_new {
 			runtime.LogInfo(a.ctx, "Watcher updating")
 			runtime.EventsEmit(a.ctx, "watcher", WatcherEvent{
 				CommitChange:          lc_new,
 				ShowRefChange:         sr_new,
 				UncommittedDiffChange: ud_new,
+				UntrackedFilesChange:  uf_new,
 				RemoteDiffChange:      rd_new,
 				StagedDiffChange:      sd_new,
 			})
@@ -99,6 +105,12 @@ func (a *App) updateLastCommit(new *bool, wg *sync.WaitGroup) {
 func (a *App) updateShowRefAll(new *bool, wg *sync.WaitGroup) {
 	diff, err := a.Git.ShowRefAll()
 	a.updateWatcherDiff(new, wg, &a.ShowRefAll, diff, err)
+}
+
+// Update list of untracked files for watcher.
+func (a *App) updateUntrackedFiles(new *bool, wg *sync.WaitGroup) {
+	diff, err := a.Git.GetUntrackedFiles()
+	a.updateWatcherDiff(new, wg, &a.UntrackedFiles, diff, err)
 }
 
 // Update md5 of uncommitted diff for watcher.

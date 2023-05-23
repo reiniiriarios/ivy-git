@@ -7,6 +7,7 @@ interface WatcherEvent {
 	CommitChange: boolean;
 	ShowRefChange: boolean;
 	UncommittedDiffChange: boolean;
+  UntrackedFilesChange: boolean;
 	RemoteDiffChange: boolean;
 	StagedDiffChange: boolean;
 }
@@ -14,9 +15,11 @@ interface WatcherEvent {
 export function enableWatcher() {
   EventsOn('watcher', (e: WatcherEvent) => {
     console.log('Watcher updating...');
-    branches.refresh();
     changes.refresh();
-    commitData.refresh();
-    commitSignData.refresh();
+    if (e.CommitChange || e.ShowRefChange || e.UncommittedDiffChange || e.RemoteDiffChange) {
+      branches.refresh();
+      commitData.refresh();
+      commitSignData.refresh();
+    }
   });
 }

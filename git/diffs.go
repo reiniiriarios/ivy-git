@@ -2,6 +2,15 @@ package git
 
 import "errors"
 
+// Get a simple list of untracked files, no other data.
+func (g *Git) GetUntrackedFiles() (string, error) {
+	l, err := g.RunCwd("ls-files", "--others", "--exclude-standard")
+	if err != nil {
+		return "", err
+	}
+	return l, nil
+}
+
 func (g *Git) GetUncommittedDiff() (string, error) {
 	diff, err := g.RunCwd("--no-pager", "diff", "HEAD^")
 	if err != nil {
