@@ -51,6 +51,7 @@
   }
 
   function codify(s: string): string {
+    s = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     return s.replaceAll(/`([^`]+?)`/g, '<code>$1</code>');
   }
 </script>
