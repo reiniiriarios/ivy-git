@@ -145,6 +145,7 @@ func (g *Graph) buildPaths() {
 			g.Limbs[i].Lines[n].Committed = n >= int(g.Limbs[i].UncommitedPoints)
 		}
 	}
+	//...
 
 	g.Width = g.getWidth()
 	g.Height = g.getHeight()
@@ -391,7 +392,7 @@ func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b int64) {
 func (b *Limb) addLine(l Line, vertex_committed bool) {
 	b.Lines = append(b.Lines, l)
 	if vertex_committed {
-		if l.P2.X == 0 && l.P2.X < b.UncommitedPoints && l.P2.Y != NULL_VERTEX {
+		if l.P2.X == 0 && l.P2.Y < int64(b.UncommitedPoints) && l.P2.Y != NULL_VERTEX {
 			b.UncommitedPoints = uint16(l.P2.Y)
 		}
 	} else {
