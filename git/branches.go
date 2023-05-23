@@ -43,11 +43,11 @@ func (g *Git) NameOfMainBranch() string {
 // Get current branch for currently selected repo.
 func (g *Git) GetCurrentBranch() (string, error) {
 	branch, err := g.RunCwd("rev-parse", "--abbrev-ref", "HEAD")
-	branch = strings.ReplaceAll(strings.ReplaceAll(branch, "\r", ""), "\n", "")
 	if err != nil {
 		println(err.Error())
 		return "", err
 	}
+	branch = strings.ReplaceAll(strings.ReplaceAll(branch, "\r", ""), "\n", "")
 
 	return branch, nil
 }
@@ -56,7 +56,7 @@ func (g *Git) GetCurrentBranch() (string, error) {
 func (g *Git) GetBranches() ([]Branch, error) {
 	branch_list := []Branch{}
 
-	branches, err := g.RunCwd("branch", "--list", "--format", "%(refname:short)"+GIT_LOG_SEP+"%(upstream:short)")
+	branches, err := g.RunCwd("for-each-ref", "--format", "%(refname:short)"+GIT_LOG_SEP+"%(upstream:short)", "refs/heads/**")
 	if err != nil {
 		println(err.Error())
 		return branch_list, err
@@ -81,7 +81,7 @@ func (g *Git) GetBranchUpstream(branch string) (string, error) {
 		return "", errors.New("no branch name specified")
 	}
 
-	b, err := g.RunCwd("branch", "--format", "%(upstream:short)", "--list", branch)
+	b, err := g.RunCwd("for-each-ref", "--format", "%(upstream:short)", branch)
 	if err != nil {
 		println(err.Error())
 		return "", err
