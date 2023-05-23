@@ -6,7 +6,7 @@ import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
 import { currentCommit } from 'stores/commit-details';
 import { branches, currentBranch } from 'stores/branches';
-import { remotes } from 'stores/remotes';
+import { remoteData } from 'stores/remotes';
 import { currentTab, repoSelect } from 'stores/ui';
 
 import { parseResponse } from 'scripts/parse-response';
@@ -93,7 +93,7 @@ function createCurrentRepo() {
             commitSignData.refresh();
             currentCommit.unset();
           } else if (cTab === 'details') {
-            remotes.refresh();
+            remoteData.refresh();
           }
           branches.refresh();
           currentBranch.refresh();
@@ -114,7 +114,7 @@ function createCurrentRepo() {
             commitSignData.refresh();
             currentCommit.unset();
           } else if (cTab === 'details') {
-            remotes.refresh();
+            remoteData.refresh();
           }
           branches.refresh();
           currentBranch.refresh();
