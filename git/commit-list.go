@@ -263,7 +263,7 @@ func (g *Git) GetCommitsAndGraph(limit uint64, offset uint64) (Ref, []Commit, Gr
 		if graph.Vertices[graph.CommitLookup[commits[i].Hash]].BranchId != -1 {
 			bid := graph.Vertices[graph.CommitLookup[commits[i].Hash]].BranchId
 			if bid != -1 {
-				commits[i].Color = graph.Branches[bid].Color
+				commits[i].Color = graph.Limbs[bid].Color
 			}
 		}
 		commits[i].X = graph.Vertices[graph.CommitLookup[commits[i].Hash]].X

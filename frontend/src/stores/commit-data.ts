@@ -70,7 +70,7 @@ export interface Vertex {
   Stash: boolean;
 }
 
-export interface Branch {
+export interface Limb {
   Id: number;
   Color: number;
   Lines: Line[];
@@ -80,7 +80,7 @@ export interface Branch {
 
 export interface Graph {
   Vertices: Vertex[];
-  Branches: Branch[];
+  Limbs: Limb[];
   Width: number;
   Height: number;
   Continues: boolean;

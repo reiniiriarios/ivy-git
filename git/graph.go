@@ -22,10 +22,35 @@ type Connection struct {
 	BranchId int64
 }
 
+type Vertex struct {
+	Id          int64
+	Children    []int64
+	Parents     []int64
+	NextParent  int
+	BranchId    int64
+	X           uint16
+	XNext       uint16
+	Connections map[uint16]Connection
+	Committed   bool
+	Stash       bool
+}
+
+// Limbs loosely follow the context of git branches,
+// but vary, particularly when one branch follows directly
+// from the tip of another. A limb is, essentially,
+// a collection of lines between vertexes that are the
+// same color.
+type Limb struct {
+	Id               int64
+	Color            uint16
+	Lines            []Line
+	UncommitedPoints uint16
+}
+
 type Graph struct {
 	Vertices     []Vertex
 	CommitLookup map[string]int64
-	Branches     []GraphBranch
+	Limbs        []Limb
 	Width        uint16
 	Height       uint16
 	Continues    bool
@@ -115,9 +140,9 @@ func (g *Graph) buildPaths() {
 	// Determine committed status of each line.
 	// Lines between a committed point and an uncommitted point may split in the
 	// middle if limb breaks off to another branch.
-	for i := 0; i < len(g.Branches); i++ {
-		for n := 0; n < len(g.Branches[i].Lines); n++ {
-			g.Branches[i].Lines[n].Committed = n >= int(g.Branches[i].UncommitedPoints)
+	for i := 0; i < len(g.Limbs); i++ {
+		for n := 0; n < len(g.Limbs[i].Lines); n++ {
+			g.Limbs[i].Lines[n].Committed = n >= int(g.Limbs[i].UncommitedPoints)
 		}
 	}
 
@@ -128,11 +153,11 @@ func (g *Graph) buildPaths() {
 // Build a path for the graph (that isn't a merge commit).
 func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	// Create new branch.
-	b := GraphBranch{
+	b := Limb{
 		Color: color,
 	}
-	b.Id = int64(len(g.Branches))
-	g.Branches = append(g.Branches, b)
+	b.Id = int64(len(g.Limbs))
+	g.Limbs = append(g.Limbs, b)
 
 	// Current vertex and current parent.
 	v1 := &g.Vertices[v.Id]
@@ -170,7 +195,7 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 		}
 
 		// Add the line, mark the point unavail, move to next point.
-		g.Branches[b.Id].addLine(Line{
+		g.Limbs[b.Id].addLine(Line{
 			P1:              p1,
 			P2:              p2,
 			LockedDirection: p1.X < p2.X,
@@ -211,7 +236,7 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 						Y: -1,
 					}
 
-					g.Branches[b.Id].addLine(Line{
+					g.Limbs[b.Id].addLine(Line{
 						P1:              p2,
 						P2:              null_point,
 						LockedDirection: false,
@@ -227,14 +252,14 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 		}
 	}
 
-	if i == len(g.Vertices) && len(g.Branches[b.Id].Lines) > 0 {
-		p1 := g.Branches[b.Id].Lines[len(g.Branches[b.Id].Lines)-1].P2
+	if i == len(g.Vertices) && len(g.Limbs[b.Id].Lines) > 0 {
+		p1 := g.Limbs[b.Id].Lines[len(g.Limbs[b.Id].Lines)-1].P2
 		null_point := Point{
 			X: p1.X,
 			Y: -1,
 		}
 
-		g.Branches[b.Id].addLine(Line{
+		g.Limbs[b.Id].addLine(Line{
 			P1:              p1,
 			P2:              null_point,
 			LockedDirection: false,
@@ -290,7 +315,7 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 			dir = p1.X < p2.X
 		}
 
-		g.Branches[p.BranchId].addLine(Line{
+		g.Limbs[p.BranchId].addLine(Line{
 			P1:              p1,
 			P2:              p2,
 			LockedDirection: dir,
@@ -324,19 +349,6 @@ func (g *Graph) getWidth() uint16 {
 // Get the height of the graph in commits.
 func (g *Graph) getHeight() uint16 {
 	return uint16(len(g.Vertices))
-}
-
-type Vertex struct {
-	Id          int64
-	Children    []int64
-	Parents     []int64
-	NextParent  int
-	BranchId    int64
-	X           uint16
-	XNext       uint16
-	Connections map[uint16]Connection
-	Committed   bool
-	Stash       bool
 }
 
 func (v *Vertex) hasNextParent() bool {
@@ -375,15 +387,8 @@ func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b int64) {
 	}
 }
 
-type GraphBranch struct {
-	Id               int64
-	Color            uint16
-	Lines            []Line
-	UncommitedPoints uint16
-}
-
 // Add line to branch.
-func (b *GraphBranch) addLine(l Line, vertex_committed bool) {
+func (b *Limb) addLine(l Line, vertex_committed bool) {
 	b.Lines = append(b.Lines, l)
 	if vertex_committed {
 		if l.P2.X == 0 && l.P2.X < b.UncommitedPoints && l.P2.Y != NULL_VERTEX {

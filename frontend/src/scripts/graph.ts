@@ -1,6 +1,5 @@
 import { vertexOut, vertexOver } from 'scripts/vertex';
-import { type Graph, type Branch, type Vertex, tree } from 'stores/commit-data';
-import { get } from 'svelte/store';
+import { type Graph, type Limb, type Vertex, tree } from 'stores/commit-data';
 
 // Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";
@@ -43,13 +42,13 @@ export function drawGraph(g: Graph): SVGSVGElement {
   let svg = document.createElementNS(SVG_NAMESPACE, "svg");
   let grp = document.createElementNS(SVG_NAMESPACE, "g");
 
-  g.Branches?.forEach((b) => {
+  g.Limbs?.forEach((b) => {
     drawBranch(grp, b);
   });
 
   g.Vertices?.forEach((v) => {
     if (v.BranchId != -1) {
-      drawVertex(grp, v, g.Branches[v.BranchId]);
+      drawVertex(grp, v, g.Limbs[v.BranchId]);
     }
   });
 
@@ -61,7 +60,7 @@ export function drawGraph(g: Graph): SVGSVGElement {
   return svg;
 }
 
-function drawBranch(g: SVGGElement, b: Branch) {
+function drawBranch(g: SVGGElement, b: Limb) {
   if (!b.Lines || !b.Lines.length) return;
 
   let color = (b.Color % NUM_COLORS).toString();
@@ -133,7 +132,7 @@ function drawBranchPath(g: SVGGElement, path: string, color: string) {
   g.appendChild(l);
 }
 
-function drawVertex(g: SVGGElement, v: Vertex, b: Branch) {
+function drawVertex(g: SVGGElement, v: Vertex, b: Limb) {
   let color = v.Committed ? (b.Color % NUM_COLORS).toString() : "u";
 
   let cx = scaleX(v.X).toString();
