@@ -9,7 +9,7 @@
   import ContextMenu from "components/ContextMenu.svelte";
   import GetStarted from "components/GetStarted.svelte";
 
-  import { tabUpDown, addInputListener } from "scripts/keyboard-navigation";
+  import { addInputListener, keyboardNavListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";
 
   import { currentRepo, repos } from "stores/repos";
@@ -40,10 +40,8 @@
     init();
   });
 
-  window.addEventListener('keydown', tabUpDown);
-
   window.addEventListener('resize', ResizeWindow);
-
+  keyboardNavListener();
   addLinkListener();
   addInputListener();
 
