@@ -1,9 +1,14 @@
-import type { Menu, MenuItem } from "context-menus/_all";
-import { parseResponse } from "scripts/parse-response";
-import { commitData, commitSignData } from "stores/commit-data";
-import { messageDialog } from "stores/message-dialog";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { CreateBranch, AddTag, CheckoutCommit } from "wailsjs/go/main/App";
+import { CreateBranch, AddTag, CheckoutCommit, RevertCommit, HardReset } from "wailsjs/go/main/App";
+
+import { get } from 'svelte/store';
+
+import type { Menu, MenuItem } from "context-menus/_all";
+
+import { parseResponse } from "scripts/parse-response";
+
+import { commitData, commitSignData, HEAD } from "stores/commit-data";
+import { messageDialog } from "stores/message-dialog";
 import { checkRef } from "scripts/check-ref";
 import { currentBranch } from "stores/branches";
 
@@ -15,6 +20,7 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
       text: "Create Branch",
       callback: () => {
         messageDialog.confirm({
+          heading: 'Create Branch',
           message: `Create a branch at commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
           blank: "Name of Branch",
           validateBlank: checkRef,
@@ -40,6 +46,23 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
       }
     },
     {
+      text: "Add Tag",
+      callback: () => {
+        messageDialog.addTag({
+          message: `Add tag to commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
+          callbackConfirm: () => {
+            let data = messageDialog.addTagData();
+            AddTag(e.dataset.hash, data.name, data.type === 'annotated', data.message, data.push).then(r => {
+              parseResponse(r, () => {
+                commitData.refresh();
+                commitSignData.refresh();
+              });
+            });
+          },
+        });
+      },
+    },
+    {
       sep: true,
     }
   ]);
@@ -60,33 +83,59 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
       },
       {
         text: "Cherry Pick Commit",
-        callback: () => alert("todo: cherry pick"),
+        callback: () => {},
       },
     ]);
   }
 
   m = m.concat([
     {
-      text: "Revert Commit",
-      callback: () => alert("todo: revert"),
+      sep: true,
     },
     {
-      text: "Add Tag",
+      text: "Revert Commit",
       callback: () => {
-        messageDialog.addTag({
-          message: `Add tag to commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
+        messageDialog.confirm({
+          heading: 'Revert Commit',
+          message: `Are you sure you want to revert <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
+          confirm: 'Revert',
           callbackConfirm: () => {
-            let data = messageDialog.addTagData();
-            AddTag(e.dataset.hash, data.name, data.type === 'annotated', data.message, data.push).then(r => {
-              parseResponse(r, () => {
+            RevertCommit(e.dataset.hash).then(result => {
+              parseResponse(result, () => {
                 commitData.refresh();
                 commitSignData.refresh();
+                currentBranch.clear();
               });
             });
           },
         });
       },
-    },
+    }
+  ]);
+
+  if (e.dataset.hash !== get(HEAD).Hash) {
+    m.push({
+      text: 'Hard Reset to This Commit',
+      callback: () => {
+        messageDialog.confirm({
+          heading: 'Hard Reset',
+          message: `Are you sure you want to hard reset to <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
+          confirm: 'Hard Reset',
+          callbackConfirm: () => {
+            HardReset(e.dataset.hash).then(result => {
+              parseResponse(result, () => {
+                commitData.refresh();
+                commitSignData.refresh();
+                currentBranch.clear();
+              });
+            });
+          },
+        });
+      },
+    });
+  }
+
+  m = m.concat([
     {
       sep: true,
     },

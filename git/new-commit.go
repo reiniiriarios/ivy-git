@@ -24,3 +24,11 @@ func (g *Git) MakeCommit(subject string, body string) error {
 
 	return err
 }
+
+func (g *Git) RevertCommit(hash string) error {
+	if hash == "" {
+		return errors.New("no commit hash specified")
+	}
+	_, err := g.RunCwd("revert", hash)
+	return err
+}

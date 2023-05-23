@@ -286,3 +286,13 @@ func (a *App) CheckoutCommit(hash string) DataResponse {
 	err := a.Git.CheckoutCommit(hash)
 	return dataResponse(err, true)
 }
+
+func (a *App) HardReset(hash string) DataResponse {
+	err := a.Git.HardReset(hash)
+	return dataResponse(err, true)
+}
+
+func (a *App) RevertCommit(hash string) DataResponse {
+	err := a.Git.RevertCommit(hash)
+	return dataResponse(err, true)
+}
