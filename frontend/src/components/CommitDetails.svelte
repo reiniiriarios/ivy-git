@@ -20,6 +20,10 @@
       resetDetailsSizing();
     }
   });
+
+  function codify(s: string): string {
+    return s.replaceAll(/`([^`]+?)`/g, '<code>$1</code>');
+  }
 </script>
 
 <div class="commit-details" use:setDetailsResizable>
@@ -89,7 +93,7 @@
         <tr>
           <th>Message</th>
           <td class="message">
-            <div class="message__subject">{commit.Subject}</div>
+            <div class="message__subject">{@html codify(commit.Subject)}</div>
             <div class="message__body">{@html $commitDetails?.BodyHtml}</div>
           </td>
         </tr>
