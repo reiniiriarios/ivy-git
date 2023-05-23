@@ -32,7 +32,11 @@
   }
 </script>
 
-<div class="make-commit" style:display={$repoSelect || $branchSelect ? 'none' : 'block'}>
+<div
+  class="make-commit"
+  class:detached={$currentBranch.Name === 'HEAD'}
+  style:display={$repoSelect || $branchSelect ? 'none' : 'block'}
+>
   <div class="make-commit__subject">
     <label class="make-commit__label">
       <span class="make-commit__label-desc">Summary</span>

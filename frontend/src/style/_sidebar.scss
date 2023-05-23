@@ -17,9 +17,21 @@
   padding-left: 1.5rem;
   border-bottom: 1px solid var(--color-btn-border);
 
+  &.detached {
+    background-color: var(--color-scale-r-8-75);
+  
+    &:hover {
+      background-color: var(--color-scale-r-7-75) !important;
+    }
+  }
+
   &__label {
     color: var(--color-text-label);
     font-size: 0.9rem;
+
+    .detached & {
+      color: var(--color-scale-r-1-100);
+    }
   }
 }
 

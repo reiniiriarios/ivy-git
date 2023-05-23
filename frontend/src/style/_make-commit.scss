@@ -47,6 +47,18 @@
       &:disabled {
         background-color: var(--color-scale-g-8-100);
       }
+
+      .detached & {
+        background-color: var(--color-scale-r-8-100);
+      
+        &:hover {
+          background-color: var(--color-scale-r-7-100);
+        }
+
+        &:disabled {
+          background-color: var(--color-scale-r-8-75);
+        }
+      }
     }
   }
 }

@@ -26,9 +26,22 @@
   });
 </script>
 
-<button class="btn btn-drop sidebar-big-button" id="current-branch" on:click={toggleList} class:active={$branchSelect} style:display={$repoSelect ? 'none' : 'flex'}>
+<button
+  id="current-branch"
+  class="btn btn-drop sidebar-big-button"
+  class:active={$branchSelect}
+  class:detached={$currentBranch.Name === 'HEAD'}
+  style:display={$repoSelect ? 'none' : 'flex'}
+  on:click={toggleList}
+>
   <div class="sidebar-big-button__label">Current Branch:</div>
-  <div class="sidebar-big-button__value">{$currentBranch?.Name ?? "none selected"}</div>
+  <div class="sidebar-big-button__value">{
+    $currentBranch?.Name
+      ? $currentBranch.Name === 'HEAD'
+        ? 'DETACHED HEAD'
+        : $currentBranch.Name
+      : "none selected"
+  }</div>
 </button>
 
 <div id="all-branches" class="sidebar-dropdown" style:display={$branchSelect ? 'block' : 'none'}>
