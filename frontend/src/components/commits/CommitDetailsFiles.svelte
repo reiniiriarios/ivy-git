@@ -23,7 +23,7 @@
             {#if f.Dir === f.OldDir}
               {f.OldName}
             {:else}
-              {f.OldFile}
+              {#if f.OldRel}{f.OldRel}/{/if}{f.OldName}
             {/if}
             →
           </span>

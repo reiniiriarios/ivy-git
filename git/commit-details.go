@@ -2,6 +2,7 @@ package git
 
 import (
 	"errors"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -80,6 +81,7 @@ type FileStat struct {
 	OldFile string
 	OldName string
 	OldDir  string
+	OldRel  string
 	Added   uint32
 	Deleted uint32
 	Binary  bool
@@ -164,6 +166,11 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 			path := strings.Split(strings.ReplaceAll(dir, "\\", "/"), "/")
 			oldname := filepath.Base(oldfile)
 			olddir := filepath.Dir(oldfile)
+			oldrel, _ := filepath.Rel(dir, olddir)
+			if strings.HasSuffix(oldrel, string(os.PathSeparator)+".") {
+				oldrel = oldrel[:len(oldrel)-2]
+			}
+
 			filestats = append(filestats, FileStat{
 				File:    file,
 				Name:    name,
@@ -172,6 +179,7 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 				OldFile: oldfile,
 				OldName: oldname,
 				OldDir:  olddir,
+				OldRel:  oldrel,
 				Added:   uint32(a),
 				Deleted: uint32(d),
 				Binary:  binary,

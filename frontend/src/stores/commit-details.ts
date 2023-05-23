@@ -21,6 +21,7 @@ interface FileStat {
   OldFile: string;
   OldName: string;
   OldDir: string;
+  OldRel: string;
   Added: number;
   Deleted: number;
   Binary: boolean;
