@@ -83,7 +83,17 @@ func (a *App) GitListChanges() DataResponse {
 
 func (a *App) GetRemotes() DataResponse {
 	remotes, err := a.Git.GetRemotes()
-	return dataResponse(err, remotes)
+	if err != nil {
+		return dataResponse(err, false)
+	}
+	current_remote, err := a.Git.GetRemoteForCurrentBranch()
+	return dataResponse(err, struct {
+		Remotes       []git.Remote
+		CurrentRemote string
+	}{
+		Remotes:       remotes,
+		CurrentRemote: current_remote,
+	})
 }
 
 func (a *App) FetchRemote(remote string) DataResponse {

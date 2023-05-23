@@ -4,6 +4,7 @@
   text-align: left;
   background-color: var(--color-changes-bg);
   flex: 2;
+  overflow-y: auto;
   @include no-select;
 
   &__header {

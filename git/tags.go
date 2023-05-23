@@ -20,7 +20,7 @@ func (g *Git) PushTag(name string) error {
 		return errors.New("no tag name specified")
 	}
 
-	remote, err := g.getRemoteForCurrentBranch()
+	remote, err := g.GetRemoteForCurrentBranch()
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,7 @@ func (g *Git) DeleteTag(name string) error {
 		return errors.New("no tag name specified")
 	}
 
-	remote, err := g.getRemoteForCurrentBranch()
+	remote, err := g.GetRemoteForCurrentBranch()
 	if err != nil {
 		return err
 	}

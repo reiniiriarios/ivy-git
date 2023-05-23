@@ -8,23 +8,26 @@
   import TitleBar from "components/TitleBar.svelte";
   import ContextMenu from "components/ContextMenu.svelte";
   import GetStarted from "components/GetStarted.svelte";
+  import MakeCommit from "components/MakeCommit.svelte";
+  import RemoteActions from "components/RemoteActions.svelte";
 
   import { addInputListener, keyboardNavListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";
+  import { envInit, getPlatform } from "scripts/env";
 
   import { currentRepo, repos } from "stores/repos";
+  import { currentRemote, remoteData } from "stores/remotes";
+  import { settings } from "stores/settings";
 
   import { ResizeWindow } from "wailsjs/go/main/App";
   import { enableWatcher } from "events/watcher";
-  import { settings } from "stores/settings";
-  import MakeCommit from "components/MakeCommit.svelte";
-  import { envInit, getPlatform } from "scripts/env";
 
   // Load initial ui state.
   function init() {
     currentRepo.refresh();
     repos.refresh();
     settings.refresh();
+    remoteData.refresh();
     envInit().then(() => {
       switch (getPlatform()) {
         case "darwin":
@@ -73,6 +76,9 @@
     {/if}
     <Changes />
     {#if $currentRepo}
+      {#if $currentRemote}
+        <RemoteActions />
+      {/if}
       <MakeCommit />
     {/if}
   </div>

@@ -36,7 +36,7 @@ func (g *Git) getRemoteNames() ([]string, error) {
 	return remotes, nil
 }
 
-func (g *Git) getRemoteForCurrentBranch() (string, error) {
+func (g *Git) GetRemoteForCurrentBranch() (string, error) {
 	b, err := g.GetCurrentBranch()
 	if err != nil {
 		return "", err

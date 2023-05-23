@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import { GetRemotes } from 'wailsjs/go/main/App';
 
 export interface Remote {
@@ -16,16 +16,21 @@ export interface Remote {
 }
 
 function createRemotes() {
-  const { subscribe, set } = writable([] as Remote[]);
+  const { subscribe, set } = writable({
+    Remotes: [] as Remote[],
+    CurrentRemote: "",
+  });
   
   return {
     subscribe,
     refresh: async () => {
       GetRemotes().then(result => {
         console.log(result);
-        set(result.Data as Remote[]);
+        set(result.Data);
       });
     },
   };
 }
-export const remotes = createRemotes();
+export const remoteData = createRemotes();
+export const remotes = derived(remoteData, $remoteData => $remoteData.Remotes);
+export const currentRemote = derived(remoteData, $remoteData => $remoteData.Remotes.find(r => r.Name === $remoteData.CurrentRemote));

@@ -1,7 +1,7 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
   import { parseResponse } from "scripts/parse-response";
-  import { remotes } from "stores/remotes";
+  import { remoteData, remotes } from "stores/remotes";
   import { onMount } from 'svelte';
   import { FetchRemote, PullRemote, PushRemote } from "wailsjs/go/main/App";
 
@@ -11,7 +11,7 @@
     PullRemote(remote).then((r) => {
       parseResponse(r, () => {
         checkIcon(el);
-        remotes.refresh();
+        remoteData.refresh();
       }, () => el.removeAttribute('disabled'));
     });
   }
@@ -22,7 +22,7 @@
     PushRemote(remote).then((r) => {
       parseResponse(r, () => {
         checkIcon(el);
-        remotes.refresh();
+        remoteData.refresh();
       }, () => el.removeAttribute('disabled'));
     });
   }
@@ -33,7 +33,7 @@
     FetchRemote(remote).then((r) => {
       parseResponse(r, () => {
         checkIcon(el, true);
-        remotes.refresh();
+        remoteData.refresh();
       }, () => el.removeAttribute('disabled'));
     });
   }
@@ -51,10 +51,6 @@
       }
     }, 1000);
   }
-
-  onMount(() => {
-    remotes.refresh();
-  })
 </script>
 
 <div class="remotes">
