@@ -266,3 +266,8 @@ func (a *App) NumMainBranchCommits() DataResponse {
 		Name:  main,
 	})
 }
+
+func (a *App) MakeCommit(subject string, body string) DataResponse {
+	err := a.Git.MakeCommit(subject, body)
+	return dataResponse(err, true)
+}

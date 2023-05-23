@@ -4,6 +4,16 @@ import (
 	"errors"
 )
 
+func (g *Git) isStagedEmpty() bool {
+	d, err := g.RunCwd("diff", "--name-only", "--cached")
+	if err != nil {
+		println(err.Error())
+		return true
+	}
+	d = parseOneLine(d)
+	return d == ""
+}
+
 func (g *Git) StageFiles(file ...string) error {
 	cmd := append([]string{"add"}, file...)
 	_, err := g.RunCwd(cmd...)
