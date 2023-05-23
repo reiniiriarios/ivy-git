@@ -1,12 +1,11 @@
 import type { EnvironmentInfo } from "wailsjs/runtime/runtime";
 
+let environment: EnvironmentInfo;
 let platform: string;
 
-export const envInit = async () => {
-  (window as any).runtime.Environment().then((env: EnvironmentInfo) => {
-    platform = env.platform;
-    //...
-  });
+export const envInit = async (): Promise<EnvironmentInfo> => {
+  await (window as any).runtime.Environment().then((env: EnvironmentInfo) => environment = env);
+  return environment;
 }
 
 export function isDarwin(): boolean {

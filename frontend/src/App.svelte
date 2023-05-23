@@ -28,8 +28,8 @@
     repos.refresh();
     settings.refresh();
     remoteData.refresh();
-    envInit().then(() => {
-      switch (getPlatform()) {
+    envInit().then(env => {
+      switch (env.platform) {
         case "darwin":
           document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
           break;
