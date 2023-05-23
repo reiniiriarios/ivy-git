@@ -68,6 +68,9 @@ function createCurrentBranch() {
         });
       }
     },
+    detach: () => {
+      set({Name: 'HEAD'} as Branch);
+    },
     clear: () => {
       set({} as Branch);
     }
