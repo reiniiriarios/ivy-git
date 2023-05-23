@@ -41,8 +41,8 @@ func (a *App) GetBranches() DataResponse {
 }
 
 // Switch branch on currently selected repo.
-func (a *App) SwitchBranch(branch string) DataResponse {
-	err := a.Git.SwitchBranch(branch)
+func (a *App) SwitchBranch(branch string, remote string) DataResponse {
+	err := a.Git.SwitchBranch(branch, remote)
 	if err != nil {
 		return dataResponse(err, false)
 	}
@@ -106,7 +106,7 @@ func (a *App) PushRemote(remote string) DataResponse {
 	if err != nil {
 		return dataResponse(err, true)
 	}
-	err = a.Git.PushRemoteBranch(remote, branch)
+	err = a.Git.PushRemoteBranch(remote, branch, false)
 	return dataResponse(err, true)
 }
 

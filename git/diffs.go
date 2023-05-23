@@ -24,7 +24,7 @@ func (g *Git) GetDiffRemoteCurrent() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	remote, err := g.getBranchRemote(branch)
+	remote, err := g.getBranchRemote(branch, true)
 	if err != nil {
 		return "", err
 	}

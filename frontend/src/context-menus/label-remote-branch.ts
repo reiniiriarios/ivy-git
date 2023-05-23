@@ -1,13 +1,40 @@
+import { ClipboardSetText } from "wailsjs/runtime/runtime";
+import { PullRemoteBranch, DeleteRemoteBranch } from "wailsjs/go/main/App";
+
+import { get } from "svelte/store";
+
 import type { Menu, MenuItem } from "context-menus/_all";
+
 import { parseResponse } from "scripts/parse-response";
+
+import { currentBranch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { PullRemoteBranch, DeleteRemoteBranch } from "wailsjs/go/main/App";
-import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 
 export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
-  let m: MenuItem[] = [
+  let m: MenuItem[] = [];
+
+  if (e.dataset.current !== "true") {
+    m.push({
+      text: "Checkout Branch",
+      callback: () => {
+        if (get(currentBranch).Name === 'HEAD') {
+          messageDialog.confirm({
+            heading: 'Checkout Branch',
+            message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a branch could result in lost work. Continue?',
+            confirm: 'Checkout',
+            callbackConfirm: () => currentBranch.switch(e.dataset.branch, e.dataset.remote),
+          });
+        }
+        else {
+          currentBranch.switch(e.dataset.branch, e.dataset.remote);
+        }
+      },
+    });
+  }
+
+  m = m.concat([
     {
       text: "Pull Branch",
       callback: () => {
@@ -59,7 +86,7 @@ export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
         ClipboardSetText(e.dataset.remote);
       },
     },
-  ];
+  ]);
 
   return m;
 }

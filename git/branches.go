@@ -91,12 +91,16 @@ func (g *Git) GetBranchUpstream(branch string) (string, error) {
 }
 
 // Switch branch on currently selected repo.
-func (g *Git) SwitchBranch(branch string) error {
+func (g *Git) SwitchBranch(branch string, remote string) error {
 	if branch == "" {
 		return errors.New("no branch name specified")
 	}
-
-	_, err := g.RunCwd("checkout", branch)
+	var err error
+	if remote == "" {
+		_, err = g.RunCwd("checkout", branch)
+	} else {
+		_, err = g.RunCwd("checkout", "-b", branch, remote+"/"+branch)
+	}
 	return err
 }
 
@@ -136,15 +140,17 @@ func (g *Git) PushBranch(branch string) error {
 		return errors.New("no branch name specified")
 	}
 
-	remote, err := g.getBranchRemote(branch)
-	if err != nil {
-		return err
+	remote, err := g.getBranchRemote(branch, false)
+	set_upstream := err != nil || remote == ""
+	if set_upstream {
+		remote = g.getRemoteFallback()
 	}
-	err = g.PushRemoteBranch(remote, branch)
+
+	err = g.PushRemoteBranch(remote, branch, set_upstream)
 	return err
 }
 
-func (g *Git) PushRemoteBranch(remote string, branch string) error {
+func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool) error {
 	if branch == "" {
 		return errors.New("no branch name specified")
 	}
@@ -152,7 +158,12 @@ func (g *Git) PushRemoteBranch(remote string, branch string) error {
 		return errors.New("no remote name specified")
 	}
 
-	_, err := g.RunCwd("push", remote, branch+":"+branch)
+	var err error
+	if set_upstream {
+		_, err = g.RunCwd("push", "--set-upstream", remote, branch)
+	} else {
+		_, err = g.RunCwd("push", remote, branch+":"+branch)
+	}
 	return err
 }
 
@@ -161,7 +172,7 @@ func (g *Git) PullBranch(branch string, rebase bool) error {
 		return errors.New("no branch name specified")
 	}
 
-	remote, err := g.getBranchRemote(branch)
+	remote, err := g.getBranchRemote(branch, true)
 	if err != nil {
 		return err
 	}
@@ -211,7 +222,7 @@ func (g *Git) NumCommitsOnBranch(branch string) (uint64, error) {
 	return uint64(num), nil
 }
 
-func (g *Git) getBranchRemote(branch string) (string, error) {
+func (g *Git) getBranchRemote(branch string, fallback bool) (string, error) {
 	if branch == "" {
 		return "", errors.New("no branch name specified")
 	}
@@ -221,7 +232,38 @@ func (g *Git) getBranchRemote(branch string) (string, error) {
 		return "", err
 	}
 	r = parseOneLine(r)
+
+	if r == "" && fallback {
+		r = g.getRemoteFallback()
+	}
+
 	return r, nil
+}
+
+// Fallback to remote:
+//
+//	for current branch
+//	for main branch
+//	whatever is first in the list of remotes
+//	origin
+func (g *Git) getRemoteFallback() string {
+	r, err := g.GetRemoteForCurrentBranch()
+	if err == nil && r != "" {
+		return r
+	}
+
+	main := g.NameOfMainBranch()
+	r, err = g.getBranchRemote(main, false)
+	if err == nil && r != "" {
+		return r
+	}
+
+	rs, err := g.getRemoteNames()
+	if err == nil && len(rs) > 0 {
+		return rs[0]
+	}
+
+	return "origin"
 }
 
 func (g *Git) fetchBranchRemote(branch string, remote string) error {
@@ -241,7 +283,7 @@ func (g *Git) ResetBranchToRemote(branch string) error {
 		return errors.New("no branch name specified")
 	}
 
-	remote, err := g.getBranchRemote(branch)
+	remote, err := g.getBranchRemote(branch, true)
 	if err != nil {
 		return err
 	}
@@ -254,14 +296,14 @@ func (g *Git) ResetBranchToRemote(branch string) error {
 	if err != nil {
 		return err
 	}
-	err = g.SwitchBranch(branch)
+	err = g.SwitchBranch(branch, "")
 	if err != nil {
 		return err
 	}
 
 	_, err = g.RunCwd("reset", "--hard", remote+"/"+branch)
 
-	g.SwitchBranch(current_branch)
+	g.SwitchBranch(current_branch, "")
 
 	return err
 }
@@ -374,12 +416,13 @@ func (g *Git) CreateBranch(name string, at_hash string, checkout bool) error {
 	if name == "" {
 		return errors.New("no branch name specified")
 	}
-	if at_hash == "" {
-		return errors.New("no commit hash specified")
-	}
 	var err error
 	if checkout {
-		_, err = g.RunCwd("checkout", "-b", name, at_hash)
+		if at_hash != "" {
+			_, err = g.RunCwd("checkout", "-b", name, at_hash)
+		} else {
+			_, err = g.RunCwd("checkout", "-b", name)
+		}
 	} else {
 		_, err = g.RunCwd("branch", name, at_hash)
 	}

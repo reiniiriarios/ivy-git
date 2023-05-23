@@ -7,7 +7,7 @@
   }
 
   function switchBranch(b: string) {
-    currentBranch.set(b);
+    currentBranch.switch(b);
     branchSelect.set(false);
   }
 

@@ -38,6 +38,7 @@ function createCurrentBranch() {
   
   return {
     subscribe,
+    set,
     refresh: async () => {
       if (get(currentRepo)) {
         GetCurrentBranch().then(result => {
@@ -50,9 +51,9 @@ function createCurrentBranch() {
         set({} as Branch);
       }
     },
-    set: (b: string) => {
+    switch: (b: string, r: string = "") => {
       if (b !== get(currentBranch)?.Name) {
-        SwitchBranch(b).then(result => {
+        SwitchBranch(b, r).then(result => {
           parseResponse(result, () => {
             if (cTab === 'tree') {
               commitData.refresh();
