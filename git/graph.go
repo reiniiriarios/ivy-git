@@ -100,7 +100,6 @@ func (g *Graph) buildPaths() {
 	var color uint16 = 0
 	for i := 0; i < len(g.Vertices); {
 		// If the vertex has no parents or isn't on a branch yet, draw it.
-
 		if g.Vertices[i].hasNextParent() || g.Vertices[i].BranchId == -1 {
 			if g.isMergeCommit(int64(i)) {
 				g.buildMergePath(&g.Vertices[i])
@@ -110,6 +109,15 @@ func (g *Graph) buildPaths() {
 			}
 		} else {
 			i++
+		}
+	}
+
+	// Determine committed status of each line.
+	// Lines between a committed point and an uncommitted point may split in the
+	// middle if limb breaks off to another branch.
+	for i := 0; i < len(g.Branches); i++ {
+		for n := 0; n < len(g.Branches[i].Lines); n++ {
+			g.Branches[i].Lines[n].Committed = n >= int(g.Branches[i].UncommitedPoints)
 		}
 	}
 
@@ -165,10 +173,9 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 		g.Branches[b.Id].addLine(Line{
 			P1:              p1,
 			P2:              p2,
-			Committed:       v1.Committed,
 			LockedDirection: p1.X < p2.X,
 			Merge:           false,
-		})
+		}, v1.Committed)
 		g.Vertices[i].addUnavailPoint(p2.X, p, b.Id)
 
 		p1 = p2
@@ -207,10 +214,9 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 					g.Branches[b.Id].addLine(Line{
 						P1:              p2,
 						P2:              null_point,
-						Committed:       true,
 						LockedDirection: false,
 						Merge:           false,
-					})
+					}, true)
 				}
 			}
 
@@ -231,10 +237,9 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 		g.Branches[b.Id].addLine(Line{
 			P1:              p1,
 			P2:              null_point,
-			Committed:       true,
 			LockedDirection: false,
 			Merge:           false,
-		})
+		}, true)
 	}
 
 	// If we looped through every vertex and the parent is a null vertex.
@@ -288,10 +293,9 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 		g.Branches[p.BranchId].addLine(Line{
 			P1:              p1,
 			P2:              p2,
-			Committed:       v1.Committed,
 			LockedDirection: dir,
 			Merge:           true,
-		})
+		}, v1.Committed)
 
 		g.Vertices[i].addUnavailPoint(p2.X, p, p.BranchId)
 
@@ -379,9 +383,9 @@ type GraphBranch struct {
 }
 
 // Add line to branch.
-func (b *GraphBranch) addLine(l Line) {
+func (b *GraphBranch) addLine(l Line, vertex_committed bool) {
 	b.Lines = append(b.Lines, l)
-	if l.Committed {
+	if vertex_committed {
 		if l.P2.X == 0 && l.P2.X < b.UncommitedPoints && l.P2.Y != NULL_VERTEX {
 			b.UncommitedPoints = uint16(l.P2.Y)
 		}
