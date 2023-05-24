@@ -68,12 +68,15 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
         "resizable": true,
         "title": "Ivy Git",
-        "width": 800,
+        "width": 1280,
+        "height": 768,
+        "minWidth": 1024,
+        "minHeight": 600,
         "transparent": true,
-        "decorations": false
+        "decorations": false,
+        "fileDropEnabled": false
       }
     ]
   }
