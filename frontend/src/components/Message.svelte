@@ -7,6 +7,10 @@
   let blankValue: string;
   let blankValid: boolean = true;
 
+  messageDialog.subscribe(() => {
+    blankValue = null;
+  });
+
   let tagMessage: HTMLElement;
   let tagAnnotatedField: HTMLInputElement;
   let tagNameField: string;
@@ -16,8 +20,11 @@
   let annotated = true;
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {
-    if(['Escape'].includes(e.key) && ($messageDialog.message || $messageDialog.options?.length)) {
+    if (['Escape'].includes(e.key) && ($messageDialog.message || $messageDialog.options?.length)) {
       messageDialog.okay();
+    }
+    else if (['\n', 'Enter'].includes(e.key) && $messageDialog.blank && blankValue.length) {
+      messageDialog.yes();
     }
   });
 
@@ -33,13 +40,6 @@
   const tagLightweight = () => {
     tagMessage.style.display = 'none';
     annotated = false;
-  }
-
-  const isConfirmDisabled = () => {
-    if ($messageDialog.addTag) {
-      return tagNameField.length > 0 && (!tagAnnotatedField.checked || tagMessageField.length > 0);
-    }
-    return false;
   }
 
   const validateRef = (e: InputEvent & { currentTarget: EventTarget & HTMLInputElement }) => {
