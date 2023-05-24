@@ -60,11 +60,12 @@
   });
 
   // Development: If hot updating a module, re-init the app for correct data cascade.
-  if (import.meta.hot) {
-    import.meta.hot.on('vite:afterUpdate', () => {
-      window.location.reload();
-    });
-  }
+  // if (import.meta.hot) {
+  //   console.log('Hot relading enabled...');
+  //   import.meta.hot.on('vite:afterUpdate', () => {
+  //     window.location.reload();
+  //   });
+  // }
 </script>
 
 <TitleBar />
