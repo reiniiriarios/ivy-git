@@ -7,14 +7,14 @@
   // });
 </script>
 
-<header>
+<header data-tauri-drag-region>
   {#if !os}
-    <div id="title">Ivy Git</div>
+    <div data-tauri-drag-region id="title">Ivy Git</div>
   {:else if os == "darwin"}
     <AppControl os={os} position="left" />
-    <div id="title">Ivy Git</div>
+    <div data-tauri-drag-region id="title">Ivy Git</div>
   {:else}
-    <div id="title">Ivy Git</div>
+    <div data-tauri-drag-region id="title">Ivy Git</div>
     <AppControl os={os} position="right" />
   {/if}
 </header>

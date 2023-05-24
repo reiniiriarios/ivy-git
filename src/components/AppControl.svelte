@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { window } from '@tauri-apps/api'
+
   import octicons from '@primer/octicons';
 
   export let os: string = "";
@@ -7,24 +9,15 @@
   let maximized = false;
 
   function minimize() {
-    (window as any).runtime.WindowIsMinimised().then((isMinimized: boolean) => {
-      isMinimized
-        ? (window as any).runtime.WindowUnminimise()
-        : (window as any).runtime.WindowMinimise();
-    });
+    window.appWindow.minimize();
   }
 
   function maximize() {
-    (window as any).runtime.WindowIsMaximised().then((isMaximized: boolean) => {
-      isMaximized
-        ? (window as any).runtime.WindowUnmaximise()
-        : (window as any).runtime.WindowMaximise();
-      maximized = !isMaximized;
-    });
+    window.appWindow.toggleMaximize();
   }
 
   function close() {
-    (window as any).runtime.Quit();
+    window.appWindow.close();
   }
 </script>
 
