@@ -7,7 +7,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/microcosm-cc/bluemonday v1.0.17
 	github.com/pkg/profile v1.7.0
-	github.com/wailsapp/wails/v2 v2.4.1
+	github.com/wailsapp/wails/v2 v2.5.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
