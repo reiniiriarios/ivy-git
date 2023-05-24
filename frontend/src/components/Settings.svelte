@@ -1,5 +1,8 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
+  import { select } from "scripts/select";
+  import { branches } from "stores/branches";
+  import { currentRepo, repos } from "stores/repos";
   import { settings } from "stores/settings";
 
   function saveWorkflow(workflow: string) {
@@ -9,8 +12,11 @@
 
 <div class="settings">
   <h2>Settings</h2>
+
+  <h3>App</h3>
+
   <div class="setting">
-    <h3 class="setting__name">Workflow</h3>
+    <h4 class="setting__name">Workflow</h4>
     <div class="big-option">
       <button class="btn big-option__option"
         class:big-option__option--active={$settings.Workflow === 'merge'}
@@ -52,5 +58,17 @@
         </div>
       </button>
     </div>
+  </div>
+
+  <h3>Repo</h3>
+
+  <div class="setting">
+    <h4 class="setting__name">Main Branch</h4>
+    <select use:select data-required="true" on:change={(e) => alert('TODO: e.target.value')}>
+      <option value="">&nbsp;</option>
+      {#each $branches as branch}
+        <option selected={branch.Name === $repos[$currentRepo].Main}>{branch.Name}</option>
+      {/each}
+    </select>
   </div>
 </div>
