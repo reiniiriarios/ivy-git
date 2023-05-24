@@ -132,7 +132,7 @@ func (g *Git) getRefs() (Refs, error) {
 		// Add to remote branches which local branches are in sync.
 		// Add to local branches which remote branches are in sync.
 		for i := range refs.Branches {
-			if refs.Branches[i].Hash == refs.Remotes[n].Hash {
+			if refs.Branches[i].Hash == refs.Remotes[n].Hash && (refs.Branches[i].Branch == refs.Remotes[n].Branch || refs.Branches[i].Upstream == refs.Remotes[n].Name) {
 				refs.Branches[i].SyncedRemotes = append(refs.Branches[i].SyncedRemotes, refs.Remotes[n].Remote)
 				refs.Remotes[n].SyncedLocally = true
 			}
