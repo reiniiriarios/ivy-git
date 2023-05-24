@@ -21,25 +21,6 @@ func (g *Git) NumBranches() uint64 {
 	return uint64(len(lines))
 }
 
-// Check common names for main branch.
-func (g *Git) NameOfMainBranch() string {
-	r, err := g.RunCwd("for-each-ref", "--format=%(refname:short)", "refs/heads/main", "refs/heads/master", "refs/heads/trunk")
-	if err != nil {
-		// Screw it, return something.
-		return "main"
-	}
-	r = parseOneLine(r)
-	if !strings.Contains(r, "\n") {
-		return r
-	}
-	// More than one result.
-	if strings.Contains(r, "master") {
-		return "master"
-	}
-	// Default to main.
-	return "main"
-}
-
 // Get current branch for currently selected repo.
 func (g *Git) GetCurrentBranch() (string, error) {
 	branch, err := g.RunCwd("rev-parse", "--abbrev-ref", "HEAD")
@@ -56,7 +37,7 @@ func (g *Git) GetCurrentBranch() (string, error) {
 func (g *Git) GetBranches() ([]Branch, error) {
 	branch_list := []Branch{}
 
-	branches, err := g.RunCwd("for-each-ref", "--format", "%(refname:short)"+GIT_LOG_SEP+"%(upstream:short)", "refs/heads/**")
+	branches, err := g.RunCwd("for-each-ref", "--format", "%(refname:lstrip=2)"+GIT_LOG_SEP+"%(upstream:short)", "refs/heads/**")
 	if err != nil {
 		println(err.Error())
 		return branch_list, err

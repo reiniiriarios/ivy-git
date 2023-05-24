@@ -30,11 +30,8 @@ function createNumTags() {
 }
 export const numTags = createNumTags();
 
-function createMainInfo() {
-  const { subscribe, set } = writable({
-    Count: 0,
-    Name: '',
-  });
+function createNumCommits() {
+  const { subscribe, set } = writable(0);
 
   return {
     subscribe,
@@ -47,4 +44,4 @@ function createMainInfo() {
     },
   };
 }
-export const mainInfo = createMainInfo();
+export const numCommits = createNumCommits();

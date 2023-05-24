@@ -9,6 +9,8 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+// This file deals with repos added to the app and their settings.
+
 type RepoResponse struct {
 	Response string
 	Message  string
@@ -91,6 +93,7 @@ func (a *App) AddRepo() RepoResponse {
 	newRepo := git.Repo{
 		Name:      filepath.Base(d),
 		Directory: d,
+		Main:      a.Git.NameOfMainBranchForRepo(d),
 	}
 
 	if a.RepoSaveData.Repos == nil {

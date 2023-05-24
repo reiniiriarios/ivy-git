@@ -1,10 +1,16 @@
 package git
 
-import "os"
+import (
+	"os"
+	"strings"
+)
+
+// This file deals with repo general git things.
 
 type Repo struct {
 	Name      string
 	Directory string
+	Main      string
 }
 
 func (g *Git) IsDir(directory string) bool {
@@ -23,4 +29,31 @@ func (g *Git) IsGitRepo(directory string) bool {
 	}
 
 	return r == ""
+}
+
+// Check common names for main branch.
+func (g *Git) NameOfMainBranchForRepo(repo_dir string) string {
+	r, err := g.Run("-C", repo_dir, "for-each-ref", "--format=%(refname:short)", "refs/heads/main", "refs/heads/master", "refs/heads/trunk")
+	if err != nil {
+		// Screw it, return something.
+		return "main"
+	}
+	r = parseOneLine(r)
+	if !strings.Contains(r, "\n") {
+		return r
+	}
+	// More than one result.
+	if strings.Contains(r, "master") {
+		return "master"
+	}
+	// Default to main.
+	return "main"
+}
+
+// Name of main branch for current repo.
+func (g *Git) NameOfMainBranch() string {
+	if g.Repo == (Repo{}) {
+		return ""
+	}
+	return g.NameOfMainBranchForRepo(g.Repo.Directory)
 }

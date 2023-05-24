@@ -266,15 +266,8 @@ func (a *App) NumTags() DataResponse {
 }
 
 func (a *App) NumMainBranchCommits() DataResponse {
-	main := a.Git.NameOfMainBranch()
-	n, err := a.Git.NumCommitsOnBranch(main)
-	return dataResponse(err, struct {
-		Count uint64
-		Name  string
-	}{
-		Count: n,
-		Name:  main,
-	})
+	n, err := a.Git.NumCommitsOnBranch(a.Git.Repo.Main)
+	return dataResponse(err, n)
 }
 
 func (a *App) MakeCommit(subject string, body string) DataResponse {

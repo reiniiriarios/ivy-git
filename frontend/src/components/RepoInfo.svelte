@@ -1,12 +1,13 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { numBranches, numTags, mainInfo } from "stores/repo-info";
+  import { numBranches, numTags, numCommits } from "stores/repo-info";
+  import { currentRepo, repos } from "stores/repos";
   import { onMount } from "svelte";
 
   onMount(() => {
     numBranches.fetch();
     numTags.fetch();
-    mainInfo.fetch();
+    numCommits.fetch();
   })
 </script>
 
@@ -25,10 +26,10 @@
     </div>
     <div>
       {@html octicons["git-commit"].toSVG({width: 16})}
-      <strong>{$mainInfo.Count}</strong>
-      {$mainInfo.Count === 1 ? 'commit' : 'commits'}
+      <strong>{$numCommits}</strong>
+      {$numCommits === 1 ? 'commit' : 'commits'}
       on
-      <strong>{$mainInfo.Name ?? '???'}</strong>
+      <strong>{$repos[$currentRepo].Main}</strong>
     </div>
   </div>
 </div>

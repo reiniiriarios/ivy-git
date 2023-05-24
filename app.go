@@ -31,13 +31,24 @@ func NewApp() *App {
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
+	// Context for app.
 	a.ctx = ctx
+
+	// Load yaml configs.
 	a.loadConfig()
+
+	// Set app data.
 	if a.AppData.WindowWidth > 1024 && a.AppData.WindowHeight > 600 {
 		runtime.WindowSetSize(a.ctx, a.AppData.WindowWidth, a.AppData.WindowHeight)
 	}
+
+	// Set git data.
 	a.Git = git.Git{
 		Repo: a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo],
+	}
+	// If main branch not found, check again.
+	if !a.Git.BranchExists(a.Git.Repo.Main) {
+		a.Git.Repo.Main = a.Git.NameOfMainBranch()
 	}
 }
 

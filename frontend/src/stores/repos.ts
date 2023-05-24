@@ -15,6 +15,7 @@ import { messageDialog } from './message-dialog';
 export interface Repo {
   Name: string;
   Directory: string;
+  Main: string;
 }
 
 function createRepos() {
