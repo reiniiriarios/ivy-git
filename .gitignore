@@ -3,8 +3,8 @@
 Thumbs.db
 
 # build
-/build/bin
-/*res.syso
+/dist
+/build
 
 # vendor
 /vendor
@@ -12,6 +12,9 @@ Thumbs.db
 # config
 /repos.yaml
 
-# profiling
-pprof.sh
-pprof.pdf
+# vendor
+/.svelte-kit
+/node_modules
+
+# migrate
+/go.bak
