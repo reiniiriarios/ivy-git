@@ -153,6 +153,7 @@ textarea {
     border-radius: 0.25rem;
     position: relative;
     min-width: 10rem;
+    width: 100%;
     text-align: left;
 
     &::after {
@@ -170,7 +171,8 @@ textarea {
   }
 
   ul {
-    display: none;
+    visibility: hidden;
+    pointer-events: none;
     cursor: pointer;
     list-style: none;
     padding: 0;
@@ -207,7 +209,8 @@ textarea {
     }
 
     ul {
-      display: block;
+      visibility: visible;
+      pointer-events: all;
     }
   }
 }

@@ -289,3 +289,12 @@ func (a *App) RevertCommit(hash string) DataResponse {
 	err := a.Git.RevertCommit(hash)
 	return dataResponse(err, true)
 }
+
+func (a *App) UpdateMain(branch string) DataResponse {
+	r := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
+	r.Main = branch
+	a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo] = r
+	go a.saveRepoData()
+	a.Git.Repo = r
+	return dataResponse(nil, true)
+}

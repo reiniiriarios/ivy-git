@@ -1,16 +1,17 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { select, type SelectElement } from "scripts/select";
   import { branches } from "stores/branches";
   import { currentRepo, repos } from "stores/repos";
   import { settings } from "stores/settings";
+  import Select from "./Select.svelte";
 
   function saveWorkflow(workflow: string) {
     settings.updateWorkflow(workflow);
   }
 
-  let selEl: SelectElement;
-  branches.subscribe(selEl.rebuild);
+  function saveMain(e: CustomEvent) {
+    repos.updateMain(e.detail.value);
+  }
 </script>
 
 <div class="settings">
@@ -67,11 +68,6 @@
 
   <div class="setting">
     <h4 class="setting__name">Main Branch</h4>
-    <select bind:this={selEl} use:select data-required="true" on:change={(e) => alert('TODO: e.target.value')}>
-      <option value="">&nbsp;</option>
-      {#each $branches as branch}
-        <option selected={branch.Name === $repos[$currentRepo].Main}>{branch.Name}</option>
-      {/each}
-    </select>
+    <Select values={$branches.map(b => b.Name)} selected={$repos[$currentRepo].Main} on:change={saveMain} />
   </div>
 </div>

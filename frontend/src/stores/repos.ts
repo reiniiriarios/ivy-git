@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
 
-import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateSelectedRepo } from 'wailsjs/go/main/App';
+import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateMain, UpdateSelectedRepo } from 'wailsjs/go/main/App';
 
 import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
@@ -8,9 +8,10 @@ import { currentCommit } from 'stores/commit-details';
 import { branches, currentBranch } from 'stores/branches';
 import { remoteData } from 'stores/remotes';
 import { currentTab, repoSelect } from 'stores/ui';
+import { messageDialog } from 'stores/message-dialog';
+import { numBranches, numCommits, numTags } from 'stores/repo-info';
 
 import { parseResponse } from 'scripts/parse-response';
-import { messageDialog } from './message-dialog';
 
 export interface Repo {
   Name: string;
@@ -18,8 +19,11 @@ export interface Repo {
   Main: string;
 }
 
+let cTab = '';
+currentTab.subscribe(t => cTab = t);
+
 function createRepos() {
-  const { subscribe, set } = writable([] as Repo[]);
+  const { subscribe, set, update } = writable([] as Repo[]);
   
   return {
     subscribe,
@@ -65,13 +69,22 @@ function createRepos() {
           })
         },
       });
+    },
+    updateMain: async (branch: string) => {
+      UpdateMain(branch).then(r => {
+        update(repos => {
+          repos[get(currentRepo)].Main = branch;
+          return repos;
+        });
+        if (cTab === 'details') {
+          remoteData.refresh();
+          numCommits.fetch();
+        }
+      });
     }
   };
 }
 export const repos = createRepos();
-
-let cTab = '';
-currentTab.subscribe(t => cTab = t);
 
 function createCurrentRepo() {
   const { subscribe, set } = writable("");
@@ -95,6 +108,9 @@ function createCurrentRepo() {
             currentCommit.unset();
           } else if (cTab === 'details') {
             remoteData.refresh();
+            numCommits.fetch();
+            numBranches.fetch();
+            numTags.fetch();
           }
           branches.refresh();
           currentBranch.refresh();
@@ -116,6 +132,9 @@ function createCurrentRepo() {
             currentCommit.unset();
           } else if (cTab === 'details') {
             remoteData.refresh();
+            numCommits.fetch();
+            numBranches.fetch();
+            numTags.fetch();
           }
           branches.refresh();
           currentBranch.refresh();
