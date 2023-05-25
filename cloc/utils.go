@@ -53,24 +53,37 @@ func checkMD5Sum(path string, fileCache map[string]struct{}) (ignore bool) {
 	return false
 }
 
+func ignoreFile(file string) bool {
+	// todo: more of this
+	return strings.HasSuffix(file, "package-lock.json")
+}
+
 func parseAllFiles(files []string, languages *DefinedLanguages) (result map[string]*Language) {
 	result = make(map[string]*Language, 0)
 	fileCache := make(map[string]struct{})
 
 	for _, file := range files {
-		if ext, ok := getFileType(file); ok {
-			if targetExt, ok := Exts[ext]; ok {
-				if !checkMD5Sum(file, fileCache) {
-					if _, ok := result[targetExt]; !ok {
-						result[targetExt] = NewLanguage(
-							languages.Langs[targetExt].Data.Name,
-							languages.Langs[targetExt].lineComments,
-							languages.Langs[targetExt].multiLines)
-					}
-					result[targetExt].Files = append(result[targetExt].Files, file)
-				}
-			}
+		if ignoreFile(file) {
+			continue
 		}
+		ext, ok := getFileType(file)
+		if !ok {
+			continue
+		}
+		targetExt, ok := Exts[ext]
+		if !ok {
+			continue
+		}
+		if checkMD5Sum(file, fileCache) {
+			continue
+		}
+		if _, exists := result[targetExt]; !exists {
+			result[targetExt] = NewLanguage(
+				languages.Langs[targetExt].Data.Name,
+				languages.Langs[targetExt].lineComments,
+				languages.Langs[targetExt].multiLines)
+		}
+		result[targetExt].Files = append(result[targetExt].Files, file)
 	}
 	return result
 }
