@@ -9,6 +9,8 @@
 
   messageDialog.subscribe(() => {
     blankValue = null;
+    tagNameField = null;
+    tagMessageField = null;
   });
 
   let tagMessage: HTMLElement;
