@@ -7,12 +7,6 @@
   let blankValue: string;
   let blankValid: boolean = true;
 
-  messageDialog.subscribe(() => {
-    blankValue = null;
-    tagNameField = null;
-    tagMessageField = null;
-  });
-
   let tagMessage: HTMLElement;
   let tagAnnotatedField: HTMLInputElement;
   let tagNameField: string;
@@ -20,6 +14,12 @@
   let tagValid: boolean = false;
 
   let annotated = true;
+
+  messageDialog.subscribe(() => {
+    blankValue = null;
+    tagNameField = null;
+    tagMessageField = null;
+  });
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {
     if (['Escape'].includes(e.key) && ($messageDialog.message || $messageDialog.options?.length)) {
