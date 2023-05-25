@@ -3,6 +3,7 @@ module ivy-git
 go 1.18
 
 require (
+	github.com/go-enry/go-enry/v2 v2.8.0
 	github.com/gomarkdown/markdown v0.0.0-20230322041520-c84983bdbf2a
 	github.com/google/uuid v1.3.0
 	github.com/microcosm-cc/bluemonday v1.0.17
@@ -10,6 +11,8 @@ require (
 	github.com/wailsapp/wails/v2 v2.5.1
 	gopkg.in/yaml.v3 v3.0.1
 )
+
+require github.com/go-enry/go-oniguruma v1.2.1 // indirect
 
 require (
 	github.com/aymerick/douceur v0.2.0 // indirect

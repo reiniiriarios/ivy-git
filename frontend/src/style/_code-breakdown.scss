@@ -1,0 +1,26 @@
+.code-breakdown {
+  margin: 0 1.5rem;
+
+  tr {
+    th,
+    td {
+      padding: 0.25rem 1.5rem 0.25rem 0;
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  }
+
+  th {
+    font-size: 0.9rem;
+    font-weight: normal;
+    color: var(--color-text-muted);
+  }
+
+  td {
+    &.name {
+      font-weight: bold;
+    }
+  }
+}

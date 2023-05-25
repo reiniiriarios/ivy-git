@@ -2,6 +2,7 @@ package git
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -56,4 +57,16 @@ func (g *Git) NameOfMainBranch() string {
 		return ""
 	}
 	return g.NameOfMainBranchForRepo(g.Repo.Directory)
+}
+
+func (g *Git) LsFiles() ([]string, error) {
+	f, err := g.RunCwd("ls-files")
+	if err != nil {
+		return []string{}, err
+	}
+	files := parseLines(f)
+	for i := range files {
+		files[i] = filepath.Join(g.Repo.Directory, files[i])
+	}
+	return files, nil
 }

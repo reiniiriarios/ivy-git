@@ -1,6 +1,6 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { numBranches, numTags, numCommits } from "stores/repo-info";
+  import { numBranches, numTags, numCommits, cloc } from "stores/repo-info";
   import { currentRepo, repos } from "stores/repos";
   import { onMount } from "svelte";
 
@@ -8,6 +8,7 @@
     numBranches.fetch();
     numTags.fetch();
     numCommits.fetch();
+    cloc.fetch();
   })
 </script>
 
@@ -31,5 +32,51 @@
       on
       <strong>{$repos[$currentRepo].Main}</strong>
     </div>
+    {#if $cloc.Total?.Files}
+      <div>
+        {@html octicons["file"].toSVG({width: 16})}
+        <strong>{$cloc.Total.Files}</strong>
+        {$cloc.Total.Files === 1 ? 'file' : 'files'}
+      </div>
+    {/if}
+    {#if $cloc.Total?.Total}
+      <div>
+        {@html octicons["code"].toSVG({width: 16})}
+        <strong>{$cloc.Total.Total}</strong>
+        {$cloc.Total.Total === 1 ? 'line' : 'lines'}
+        of code
+      </div>
+    {/if}
+  </div>
+  <h2>Code</h2>
+  <div class="code-breakdown">
+    {#if $cloc.Languages?.length}
+      <table>
+        <thead>
+          <tr>
+            <th aria-label="Language"></th>
+            <th>Total Lines</th>
+            <th>Code Lines</th>
+            <th>Comments</th>
+            <th>Blank Lines</th>
+            <th>Files</th>
+            <th aria-label="Percentage"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each Object.entries($cloc.Languages) as [_, lang]}
+            <tr>
+              <td class="name">{lang.Name}</td>
+              <td>{lang.Total}</td>
+              <td>{lang.Code}</td>
+              <td>{lang.Comments}</td>
+              <td>{lang.Blanks}</td>
+              <td>{lang.Files}</td>
+              <td>{lang.TotalPercent.toFixed(2)}%</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    {/if}
   </div>
 </div>
