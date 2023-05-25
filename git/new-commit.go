@@ -34,7 +34,7 @@ func (g *Git) RevertCommit(hash string) error {
 }
 
 func (g *Git) CherryPick(hash string, record bool, no_commit bool) error {
-	cmd := []string{"cherry-pick"}
+	cmd := []string{"cherry-pick", "--allow-empty"}
 	if record {
 		cmd = append(cmd, "-x")
 	}
