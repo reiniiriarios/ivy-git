@@ -1,6 +1,8 @@
 package git
 
-import "errors"
+import (
+	"errors"
+)
 
 func (g *Git) MergeCommit(target_branch string, no_commit bool, no_ff bool) error {
 	if target_branch == "" {
@@ -16,9 +18,13 @@ func (g *Git) MergeCommit(target_branch string, no_commit bool, no_ff bool) erro
 		cmd = append(cmd, "--no-ff")
 	}
 	cmd = append(cmd, target_branch)
-	_, err = g.RunCwd(cmd...)
+	res, err := g.RunCwd(cmd...)
 	if err != nil {
 		return err
+	}
+	res = parseOneLine(res)
+	if res == "Already up to date." {
+		return errors.New(res)
 	}
 	// todo: conflicts
 

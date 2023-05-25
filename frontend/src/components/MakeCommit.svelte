@@ -3,11 +3,17 @@
   import { parseResponse } from "scripts/parse-response";
   import { currentBranch } from "stores/branches";
   import { changes } from "stores/changes";
-  import { repoSelect, branchSelect } from "stores/ui";
+  import { repoSelect, branchSelect, inProgressCommitMessage } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
 
   let subject: string;
   let body: string;
+
+  inProgressCommitMessage.subscribe(msg => {
+    subject = msg.Subject;
+    body = msg.Body;
+  });
+
   let running: boolean = false;
 
   function make() {

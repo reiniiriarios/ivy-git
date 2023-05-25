@@ -11,6 +11,7 @@ import { commitData, commitSignData, HEAD } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { checkRef } from "scripts/check-ref";
 import { currentBranch, type Branch } from "stores/branches";
+import { inProgressCommitMessage } from "stores/ui";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -116,14 +117,16 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
             ],
             confirm: 'Cherry Pick',
             callbackConfirm: () => {
-              CherryPick(
-                e.dataset.hash,
-                messageDialog.tickboxTicked('record'),
-                messageDialog.tickboxTicked('no_commit')
-              ).then(result => {
+              let no_commit = messageDialog.tickboxTicked('no_commit');
+              CherryPick(e.dataset.hash, messageDialog.tickboxTicked('record'), no_commit).then(result => {
                 parseResponse(result, () => {
                   commitData.refresh();
                   commitSignData.refresh();
+                  if (no_commit) {
+                    inProgressCommitMessage.fetch();
+                  }
+                }, () => {
+                  inProgressCommitMessage.fetch();
                 });
               });
             }

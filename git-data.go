@@ -8,9 +8,10 @@ import (
 // data from the git package.
 
 type DataResponse struct {
-	Response string
-	Message  string
-	Data     any
+	Response       string
+	Message        string
+	FetchCommitMsg bool
+	Data           any
 }
 
 func dataResponse(err error, data any) DataResponse {
@@ -302,4 +303,9 @@ func (a *App) UpdateMain(branch string) DataResponse {
 	go a.saveRepoData()
 	a.Git.Repo = r
 	return dataResponse(nil, true)
+}
+
+func (a *App) GetInProgressCommitMessageEither() git.CommitMessage {
+	msg := a.Git.GetInProgressCommitMessageEither()
+	return a.Git.ParseCommitMessage(msg)
 }

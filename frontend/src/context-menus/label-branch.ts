@@ -21,6 +21,7 @@ import { settings } from "stores/settings";
 
 import { parseResponse } from "scripts/parse-response";
 import { checkRef } from "scripts/check-ref";
+import { inProgressCommitMessage } from "stores/ui";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -141,6 +142,8 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
             parseResponse(r, () => {
               commitData.refresh();
               commitSignData.refresh();
+            }, () => {
+              inProgressCommitMessage.fetch();
             });
           });
         },
@@ -160,6 +163,8 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
                 parseResponse(r, () => {
                   commitData.refresh();
                   commitSignData.refresh();
+                }, () => {
+                  inProgressCommitMessage.fetch();
                 });
               });
             },
@@ -208,14 +213,17 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
               },
             ],
             callbackConfirm: () => {
-              MergeCommit(
-                e.dataset.branch,
-                messageDialog.tickboxTicked('no-commit'),
-                messageDialog.tickboxTicked('no-ff')
-              ).then(r => {
+              let no_commit = messageDialog.tickboxTicked('no-commit');
+              let no_ff = messageDialog.tickboxTicked('no-ff');
+              MergeCommit(e.dataset.branch, no_commit, no_ff).then(r => {
                 parseResponse(r, () => {
                   commitData.refresh();
                   commitSignData.refresh();
+                  if (no_commit) {
+                    inProgressCommitMessage.fetch();
+                  }
+                }, () => {
+                  inProgressCommitMessage.fetch();
                 });
               });
             },
@@ -238,6 +246,7 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
                   commitData.refresh();
                   commitSignData.refresh();
                 });
+                inProgressCommitMessage.fetch();
               });
             },
           });
