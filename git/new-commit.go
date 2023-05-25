@@ -32,3 +32,17 @@ func (g *Git) RevertCommit(hash string) error {
 	_, err := g.RunCwd("revert", hash)
 	return err
 }
+
+func (g *Git) CherryPick(hash string, record bool, no_commit bool) error {
+	cmd := []string{"cherry-pick"}
+	if record {
+		cmd = append(cmd, "-x")
+	}
+	if no_commit {
+		cmd = append(cmd, "--no-commit")
+	}
+	cmd = append(cmd, hash)
+
+	_, err := g.RunCwd(cmd...)
+	return err
+}

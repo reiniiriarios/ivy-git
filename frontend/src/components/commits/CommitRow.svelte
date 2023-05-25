@@ -8,6 +8,7 @@
   import { HEAD, type Commit, commitSignData } from 'stores/commit-data';
   import { currentCommit } from 'stores/commit-details';
   import { settings } from 'stores/settings';
+  import { MergeCommit } from 'wailsjs/go/main/App';
 
   export let commit: Commit;
   export let signStatus: string;
@@ -66,6 +67,7 @@
   data-head="{commit.Hash === $HEAD.Hash}"
   data-uncommitted="{commit.Hash === UNCOMMITED_HASH}"
   data-menu="{commit.Hash === UNCOMMITED_HASH ? '' : 'commit'}"
+  data-merge="{commit.Merge}"
   on:click={mouseShowDetails}
   on:keydown={keyShowDetails}>
   <td class="commit__td commit__td--refs">

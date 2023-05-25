@@ -290,6 +290,11 @@ func (a *App) RevertCommit(hash string) DataResponse {
 	return dataResponse(err, true)
 }
 
+func (a *App) CherryPick(hash string, record bool, no_commit bool) DataResponse {
+	err := a.Git.CherryPick(hash, record, no_commit)
+	return dataResponse(err, true)
+}
+
 func (a *App) UpdateMain(branch string) DataResponse {
 	r := a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo]
 	r.Main = branch

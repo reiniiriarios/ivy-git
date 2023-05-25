@@ -1,5 +1,5 @@
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { CreateBranch, AddTag, CheckoutCommit, RevertCommit, HardReset } from "wailsjs/go/main/App";
+import { CreateBranch, AddTag, CheckoutCommit, RevertCommit, HardReset, CherryPick } from "wailsjs/go/main/App";
 
 import { get } from 'svelte/store';
 
@@ -96,11 +96,44 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
     ]);
   }
 
+  if (e.dataset.merge !== 'true') {
+    m = m.concat([
+      {
+        text: "Cherry Pick Commit",
+        callback: () => {
+          messageDialog.confirm({
+            heading: 'Cherry Pick Commit',
+            message: `Cherry pick commit <strong>${e.dataset.hash.substring(0, 7)}</strong>.`,
+            checkboxes: [
+              {
+                id: 'record',
+                label: 'Record Original Hash',
+              },
+              {
+                id: 'no_commit',
+                label: 'No Commit',
+              },
+            ],
+            confirm: 'Cherry Pick',
+            callbackConfirm: () => {
+              CherryPick(
+                e.dataset.hash,
+                messageDialog.tickboxTicked('record'),
+                messageDialog.tickboxTicked('no_commit')
+              ).then(result => {
+                parseResponse(result, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                });
+              });
+            }
+          });
+        },
+      },
+    ]);
+  }
+
   m = m.concat([
-    {
-      text: "Cherry Pick Commit",
-      callback: () => {},
-    },
     {
       sep: true,
     },
