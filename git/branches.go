@@ -79,6 +79,12 @@ func (g *Git) SwitchBranch(branch string, remote string) error {
 	var err error
 	if remote == "" {
 		_, err = g.RunCwd("checkout", branch)
+	} else if g.BranchExists(branch) {
+		err = g.PullBranch(branch, true)
+		if err != nil {
+			return err
+		}
+		_, err = g.RunCwd("checkout branch")
 	} else {
 		_, err = g.RunCwd("checkout", "-b", branch, remote+"/"+branch)
 	}
