@@ -1,4 +1,4 @@
-import { writable, get } from 'svelte/store';
+import { writable, get, derived } from 'svelte/store';
 
 import { GetBranches, GetCurrentBranch, SwitchBranch } from 'wailsjs/go/main/App';
 
@@ -77,3 +77,4 @@ function createCurrentBranch() {
   };
 }
 export const currentBranch = createCurrentBranch();
+export const detachedHead = derived(currentBranch, $currentBranch => $currentBranch.Name === 'HEAD');

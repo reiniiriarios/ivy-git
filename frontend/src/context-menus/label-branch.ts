@@ -14,7 +14,7 @@ import {
 } from "wailsjs/go/main/App";
 
 import { get } from 'svelte/store';
-import { currentBranch } from "stores/branches";
+import { currentBranch, detachedHead } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { settings } from "stores/settings";
@@ -29,7 +29,7 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     m.push({
       text: "Checkout Branch",
       callback: () => {
-        if (get(currentBranch).Name === 'HEAD') {
+        if (get(detachedHead)) {
           messageDialog.confirm({
             heading: 'Checkout Branch',
             message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a branch could result in lost work. Continue?',
@@ -128,7 +128,7 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     });
   }
 
-  if (e.dataset.current !== "true") {
+  if (e.dataset.current !== "true" && !get(detachedHead)) {
     m.push({
       sep: true,
     });

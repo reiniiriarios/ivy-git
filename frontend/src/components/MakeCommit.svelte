@@ -1,7 +1,7 @@
 <script lang="ts">
   import { isDarwin } from "scripts/env";
   import { parseResponse } from "scripts/parse-response";
-  import { currentBranch } from "stores/branches";
+  import { currentBranch, detachedHead } from "stores/branches";
   import { changes } from "stores/changes";
   import { repoSelect, branchSelect, inProgressCommitMessage } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
@@ -40,7 +40,7 @@
 
 <div
   class="make-commit"
-  class:detached={$currentBranch.Name === 'HEAD'}
+  class:detached={$detachedHead}
   style:display={$repoSelect || $branchSelect ? 'none' : 'block'}
 >
   <div class="make-commit__subject">

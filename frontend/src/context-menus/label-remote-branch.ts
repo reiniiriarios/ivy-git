@@ -7,7 +7,7 @@ import type { Menu, MenuItem } from "context-menus/_all";
 
 import { parseResponse } from "scripts/parse-response";
 
-import { currentBranch } from "stores/branches";
+import { currentBranch, detachedHead } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 
@@ -19,7 +19,7 @@ export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
     m.push({
       text: "Checkout Branch",
       callback: () => {
-        if (get(currentBranch).Name === 'HEAD') {
+        if (get(detachedHead)) {
           messageDialog.confirm({
             heading: 'Checkout Branch',
             message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a branch could result in lost work. Continue?',

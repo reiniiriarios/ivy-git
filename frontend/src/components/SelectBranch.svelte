@@ -4,7 +4,7 @@
   import { checkRef } from 'scripts/check-ref';
   import { parseResponse } from 'scripts/parse-response';
 
-  import { branches, currentBranch, type Branch } from 'stores/branches';
+  import { branches, currentBranch, type Branch, detachedHead } from 'stores/branches';
   import { commitData, commitSignData } from 'stores/commit-data';
   import { messageDialog } from 'stores/message-dialog';
   import { branchSelect, repoSelect } from 'stores/ui';
@@ -53,14 +53,14 @@
   id="current-branch"
   class="btn btn-drop sidebar-big-button"
   class:active={$branchSelect}
-  class:detached={$currentBranch.Name === 'HEAD'}
+  class:detached={$detachedHead}
   style:display={$repoSelect ? 'none' : 'flex'}
   on:click={toggleList}
 >
   <div class="sidebar-big-button__label">Current Branch:</div>
   <div class="sidebar-big-button__value">{
     $currentBranch?.Name
-      ? $currentBranch.Name === 'HEAD'
+      ? $detachedHead
         ? 'DETACHED HEAD'
         : $currentBranch.Name
       : "none selected"

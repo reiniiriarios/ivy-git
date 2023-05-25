@@ -10,7 +10,7 @@ import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData, HEAD } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { checkRef } from "scripts/check-ref";
-import { currentBranch, type Branch } from "stores/branches";
+import { currentBranch, type Branch, detachedHead } from "stores/branches";
 import { inProgressCommitMessage } from "stores/ui";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
@@ -81,7 +81,7 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
               currentBranch.detach();
             });
           });
-          if (get(currentBranch).Name === 'HEAD') {
+          if (get(detachedHead)) {
             messageDialog.confirm({
               heading: 'Checkout Commit',
               message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a different commit could result in lost work. Continue?',
