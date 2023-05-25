@@ -89,9 +89,9 @@
         </tbody>
       </table>
     {:else if $cloc.Error}
-      <div class="error">{$cloc.Error}</div>
+      <div class="code-breakdown__error">{$cloc.Error}</div>
     {:else}
-      <div class="loading">...</div>
+      <div class="code-breakdown__loading">{@html octicons.gear.toSVG({width: 24})}</div>
     {/if}
   </div>
 </div>

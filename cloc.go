@@ -7,7 +7,7 @@ func (a *App) Cloc() DataResponse {
 	if err != nil {
 		return dataResponse(err, false)
 	}
-	cloc, err := cloc.Cloc(files...)
+	cloc, err := cloc.Cloc(files)
 	if err != nil {
 		return dataResponse(err, false)
 	}

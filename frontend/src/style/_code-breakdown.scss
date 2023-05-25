@@ -1,5 +1,21 @@
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .code-breakdown {
   margin: 0 1.5rem;
+
+  &__loading {
+    svg {
+      fill: var(--color-text);
+      animation: rotating 3s linear infinite;
+    }
+  }
 
   &__bar {
     width: 100%;

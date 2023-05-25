@@ -46,7 +46,7 @@ function createNumCommits() {
 }
 export const numCommits = createNumCommits();
 
-type ClocData = {
+interface ClocData {
   Languages: LanguageData[];
   Total: LanguageData;
   Error: string;
@@ -73,7 +73,6 @@ function createCloc() {
       Cloc().then(result => {
         parseResponse(result, () => {
           set(result.Data);
-          console.log(result.Data)
         }, () => {
           set({ Error: result.Message } as ClocData);
         });

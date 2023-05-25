@@ -60,17 +60,15 @@ func parseAllFiles(files []string, languages *DefinedLanguages) (result map[stri
 	for _, file := range files {
 		if ext, ok := getFileType(file); ok {
 			if targetExt, ok := Exts[ext]; ok {
-				if checkMD5Sum(file, fileCache) {
-					return nil
+				if !checkMD5Sum(file, fileCache) {
+					if _, ok := result[targetExt]; !ok {
+						result[targetExt] = NewLanguage(
+							languages.Langs[targetExt].Data.Name,
+							languages.Langs[targetExt].lineComments,
+							languages.Langs[targetExt].multiLines)
+					}
+					result[targetExt].Files = append(result[targetExt].Files, file)
 				}
-
-				if _, ok := result[targetExt]; !ok {
-					result[targetExt] = NewLanguage(
-						languages.Langs[targetExt].Data.Name,
-						languages.Langs[targetExt].lineComments,
-						languages.Langs[targetExt].multiLines)
-				}
-				result[targetExt].Files = append(result[targetExt].Files, file)
 			}
 		}
 	}

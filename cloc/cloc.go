@@ -26,7 +26,7 @@ func (ls AllLanguageData) Less(i, j int) bool {
 	return ls[i].Code > ls[j].Code
 }
 
-func Cloc(paths ...string) (ClocData, error) {
+func Cloc(paths []string) (ClocData, error) {
 	// Get data
 	processor := Processor{
 		langs: NewDefinedLanguages(),
