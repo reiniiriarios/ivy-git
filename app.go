@@ -44,7 +44,8 @@ func (a *App) startup(ctx context.Context) {
 
 	// Set git data.
 	a.Git = git.Git{
-		Repo: a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo],
+		AppCtx: a.ctx,
+		Repo:   a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo],
 	}
 	// If main branch not found, check again.
 	if !a.Git.BranchExists(a.Git.Repo.Main) {

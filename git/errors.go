@@ -2,6 +2,8 @@ package git
 
 import (
 	"regexp"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type ErrorCode int64
@@ -12,9 +14,9 @@ type GitError struct {
 	Message   string
 }
 
-func ParseGitError[E []byte | string](stderr E) error {
+func (g *Git) ParseGitError(stderr string) error {
 	e := GitError{
-		Stderr: string(stderr),
+		Stderr: stderr,
 	}
 	// Determine error code from stderr
 	e.parse()
@@ -25,6 +27,18 @@ func ParseGitError[E []byte | string](stderr E) error {
 	} else {
 		// If not a standard error, the message will simply be stderr
 		e.Message = e.Stderr
+	}
+
+	// Handle events for some errors.
+	switch e.ErrorCode {
+	case RebaseConflicts:
+		runtime.EventsEmit(g.AppCtx, "rebase-conflicts")
+	case MergeConflicts:
+		runtime.EventsEmit(g.AppCtx, "merge-conflicts")
+	case RevertConflicts:
+		runtime.EventsEmit(g.AppCtx, "revert-conflicts")
+	case UnresolvedConflicts:
+		runtime.EventsEmit(g.AppCtx, "unresolved-conflicts")
 	}
 
 	return &e
@@ -359,6 +373,7 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Code:  PushWithPrivateEmail,
 			Regex: "error: GH007: Your push would publish a private email address.",
 		},
+		// End GitHub-specific errors
 	}
 }
 

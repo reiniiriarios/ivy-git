@@ -2,11 +2,13 @@ package git
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"os/exec"
 )
 
 type Git struct {
+	AppCtx context.Context
 	Repo
 }
 
@@ -28,7 +30,7 @@ func (g *Git) Run(directory string, command ...string) (string, error) {
 	// error, errb should contain the relevant information.
 	err := cmd.Run()
 	if err != nil {
-		return outb.String(), ParseGitError(errb.String())
+		return outb.String(), g.ParseGitError(errb.String())
 	}
 
 	return outb.String(), nil

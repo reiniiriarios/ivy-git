@@ -11,16 +11,18 @@
   import MakeCommit from "components/MakeCommit.svelte";
   import RemoteActions from "components/RemoteActions.svelte";
 
+  import { ResizeWindow } from "wailsjs/go/main/App";
+
   import { addInputListener, keyboardNavListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";
-  import { envInit, getPlatform } from "scripts/env";
+  import { envInit } from "scripts/env";
 
   import { currentRepo, repos } from "stores/repos";
   import { currentRemote, remoteData } from "stores/remotes";
   import { settings } from "stores/settings";
 
-  import { ResizeWindow } from "wailsjs/go/main/App";
   import { enableWatcher } from "events/watcher";
+  import { registerConflictEvents } from "events/conflicts";
 
   // Load initial ui state.
   function init() {
@@ -43,12 +45,11 @@
     init();
   });
 
+  // Frontend Listeners
   window.addEventListener('resize', ResizeWindow);
   keyboardNavListener();
   addLinkListener();
   addInputListener();
-
-  enableWatcher();
 
   // Fixes an issue on macOS where when dragging the cursor will change to
   // the text selector. By only attaching this to HTMLElements, text itself
@@ -59,13 +60,9 @@
     }
   });
 
-  // Development: If hot updating a module, re-init the app for correct data cascade.
-  // if (import.meta.hot) {
-  //   console.log('Hot relading enabled...');
-  //   import.meta.hot.on('vite:afterUpdate', () => {
-  //     window.location.reload();
-  //   });
-  // }
+  // Backend Listeners
+  enableWatcher();
+  registerConflictEvents();
 </script>
 
 <TitleBar />
