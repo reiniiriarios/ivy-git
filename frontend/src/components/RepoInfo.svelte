@@ -88,6 +88,10 @@
           {/each}
         </tbody>
       </table>
+    {:else if $cloc.Error}
+      <div class="error">{$cloc.Error}</div>
+    {:else}
+      <div class="loading">...</div>
     {/if}
   </div>
 </div>

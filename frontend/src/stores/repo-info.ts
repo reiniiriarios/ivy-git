@@ -49,6 +49,7 @@ export const numCommits = createNumCommits();
 type ClocData = {
   Languages: LanguageData[];
   Total: LanguageData;
+  Error: string;
 }
 
 interface LanguageData {
@@ -68,10 +69,13 @@ function createCloc() {
   return {
     subscribe,
     fetch: async () => {
+      set({} as ClocData);
       Cloc().then(result => {
         parseResponse(result, () => {
           set(result.Data);
           console.log(result.Data)
+        }, () => {
+          set({ Error: result.Message } as ClocData);
         });
       });
     },
