@@ -17,9 +17,9 @@ export function enableWatcher() {
   EventsOn('watcher', (e: WatcherEvent) => {
     console.log('Watcher updating...');
     changes.refresh();
+    commitData.refresh();
     if (e.CommitChange || e.ShowRefChange || e.UncommittedDiffChange || e.RemoteDiffChange) {
       branches.refresh();
-      commitData.refresh();
       commitSignData.refresh();
       remoteData.refresh();
     }
