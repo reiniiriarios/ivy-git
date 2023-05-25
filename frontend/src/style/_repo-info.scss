@@ -4,6 +4,11 @@
   h2 {
     padding: 0 1.5rem;
     font-weight: normal;
+    margin: 2rem 0 1rem;
+
+    &:first-child {
+      margin-top: 1.5rem;
+    }
   }
 
   &__things {

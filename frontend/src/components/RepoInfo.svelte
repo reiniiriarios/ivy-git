@@ -3,6 +3,7 @@
   import { numBranches, numTags, numCommits, cloc } from "stores/repo-info";
   import { currentRepo, repos } from "stores/repos";
   import { onMount } from "svelte";
+  import languages from "style/languages.json"
 
   onMount(() => {
     numBranches.fetch();
@@ -51,21 +52,31 @@
   <h2>Code</h2>
   <div class="code-breakdown">
     {#if $cloc.Languages?.length}
+      <div class="code-breakdown__bar">
+        {#each Object.entries($cloc.Languages) as [_, lang]}
+          <div
+            style:background-color={languages[lang.Name] ?? '#ccc'}
+            style:width={lang.TotalPercent.toFixed(4) + '%'}
+          ></div>
+        {/each}
+      </div>
       <table>
         <thead>
           <tr>
+            <th></th>
             <th aria-label="Language"></th>
             <th>Total Lines</th>
             <th>Code Lines</th>
             <th>Comments</th>
             <th>Blank Lines</th>
             <th>Files</th>
-            <th aria-label="Percentage"></th>
+            <th>Percent</th>
           </tr>
         </thead>
         <tbody>
           {#each Object.entries($cloc.Languages) as [_, lang]}
             <tr>
+              <td class="dot"><span style:background-color={languages[lang.Name] ?? '#ccc'}></span></td>
               <td class="name">{lang.Name}</td>
               <td>{lang.Total}</td>
               <td>{lang.Code}</td>

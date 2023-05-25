@@ -8,6 +8,7 @@ import { currentTab } from 'stores/ui';
 import { currentCommit } from 'stores/commit-details';
 import { remoteData } from 'stores/remotes';
 import { currentRepo } from 'stores/repos';
+import { cloc } from 'stores/repo-info';
 
 import { parseResponse } from 'scripts/parse-response';
 
@@ -61,6 +62,7 @@ function createCurrentBranch() {
               currentCommit.unset();
             } else if (cTab === 'details') {
               remoteData.refresh();
+              cloc.fetch();
             }
             changes.refresh();
             set(result.Data);

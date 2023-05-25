@@ -9,7 +9,7 @@ import { branches, currentBranch } from 'stores/branches';
 import { remoteData } from 'stores/remotes';
 import { currentTab, repoSelect } from 'stores/ui';
 import { messageDialog } from 'stores/message-dialog';
-import { numBranches, numCommits, numTags } from 'stores/repo-info';
+import { cloc, numBranches, numCommits, numTags } from 'stores/repo-info';
 
 import { parseResponse } from 'scripts/parse-response';
 
@@ -79,6 +79,7 @@ function createRepos() {
         if (cTab === 'details') {
           remoteData.refresh();
           numCommits.fetch();
+          cloc.fetch();
         }
       });
     }
@@ -111,6 +112,7 @@ function createCurrentRepo() {
             numCommits.fetch();
             numBranches.fetch();
             numTags.fetch();
+            cloc.fetch();
           }
           branches.refresh();
           currentBranch.refresh();
@@ -135,6 +137,7 @@ function createCurrentRepo() {
             numCommits.fetch();
             numBranches.fetch();
             numTags.fetch();
+            cloc.fetch();
           }
           branches.refresh();
           currentBranch.refresh();

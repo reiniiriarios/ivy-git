@@ -1,6 +1,22 @@
 .code-breakdown {
   margin: 0 1.5rem;
 
+  &__bar {
+    width: 100%;
+    display: flex;
+    border-radius: 0.375rem;
+    overflow: hidden;
+
+    > div {
+      height: 0.75rem;
+    }
+  }
+
+  table {
+    margin: 1.5rem 0;
+    width: 100%;
+  }
+
   tr {
     th,
     td {
@@ -19,6 +35,18 @@
   }
 
   td {
+    &.dot {
+      width: 1rem;
+      margin-right: 1rem;
+
+      span {
+        display: inline-block;
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius: 50%;
+      }
+    }
+
     &.name {
       font-weight: bold;
     }
