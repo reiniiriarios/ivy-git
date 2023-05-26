@@ -38,8 +38,9 @@ function createUnstagedDiff() {
       GetUnstagedFileParsedDiff(file, status).then(result => {
         console.log(result)
         parseResponse(result, () => set(result.Data), () => set({} as Diff));
-    });
+      });
     },
+    clear: async () => set({} as Diff),
   };
 }
 export const unstagedFileDiff = createUnstagedDiff();
