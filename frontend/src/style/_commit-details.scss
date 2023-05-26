@@ -170,9 +170,13 @@
       color: var(--color-scale-b-2-100);
     }
 
-    .diff {
+    &-old {
       color: var(--color-text-muted);
     }
+  }
+
+  &__diff {
+    color: var(--color-text-muted);
 
     .added {
       color: var(--color-scale-g-3-100);
@@ -180,10 +184,6 @@
 
     .deleted {
       color: var(--color-scale-r-4-100);
-    }
-
-    &-old {
-      color: var(--color-text-muted);
     }
   }
 }
