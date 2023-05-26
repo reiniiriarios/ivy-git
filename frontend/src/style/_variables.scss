@@ -81,6 +81,16 @@
   --color-details-border: var(--color-scale-a-7-100);
   --color-details-border-2: var(--color-scale-a-6-100);
 
+  --color-diff-line-bg-hunk-header: var(--color-scale-a-7-25);
+  --color-diff-line-bg-add: var(--color-scale-g-5-25);
+  --color-diff-line-bg-delete: var(--color-scale-r-5-25);
+  --color-diff-line-bg-context: var(--color-scale-a-5-25);
+  --color-diff-line-add: var(--color-scale-g-3-100);
+  --color-diff-line-delete: var(--color-scale-r-3-100);
+  --color-diff-line-no: var(--color-scale-a-3-100);
+  --color-diff-hunk-details: var(--color-scale-a-1-100);
+  --color-diff-hunk-heading: var(--color-scale-a-3-100);
+
   --title-bar-height: 2.25rem;
   --sidebar-width: 25rem;
   --repo-button-height: 4rem;

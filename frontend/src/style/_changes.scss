@@ -59,7 +59,7 @@
 .change {
   display: flex;
   justify-content: left;
-  align-items: center;
+  align-items: stretch;
   border-bottom: 1px solid var(--color-changes-border);
   background-color: var(--color-changes-list-bg);
   min-height: 3rem;

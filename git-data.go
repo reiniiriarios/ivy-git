@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"ivy-git/git"
 )
 
@@ -16,6 +17,7 @@ type DataResponse struct {
 
 func dataResponse(err error, data any) DataResponse {
 	if err != nil {
+		fmt.Printf("%g", err)
 		return DataResponse{
 			Response: "error",
 			Message:  err.Error(),
@@ -313,4 +315,9 @@ func (a *App) UpdateMain(branch string) DataResponse {
 func (a *App) GetInProgressCommitMessageEither() git.CommitMessage {
 	msg := a.Git.GetInProgressCommitMessageEither()
 	return a.Git.ParseCommitMessage(msg)
+}
+
+func (a *App) GetUnstagedFileParsedDiff(file string, status string) DataResponse {
+	diff, err := a.Git.GetUnstagedFileParsedDiff(file, status)
+	return dataResponse(err, diff)
 }

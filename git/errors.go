@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -14,7 +15,7 @@ type GitError struct {
 	Message   string
 }
 
-func (g *Git) ParseGitError(stderr string) error {
+func (g *Git) ParseGitError(stderr string, err error) error {
 	e := GitError{
 		Stderr: stderr,
 	}
@@ -24,9 +25,13 @@ func (g *Git) ParseGitError(stderr string) error {
 	msg := getGitErrorMessage(e.ErrorCode)
 	if msg != "" {
 		e.Message = msg
-	} else {
+	} else if e.Stderr != "" {
 		// If not a standard error, the message will simply be stderr
 		e.Message = e.Stderr
+	} else if err.Error() != "" {
+		e.Message = err.Error()
+	} else {
+		e.Message = fmt.Sprintf("Unrecognized git error occurred [%d]", e.ErrorCode)
 	}
 
 	// Handle events for some errors.
@@ -49,7 +54,7 @@ func (e *GitError) Error() string {
 }
 
 const (
-	Undefined ErrorCode = iota
+	UndefinedError ErrorCode = iota
 	SSHKeyAuditUnverified
 	SSHAuthenticationFailed
 	SSHPermissionDenied

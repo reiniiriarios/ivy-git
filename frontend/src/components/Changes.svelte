@@ -3,6 +3,7 @@
   import { parseResponse } from 'scripts/parse-response';
   import { changes } from 'stores/changes';
   import { currentFile } from 'stores/current-file';
+  import { fetchDiff } from 'stores/diffs';
   import { currentTab, branchSelect, repoSelect } from 'stores/ui';
   import { StageFile, UnstageFile, StageAll, UnstageAll } from 'wailsjs/go/main/App'
 
@@ -41,6 +42,7 @@
   function selectFile(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     currentTab.set('changes');
     currentFile.select(e.currentTarget.dataset.file, e.currentTarget.dataset.staged === 'true');
+    fetchDiff(e.currentTarget.dataset.file, e.currentTarget.dataset.status, e.currentTarget.dataset.staged === 'true', false);
   }
 </script>
 
@@ -57,6 +59,7 @@
         <li class="change" class:active={$currentFile.File === change.File && $currentFile.Staged}>
           <div class="change__file"
             data-file="{change.File}"
+            data-status="{change.Letter}"
             data-staged="true"
             on:click={selectFile}
             on:keypress={selectFile}>
@@ -89,6 +92,7 @@
         <li class="change" class:active={$currentFile.File === change.File && !$currentFile.Staged}>
           <div class="change__file"
             data-file="{change.File}"
+            data-status="{change.Letter}"
             data-staged="false"
             on:click={selectFile}
             on:keypress={selectFile}>

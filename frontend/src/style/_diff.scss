@@ -1,0 +1,95 @@
+@use "../style/!mixins" as *;
+
+.diff {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  font-family: FiraCode, monospace;
+  overflow: auto;
+  tab-size: 4;
+  padding-bottom: 1.5rem;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: min-content min-content auto;
+  }
+
+  &__hunk-header {
+    grid-column: 1 / span 3;
+    padding: 1rem 1.25rem;
+    background-color: var(--color-diff-line-bg-hunk-header);
+    @include no-select;
+  }
+
+  &__hunk-details {
+    color: var(--color-diff-hunk-details);
+  }
+
+  &__hunk-heading {
+    color: var(--color-diff-hunk-heading);
+  }
+
+  &__line,
+  &__line-no,
+  &__line-type {
+    white-space: pre;
+    padding: 0.25rem 0.5rem;
+  }
+
+  &__line-no {
+    min-width: 3rem;
+    text-align: right;
+    color: var(--color-diff-line-no);
+    @include no-select;
+  }
+
+  &__line-type {
+    @include no-select;
+
+    &.diff-line--DiffAddLine {
+      &::before {
+        color: var(--color-diff-line-add);
+        content: '+';
+      }
+    }
+
+    &.diff-line--DiffDeleteLine {
+      &::before {
+        color: var(--color-diff-line-delete);
+        content: '-';
+      }
+    }
+  }
+
+  &__line {
+    position: relative;
+
+    &--nonewline {
+      &::after {
+        position: absolute;
+        left: 0;
+        bottom: -0.75rem;
+        width: 1rem;
+        height: 1rem;
+        pointer-events: none;
+        content: '';
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="red" d="M6 0a6 6 0 1 1 0 12A6 6 0 0 1 6 0Zm3 5H3v2h6Z"/></svg>');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    }
+  }
+
+  .diff-line--DiffContextLine {
+    background-color: var(--color-diff-line-bg-context);
+  }
+
+  .diff-line--DiffAddLine {
+    background-color: var(--color-diff-line-bg-add);
+  }
+
+  .diff-line--DiffDeleteLine {
+    background-color: var(--color-diff-line-bg-delete);
+  }
+}

@@ -30,7 +30,7 @@ func (g *Git) Run(directory string, command ...string) (string, error) {
 	// error, errb should contain the relevant information.
 	err := cmd.Run()
 	if err != nil {
-		return outb.String(), g.ParseGitError(errb.String())
+		return outb.String(), g.ParseGitError(errb.String(), err)
 	}
 
 	return outb.String(), nil

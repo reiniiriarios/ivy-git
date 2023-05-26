@@ -101,7 +101,7 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 	return changesX, changesY, nil
 }
 
-// Get status flag for `git status --porcelain`
+// `git status --porcelain`
 //
 // X          Y     Meaning
 // -------------------------------------------------
@@ -134,27 +134,42 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 // ?           ?    untracked
 // !           !    ignored
 // -------------------------------------------------
+
+const (
+	FileUnknownStatus = ""
+	FileNotUpdated    = " "
+	FileUntracked     = "?"
+	FileIgnored       = "!"
+	FileAdded         = "A"
+	FileCopied        = "C"
+	FileDeleted       = "D"
+	FileModified      = "M"
+	FileRenamed       = "R"
+	FileTypeChanged   = "T"
+	FileUnmerged      = "U"
+)
+
 func getStatusFlag(status string) string {
 	switch status {
-	case "A":
+	case FileAdded:
 		return "added"
-	case "C":
+	case FileCopied:
 		return "copied"
-	case "D":
+	case FileDeleted:
 		return "deleted"
-	case "M":
+	case FileModified:
 		return "modified"
-	case "R":
+	case FileRenamed:
 		return "renamed"
-	case "T":
+	case FileTypeChanged:
 		return "type-changed"
-	case "U":
+	case FileUnmerged:
 		return "unmerged"
-	case "?":
+	case FileUntracked:
 		return "untracked"
-	case "!":
+	case FileIgnored:
 		return "ignored"
-	case " ":
+	case FileNotUpdated:
 		return "not-updated"
 	}
 
