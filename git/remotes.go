@@ -106,10 +106,7 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 
 				site := getSiteName(url.Hostname())
 
-				userRepo := url.Path
-				if userRepo[:1] == "/" {
-					userRepo = userRepo[1:]
-				}
+				userRepo := strings.Trim(url.Path, "/")
 				if len(userRepo) > 4 && userRepo[len(userRepo)-4:] == ".git" {
 					userRepo = userRepo[:len(userRepo)-4]
 				}
