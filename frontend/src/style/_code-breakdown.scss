@@ -8,7 +8,11 @@
 }
 
 .code-breakdown {
-  margin: 0 1.5rem;
+  text-align: left;
+
+  &__inner {
+    margin: 0 1.5rem;
+  }
 
   &__loading {
     svg {

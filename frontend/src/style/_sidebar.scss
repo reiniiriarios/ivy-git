@@ -3,7 +3,7 @@
   flex-direction: column;
   width: var(--sidebar-width);
   overflow: visible;
-  height: calc(100% - var(--title-bar-height));
+  height: 100%;
   border-right: 1px solid var(--color-sidebar-border);
 }
 

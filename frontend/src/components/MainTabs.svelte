@@ -39,8 +39,9 @@
     </button>
   {/each}
 </nav>
-
-<svelte:component this={tabs[$currentTab].c} />
+<div class="tab-content">
+  <svelte:component this={tabs[$currentTab].c} />
+</div>
 
 <div class="window-resize window-resize--right"></div>
 <div class="window-resize window-resize--bottom"></div>

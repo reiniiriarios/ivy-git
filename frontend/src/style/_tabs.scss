@@ -37,3 +37,8 @@
     }
   }
 }
+
+.tab-content {
+  width: calc(100% - var(--resize-bar-width));
+  height: calc(100vh - var(--tabs-height) - var(--title-bar-height) - var(--resize-bar-width));
+}

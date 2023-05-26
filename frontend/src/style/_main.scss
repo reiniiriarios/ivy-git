@@ -51,14 +51,14 @@ a {
 #container {
   display: flex;
   justify-content: center;
-  height: 100vh;
+  height: calc(100vh - var(--title-bar-height));
   width: 100vw;
 }
 
 main {
   z-index: 1;
   width: calc(100% - var(--sidebar-width));
-  height: calc(100% - var(--title-bar-height));
+  height: 100%;
 }
 
 hr {
