@@ -20,7 +20,6 @@ type Commit struct {
 	Id              uint64
 	Hash            string
 	Parents         []string
-	Children        []string
 	RefName         string
 	AuthorName      string
 	AuthorEmail     string
@@ -36,8 +35,6 @@ type Commit struct {
 	Labeled         bool
 	Color           uint16
 	X               uint16
-	HEAD            bool
-	DropPossible    bool
 }
 
 type CommitDetails struct {
@@ -258,7 +255,7 @@ func (g *Git) GetCommitsAndGraph(limit uint64, offset uint64) (Ref, []Commit, Gr
 	}
 
 	// Build all graph data.
-	graph := g.BuildGraph(HEAD, &commits)
+	graph := g.BuildGraph(HEAD, commits)
 
 	// Add color and x-coord to commits from graph data.
 	// Add whether the commit should have a label.
@@ -270,53 +267,15 @@ func (g *Git) GetCommitsAndGraph(limit uint64, offset uint64) (Ref, []Commit, Gr
 			}
 		}
 		commits[i].X = graph.Vertices[graph.CommitLookup[commits[i].Hash]].X
-		commits[i].HEAD = commits[i].Hash == HEAD.Hash
 		commits[i].Labeled =
 			len(commits[i].Heads) > 0 ||
 				len(commits[i].Branches) > 0 ||
 				len(commits[i].Tags) > 0 ||
 				len(commits[i].Remotes) > 0 ||
-				commits[i].HEAD ||
+				commits[i].Hash == HEAD.Hash ||
 				commits[i].Stash
 		commits[i].Id = uint64(i)
-		commits[i].DropPossible = isDroppable(uint64(i), &graph.CommitLookup, &commits)
-		for child := range graph.Vertices[graph.CommitLookup[commits[i].Hash]].Children {
-			commits[i].Children = append(commits[i].Children, graph.Vertices[child].Hash)
-		}
 	}
 
 	return HEAD, commits, graph, nil
-}
-
-// Whether dropping the commit is (somewhat easily) possible.
-func isDroppable(commit_id uint64, lookup *map[string]int64, commits *[]Commit) bool {
-	return droppableTopologyPasses(commit_id, lookup, commits) == 1
-}
-
-// Search commit topology recursively.
-//
-//	  -1  Topology fails (fail)
-//		 0  Head not found (fail)
-//		 1  Head found     (pass)
-func droppableTopologyPasses(commit_id uint64, lookup *map[string]int64, commits *[]Commit) int8 {
-	if len((*commits)[commit_id].Parents) > 1 {
-		// Merge commit
-		return -1
-	}
-	if len((*commits)[commit_id].Children) > 1 {
-		// Splits to two branches
-		return -1
-	}
-	if len((*commits)[commit_id].Children) == 1 {
-		// Search recursively through first child
-		topology := droppableTopologyPasses((*commits)[(*lookup)[(*commits)[commit_id].Children[0]]].Id, lookup, commits)
-		if topology != 0 {
-			// Either topology has failed (-1) or HEAD was found (1)
-			return topology
-		}
-	}
-	if (*commits)[commit_id].HEAD {
-		return 1
-	}
-	return 0
 }
