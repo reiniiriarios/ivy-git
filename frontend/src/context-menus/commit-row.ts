@@ -158,7 +158,27 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
           },
         });
       },
-    }
+    },
+    // todo: do not enable until there's a safety check dumdum
+    // {
+    //   text: "Drop Commit",
+    //   callback: () => {
+    //     messageDialog.confirm({
+    //       heading: 'Drop Commit',
+    //       message: `Are you sure you want to drop <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
+    //       confirm: 'Drop',
+    //       callbackConfirm: () => {
+    //         DropCommit(e.dataset.hash).then(result => {
+    //           parseResponse(result, () => {
+    //             commitData.refresh();
+    //             commitSignData.refresh();
+    //             currentBranch.clear();
+    //           });
+    //         });
+    //       },
+    //     });
+    //   },
+    // }
   ]);
 
   if (e.dataset.hash !== get(HEAD).Hash) {
