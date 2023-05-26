@@ -1,5 +1,5 @@
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { CreateBranch, AddTag, CheckoutCommit, RevertCommit, HardReset, CherryPick } from "wailsjs/go/main/App";
+import { CreateBranch, AddTag, CheckoutCommit, RevertCommit, HardReset, SoftReset, CherryPick } from "wailsjs/go/main/App";
 
 import { get } from 'svelte/store';
 
@@ -182,25 +182,46 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
   ]);
 
   if (e.dataset.hash !== get(HEAD).Hash) {
-    m.push({
-      text: 'Hard Reset to This Commit',
-      callback: () => {
-        messageDialog.confirm({
-          heading: 'Hard Reset',
-          message: `Are you sure you want to hard reset to <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
-          confirm: 'Hard Reset',
-          callbackConfirm: () => {
-            HardReset(e.dataset.hash).then(result => {
-              parseResponse(result, () => {
-                commitData.refresh();
-                commitSignData.refresh();
-                currentBranch.clear();
+    m = m.concat([
+      {
+        text: 'Soft Reset to This Commit',
+        callback: () => {
+          messageDialog.confirm({
+            heading: 'Soft Reset',
+            message: `Are you sure you want to soft reset to <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
+            confirm: 'Soft Reset',
+            callbackConfirm: () => {
+              SoftReset(e.dataset.hash).then(result => {
+                parseResponse(result, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                  currentBranch.clear();
+                });
               });
-            });
-          },
-        });
+            },
+          });
+        },
       },
-    });
+      {
+        text: 'Hard Reset to This Commit',
+        callback: () => {
+          messageDialog.confirm({
+            heading: 'Hard Reset',
+            message: `Are you sure you want to hard reset to <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
+            confirm: 'Hard Reset',
+            callbackConfirm: () => {
+              HardReset(e.dataset.hash).then(result => {
+                parseResponse(result, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                  currentBranch.clear();
+                });
+              });
+            },
+          });
+        },
+      }
+    ]);
   }
 
   m = m.concat([

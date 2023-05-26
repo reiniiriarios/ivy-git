@@ -2,11 +2,16 @@ package git
 
 import "errors"
 
-func (g *Git) HardReset(hash string) error {
+func (g *Git) ResetToCommit(hash string, hard bool) error {
 	if hash == "" {
 		return errors.New("no commit hash specified")
 	}
-	_, err := g.RunCwd("reset", "--hard", hash)
+	var err error
+	if hard {
+		_, err = g.RunCwd("reset", "--hard", hash)
+	} else {
+		_, err = g.RunCwd("reset", hash)
+	}
 	return err
 }
 
