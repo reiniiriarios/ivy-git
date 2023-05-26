@@ -24,6 +24,7 @@ type Connection struct {
 
 type Vertex struct {
 	Id          int64
+	Hash        string
 	Children    []int64
 	Parents     []int64
 	NextParent  int
@@ -56,7 +57,7 @@ type Graph struct {
 	Continues    bool
 }
 
-func (g *Git) BuildGraph(HEAD Ref, commits []Commit) Graph {
+func (g *Git) BuildGraph(HEAD Ref, commits *[]Commit) Graph {
 	// Build all graph data.
 	graph := Graph{}
 	graph.addVertices(commits, HEAD)
@@ -66,11 +67,12 @@ func (g *Git) BuildGraph(HEAD Ref, commits []Commit) Graph {
 }
 
 // Get vertices to plot based on commits and HEAD.
-func (g *Graph) addVertices(commits []Commit, HEAD Ref) {
+func (g *Graph) addVertices(commits *[]Commit, HEAD Ref) {
 	g.CommitLookup = make(map[string]int64)
-	for i, c := range commits {
+	for i, c := range *commits {
 		g.Vertices = append(g.Vertices, Vertex{
 			Id:          int64(i),
+			Hash:        c.Hash,
 			BranchId:    -1,
 			Committed:   c.Hash != UNCOMMITED_HASH,
 			Connections: make(map[uint16]Connection),
@@ -80,7 +82,7 @@ func (g *Graph) addVertices(commits []Commit, HEAD Ref) {
 	}
 
 	// Assign each vertex its parents.
-	for i, commit := range commits {
+	for i, commit := range *commits {
 		for n, parent_hash := range commit.Parents {
 			// Only use the first stash parent to build the graph. The second
 			// is the stash's commit and should not be drawn.

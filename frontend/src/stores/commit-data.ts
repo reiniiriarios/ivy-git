@@ -25,6 +25,8 @@ export interface Commit {
   Color: number;
   X: number;
   Merge: boolean;
+  HEAD: boolean;
+  DropPossible: boolean;
 }
 
 export interface Ref {
