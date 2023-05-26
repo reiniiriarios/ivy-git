@@ -1,5 +1,10 @@
 <script lang="ts">
   import { unstagedFileDiff } from "stores/diffs";
+
+  function toggleLine(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
+    e.currentTarget.classList.toggle('diff__line--on');
+    e.currentTarget.classList.toggle('diff__line--off');
+  }
 </script>
 
 <div class="diff">
@@ -16,9 +21,21 @@
           <span class="diff__hunk-heading">{hunk.Heading}</span>
         </div>
         {#each hunk.Lines as line}
-          <div class="diff__line-no diff-line--{line.Type}">{line.Type === 'DiffDeleteLine' ? line.OldLineNo : line.NewLineNo}</div>
-          <div class="diff__line-type diff-line--{line.Type}"></div>
-          <div class="diff__line diff-line--{line.Type}" class:diff__line--nonewline={line.NoNewline}>{line.Line}</div>
+          {#if line.Type !== 'DiffContextLine'}
+            <div class="diff__line diff__line--{line.Type} diff__line--on" on:click={toggleLine} on:keypress={toggleLine}>
+              <div class="diff__line-toggle"></div>
+              <div class="diff__line-no">{line.Type === 'DiffDeleteLine' ? line.OldLineNo : line.NewLineNo}</div>
+              <div class="diff__line-type"></div>
+              <div class="diff__line-code" class:diff__line--nonewline={line.NoNewline}>{line.Line}</div>
+            </div>
+          {:else}
+            <div class="diff__line diff__line--{line.Type}">
+              <div class="diff__line-toggle"></div>
+              <div class="diff__line-no">{line.NewLineNo}</div>
+              <div class="diff__line-type"></div>
+              <div class="diff__line-code" class:diff__line--nonewline={line.NoNewline}>{line.Line}</div>
+            </div>
+          {/if}
         {/each}
       {/each}
     </div>
