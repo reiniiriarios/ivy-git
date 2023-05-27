@@ -19,7 +19,7 @@ export function enableWatcher() {
     console.log('Watcher updating...');
     changes.refresh();
     commitData.refresh();
-    unstagedFileDiff.clear(); // todo: needs specificity
+    unstagedFileDiff.refresh();
     if (e.CommitChange || e.ShowRefChange || e.UncommittedDiffChange || e.RemoteDiffChange) {
       branches.refresh();
       commitSignData.refresh();

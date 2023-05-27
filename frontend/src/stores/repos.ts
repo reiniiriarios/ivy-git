@@ -10,6 +10,7 @@ import { remoteData } from 'stores/remotes';
 import { currentTab, repoSelect } from 'stores/ui';
 import { messageDialog } from 'stores/message-dialog';
 import { cloc, numBranches, numCommits, numTags } from 'stores/repo-info';
+import { currentFile } from 'stores/current-file';
 
 import { parseResponse } from 'scripts/parse-response';
 
@@ -114,6 +115,7 @@ function createCurrentRepo() {
             numTags.fetch();
             cloc.fetch();
           }
+          currentFile.clear();
           branches.refresh();
           currentBranch.refresh();
           changes.refresh();
@@ -139,6 +141,7 @@ function createCurrentRepo() {
             numTags.fetch();
             cloc.fetch();
           }
+          currentFile.clear();
           branches.refresh();
           currentBranch.refresh();
           changes.refresh();

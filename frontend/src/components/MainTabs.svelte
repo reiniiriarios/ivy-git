@@ -28,7 +28,7 @@
 
   function setTab(t: string) {
     currentTab.set(t);
-    currentFile.reset();
+    currentFile.clear();
   }
 </script>
 

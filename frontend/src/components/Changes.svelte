@@ -41,8 +41,12 @@
 
   function selectFile(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     currentTab.set('changes');
-    currentFile.select(e.currentTarget.dataset.file, e.currentTarget.dataset.staged === 'true');
-    fetchDiff(e.currentTarget.dataset.file, e.currentTarget.dataset.status, e.currentTarget.dataset.staged === 'true', false);
+    currentFile.select(
+      e.currentTarget.dataset.file,
+      e.currentTarget.dataset.status,
+      e.currentTarget.dataset.staged === 'true',
+      false
+    );
   }
 </script>
 

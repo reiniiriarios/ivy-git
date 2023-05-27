@@ -1,11 +1,15 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { parseResponse } from "scripts/parse-response";
 import { GetUnstagedFileParsedDiff } from 'wailsjs/go/main/App';
+import { changes } from "stores/changes";
 
 interface Diff {
   Raw: string;
   Hunks: DiffHunk[];
   Binary: boolean;
+  // set here
+  File: string;
+  Status: string;
 }
 
 interface DiffHunk {
@@ -34,13 +38,23 @@ function createUnstagedDiff() {
     subscribe,
     set,
     fetch: async (file: string, status: string) => {
-      console.log('fetching', file, status)
       GetUnstagedFileParsedDiff(file, status).then(result => {
-        console.log(result)
-        parseResponse(result, () => set(result.Data), () => set({} as Diff));
+        parseResponse(result, () => {
+          result.Data.File = file;
+          result.Data.Status = status;
+          set(result.Data)
+        }, () => set({} as Diff));
       });
     },
     clear: async () => set({} as Diff),
+    refresh: async () => {
+      // If the file that needs to be refreshed is in the changed files list, refresh it.
+      if (get(changes).y.filter(c => c.File === get(unstagedFileDiff).File).length === 1) {
+        unstagedFileDiff.fetch(get(unstagedFileDiff).File, get(unstagedFileDiff).Status);
+      } else {
+        unstagedFileDiff.clear();
+      }
+    },
   };
 }
 export const unstagedFileDiff = createUnstagedDiff();
