@@ -93,17 +93,25 @@ func (g *Git) GetUnstagedFileParsedDiff(file string, status string) (Diff, error
 
 func (g *Git) getUnstagedFileDiff(file string, status string) (string, error) {
 	cmd := []string{"diff", "-w", "--no-ext-diff", "--patch-with-raw", "-z", "--no-color"}
+
+	var d string
+
 	if status == FileUntracked {
+		// --no-index emulates exit codes from `diff`, will return 1 when changes found
 		// https://github.com/git/git/blob/1f66975deb8402131fbf7c14330d0c7cdebaeaa2/diff-no-index.c#L300
 		cmd = append(cmd, "--no-index", "--", "/dev/null", file)
-	} else if status == FileRenamed {
-		cmd = append(cmd, "--", file)
+		d, _ = g.RunCwdNoError(cmd...)
 	} else {
-		cmd = append(cmd, "HEAD", "--", file)
-	}
-	d, err := g.RunCwd(cmd...)
-	if err != nil {
-		return "", err
+		if status == FileRenamed {
+			cmd = append(cmd, "--", file)
+		} else {
+			cmd = append(cmd, "HEAD", "--", file)
+		}
+		var err error
+		d, err = g.RunCwd(cmd...)
+		if err != nil {
+			return "", err
+		}
 	}
 
 	return d, nil
