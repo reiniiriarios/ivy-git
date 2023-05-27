@@ -146,6 +146,7 @@ type DiffLine struct {
 	OldLineNo int64
 	NewLineNo int64
 	NoNewline bool
+	MiniHunk  int64
 }
 
 const HiddenBidiCharsRegex = "/[\u202A-\u202E]|[\u2066-\u2069]/"
@@ -175,6 +176,8 @@ func (d *Diff) parse() error {
 	// Continue ln where we left off with the last loop
 	current_hunk := -1
 	var before, after int64
+	var mini_hunk int64 = 0
+	var mini_hunk_editable bool = false
 	for ; ln < len(lines); ln++ {
 		// Parse hunk heading
 		if strings.HasPrefix(lines[ln], "@@") {
@@ -211,31 +214,41 @@ func (d *Diff) parse() error {
 			return nil
 		case "+":
 			after++
+			mini_hunk_editable = true
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
 				Type:      DiffAddLine,
 				RawLineNo: int64(ln),
 				OldLineNo: -1,
 				NewLineNo: after,
+				MiniHunk:  mini_hunk,
 			})
 		case "-":
 			before++
+			mini_hunk_editable = true
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
 				Type:      DiffDeleteLine,
 				RawLineNo: int64(ln),
 				OldLineNo: before,
 				NewLineNo: -1,
+				MiniHunk:  mini_hunk,
 			})
 		case " ":
 			before++
 			after++
+			// If last line was editable and this one isn't, the mini hunk has ended.
+			if mini_hunk_editable {
+				mini_hunk++
+			}
+			mini_hunk_editable = false
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
 				Type:      DiffContextLine,
 				RawLineNo: int64(ln),
 				OldLineNo: before,
 				NewLineNo: after,
+				MiniHunk:  -1,
 			})
 		default:
 			println(lines[ln])

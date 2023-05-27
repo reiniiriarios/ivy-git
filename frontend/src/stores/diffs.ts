@@ -29,6 +29,7 @@ interface DiffLine {
   OldLineNo: number;
   NewLineNo: number;
   NoNewline: boolean;
+  MiniHunk: number;
 }
 
 function createUnstagedDiff() {
