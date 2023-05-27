@@ -152,7 +152,6 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
               parseResponse(result, () => {
                 commitData.refresh();
                 commitSignData.refresh();
-                currentBranch.clear();
               });
             });
           },
@@ -195,7 +194,6 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
                 parseResponse(result, () => {
                   commitData.refresh();
                   commitSignData.refresh();
-                  currentBranch.clear();
                 });
               });
             },
@@ -214,7 +212,6 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
                 parseResponse(result, () => {
                   commitData.refresh();
                   commitSignData.refresh();
-                  currentBranch.clear();
                 });
               });
             },
