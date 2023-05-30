@@ -61,7 +61,7 @@
         {#each hunk.Lines as line}
           {#if line.Type !== 'DiffContextLine'}
             <div class="diff__row">
-              <div class="diff__line-toggle-minihunk"
+              <div class="diff__line-toggle-minihunk diff__line-toggle-minihunk--click"
                 data-hunk="{h}"
                 data-minihunk="{line.MiniHunk}"
                 on:mouseover={hoverMiniHunk}
