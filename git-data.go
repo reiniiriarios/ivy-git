@@ -76,8 +76,8 @@ func (a *App) PullRemoteBranch(remote string, branch string, rebase bool) DataRe
 func (a *App) GitListChanges() DataResponse {
 	changesX, changesY, err := a.Git.GitListChanges()
 	return dataResponse(err, struct {
-		ChangesX []git.Change
-		ChangesY []git.Change
+		ChangesX map[string]*git.Change
+		ChangesY map[string]*git.Change
 	}{
 		ChangesX: changesX,
 		ChangesY: changesY,

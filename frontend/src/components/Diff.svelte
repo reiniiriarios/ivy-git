@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { unstagedFileDiff } from "stores/diffs";
+  import { currentDiff } from "stores/diffs";
 
   function toggleLine(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     e.currentTarget.classList.toggle('diff__line--on');
@@ -10,6 +10,7 @@
   let lineElements: HTMLElement[] = [];
 
   function hoverMiniHunk(e: (MouseEvent | FocusEvent) & { currentTarget: HTMLElement }) {
+    console.log(miniHunkElements)
     miniHunkElements.map(line => {
       if (line.dataset.minihunk === e.currentTarget.dataset.minihunk) {
         line.classList.add('diff__line-toggle-minihunk--hover');
@@ -37,6 +38,7 @@
     }, [0, 0]);
     let moreLinesOn = onOff[0] > onOff[1];
     console.log(moreLinesOn)
+    console.log(lineElements)
 
     lineElements.forEach(line => {
       if (line.dataset.minihunk === e.currentTarget.dataset.minihunk) {
@@ -54,9 +56,9 @@
 </script>
 
 <div class="diff">
-  {#if $unstagedFileDiff.Hunks?.length}
+  {#if $currentDiff.Hunks?.length}
     <div class="diff__grid">
-      {#each $unstagedFileDiff.Hunks as hunk}
+      {#each $currentDiff.Hunks as hunk}
         <div class="diff__hunk-header">
           <span class="diff__hunk-details">
             @@

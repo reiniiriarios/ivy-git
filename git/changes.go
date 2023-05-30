@@ -15,15 +15,8 @@ type Change struct {
 	Flag     string
 }
 
-type ChangesResponse struct {
-	Response string
-	Message  string
-	ChangesX []Change
-	ChangesY []Change
-}
-
 // Get list of changed files.
-func (g *Git) GitListChanges() ([]Change, []Change, error) {
+func (g *Git) GitListChanges() (map[string]*Change, map[string]*Change, error) {
 	// When a merge is occurring and the merge was successful, or outside of a merge situation,
 	//   X shows the status of the index and Y shows the status of the working tree.
 	// When a merge conflict has occurred and has not yet been resolved,
@@ -35,10 +28,12 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 
 	var changesX []Change
 	var changesY []Change
+	changesXmap := make(map[string]*Change)
+	changesYmap := make(map[string]*Change)
 
 	c, err := g.RunCwd("status", "--untracked-files", "--porcelain", "-z")
 	if err != nil {
-		return changesX, changesY, err
+		return changesXmap, changesYmap, err
 	}
 
 	// https://git-scm.com/docs/git-status
@@ -98,7 +93,14 @@ func (g *Git) GitListChanges() ([]Change, []Change, error) {
 		})
 	}
 
-	return changesX, changesY, nil
+	for i := range changesX {
+		changesXmap[changesX[i].File] = &changesX[i]
+	}
+	for i := range changesY {
+		changesYmap[changesY[i].File] = &changesY[i]
+	}
+
+	return changesXmap, changesYmap, nil
 }
 
 // `git status --porcelain`

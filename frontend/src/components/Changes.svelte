@@ -2,8 +2,7 @@
   import octicons from '@primer/octicons';
   import { parseResponse } from 'scripts/parse-response';
   import { changes } from 'stores/changes';
-  import { currentFile } from 'stores/current-file';
-  import { fetchDiff } from 'stores/diffs';
+  import { currentDiff } from 'stores/diffs';
   import { currentTab, branchSelect, repoSelect } from 'stores/ui';
   import { StageFile, UnstageFile, StageAll, UnstageAll } from 'wailsjs/go/main/App'
 
@@ -41,17 +40,12 @@
 
   function selectFile(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     currentTab.set('changes');
-    currentFile.select(
-      e.currentTarget.dataset.file,
-      e.currentTarget.dataset.status,
-      e.currentTarget.dataset.staged === 'true',
-      false
-    );
+    changes.fetchDiff(e.currentTarget.dataset.staged === 'true' ? 'x' : 'y', e.currentTarget.dataset.file);
   }
 </script>
 
 <div class="changes" style:display={$repoSelect || $branchSelect ? 'none' : 'block'}>
-  {#if $changes.x.length}
+  {#if Object.keys($changes.x).length}
     <div class="changes__header">
       <div class="changes__header-section">Staged</div>
       <div class="changes__header-stage-all changes__header-stage-all--unstage">
@@ -59,8 +53,8 @@
       </div>
     </div>
     <ul class="changes__list changes__list--x">
-      {#each $changes.x as change}
-        <li class="change" class:active={$currentFile.File === change.File && $currentFile.Staged}>
+      {#each Object.entries($changes.x) as [_, change]}
+        <li class="change" class:active={$currentDiff.File === change.File && $currentDiff.Staged}>
           <div class="change__file"
             data-file="{change.File}"
             data-status="{change.Letter}"
@@ -84,7 +78,7 @@
       {/each}
     </ul>
   {/if}
-  {#if $changes.y.length}
+  {#if Object.keys($changes.y).length}
     <div class="changes__header">
       <div class="changes__header-section">Changes</div>
       <div class="changes__header-stage-all changes__header-stage-all--stage">
@@ -92,8 +86,8 @@
       </div>
     </div>
     <ul class="changes__list changes__list--y">
-      {#each $changes.y as change}
-        <li class="change" class:active={$currentFile.File === change.File && !$currentFile.Staged}>
+      {#each Object.entries($changes.y) as [_, change]}
+        <li class="change" class:active={$currentDiff.File === change.File && !$currentDiff.Staged}>
           <div class="change__file"
             data-file="{change.File}"
             data-status="{change.Letter}"

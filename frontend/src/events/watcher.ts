@@ -1,7 +1,6 @@
 import { branches } from 'stores/branches';
 import { changes } from 'stores/changes';
 import { commitData, commitSignData } from 'stores/commit-data';
-import { unstagedFileDiff } from 'stores/diffs';
 import { remoteData } from 'stores/remotes';
 import { EventsOn } from 'wailsjs/runtime/runtime';
 
@@ -19,7 +18,7 @@ export function enableWatcher() {
     console.log('Watcher updating...');
     changes.refresh();
     commitData.refresh();
-    unstagedFileDiff.refresh();
+    // unstagedFileDiff.refresh();
     if (e.CommitChange || e.ShowRefChange || e.UncommittedDiffChange || e.RemoteDiffChange) {
       branches.refresh();
       commitSignData.refresh();

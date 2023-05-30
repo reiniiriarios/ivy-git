@@ -1,15 +1,15 @@
 import { get, writable } from "svelte/store";
-import { parseResponse } from "scripts/parse-response";
-import { GetUnstagedFileParsedDiff } from 'wailsjs/go/main/App';
-import { changes } from "stores/changes";
+import { changes } from "./changes";
 
-interface Diff {
+export interface Diff {
   Raw: string;
   Hunks: DiffHunk[];
   Binary: boolean;
-  // set here
+  // UI
   File: string;
   Status: string;
+  Staged: boolean;
+  Committed: boolean;
 }
 
 interface DiffHunk {
@@ -32,36 +32,28 @@ interface DiffLine {
   MiniHunk: number;
 }
 
-function createUnstagedDiff() {
+function createCurrentDiff() {
   const { subscribe, set } = writable({} as Diff);
 
   return {
     subscribe,
     set,
-    fetch: async (file: string, status: string) => {
-      GetUnstagedFileParsedDiff(file, status).then(result => {
-        parseResponse(result, () => {
-          result.Data.File = file;
-          result.Data.Status = status;
-          set(result.Data)
-        }, () => set({} as Diff));
-      });
+    clear: () => set({} as Diff),
+    fetchDiff: async (hash: string, file: string) => {
+      // Fetch diff from specific commit.
+      //...
     },
-    clear: async () => set({} as Diff),
-    refresh: async () => {
-      // If the file that needs to be refreshed is in the changed files list, refresh it.
-      if (get(changes).y.filter(c => c.File === get(unstagedFileDiff).File).length === 1) {
-        unstagedFileDiff.fetch(get(unstagedFileDiff).File, get(unstagedFileDiff).Status);
-      } else {
-        unstagedFileDiff.clear();
+    refresh: () => {
+      let cd = get(currentDiff);
+      if (cd.Committed) {
+        // Handle diffs for previously committed files here.
+        //...
+      }
+      else {
+        // Let the changes store handle diffs for changed files.
+        changes.fetchDiff(cd.Staged ? 'x' : 'y', cd.File);
       }
     },
-  };
-}
-export const unstagedFileDiff = createUnstagedDiff();
-
-export const fetchDiff = (file: string, status: string, staged: boolean, committed: boolean) => {
-  if (!staged && !committed) {
-    unstagedFileDiff.fetch(file, status);
   }
 }
+export const currentDiff = createCurrentDiff();

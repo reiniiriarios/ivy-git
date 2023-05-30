@@ -5,7 +5,7 @@
   import Settings from 'components/Settings.svelte';
   import { currentTab } from 'stores/ui';
   import octicons from '@primer/octicons';
-  import { currentFile } from 'stores/current-file';
+  import { currentDiff } from 'stores/diffs';
 
   let tabs = {
     changes: {
@@ -28,7 +28,7 @@
 
   function setTab(t: string) {
     currentTab.set(t);
-    currentFile.clear();
+    currentDiff.clear();
   }
 </script>
 
