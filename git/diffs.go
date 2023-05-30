@@ -124,9 +124,11 @@ const (
 )
 
 type Diff struct {
-	Raw    string
-	Hunks  []DiffHunk
-	Binary bool
+	Raw             string
+	Hunks           []DiffHunk
+	Binary          bool
+	SelectableLines uint64
+	SelectedLines   uint64
 }
 
 type DiffHunk struct {
@@ -214,6 +216,8 @@ func (d *Diff) parse() error {
 			d.Hunks[current_hunk].Lines[len(d.Hunks[current_hunk].Lines)-1].NoNewline = true
 			return nil
 		case "+":
+			d.SelectableLines++
+			d.SelectedLines++
 			after++
 			mini_hunk_editable = true
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
@@ -226,6 +230,8 @@ func (d *Diff) parse() error {
 				Selected:  true,
 			})
 		case "-":
+			d.SelectableLines++
+			d.SelectedLines++
 			before++
 			mini_hunk_editable = true
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{

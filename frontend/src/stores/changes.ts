@@ -18,14 +18,7 @@ interface Change {
   // Addl Fetch
   Diff: Diff;
   // UI
-  Lines: ChangeLine[];
-}
-
-interface ChangeLine {
-  RawNo: number;
-  OldNo: number;
-  NewNo: number;
-  Selected: boolean;
+  Partial: boolean;
 }
 
 function createChanges() {
@@ -72,6 +65,15 @@ function createChanges() {
           });
         });
       }
+    },
+    setPartial: async (xy: string, file: string, partial: boolean) => {
+      if (xy !== 'x') xy = 'y';
+      update(c => {
+        if (c[xy][file]) {
+          c[xy][file].Partial = partial;
+        }
+        return c;
+      });
     },
     numStaged: () => {
       return Object.keys(get(changes).x).length;

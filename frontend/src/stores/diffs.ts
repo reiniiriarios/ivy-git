@@ -5,6 +5,8 @@ export interface Diff {
   Raw: string;
   Hunks: DiffHunk[];
   Binary: boolean;
+  SelectableLines: number;
+  SelectedLines: number;
   // UI
   File: string;
   Status: string;

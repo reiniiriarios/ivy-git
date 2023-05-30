@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { changes } from "stores/changes";
   import { currentDiff, type DiffLine } from "stores/diffs";
 
   let miniHunkElements: HTMLElement[] = [];
@@ -37,18 +38,34 @@
     }, [0, 0]);
     let moreLinesOn = onOff[0] > onOff[1];
 
+    // Toggle minihunk lines all on or all off.
+    // Adjust number of selected lines for diff.
+    let adj = 0;
     for (let i = 0; i < $currentDiff.Hunks[hunk].Lines.length; i++) {
       if ($currentDiff.Hunks[hunk].Lines[i].MiniHunk === miniHunk) {
-        $currentDiff.Hunks[hunk].Lines[i].Selected = moreLinesOn ? false : true;
+        if (moreLinesOn && $currentDiff.Hunks[hunk].Lines[i].Selected) {
+          adj--;
+        } else if (!moreLinesOn && !$currentDiff.Hunks[hunk].Lines[i].Selected) {
+          adj++;
+        }
+        $currentDiff.Hunks[hunk].Lines[i].Selected = !moreLinesOn;
       }
     }
+    $currentDiff.SelectedLines += adj;
+    changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
+  }
+
+  function toggleLine(hunk: number, i: number) {
+    $currentDiff.Hunks[hunk].Lines[i].Selected = !$currentDiff.Hunks[hunk].Lines[i].Selected;
+    $currentDiff.SelectedLines += $currentDiff.Hunks[hunk].Lines[i].Selected ? 1 : -1;
+    changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
   }
 </script>
 
 <div class="diff">
   {#if $currentDiff.Hunks?.length}
     <div class="diff__grid">
-      {#each $currentDiff.Hunks as hunk, h}
+      {#each $currentDiff.Hunks as hunk, hunk_id}
         <div class="diff__hunk-header">
           <span class="diff__hunk-details">
             @@
@@ -58,25 +75,25 @@
           </span>
           <span class="diff__hunk-heading">{hunk.Heading}</span>
         </div>
-        {#each hunk.Lines as line}
+        {#each hunk.Lines as line, line_id}
           {#if line.Type !== 'DiffContextLine'}
             <div class="diff__row">
               <div class="diff__line-toggle-minihunk diff__line-toggle-minihunk--click"
-                data-hunk="{h}"
+                data-hunk="{hunk_id}"
                 data-minihunk="{line.MiniHunk}"
                 on:mouseover={hoverMiniHunk}
                 on:mouseout={unHoverMiniHunk}
                 on:focus={hoverMiniHunk}
                 on:blur={unHoverMiniHunk}
-                on:click={() => toggleMiniHunk(h, line.MiniHunk)}
-                on:keypress={() => toggleMiniHunk(h, line.MiniHunk)}
+                on:click={() => toggleMiniHunk(hunk_id, line.MiniHunk)}
+                on:keypress={() => toggleMiniHunk(hunk_id, line.MiniHunk)}
                 bind:this={miniHunkElements[line.RawLineNo]}
               ></div>
               <div class="diff__line diff__line--{line.Type} diff__line--{line.Selected ? 'on' : 'off'}"
-                data-hunk="{h}"
+                data-hunk="{hunk_id}"
                 data-minihunk="{line.MiniHunk}"
-                on:click={() => line.Selected = !line.Selected}
-                on:keypress={() => line.Selected = !line.Selected}
+                on:click={() => toggleLine(hunk_id, line_id)}
+                on:keypress={() => toggleLine(hunk_id, line_id)}
               >
                 <div class="diff__line-toggle"></div>
                 <div class="diff__line-no">{line.Type === 'DiffDeleteLine' ? line.OldLineNo : line.NewLineNo}</div>

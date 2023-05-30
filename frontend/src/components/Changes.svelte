@@ -54,7 +54,12 @@
     </div>
     <ul class="changes__list changes__list--x">
       {#each Object.entries($changes.x) as [_, change]}
-        <li class="change" class:active={$currentDiff.File === change.File && $currentDiff.Staged}>
+        <li
+          class="change"
+          class:change--active={$currentDiff.File === change.File && $currentDiff.Staged}
+          class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
+          class:change--none={change.Diff?.SelectedLines === 0}
+        >
           <div class="change__file"
             data-file="{change.File}"
             data-status="{change.Letter}"
@@ -87,7 +92,12 @@
     </div>
     <ul class="changes__list changes__list--y">
       {#each Object.entries($changes.y) as [_, change]}
-        <li class="change" class:active={$currentDiff.File === change.File && !$currentDiff.Staged}>
+        <li
+          class="change"
+          class:change--active={$currentDiff.File === change.File && !$currentDiff.Staged}
+          class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
+          class:change--none={change.Diff?.SelectedLines === 0}
+        >
           <div class="change__file"
             data-file="{change.File}"
             data-status="{change.Letter}"

@@ -65,7 +65,7 @@
   min-height: 3rem;
   cursor: pointer;
 
-  &.active {
+  &--active {
     background-color: var(--color-changes-list-bg-hover);
   }
 
@@ -76,6 +76,14 @@
       margin-bottom: 0.125rem;
       vertical-align: middle;
       fill: var(--color-scale-a-3-100);
+
+      .change--partial & {
+        fill: var(--color-scale-p-5-100);
+      }
+
+      .change--none & {
+        fill: var(--color-scale-a-6-100);
+      }
     }
 
     &:hover svg {
@@ -84,6 +92,10 @@
 
     &--unstage:hover svg {
       fill: var(--color-scale-r-3-100);
+    }
+
+    .change--none & {
+      pointer-events: none;
     }
   }
 
