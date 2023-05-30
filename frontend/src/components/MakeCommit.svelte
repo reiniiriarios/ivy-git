@@ -17,7 +17,7 @@
   let running: boolean = false;
 
   function make() {
-    if (subject) {
+    if (subject && !running && (changes.numStaged() || changes.numUnstaged())) {
       running = true;
       MakeCommit(subject, body).then(result => {
         parseResponse(result, () => {
@@ -56,7 +56,7 @@
     </label>
   </div>
   <div class="make-commit__button">
-    <button class="btn" id="make-commit-button" disabled={!subject || running || (!$changes.x.length && !$changes.y.length)} on:click={make}>
+    <button class="btn" id="make-commit-button" disabled={!subject || running || (!changes.numStaged() && !changes.numUnstaged())} on:click={make}>
       Commit to <strong>{$currentBranch.Name}</strong>
     </button>
   </div>
