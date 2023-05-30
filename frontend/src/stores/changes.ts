@@ -48,7 +48,11 @@ function createChanges() {
     fetchDiff: async (xy: string, file: string) => {
       if (xy !== 'x') xy = 'y';
       let f = get(changes)[xy][file];
-      if (!f) return;
+      // If file not in changes list, clear current diff as it's outdated.
+      if (!f) {
+        currentDiff.clear();
+        return;
+      }
       if (xy === 'y') {
         GetUnstagedFileParsedDiff(file, f.Letter).then(result => {
           parseResponse(result, () => {
@@ -68,8 +72,11 @@ function createChanges() {
         //...
       }
     },
-    setLines: async (xy: string, file: string, hunk: number, rawlinenos: number[], selected: boolean) => {
-      
+    numStaged: () => {
+      return Object.keys(get(changes).x).length;
+    },
+    numUnstaged: () => {
+      return Object.keys(get(changes).y).length;
     },
   };
 }
