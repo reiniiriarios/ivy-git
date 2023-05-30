@@ -24,7 +24,7 @@ func (g *Git) UnstageFile(file string) error {
 	if file == "" {
 		return errors.New("no file specified")
 	}
-	_, err := g.RunCwd("reset", file)
+	_, err := g.RunCwd("reset", "--", file)
 	return err
 }
 
