@@ -56,7 +56,7 @@
       {#each Object.entries($changes.x) as [_, change]}
         <li
           class="change"
-          class:change--active={$currentDiff.File === change.File && $currentDiff.Staged}
+          class:change--active={$currentDiff.File === change.File && $currentDiff.Staged && $currentTab === 'changes'}
           class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
           class:change--none={change.Diff?.SelectedLines === 0}
         >
@@ -94,7 +94,7 @@
       {#each Object.entries($changes.y) as [_, change]}
         <li
           class="change"
-          class:change--active={$currentDiff.File === change.File && !$currentDiff.Staged}
+          class:change--active={$currentDiff.File === change.File && !$currentDiff.Staged && $currentTab === 'changes'}
           class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
           class:change--none={change.Diff?.SelectedLines === 0}
         >

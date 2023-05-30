@@ -28,7 +28,6 @@
 
   function setTab(t: string) {
     currentTab.set(t);
-    currentDiff.clear();
   }
 </script>
 
