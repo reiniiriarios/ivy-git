@@ -53,19 +53,25 @@ function createChanges() {
         currentDiff.clear();
         return;
       }
-      GetWorkingFileParsedDiff(file, f.Letter, xy === 'x').then(result => {
-        parseResponse(result, () => {
-          update(c => {
-            c[xy][file].Diff = result.Data;
-            return c;
+      if (f.Diff) {
+        currentDiff.set(f.Diff);
+      } else {
+        GetWorkingFileParsedDiff(file, f.Letter, xy === 'x').then(result => {
+          parseResponse(result, () => {
+            update(c => {
+              if (c[xy][file]) {
+                c[xy][file].Diff = result.Data;
+              }
+              return c;
+            });
+            result.Data.File = file;
+            result.Data.Status = f.Letter;
+            result.Data.Staged = xy === 'x';
+            result.Data.Committed = false;
+            currentDiff.set(result.Data);
           });
-          result.Data.File = file;
-          result.Data.Status = f.Letter;
-          result.Data.Staged = xy === 'x';
-          result.Data.Committed = false;
-          currentDiff.set(result.Data);
         });
-      });
+      }
     },
     numStaged: () => {
       return Object.keys(get(changes).x).length;
