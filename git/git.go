@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"io"
 	"os/exec"
 )
 
@@ -25,6 +26,14 @@ func (g *Git) RunCwd(command ...string) (string, error) {
 	return g.runCmd(g.Repo.Directory, command, false)
 }
 
+// Run a git command in the current directory and pipe stdin to it.
+func (g *Git) RunCwdStdin(command []string, input string) (string, error) {
+	if g.Repo == (Repo{}) {
+		return "", errors.New("no current git directory available")
+	}
+	return g.runCmdStdin(g.Repo.Directory, command, input)
+}
+
 // Run a git command in the directory of the currently selected repo. Ignore errors.
 func (g *Git) RunCwdNoError(command ...string) (string, error) {
 	if g.Repo == (Repo{}) {
@@ -33,8 +42,9 @@ func (g *Git) RunCwdNoError(command ...string) (string, error) {
 	return g.runCmd(g.Repo.Directory, command, true)
 }
 
+// Run a git command.
 func (g *Git) runCmd(directory string, command []string, ignore_error bool) (string, error) {
-	// Run every git command in a specific directory.
+	// Run command in a specific directory.
 	command = append([]string{"-C", directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
 
@@ -51,6 +61,41 @@ func (g *Git) runCmd(directory string, command []string, ignore_error bool) (str
 	err := cmd.Run()
 	if !ignore_error && err != nil {
 		return outb.String(), g.ParseGitError(errb.String(), err)
+	}
+
+	return outb.String(), nil
+}
+
+// Run a git command and pipe stdin to it.
+func (g *Git) runCmdStdin(directory string, command []string, input string) (string, error) {
+	// Run command in a specific directory.
+	command = append([]string{"-C", directory}, command...)
+	cmd := exec.Command("git", command[0:]...)
+
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		return "", err
+	}
+	defer stdin.Close() // the doc says cmd.Wait will close it, but...?
+
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+
+	err = cmd.Start()
+	if err != nil {
+		return "", g.ParseGitError(errb.String(), err)
+	}
+
+	_, err = io.WriteString(stdin, input)
+	if err != nil {
+		return "", g.ParseGitError(errb.String(), err)
+	}
+
+	err = cmd.Wait()
+
+	if err != nil {
+		return "", g.ParseGitError(errb.String(), err)
 	}
 
 	return outb.String(), nil

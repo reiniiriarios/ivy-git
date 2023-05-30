@@ -37,3 +37,15 @@ func (g *Git) UnstageAll() error {
 	_, err := g.RunCwd("reset")
 	return err
 }
+
+func (g *Git) StagePartial(diff Diff, newFile bool) error {
+	patch := diff.createPatch(newFile)
+	_, err := g.RunCwdStdin([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
+	return err
+}
+
+func (g *Git) UnstagePartial(diff Diff) error {
+	patch := diff.createDiscardPatch()
+	_, err := g.RunCwdStdin([]string{"apply", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
+	return err
+}
