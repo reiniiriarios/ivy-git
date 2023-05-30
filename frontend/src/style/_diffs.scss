@@ -1,0 +1,18 @@
+@use '!mixins' as *;
+
+.diffs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .diff-actions {
+    flex: min-content;
+    padding: 0.5rem;
+    text-align: left;
+    @include no-select;
+
+    .btn {
+      height: 2.5rem;
+    }
+  }
+}
