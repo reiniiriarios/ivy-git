@@ -322,7 +322,7 @@ func (a *App) GetInProgressCommitMessageEither() git.CommitMessage {
 	return a.Git.ParseCommitMessage(msg)
 }
 
-func (a *App) GetUnstagedFileParsedDiff(file string, status string) DataResponse {
-	diff, err := a.Git.GetUnstagedFileParsedDiff(file, status)
+func (a *App) GetWorkingFileParsedDiff(file string, status string, staged bool) DataResponse {
+	diff, err := a.Git.GetWorkingFileParsedDiff(file, status, staged)
 	return dataResponse(err, diff)
 }

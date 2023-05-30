@@ -1,6 +1,6 @@
 import { parseResponse } from 'scripts/parse-response';
 import { get, writable } from 'svelte/store';
-import { GetUnstagedFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
+import { GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
 import { currentRepo } from 'stores/repos';
 import { currentDiff, type Diff } from 'stores/diffs';
 
@@ -53,24 +53,19 @@ function createChanges() {
         currentDiff.clear();
         return;
       }
-      if (xy === 'y') {
-        GetUnstagedFileParsedDiff(file, f.Letter).then(result => {
-          parseResponse(result, () => {
-            update(c => {
-              c[xy][file].Diff = result.Data;
-              return c;
-            });
-            result.Data.File = file;
-            result.Data.Status = f.Letter;
-            result.Data.Staged = false;
-            result.Data.Committed = false;
-            currentDiff.set(result.Data);
+      GetWorkingFileParsedDiff(file, f.Letter, xy === 'x').then(result => {
+        parseResponse(result, () => {
+          update(c => {
+            c[xy][file].Diff = result.Data;
+            return c;
           });
+          result.Data.File = file;
+          result.Data.Status = f.Letter;
+          result.Data.Staged = xy === 'x';
+          result.Data.Committed = false;
+          currentDiff.set(result.Data);
         });
-      }
-      else {
-        //...
-      }
+      });
     },
     numStaged: () => {
       return Object.keys(get(changes).x).length;

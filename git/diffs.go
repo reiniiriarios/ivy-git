@@ -76,8 +76,8 @@ func (g *Git) findMergeBase(hash1 string, hash2 string) (string, error) {
 	return b, nil
 }
 
-func (g *Git) GetUnstagedFileParsedDiff(file string, status string) (Diff, error) {
-	raw, err := g.getUnstagedFileDiff(file, status)
+func (g *Git) GetWorkingFileParsedDiff(file string, status string, staged bool) (Diff, error) {
+	raw, err := g.getWorkingFileDiff(file, status, staged)
 	if err != nil {
 		return Diff{}, err
 	}
@@ -91,7 +91,7 @@ func (g *Git) GetUnstagedFileParsedDiff(file string, status string) (Diff, error
 	return diff, nil
 }
 
-func (g *Git) getUnstagedFileDiff(file string, status string) (string, error) {
+func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (string, error) {
 	cmd := []string{"diff", "-w", "--no-ext-diff", "--patch-with-raw", "-z", "--no-color"}
 
 	var d string
@@ -102,10 +102,10 @@ func (g *Git) getUnstagedFileDiff(file string, status string) (string, error) {
 		cmd = append(cmd, "--no-index", "--", "/dev/null", file)
 		d, _ = g.RunCwdNoError(cmd...)
 	} else {
-		if status == FileRenamed {
-			cmd = append(cmd, "--", file)
+		if staged {
+			cmd = append(cmd, "--cached", "--", file)
 		} else {
-			cmd = append(cmd, "HEAD", "--", file)
+			cmd = append(cmd, "--", file)
 		}
 		var err error
 		d, err = g.RunCwd(cmd...)
