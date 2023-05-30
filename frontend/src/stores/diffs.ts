@@ -12,7 +12,7 @@ export interface Diff {
   Committed: boolean;
 }
 
-interface DiffHunk {
+export interface DiffHunk {
   Header: string;
   StartOld: number;
   EndOld: number;
@@ -22,7 +22,7 @@ interface DiffHunk {
   Lines: DiffLine[];
 }
 
-interface DiffLine {
+export interface DiffLine {
   Line: string;
   Type: string;
   RawLineNo: number;
@@ -30,6 +30,8 @@ interface DiffLine {
   NewLineNo: number;
   NoNewline: boolean;
   MiniHunk: number;
+  // UI
+  Selected: boolean;
 }
 
 function createCurrentDiff() {

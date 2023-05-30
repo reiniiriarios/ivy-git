@@ -147,6 +147,7 @@ type DiffLine struct {
 	NewLineNo int64
 	NoNewline bool
 	MiniHunk  int64
+	Selected  bool
 }
 
 const HiddenBidiCharsRegex = "/[\u202A-\u202E]|[\u2066-\u2069]/"
@@ -222,6 +223,7 @@ func (d *Diff) parse() error {
 				OldLineNo: -1,
 				NewLineNo: after,
 				MiniHunk:  mini_hunk,
+				Selected:  true,
 			})
 		case "-":
 			before++
@@ -233,6 +235,7 @@ func (d *Diff) parse() error {
 				OldLineNo: before,
 				NewLineNo: -1,
 				MiniHunk:  mini_hunk,
+				Selected:  true,
 			})
 		case " ":
 			before++

@@ -67,7 +67,10 @@ function createChanges() {
       else {
         //...
       }
-    }
+    },
+    setLines: async (xy: string, file: string, hunk: number, rawlinenos: number[], selected: boolean) => {
+      
+    },
   };
 }
 export const changes = createChanges();

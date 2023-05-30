@@ -1,6 +1,6 @@
 <script lang="ts">
   import Details from 'components/Details.svelte';
-  import Diff from 'components/Diff.svelte';
+  import ChangesDiff from 'components/ChangesDiff.svelte';
   import Commits from 'components/commits/Commits.svelte';
   import Settings from 'components/Settings.svelte';
   import { currentTab } from 'stores/ui';
@@ -10,7 +10,7 @@
   let tabs = {
     changes: {
       n:'Changes',
-      c: Diff,
+      c: ChangesDiff,
     },
     tree: {
       n:'Commits',
