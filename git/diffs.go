@@ -301,9 +301,29 @@ func parseHunkHeading(line string) (DiffHunk, error) {
 	}, nil
 }
 
+// Format patch header.
+//
+//	--- a/from
+//	+++ b/to
+func patchHeader(from string, to string) string {
+	if from == "" {
+		from = "/dev/null"
+	} else {
+		from = "a/" + from
+	}
+
+	if to == "" {
+		to = "/dev/null"
+	} else {
+		to = "b/" + to
+	}
+
+	return fmt.Sprintf("--- %s\n+++ %s\n", from, to)
+}
+
 // Create a patch to stage a file or commit from staging.
-// newFile should be true for file status == New || Untracked
-func (d *Diff) createPatch(newFile bool) string {
+// new_file should be true for file status == New || Untracked
+func (d *Diff) createPatch(from string, to string, new_file bool) string {
 	patch := ""
 
 	for _, hunk := range d.Hunks {
@@ -328,7 +348,7 @@ func (d *Diff) createPatch(newFile bool) string {
 				}
 			} else {
 				// Unselected lines should be ignored in new files.
-				if newFile {
+				if new_file {
 					continue
 				}
 
@@ -354,15 +374,19 @@ func (d *Diff) createPatch(newFile bool) string {
 			continue
 		}
 
-		patch += fmt.Sprintf("@@ -%d:%d +%d:%d @@ %s\n", hunk.StartOld, oldCount, hunk.StartNew, newCount, hunk.Heading)
+		patch += fmt.Sprintf("@@ -%d,%d +%d,%d @@ %s\n", hunk.StartOld, oldCount, hunk.StartNew, newCount, hunk.Heading)
 		patch += hunkBuffer
 	}
 
-	return patch
+	if patch == "" {
+		// Don't generate a header if there's no patch.
+		return ""
+	}
+	return patchHeader(from, to) + patch
 }
 
 // Create a patch to unstage changes or discard from unstaged files.
-func (d *Diff) createDiscardPatch() string {
+func (d *Diff) createDiscardPatch(filename string) string {
 	patch := ""
 
 	for _, hunk := range d.Hunks {
@@ -409,9 +433,14 @@ func (d *Diff) createDiscardPatch() string {
 			continue
 		}
 
-		patch += fmt.Sprintf("@@ -%d:%d +%d:%d @@ %s\n", hunk.StartOld, oldCount, hunk.StartNew, newCount, hunk.Heading)
+		// Swap old and new.
+		patch += fmt.Sprintf("@@ -%d,%d +%d,%d @@ %s\n", hunk.StartNew, newCount, hunk.StartOld, oldCount, hunk.Heading)
 		patch += hunkBuffer
 	}
 
-	return patch
+	if patch == "" {
+		// Don't generate a header if there's no patch.
+		return ""
+	}
+	return patchHeader(filename, filename) + patch
 }

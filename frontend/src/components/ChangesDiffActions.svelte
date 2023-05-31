@@ -3,11 +3,17 @@
   import { parseResponse } from "scripts/parse-response";
   import { changes } from "stores/changes";
   import { currentDiff } from "stores/diffs";
-  import { StageFile, UnstageFile } from "wailsjs/go/main/App";
+  import { StageFile, StagePartialFile, UnstageFile, UnstagePartialFile } from "wailsjs/go/main/App";
 
   function stageSelected(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLButtonElement }) {
     e.currentTarget.disabled = true;
-
+    StagePartialFile($currentDiff, $currentDiff.File, $currentDiff.Status).then(result => {
+      parseResponse(result, () => {
+        changes.refresh();
+      }, () => {
+        e.currentTarget.disabled = false;
+      });
+    });
   }
 
   function stageAll(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLButtonElement }) {
@@ -15,13 +21,21 @@
     StageFile($currentDiff.File).then(result => {
       parseResponse(result, () => {
         changes.refresh();
+      }, () => {
+        e.currentTarget.disabled = false;
       });
     });
   }
 
   function unstageSelected(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLButtonElement }) {
     e.currentTarget.disabled = true;
-
+    UnstagePartialFile($currentDiff, $currentDiff.File, $currentDiff.Status).then(result => {
+      parseResponse(result, () => {
+        changes.refresh();
+      }, () => {
+        e.currentTarget.disabled = false;
+      });
+    });
   }
 
   function unstageAll(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLButtonElement }) {
@@ -29,6 +43,8 @@
     UnstageFile($currentDiff.File).then(result => {
       parseResponse(result, () => {
         changes.refresh();
+      }, () => {
+        e.currentTarget.disabled = false;
       });
     });
   }

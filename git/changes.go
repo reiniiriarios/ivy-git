@@ -177,3 +177,7 @@ func getStatusFlag(status string) string {
 
 	return "unknown"
 }
+
+func fileIsNew(status string) bool {
+	return status == FileUntracked || status == FileAdded
+}

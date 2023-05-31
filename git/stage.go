@@ -38,14 +38,28 @@ func (g *Git) UnstageAll() error {
 	return err
 }
 
-func (g *Git) StagePartial(diff Diff, newFile bool) error {
-	patch := diff.createPatch(newFile)
+func (g *Git) StagePartial(diff Diff, filename string, status string) error {
+	var from string
+	new_file := fileIsNew(status)
+	if new_file {
+		from = ""
+	} else {
+		from = filename
+	}
+	patch := diff.createPatch(from, filename, new_file)
+	if patch == "" {
+		return nil
+	}
 	_, err := g.RunCwdStdin([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
 	return err
 }
 
-func (g *Git) UnstagePartial(diff Diff) error {
-	patch := diff.createDiscardPatch()
-	_, err := g.RunCwdStdin([]string{"apply", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
+func (g *Git) UnstagePartial(diff Diff, filename string, status string) error {
+	patch := diff.createDiscardPatch(filename)
+	if patch == "" {
+		return nil
+	}
+	println(patch)
+	_, err := g.RunCwdStdin([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
 	return err
 }

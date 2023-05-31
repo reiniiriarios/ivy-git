@@ -76,7 +76,6 @@ func (g *Git) runCmdStdin(directory string, command []string, input string) (str
 	if err != nil {
 		return "", err
 	}
-	defer stdin.Close() // the doc says cmd.Wait will close it, but...?
 
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
@@ -87,16 +86,21 @@ func (g *Git) runCmdStdin(directory string, command []string, input string) (str
 		return "", g.ParseGitError(errb.String(), err)
 	}
 
-	_, err = io.WriteString(stdin, input)
-	if err != nil {
-		return "", g.ParseGitError(errb.String(), err)
-	}
+	// Because git does not continue before stdin is closed, this must be wrapped as so.
+	// https://pkg.go.dev/os/exec#Cmd.StdinPipe
+	go func() {
+		defer stdin.Close()
+		io.WriteString(stdin, input)
+	}()
 
 	err = cmd.Wait()
 
 	if err != nil {
 		return "", g.ParseGitError(errb.String(), err)
 	}
+
+	println(outb.String())
+	println(errb.String())
 
 	return outb.String(), nil
 }
