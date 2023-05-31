@@ -9,7 +9,9 @@
     {#if $currentDiff.Committed}
       todo
     {:else}
-      <ChangesDiffActions />
+      {#if $currentDiff.File}
+        <ChangesDiffActions />
+      {/if}
       <ChangesDiff />
     {/if}
   </div>
