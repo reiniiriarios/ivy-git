@@ -5,10 +5,9 @@
 
   import { NUM_COLORS, UNCOMMITED_HASH } from 'scripts/graph';
 
-  import { HEAD, type Commit, commitSignData } from 'stores/commit-data';
+  import { HEAD, type Commit } from 'stores/commit-data';
   import { currentCommit } from 'stores/commit-details';
   import { settings } from 'stores/settings';
-  import { MergeCommit } from 'wailsjs/go/main/App';
 
   export let commit: Commit;
   export let signStatus: string;

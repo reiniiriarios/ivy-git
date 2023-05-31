@@ -2,7 +2,7 @@
   import { getLabelDist } from 'scripts/graph';
   import { HEAD, type Commit } from 'stores/commit-data';
   import CommitLabelBranch from './CommitLabelBranch.svelte';
-  import CommitLabelRemote from './CommitLabelRemote.svelte';
+  import CommitLabelRemoteBranch from './CommitLabelRemoteBranch.svelte';
   import CommitLabelTag from './CommitLabelTag.svelte';
   import CommitLabelStash from './CommitLabelStash.svelte';
   import CommitLabelHeads from './CommitLabelHeads.svelte';
@@ -13,13 +13,13 @@
 <div class="refs">
   {#if commit.Branches && commit.Branches.length}
     {#each commit.Branches as b}
-      <CommitLabelBranch branch={b} remotes={commit.Remotes} />
+      <CommitLabelBranch branch={b} remotes={commit.RemoteBranches} />
     {/each}
   {/if}
-  {#if commit.Remotes && commit.Remotes.length}
-    {#each commit.Remotes as r}
+  {#if commit.RemoteBranches && commit.RemoteBranches.length}
+    {#each commit.RemoteBranches as r}
       {#if !r.SyncedLocally}
-        <CommitLabelRemote remote={r} />
+        <CommitLabelRemoteBranch remote={r} />
       {/if}
     {/each}
   {/if}
@@ -34,7 +34,7 @@
     <CommitLabelStash commit={commit} />
   {/if}
 
-  {#if (!commit.Branches?.length && commit.Hash === $HEAD.Hash) || (!commit.Remotes?.length && commit.Heads?.length)}
+  {#if (!commit.Branches?.length && commit.Hash === $HEAD.Hash) || (!commit.RemoteBranches?.length && commit.Heads?.length)}
     <CommitLabelHeads isHEAD={commit.Hash === $HEAD.Hash} heads={commit.Heads} />
   {/if}
 

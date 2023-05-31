@@ -28,7 +28,7 @@ type Commit struct {
 	Subject         string
 	Branches        []Ref
 	Tags            []Ref
-	Remotes         []Ref
+	RemoteBranches  []Ref
 	Heads           []Ref
 	Stash           bool
 	Merge           bool
@@ -192,9 +192,9 @@ func (g *Git) getCommits(limit uint64, offset uint64) ([]Commit, map[string]uint
 		}
 	}
 
-	for _, r := range refs.Remotes {
+	for _, r := range refs.RemoteBranches {
 		if c, exists := lookup[r.Hash]; exists {
-			commits[c].Remotes = append(commits[c].Remotes, r)
+			commits[c].RemoteBranches = append(commits[c].RemoteBranches, r)
 		}
 	}
 
@@ -271,7 +271,7 @@ func (g *Git) GetCommitsAndGraph(limit uint64, offset uint64) (Ref, []Commit, Gr
 			len(commits[i].Heads) > 0 ||
 				len(commits[i].Branches) > 0 ||
 				len(commits[i].Tags) > 0 ||
-				len(commits[i].Remotes) > 0 ||
+				len(commits[i].RemoteBranches) > 0 ||
 				commits[i].Hash == HEAD.Hash ||
 				commits[i].Stash
 		commits[i].Id = uint64(i)

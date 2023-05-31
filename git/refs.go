@@ -18,11 +18,11 @@ type Ref struct {
 }
 
 type Refs struct {
-	HEAD     Ref
-	Branches []Ref
-	Tags     []Ref
-	Remotes  []Ref
-	Heads    []Ref
+	HEAD           Ref
+	Branches       []Ref
+	Tags           []Ref
+	RemoteBranches []Ref
+	Heads          []Ref
 }
 
 // Get the symbolic ref for the HEAD or an empty string if it isn't symbolic.
@@ -117,7 +117,7 @@ func (g *Git) getRefs() (Refs, error) {
 				if name[len(name)-4:] == "HEAD" {
 					refs.Heads = append(refs.Heads, ref)
 				} else {
-					refs.Remotes = append(refs.Remotes, ref)
+					refs.RemoteBranches = append(refs.RemoteBranches, ref)
 				}
 			} else if name == "HEAD" {
 				refs.HEAD.Hash = hash
@@ -128,24 +128,24 @@ func (g *Git) getRefs() (Refs, error) {
 		}
 	}
 
-	for n := range refs.Remotes {
+	for n := range refs.RemoteBranches {
 		// Add to remote branches which local branches are in sync.
 		// Add to local branches which remote branches are in sync.
 		for i := range refs.Branches {
-			if refs.Branches[i].Hash == refs.Remotes[n].Hash && (refs.Branches[i].Branch == refs.Remotes[n].Branch || refs.Branches[i].Upstream == refs.Remotes[n].Name) {
-				refs.Branches[i].SyncedRemotes = append(refs.Branches[i].SyncedRemotes, refs.Remotes[n].Remote)
-				refs.Remotes[n].SyncedLocally = true
+			if refs.Branches[i].Hash == refs.RemoteBranches[n].Hash && (refs.Branches[i].Branch == refs.RemoteBranches[n].Branch || refs.Branches[i].Upstream == refs.RemoteBranches[n].Name) {
+				refs.Branches[i].SyncedRemotes = append(refs.Branches[i].SyncedRemotes, refs.RemoteBranches[n].Remote)
+				refs.RemoteBranches[n].SyncedLocally = true
 			}
 		}
 		// Add to remote branches which remote heads are in sync.
 		for h := range refs.Heads {
-			if refs.Heads[h].Hash == refs.Remotes[n].Hash {
-				refs.Remotes[n].Head = true
+			if refs.Heads[h].Hash == refs.RemoteBranches[n].Hash {
+				refs.RemoteBranches[n].Head = true
 			}
 		}
 		// Add to HEAD which remote branches are in sync.
-		if refs.Remotes[n].Hash == refs.HEAD.Hash {
-			refs.HEAD.SyncedRemotes = append(refs.HEAD.SyncedRemotes, refs.Remotes[n].Remote)
+		if refs.RemoteBranches[n].Hash == refs.HEAD.Hash {
+			refs.HEAD.SyncedRemotes = append(refs.HEAD.SyncedRemotes, refs.RemoteBranches[n].Remote)
 		}
 	}
 

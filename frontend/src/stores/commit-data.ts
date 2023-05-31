@@ -18,7 +18,7 @@ export interface Commit {
   Subject: string;
   Branches: Ref[];
   Tags: Ref[];
-  Remotes: Ref[];
+  RemoteBranches: Ref[];
   Heads: Ref[];
   Stash: boolean;
   Labeled: boolean;
