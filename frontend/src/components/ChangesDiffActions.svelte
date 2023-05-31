@@ -10,6 +10,7 @@
     StagePartialFile($currentDiff, $currentDiff.File, $currentDiff.Status).then(result => {
       parseResponse(result, () => {
         changes.refresh();
+        currentDiff.refresh();
       }, () => {
         e.currentTarget.disabled = false;
       });
@@ -21,6 +22,7 @@
     StageFile($currentDiff.File).then(result => {
       parseResponse(result, () => {
         changes.refresh();
+        currentDiff.clear();
       }, () => {
         e.currentTarget.disabled = false;
       });
@@ -32,6 +34,7 @@
     UnstagePartialFile($currentDiff, $currentDiff.File, $currentDiff.Status).then(result => {
       parseResponse(result, () => {
         changes.refresh();
+        currentDiff.refresh();
       }, () => {
         e.currentTarget.disabled = false;
       });
@@ -43,6 +46,7 @@
     UnstageFile($currentDiff.File).then(result => {
       parseResponse(result, () => {
         changes.refresh();
+        currentDiff.clear();
       }, () => {
         e.currentTarget.disabled = false;
       });

@@ -38,7 +38,7 @@ function createChanges() {
         set({x: [], y: []});
       }
     },
-    fetchDiff: async (xy: string, file: string) => {
+    fetchDiff: async (xy: string, file: string, ignoreCache: boolean = false) => {
       if (xy !== 'x') xy = 'y';
       let f = get(changes)[xy][file];
       // If file not in changes list, clear current diff as it's outdated.
@@ -46,7 +46,7 @@ function createChanges() {
         currentDiff.clear();
         return;
       }
-      if (f.Diff) {
+      if (f.Diff && !ignoreCache) {
         currentDiff.set(f.Diff);
       } else {
         GetWorkingFileParsedDiff(file, f.Letter, xy === 'x').then(result => {

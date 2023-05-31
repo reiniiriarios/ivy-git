@@ -55,7 +55,7 @@ function createCurrentDiff() {
       }
       else {
         // Let the changes store handle diffs for changed files.
-        changes.fetchDiff(cd.Staged ? 'x' : 'y', cd.File);
+        changes.fetchDiff(cd.Staged ? 'x' : 'y', cd.File, true);
       }
     },
   }
