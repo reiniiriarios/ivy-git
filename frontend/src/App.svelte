@@ -1,15 +1,15 @@
 <script lang="ts">
   import "style/style.scss";
-  import SelectRepo from "components/SelectRepo.svelte";
+  import SelectRepo from "components/sidebar/SelectRepo.svelte";
   import Message from "components/Message.svelte";
-  import SelectBranch from "components/SelectBranch.svelte";
-  import Changes from "components/Changes.svelte";
-  import MainTabs from "components/MainTabs.svelte";
-  import TitleBar from "components/TitleBar.svelte";
+  import SelectBranch from "components/sidebar/SelectBranch.svelte";
+  import Changes from "components/sidebar/Changes.svelte";
+  import MainTabs from "components/app/MainTabs.svelte";
+  import TitleBar from "components/app/TitleBar.svelte";
   import ContextMenu from "components/ContextMenu.svelte";
   import GetStarted from "components/GetStarted.svelte";
-  import MakeCommit from "components/MakeCommit.svelte";
-  import RemoteActions from "components/RemoteActions.svelte";
+  import MakeCommit from "components/sidebar/MakeCommit.svelte";
+  import RemoteActions from "components/sidebar/RemoteActions.svelte";
 
   import { ResizeWindow } from "wailsjs/go/main/App";
 

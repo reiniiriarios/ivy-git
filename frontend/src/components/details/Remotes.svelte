@@ -2,7 +2,6 @@
   import octicons from "@primer/octicons";
   import { parseResponse } from "scripts/parse-response";
   import { remoteData, remotes } from "stores/remotes";
-  import { onMount } from 'svelte';
   import { FetchRemote, PullRemote, PushRemote } from "wailsjs/go/main/App";
 
   function pull(e: MouseEvent | KeyboardEvent, remote: string) {

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { currentDiff } from "stores/diffs";
-  import ChangesDiff from "components/ChangesDiff.svelte";
-  import ChangesDiffActions from "components/ChangesDiffActions.svelte";
-  import DiffCommitted from "./DiffCommitted.svelte";
+  import ChangesDiff from "components/diffs/ChangesDiff.svelte";
+  import ChangesDiffActions from "components/diffs/ChangesDiffActions.svelte";
+  import DiffCommitted from "components/diffs/DiffCommitted.svelte";
 </script>
 
 {#if $currentDiff}

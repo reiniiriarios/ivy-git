@@ -1,11 +1,10 @@
 <script lang="ts">
-  import Details from 'components/Details.svelte';
+  import Details from 'components/details/Details.svelte';
   import Commits from 'components/commits/Commits.svelte';
   import Settings from 'components/Settings.svelte';
   import { currentTab } from 'stores/ui';
   import octicons from '@primer/octicons';
-  import { currentDiff } from 'stores/diffs';
-  import Diffs from './Diffs.svelte';
+  import Diffs from 'components/diffs/Diffs.svelte';
 
   let tabs = {
     changes: {

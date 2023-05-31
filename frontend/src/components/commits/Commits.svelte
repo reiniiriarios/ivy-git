@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { afterUpdate, beforeUpdate, onMount } from 'svelte';
-  import { get } from 'svelte/store';
+  import { afterUpdate, onMount } from 'svelte';
 
   import CommitRow from 'components/commits/CommitRow.svelte';
   import CommitDetails from 'components/commits/CommitDetails.svelte';
-  import LoadMoreCommits from 'components/LoadMoreCommits.svelte';
+  import LoadMoreCommits from 'components/commits/LoadMoreCommits.svelte';
 
   import { setCommitsContainer } from 'scripts/commit-details-resize';
 

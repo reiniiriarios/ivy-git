@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AppControl from 'components/AppControl.svelte';
+  import AppControl from 'components/app/AppControl.svelte';
   import type { EnvironmentInfo } from 'wailsjs/runtime/runtime';
 
   let os: string;
@@ -21,7 +21,7 @@
 </header>
 
 <style lang="scss">
-  @use "../style/!mixins" as *;
+  @use "../../style/!mixins" as *;
 
   header {
     --wails-draggable: drag;

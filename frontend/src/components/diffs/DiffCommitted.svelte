@@ -5,7 +5,7 @@
 <div class="diff">
   {#if $currentDiff.Hunks?.length}
     <div class="diff__grid">
-      {#each $currentDiff.Hunks as hunk, hunk_id}
+      {#each $currentDiff.Hunks as hunk}
         <div class="diff__hunk-header">
           <span class="diff__hunk-details">
             @@
