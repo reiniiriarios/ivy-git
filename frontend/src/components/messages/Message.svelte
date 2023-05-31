@@ -1,8 +1,7 @@
 <script lang="ts">
   import { messageDialog } from 'stores/message-dialog';
   import MessageTag from 'components/messages/MessageTag.svelte';
-
-  let confirmButton: HTMLButtonElement;
+  import MessageNewRepo from 'components/messages/MessageNewRepo.svelte';
 
   let blankValue: string;
   let blankValid: boolean = true;
@@ -37,6 +36,8 @@
       <div class="modal__box">
         {#if $messageDialog.addTag}
           <MessageTag />
+        {:else if $messageDialog.newRepo}
+          <MessageNewRepo />
         {:else}
           {#if $messageDialog.heading}
             <div class="modal__heading">{$messageDialog.heading}</div>
@@ -89,7 +90,6 @@
               <button
                 class="btn yes"
                 on:click={messageDialog.yes}
-                bind:this={confirmButton}
                 disabled={$messageDialog.validateBlank ? !blankValue || !blankValid : false}
               >
                 {$messageDialog.confirm}

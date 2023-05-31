@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
 
-import { AddRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateMain, UpdateSelectedRepo } from 'wailsjs/go/main/App';
+import { AddRepo, CreateRepo, GetRepos, GetSelectedRepo, RemoveRepo, UpdateMain, UpdateSelectedRepo } from 'wailsjs/go/main/App';
 
 import { commitData, commitSignData } from 'stores/commit-data';
 import { changes } from 'stores/changes';
@@ -53,6 +53,21 @@ function createRepos() {
           messageDialog.clear();
         }
       }));
+    },
+    create: async () => {
+      messageDialog.addRepo({
+        callbackConfirm: () => {
+          let data = messageDialog.addRepoData();
+          CreateRepo(data.name, data.location).then(result => {
+            parseResponse(result, () => {
+              repos.refresh();
+              currentRepo.switch(result.Id);
+              repoSelect.set(false);
+              messageDialog.clear();
+            });
+          });
+        },
+      });
     },
     delete: async (id: string) => {
       let name = get(repos)[id]?.Name ?? 'this repo';

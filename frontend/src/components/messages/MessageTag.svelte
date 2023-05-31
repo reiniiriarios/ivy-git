@@ -2,8 +2,6 @@
   import { checkRef } from "scripts/check-ref";
   import { messageDialog } from "stores/message-dialog";
 
-  let confirmButton: HTMLButtonElement;
-
   let tagMessage: HTMLElement;
   let tagAnnotatedField: HTMLInputElement;
   let tagNameField: string;
@@ -95,7 +93,6 @@
     <button
       class="btn yes"
       on:click={messageDialog.yes}
-      bind:this={confirmButton}
       disabled={!tagNameField || !tagValid || (annotated && !tagMessageField)}
     >
       {$messageDialog.confirm}

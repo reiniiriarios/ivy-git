@@ -98,4 +98,28 @@
       margin-top: 0.75rem;
     }
   }
+
+  &__new-repo {
+    padding: 0 1rem;
+    margin-bottom: 1.5rem;
+    min-width: 35rem;
+
+    #message-dialog-repo-name {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    #message-dialog-repo-location {
+      width: 80%;
+      margin-bottom: 0.5rem;
+      height: 2.5rem;
+      border: 0;
+    }
+
+    #message-dialog-repo-location-btn {
+      width: 19%;
+      margin-bottom: 0.5rem;
+      height: 2.5rem;
+    }
+  }
 }

@@ -104,3 +104,10 @@ func (g *Git) runCmdStdin(directory string, command []string, input string) (str
 
 	return outb.String(), nil
 }
+
+// Initialize git in a specific directory.
+func (g *Git) GitInit(directory string) error {
+	cmd := []string{"-C", directory, "init"}
+	_, err := g.runCmd(g.Repo.Directory, cmd, false)
+	return err
+}

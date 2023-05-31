@@ -34,7 +34,7 @@
         {
           text: 'Create New Repo',
           icon: octicons['plus-circle'].toSVG({ width: 32 }),
-          callback: () => console.warn('todo'),
+          callback: repos.create,
         },
       ],
     });

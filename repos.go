@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"ivy-git/git"
+	"os"
 	"path/filepath"
 
 	"github.com/google/uuid"
@@ -114,4 +115,69 @@ func (a *App) RemoveRepo(id string) map[string]git.Repo {
 	delete(a.RepoSaveData.Repos, id)
 	a.saveRepoData()
 	return a.RepoSaveData.Repos
+}
+
+// Select a directory to create a repo.
+func (a *App) SelectDirectory() DataResponse {
+	d, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Select Directory",
+	})
+
+	if err != nil {
+		return dataResponse(err, false)
+	}
+
+	if d == "" {
+		return DataResponse{
+			Response: "none",
+		}
+	}
+
+	return dataResponse(nil, d)
+}
+
+// Create a new repo.
+func (a *App) CreateRepo(name string, dir string) RepoResponse {
+	repo_path := filepath.Join(dir, name)
+
+	err := os.Mkdir(repo_path, os.ModePerm)
+	if err != nil {
+		return RepoResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+
+	err = a.Git.GitInit(repo_path)
+	if err != nil {
+		return RepoResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+
+	id := uuid.New().String()
+	newRepo := git.Repo{
+		Name:      name,
+		Directory: repo_path,
+		Main:      a.Git.NameOfMainBranchForRepo(repo_path),
+	}
+
+	if a.RepoSaveData.Repos == nil {
+		a.RepoSaveData.Repos = make(map[string]git.Repo)
+	}
+	a.RepoSaveData.Repos[id] = newRepo
+	a.saveRepoData()
+
+	return RepoResponse{
+		Response: "success",
+		Id:       id,
+		Repo:     newRepo,
+	}
+}
+
+// If directory already exists.
+func (a *App) DirExists(name string, dir string) bool {
+	_, err := os.Stat(filepath.Join(dir, name))
+	return !os.IsNotExist(err)
 }

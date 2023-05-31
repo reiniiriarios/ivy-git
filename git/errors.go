@@ -115,6 +115,8 @@ const (
 	ProtectedBranchRequiredStatus
 	PushWithPrivateEmail
 	// End of GitHub-specific error codes
+	UnknownRevisionOrPath
+	NoCommitsYet
 )
 
 func (e *GitError) parse() {
@@ -379,6 +381,14 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Regex: "error: GH007: Your push would publish a private email address.",
 		},
 		// End GitHub-specific errors
+		{
+			Code:  UnknownRevisionOrPath,
+			Regex: "fatal: ambiguous argument '(.+?)': unknown revision or path not in the working tree.",
+		},
+		{
+			Code:  NoCommitsYet,
+			Regex: "fatal: your current branch '(.+?)' does not have any commits yet",
+		},
 	}
 }
 
@@ -479,6 +489,10 @@ func getGitErrorMessage(code ErrorCode) string {
 		return ""
 	case TagAlreadyExists:
 		return "A tag with that name already exists"
+	case UnknownRevisionOrPath:
+		return ""
+	case NoCommitsYet:
+		return "There are not yet any commits in this repository."
 	case MergeWithLocalChanges:
 	case RebaseWithLocalChanges:
 	case GPGFailedToSignData:

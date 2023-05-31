@@ -3,12 +3,17 @@ import { writable } from 'svelte/store';
 type MessageCallback = (e?: MouseEvent & { currentTarget: HTMLElement } | KeyboardEvent & { currentTarget: HTMLElement }) => any;
 
 interface Message {
+  // Basic values:
   heading?: string;
   message?: string;
   confirm?: string;
-  callbackConfirm?: MessageCallback;
   okay?: string;
+
+  // Yes/No callbacks:
+  callbackConfirm?: MessageCallback;
   callback?: MessageCallback;
+
+  // Forms:
   options?: {
     text: string;
     icon?: string;
@@ -21,7 +26,10 @@ interface Message {
   }[];
   blank?: string;
   validateBlank?: (input: string) => boolean,
+
+  // Specific message dialogs:
   addTag?: boolean;
+  newRepo?: boolean;
 }
 
 function createMessage() {
@@ -82,6 +90,17 @@ function createMessage() {
         callback: message.callback ?? (() => {}),
       });
     },
+    addRepo: async(message: Message) => {
+      set({
+        heading: message.heading ?? 'Create New Repo',
+        message: message.message ?? 'Enter a name and select a directory to create a new repository in.',
+        confirm: message.confirm ?? 'Create',
+        newRepo: true,
+        callbackConfirm: message.callbackConfirm ?? (() => {}),
+        okay: message.okay ?? 'Cancel',
+        callback: message.callback ?? (() => {}),
+      });
+    },
     yes: async() => {
       update(message => {
         message.callbackConfirm();
@@ -114,6 +133,13 @@ function createMessage() {
         type: (document.querySelector('input[name="message-dialog-tag-type"]:checked') as HTMLInputElement).value,
         message: (document.getElementById('message-dialog-tag-message') as HTMLInputElement).value,
         push: (document.getElementById('message-dialog-tag-push') as HTMLInputElement).checked,
+      }
+    },
+    // Shortcut for getting add repo data.
+    addRepoData: () => {
+      return {
+        name: (document.getElementById('message-dialog-repo-name') as HTMLInputElement).value,
+        location: (document.getElementById('message-dialog-repo-location') as HTMLInputElement).value,
       }
     }
   };
