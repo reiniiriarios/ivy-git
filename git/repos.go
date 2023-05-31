@@ -32,6 +32,18 @@ func (g *Git) IsGitRepo(directory string) bool {
 	return r == ""
 }
 
+func (g *Git) HasCommits(directory string) bool {
+	_, err := g.Run(directory, "rev-list", "--count", "HEAD", "--")
+	if err == nil {
+		return true
+	}
+	// Bad revision means there's no HEAD.
+	if !strings.Contains(err.Error(), "bad revision") {
+		println(err.Error())
+	}
+	return false
+}
+
 // Check common names for main branch.
 func (g *Git) NameOfMainBranchForRepo(repo_dir string) string {
 	r, err := g.Run("-C", repo_dir, "for-each-ref", "--format=%(refname:short)", "refs/heads/main", "refs/heads/master", "refs/heads/trunk")
