@@ -59,7 +59,6 @@ func (g *Git) UnstagePartial(diff Diff, filename string, status string) error {
 	if patch == "" {
 		return nil
 	}
-	println(patch)
 	_, err := g.RunCwdStdin([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
 	return err
 }

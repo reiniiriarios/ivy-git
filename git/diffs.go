@@ -156,7 +156,8 @@ type DiffLine struct {
 const HiddenBidiCharsRegex = "/[\u202A-\u202E]|[\u2066-\u2069]/"
 
 func (d *Diff) parse() error {
-	lines := parseLines(d.Raw)
+	// Do not use parseLines() here, will strip relevant data.
+	lines := strings.Split(strings.ReplaceAll(d.Raw, "\r\n", "\n"), "\n")
 	var ln int
 	for ln = 0; ln < len(lines); ln++ {
 		if strings.HasPrefix(lines[ln], "Binary files ") && strings.HasSuffix(lines[ln], "differ") {
@@ -200,11 +201,13 @@ func (d *Diff) parse() error {
 			continue
 		}
 
-		// Parse other lines
-		prefix := ""
-		if len(lines[ln]) > 0 {
-			prefix = lines[ln][:1]
+		// Skip empty lines (e.g. trailing line)
+		if len(lines[ln]) == 0 {
+			continue
 		}
+
+		// Parse other lines
+		prefix := lines[ln][:1]
 		switch prefix {
 		case "\\":
 			if len(lines[ln]) < 12 {
@@ -219,7 +222,6 @@ func (d *Diff) parse() error {
 		case "+":
 			d.SelectableLines++
 			d.SelectedLines++
-			after++
 			mini_hunk_editable = true
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
@@ -230,10 +232,10 @@ func (d *Diff) parse() error {
 				MiniHunk:  mini_hunk,
 				Selected:  true,
 			})
+			after++
 		case "-":
 			d.SelectableLines++
 			d.SelectedLines++
-			before++
 			mini_hunk_editable = true
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
@@ -244,9 +246,8 @@ func (d *Diff) parse() error {
 				MiniHunk:  mini_hunk,
 				Selected:  true,
 			})
-		case " ":
 			before++
-			after++
+		case " ":
 			// If last line was editable and this one isn't, the mini hunk has ended.
 			if mini_hunk_editable {
 				mini_hunk++
@@ -260,6 +261,8 @@ func (d *Diff) parse() error {
 				NewLineNo: after,
 				MiniHunk:  -1,
 			})
+			before++
+			after++
 		default:
 			println(lines[ln])
 			return errors.New("malformed diff, unrecognized line type")
