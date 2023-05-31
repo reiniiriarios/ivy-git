@@ -1,7 +1,7 @@
 <script lang="ts">
   import "style/style.scss";
   import SelectRepo from "components/sidebar/SelectRepo.svelte";
-  import Message from "components/Message.svelte";
+  import Message from "components/messages/Message.svelte";
   import SelectBranch from "components/sidebar/SelectBranch.svelte";
   import Changes from "components/sidebar/Changes.svelte";
   import MainTabs from "components/app/MainTabs.svelte";
