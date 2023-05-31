@@ -4,28 +4,65 @@
   import { changes } from 'stores/changes';
   import { currentDiff } from 'stores/diffs';
   import { currentTab, branchSelect, repoSelect } from 'stores/ui';
-  import { StageFile, UnstageFile, StageAll, UnstageAll } from 'wailsjs/go/main/App'
+  import { StageFile, UnstageFile, StageAll, UnstageAll, StagePartialFile, UnstagePartialFile } from 'wailsjs/go/main/App'
 
   function stage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
-    StageFile(e.currentTarget.dataset.file).then(result => {
-      parseResponse(result, () => {
-        changes.refresh();
+    if (e.currentTarget.dataset.partial === 'true') {
+      let f = $changes.y[e.currentTarget.dataset.file];
+      StagePartialFile(f.Diff, f.File, f.Letter).then(result => {
+        parseResponse(result, () => {
+          changes.refresh();
+          if ($currentDiff.File === f.File && !$currentDiff.Staged && $currentTab === 'changes') {
+            currentDiff.refresh();
+          }
+        });
       });
-    });
+    } else {
+      StageFile(e.currentTarget.dataset.file).then(result => {
+        parseResponse(result, () => {
+          changes.refresh();
+          if ($currentDiff.File === e.currentTarget.dataset.file && !$currentDiff.Staged && $currentTab === 'changes') {
+            currentDiff.clear();
+          }
+        });
+      });
+    }
   }
 
   function unstage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
-    UnstageFile(e.currentTarget.dataset.file).then(result => {
-      parseResponse(result, () => {
-        changes.refresh();
+    if (e.currentTarget.dataset.partial === 'true') {
+      let f = $changes.x[e.currentTarget.dataset.file];
+      UnstagePartialFile(f.Diff, f.File, f.Letter).then(result => {
+        parseResponse(result, () => {
+          changes.refresh();
+          if ($currentDiff.File === f.File && $currentDiff.Staged && $currentTab === 'changes') {
+            currentDiff.refresh();
+          }
+        });
       });
-    });
+    } else {
+      UnstageFile(e.currentTarget.dataset.file).then(result => {
+        parseResponse(result, () => {
+          changes.refresh();
+          if ($currentDiff.File === e.currentTarget.dataset.file && $currentDiff.Staged && $currentTab === 'changes') {
+            currentDiff.clear();
+          }
+        });
+      });
+    }
   }
 
   function stageAll() {
     StageAll().then(result => {
       parseResponse(result, () => {
         changes.refresh();
+        if ($currentTab === 'changes') {
+          if ($currentDiff.Staged) {
+            currentDiff.refresh();
+          } else {
+            currentDiff.clear();
+          }
+        }
       });
     });
   }
@@ -34,6 +71,13 @@
     UnstageAll().then(result => {
       parseResponse(result, () => {
         changes.refresh();
+        if ($currentTab === 'changes') {
+          if ($currentDiff.Staged) {
+            currentDiff.clear();
+          } else {
+            currentDiff.refresh();
+          }
+        }
       });
     });
   }
@@ -75,6 +119,7 @@
           <span class="change__stage change__stage--unstage"
             aria-label="Unstage File"
             data-file="{change.File}"
+            data-partial="{change.Diff?.SelectableLines !== change.Diff?.SelectedLines}"
             on:click={unstage}
             on:keypress={unstage}>
             {@html octicons['arrow-down'].toSVG({width: 16})}
@@ -113,6 +158,7 @@
           <span class="change__stage"
             aria-label="Stage File"
             data-file="{change.File}"
+            data-partial="{change.Diff?.SelectableLines !== change.Diff?.SelectedLines}"
             on:click={stage}
             on:keypress={stage}>
             {@html octicons['arrow-up'].toSVG({width: 16})}
