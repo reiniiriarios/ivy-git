@@ -327,6 +327,11 @@ func (a *App) GetWorkingFileParsedDiff(file string, status string, staged bool) 
 	return dataResponse(err, diff)
 }
 
+func (a *App) GetCommitFileParsedDiff(hash string, file string, oldfile string) DataResponse {
+	diff, err := a.Git.GetCommitFileParsedDiff(hash, file, oldfile)
+	return dataResponse(err, diff)
+}
+
 func (a *App) StagePartialFile(diff git.Diff, filename string, status string) DataResponse {
 	err := a.Git.StagePartial(diff, filename, status)
 	return dataResponse(err, false)

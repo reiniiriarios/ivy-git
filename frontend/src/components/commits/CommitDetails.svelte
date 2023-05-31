@@ -104,7 +104,7 @@
     </div>
     <div class="commit-details__right">
       <div class="filestatdir">
-        <CommitDetailsFiles files={$commitDiffSummary} />
+        <CommitDetailsFiles hash={commit.Hash} files={$commitDiffSummary} />
       </div>
     </div>
   {/if}

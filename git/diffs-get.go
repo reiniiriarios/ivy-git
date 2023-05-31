@@ -113,3 +113,30 @@ func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (strin
 
 	return d, nil
 }
+
+func (g *Git) GetCommitFileParsedDiff(hash string, file string, oldfile string) (Diff, error) {
+	raw, err := g.getCommitFileDiff(hash, file, oldfile)
+	if err != nil {
+		return Diff{}, err
+	}
+	diff := Diff{
+		Raw: raw,
+	}
+	err = diff.parse()
+	if err != nil {
+		return Diff{}, err
+	}
+	return diff, nil
+}
+
+func (g *Git) getCommitFileDiff(hash string, file string, oldfile string) (string, error) {
+	cmd := []string{"log", hash, "-w", "-m", "-1", "--first-parent", "--patch-with-raw", "-z", "--no-color", "--", file}
+	if oldfile != "" {
+		cmd = append(cmd, oldfile)
+	}
+	d, err := g.RunCwd(cmd...)
+	if err != nil {
+		return "", err
+	}
+	return d, nil
+}

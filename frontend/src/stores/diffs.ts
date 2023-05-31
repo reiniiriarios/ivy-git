@@ -1,5 +1,7 @@
 import { get, writable } from "svelte/store";
 import { changes } from "./changes";
+import { GetCommitFileParsedDiff } from "wailsjs/go/main/App";
+import { parseResponse } from "scripts/parse-response";
 
 export interface Diff {
   Raw: string;
@@ -12,6 +14,7 @@ export interface Diff {
   Status: string;
   Staged: boolean;
   Committed: boolean;
+  Hash: string;
 }
 
 export interface DiffHunk {
@@ -43,10 +46,20 @@ function createCurrentDiff() {
     subscribe,
     set,
     clear: () => set({} as Diff),
-    fetchDiff: async (hash: string, file: string) => {
-      // Fetch diff from specific commit.
-      //...
+    // Fetch diff from specific commit.
+    fetchDiff: async (hash: string, file: string, oldfile: string) => {
+      GetCommitFileParsedDiff(hash, file, oldfile).then(result => {
+        parseResponse(result, () => {
+          let diff = result.Data;
+          diff.Staged = false;
+          diff.Committed = true;
+          diff.Hash = hash;
+          diff.File = oldfile ? `${file} -> ${oldfile}` : file; // ???
+          set(diff);
+        });
+      });
     },
+    // Refetch the current diff.
     refresh: () => {
       let cd = get(currentDiff);
       if (cd.Committed) {
