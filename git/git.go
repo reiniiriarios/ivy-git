@@ -99,9 +99,6 @@ func (g *Git) runCmdStdin(directory string, command []string, input string) (str
 		return "", g.ParseGitError(errb.String(), err)
 	}
 
-	println(outb.String())
-	println(errb.String())
-
 	return outb.String(), nil
 }
 

@@ -14,8 +14,11 @@ func (g *Git) GetUntrackedFiles() (string, error) {
 }
 
 func (g *Git) GetUncommittedDiff() (string, error) {
-	diff, err := g.RunCwd("--no-pager", "diff", "HEAD^")
+	diff, err := g.RunCwd("--no-pager", "diff", "HEAD^", "--")
 	if err != nil {
+		if errorCode(err) == BadRevision {
+			return "", nil
+		}
 		return "", err
 	}
 	return diff, nil
@@ -26,9 +29,15 @@ func (g *Git) GetDiffRemoteCurrent() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if branch == "" {
+		return "", nil
+	}
 	remote, err := g.getBranchRemote(branch, true)
 	if err != nil {
 		return "", err
+	}
+	if remote == "" {
+		return "", nil
 	}
 	diff, err := g.GetDiffRemote(remote, branch)
 	if err != nil {

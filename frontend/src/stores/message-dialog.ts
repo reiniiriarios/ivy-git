@@ -103,15 +103,19 @@ function createMessage() {
     },
     yes: async() => {
       update(message => {
-        message.callbackConfirm();
+        if (message.callbackConfirm) {
+          message.callbackConfirm();
+        }
         return {};
-      })
+      });
     },
     okay: async() => {
       update(message => {
-        message.callback();
+        if (message.callback) {
+          message.callback();
+        }
         return {};
-      })
+      });
     },
     clear: async() => {
       set({});

@@ -25,12 +25,18 @@ function createRemotes() {
     subscribe,
     refresh: async () => {
       GetRemotes().then(result => {
-        console.log(result);
+        // Ignore errors here, there may be no remotes.
         set(result.Data);
       });
     },
   };
 }
 export const remoteData = createRemotes();
-export const remotes = derived(remoteData, $remoteData => $remoteData.Remotes);
-export const currentRemote = derived(remoteData, $remoteData => $remoteData.Remotes.find(r => r.Name === $remoteData.CurrentRemote));
+export const remotes = derived(remoteData, $remoteData => {
+  console.log($remoteData);
+  return $remoteData?.Remotes?.length ? $remoteData.Remotes : [];
+});
+export const currentRemote = derived(remoteData, $remoteData => {
+  if (!$remoteData?.Remotes?.length) return {} as Remote;
+  return $remoteData.Remotes.find(r => r.Name === $remoteData.CurrentRemote) ?? {} as Remote;
+});

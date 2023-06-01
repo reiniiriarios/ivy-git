@@ -39,7 +39,11 @@ func (g *Git) getRemoteNames() ([]string, error) {
 func (g *Git) GetRemoteForCurrentBranch() (string, error) {
 	b, err := g.GetCurrentBranch()
 	if err != nil {
-		return "", err
+		// Ignore errors here, there may not be a currently selected branch.
+		return "", nil
+	}
+	if b == "" {
+		return "", nil
 	}
 	r, err := g.getRemoteForBranch(b)
 	if err != nil {
@@ -62,7 +66,8 @@ func (g *Git) getRemoteForBranch(branch string) (string, error) {
 			return "", err
 		}
 		if len(all) < 1 {
-			return "", errors.New("no remotes found")
+			// No remotes found.
+			return "", nil
 		}
 		r = all[0]
 	}

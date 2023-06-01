@@ -66,8 +66,11 @@ func (g *Git) getLog(limit uint64, offset uint64) ([]Commit, map[string]uint64, 
 	// - HEAD
 	count := "--max-count=" + strconv.FormatUint(limit, 10)
 	skip := "--skip=" + strconv.FormatUint(offset, 10)
-	c, err := g.RunCwd("--no-pager", "log", "--format="+format, count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD")
+	c, err := g.RunCwd("--no-pager", "log", "--format="+format, count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD", "--")
 	if err != nil {
+		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision {
+			return commits, lookup, nil
+		}
 		return commits, lookup, err
 	}
 
@@ -134,7 +137,7 @@ func (g *Git) GetCommitsSignStatus(limit uint64, offset uint64) (CommitsSigned, 
 	format := strings.Join(data, GIT_LOG_SEP)
 	count := "--max-count=" + strconv.FormatUint(limit, 10)
 	skip := "--skip=" + strconv.FormatUint(offset, 10)
-	c, err := g.RunCwd("--no-pager", "log", "--format="+format, count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD")
+	c, err := g.RunCwd("--no-pager", "log", "--format="+format, count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD", "--")
 	if err != nil {
 		return commits, err
 	}
@@ -154,7 +157,9 @@ func (g *Git) GetCommitsSignStatus(limit uint64, offset uint64) (CommitsSigned, 
 func (g *Git) getNumUncommitedChanges() int {
 	c, err := g.RunCwd("status", "--untracked-files=all", "--porcelain")
 	if err != nil {
-		println(err.Error())
+		if errorCode(err) != NoCommitsYet && errorCode(err) != BadRevision && errorCode(err) != UnknownRevisionOrPath {
+			println(err.Error())
+		}
 		return 0
 	}
 	return strings.Count(c, "\n")
@@ -164,12 +169,18 @@ func (g *Git) getNumUncommitedChanges() int {
 func (g *Git) getCommits(limit uint64, offset uint64) ([]Commit, map[string]uint64, Ref, error) {
 	commits, lookup, err := g.getLog(limit, offset)
 	if err != nil {
+		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision {
+			return commits, lookup, Ref{}, nil
+		}
 		println(err.Error())
 		return commits, lookup, Ref{}, err
 	}
 
 	refs, err := g.getRefs()
 	if err != nil {
+		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision {
+			return commits, lookup, Ref{}, nil
+		}
 		println(err.Error())
 		return commits, lookup, Ref{}, err
 	}

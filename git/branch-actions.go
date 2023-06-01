@@ -213,15 +213,18 @@ func (g *Git) CreateBranch(name string, at_hash string, checkout bool) error {
 	if name == "" {
 		return errors.New("no branch name specified")
 	}
-	var err error
+
+	cmd := []string{}
 	if checkout {
-		if at_hash != "" {
-			_, err = g.RunCwd("checkout", "-b", name, at_hash)
-		} else {
-			_, err = g.RunCwd("checkout", "-b", name)
-		}
+		cmd = append(cmd, "checkout", "-b")
 	} else {
-		_, err = g.RunCwd("branch", name, at_hash)
+		cmd = append(cmd, "branch")
 	}
+	cmd = append(cmd, name)
+	if at_hash != "" {
+		cmd = append(cmd, at_hash)
+	}
+	_, err := g.RunCwd(cmd...)
+
 	return err
 }

@@ -29,6 +29,11 @@
   td {
     padding: 0.5rem 0.75rem;
   }
+
+  &__no-remote {
+    padding: 0 1.5rem;
+    color: var(--color-text-muted);
+  }
 }
 
 .remote {

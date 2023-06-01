@@ -12,7 +12,7 @@
 <div class="code-breakdown">
   <h2>Code</h2>
   <div class="code-breakdown__inner">
-    {#if $cloc.Languages?.length}
+    {#if $cloc.Languages && Object.entries($cloc.Languages).length}
       <div class="code-breakdown__bar">
         {#each Object.entries($cloc.Languages) as [_, lang]}
           <div
@@ -51,6 +51,8 @@
       </table>
     {:else if $cloc.Error}
       <div class="code-breakdown__error">{$cloc.Error}</div>
+    {:else if $cloc.Total?.Total === 0}
+      <div class="code-breakdown__no-data">No data.</div>
     {:else}
       <div class="code-breakdown__loading">{@html octicons.gear.toSVG({width: 24})}</div>
     {/if}

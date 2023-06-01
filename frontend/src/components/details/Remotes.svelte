@@ -54,17 +54,17 @@
 
 <div class="remotes">
   <h2>Remotes</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Remote</th>
-        <th>Repo</th>
-        <th>Ahead/Behind</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {#if $remotes.length}
+    {#if Object.entries($remotes).length}
+    <table>
+      <thead>
+        <tr>
+          <th>Remote</th>
+          <th>Repo</th>
+          <th>Ahead/Behind</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
         {#each Object.entries($remotes) as [_, remote]}
           <tr class="remote">
             <td>
@@ -111,12 +111,10 @@
             </td>
           </tr>
         {/each}
-      {:else}
-        <tr class="remote">
-          <td colspan="4">...</td>
-        </tr>
-      {/if}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  {:else}
+    <div class="remotes__no-remote">No remotes.</div>
+  {/if}
   <!-- TODO: add, remove -->
 </div>

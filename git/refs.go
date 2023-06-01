@@ -27,7 +27,7 @@ type Refs struct {
 
 // Get the symbolic ref for the HEAD or an empty string if it isn't symbolic.
 func (g *Git) symbolicRefHead() string {
-	h, err := g.RunCwd("symbolic-ref", "HEAD")
+	h, err := g.RunCwd("symbolic-ref", "HEAD", "--")
 	// e.g.
 	//   refs/heads/main
 	// or
@@ -68,13 +68,11 @@ func (g *Git) getRefs() (Refs, error) {
 	// e35785a1e71efbb7a48a1be286236f93f5aeded6 refs/stash
 	// e1a3558374dbe85a7eab5094185b1b3e30391f96 refs/tags/testTag
 	if err != nil {
-		println(err.Error())
 		return refs, err
 	}
 
 	upstream, err := g.getUpstreamsForRefs()
 	if err != nil {
-		println(err.Error())
 		return refs, err
 	}
 
@@ -231,6 +229,9 @@ func parseRefRemote(hash string, name string) Ref {
 func (g *Git) ShowRefAll() (string, error) {
 	refs, err := g.RunCwd("show-ref", "--dereference", "--head")
 	if err != nil {
+		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath || errorCode(err) == ExitStatus1 {
+			return "", nil
+		}
 		return "", err
 	}
 	return refs, nil
@@ -241,6 +242,9 @@ func (g *Git) getUpstreamsForRefs() (map[string]string, error) {
 
 	refs, err := g.RunCwd("for-each-ref", "--format=%(refname)"+GIT_LOG_SEP+"%(upstream:short)")
 	if err != nil {
+		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath {
+			return upstream, nil
+		}
 		return upstream, err
 	}
 

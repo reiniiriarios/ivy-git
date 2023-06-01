@@ -71,4 +71,8 @@
       font-weight: bold;
     }
   }
+
+  &__no-data {
+    color: var(--color-text-muted);
+  }
 }

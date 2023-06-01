@@ -17,7 +17,9 @@
       validateBlank: checkRef,
       confirm: 'Create',
       callbackConfirm: () => {
+        console.log(messageDialog.blankValue())
         CreateBranch(messageDialog.blankValue(), "", true).then(r => {
+          console.log(r)
           parseResponse(r, () => {
             currentBranch.set({Name: messageDialog.blankValue()} as Branch);
             branchSelect.set(false);

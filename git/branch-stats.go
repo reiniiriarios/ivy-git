@@ -14,7 +14,6 @@ type Branch struct {
 func (g *Git) NumBranches() uint64 {
 	b, err := g.RunCwd("branch")
 	if err != nil {
-		println(err.Error())
 		return 0
 	}
 	lines := parseLines(b)
@@ -23,12 +22,21 @@ func (g *Git) NumBranches() uint64 {
 
 // Get current branch for currently selected repo.
 func (g *Git) GetCurrentBranch() (string, error) {
-	branch, err := g.RunCwd("rev-parse", "--abbrev-ref", "HEAD")
+	// Git 2.22+  `git branch --show-current`
+	// Git 1.8+   `git symbolic-ref --short HEAD`
+	// Git 1.7+   `git rev-parse --abbrev-ref HEAD` -- fails when no commits
+	// earlier    `git symbolic-ref HEAD` -- works, but returns full ref
+	ref, err := g.RunCwd("symbolic-ref", "HEAD")
 	if err != nil {
-		println(err.Error())
+		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath || errorCode(err) == ExitStatus1 {
+			return "", nil
+		}
 		return "", err
 	}
-	branch = strings.ReplaceAll(strings.ReplaceAll(branch, "\r", ""), "\n", "")
+	// refs/heads/main => main
+	ref = parseOneLine(ref)
+	parts := strings.Split(ref, "/")
+	branch := parts[len(parts)-1]
 
 	return branch, nil
 }
@@ -39,7 +47,6 @@ func (g *Git) GetBranches() ([]Branch, error) {
 
 	branches, err := g.RunCwd("for-each-ref", "--format", "%(refname:lstrip=2)"+GIT_LOG_SEP+"%(upstream:short)", "refs/heads/**")
 	if err != nil {
-		println(err.Error())
 		return branch_list, err
 	}
 
@@ -64,7 +71,6 @@ func (g *Git) GetBranchUpstream(branch string) (string, error) {
 
 	b, err := g.RunCwd("for-each-ref", "--format", "%(upstream:short)", branch)
 	if err != nil {
-		println(err.Error())
 		return "", err
 	}
 	b = parseOneLine(b)
@@ -106,7 +112,6 @@ func (g *Git) NumMainBranchCommits() uint64 {
 	main := g.NameOfMainBranch()
 	num, err := g.NumCommitsOnBranch(main)
 	if err != nil {
-		println(err.Error())
 		return 0
 	}
 	return uint64(num)
@@ -119,8 +124,8 @@ func (g *Git) NumCommitsOnBranch(branch string) (uint64, error) {
 
 	n, err := g.RunCwd("rev-list", "--count", branch)
 	if err != nil {
-		println(err.Error())
-		return 0, err
+		// Ignore errors here, there may not be a branch selected.
+		return 0, nil
 	}
 	n = parseOneLine(n)
 	num, _ := strconv.ParseInt(n, 10, 32)

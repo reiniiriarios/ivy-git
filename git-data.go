@@ -154,6 +154,12 @@ func (a *App) GetCommitDiffSummary(hash string) DataResponse {
 
 // Get list of commits and all associated details for display.
 func (a *App) GetCommitList(limit uint64, offset uint64) DataResponse {
+	if !a.Git.HasCommits(a.Git.Repo.Directory) {
+		return DataResponse{
+			Response: "no-commits",
+		}
+	}
+
 	HEAD, commits, graph, err := a.Git.GetCommitsAndGraph(limit, offset)
 	return dataResponse(err, struct {
 		HEAD    git.Ref

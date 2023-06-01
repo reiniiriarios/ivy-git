@@ -57,7 +57,7 @@
   </div>
   <div class="make-commit__button">
     <button class="btn" id="make-commit-button" disabled={!subject || running || (!changes.numStaged() && !changes.numUnstaged())} on:click={make}>
-      Commit to <strong>{$currentBranch.Name}</strong>
+      Commit to <strong>{$currentBranch?.Name}</strong>
     </button>
   </div>
 </div>

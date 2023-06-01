@@ -89,13 +89,9 @@ func (a *App) updateLastCommit(new *bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	last_commit, err := a.Git.GetLastCommitHash()
-	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
-		if new != nil {
-			*new = true
-		}
-	}
-	if new != nil {
+	if err != nil && new != nil {
+		*new = true
+	} else if new != nil {
 		*new = a.CurrentHash != last_commit
 	}
 	a.CurrentHash = last_commit
@@ -136,16 +132,14 @@ func (a *App) updateStagedDiff(new *bool, wg *sync.WaitGroup) {
 func (a *App) updateWatcherDiff(new *bool, wg *sync.WaitGroup, update_variable *string, diff string, err error) {
 	defer wg.Done()
 
-	if err != nil {
-		runtime.LogError(a.ctx, err.Error())
+	if err != nil && new != nil {
+		*new = true
+	} else {
+		hash := md5.Sum([]byte(diff))
+		hash_hex := hex.EncodeToString(hash[:])
 		if new != nil {
-			*new = true
+			*new = hash_hex != *update_variable
 		}
+		*update_variable = hash_hex
 	}
-	hash := md5.Sum([]byte(diff))
-	hash_hex := hex.EncodeToString(hash[:])
-	if new != nil {
-		*new = hash_hex != *update_variable
-	}
-	*update_variable = hash_hex
 }

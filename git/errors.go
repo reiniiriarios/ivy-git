@@ -11,13 +11,24 @@ type ErrorCode int64
 
 type GitError struct {
 	Stderr    string
+	Err       error
 	ErrorCode ErrorCode
 	Message   string
 }
 
-func (g *Git) ParseGitError(stderr string, err error) error {
+// Get error code for an error that may or may not be a GitError.
+func errorCode(e error) ErrorCode {
+	x := interface{}(e)
+	if _, ok := x.(*GitError); ok {
+		return x.(*GitError).ErrorCode
+	}
+	return UndefinedError
+}
+
+func (g *Git) ParseGitError(stderr string, err error) *GitError {
 	e := GitError{
 		Stderr: stderr,
+		Err:    err,
 	}
 	// Determine error code from stderr
 	e.parse()
@@ -55,6 +66,7 @@ func (e *GitError) Error() string {
 
 const (
 	UndefinedError ErrorCode = iota
+	ExitStatus1              // must be second in iota list
 	SSHKeyAuditUnverified
 	SSHAuthenticationFailed
 	SSHPermissionDenied
@@ -120,10 +132,16 @@ const (
 )
 
 func (e *GitError) parse() {
-	stderr := e.Stderr
 	for _, r := range getGitErrorRegexes() {
-		if match, _ := regexp.MatchString(r.Regex, stderr); match {
+		if match, _ := regexp.MatchString(r.Regex, e.Stderr); match {
 			e.ErrorCode = r.Code
+			return
+		}
+	}
+	for _, r := range getGitErrorRegexes() {
+		if match, _ := regexp.MatchString(r.Regex, e.Err.Error()); match {
+			e.ErrorCode = r.Code
+			return
 		}
 	}
 }
@@ -388,6 +406,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 		{
 			Code:  NoCommitsYet,
 			Regex: "fatal: your current branch '(.+?)' does not have any commits yet",
+		},
+		{
+			Code:  ExitStatus1,
+			Regex: "exit status 1",
 		},
 	}
 }

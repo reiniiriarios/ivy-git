@@ -23,6 +23,7 @@
 
   import { enableWatcher } from "events/watcher";
   import { registerConflictEvents } from "events/conflicts";
+  import { currentBranch, noBranchSelected } from "stores/branches";
 
   // Load initial ui state.
   function init() {
@@ -74,15 +75,21 @@
     {/if}
     <Changes />
     {#if $currentRepo}
-      {#if $currentRemote}
+      {#if $currentRemote?.Name}
         <RemoteActions />
       {/if}
-      <MakeCommit />
+      {#if !$noBranchSelected}
+        <MakeCommit />
+      {/if}
     {/if}
   </div>
   <main>
     {#if $currentRepo}
-      <MainTabs />
+      {#if $noBranchSelected}
+        <GetStarted state="no-branch" />
+      {:else}
+        <MainTabs />
+      {/if}
     {:else}
       <GetStarted />
     {/if}

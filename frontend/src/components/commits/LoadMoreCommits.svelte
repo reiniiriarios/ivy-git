@@ -3,7 +3,6 @@
 
   function loadMoreCommits() {
     commitData.refresh($commitsPage + 1);
-    console.log('mas', $commitsPage + 1);
   }
 
   commitsPage.subscribe(p => {

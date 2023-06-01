@@ -8,11 +8,13 @@ interface DataResponse {
 
 type ResponseCallback = () => void | any;
 
-export function parseResponse(response: DataResponse, success?: ResponseCallback, failure?: ResponseCallback) {
+export function parseResponse(response: DataResponse, success?: ResponseCallback, failure?: ResponseCallback, noError: boolean = false) {
   if (response.Response === "error") {
-    messageDialog.error({
-      message: response.Message
-    });
+    if (!noError) {
+      messageDialog.error({
+        message: response.Message
+      });
+    }
     if (failure) failure();
     return
   }

@@ -100,32 +100,42 @@ function createCommitData() {
       // todo: page instead of count
       GetCommitList(COMMIT_LIST_PAGING * (page + 1), 0).then(result => {
         parseResponse(result, () => {
-          set({
-            commits: result.Data.Commits,
-            HEAD: result.Data.HEAD,
-            Graph: result.Data.Graph,
-            page: page,
-          });
-          console.log('HEAD', result.Data.HEAD);
-          console.log('commits', result.Data.Commits);
-          console.log('branches', result.Data.Graph.Branches);
-          console.log('vertices', result.Data.Graph.Vertices);
-        });
+          if (result.Response === 'no-commits') {
+            set({
+              commits: [] as Commit[],
+              HEAD: {} as Ref,
+              Graph: {} as Graph,
+              page: 0,
+            });
+          }
+          else {
+            set({
+              commits: result.Data.Commits,
+              HEAD: result.Data.HEAD,
+              Graph: result.Data.Graph,
+              page: page,
+            });
+            console.log('HEAD', result.Data.HEAD);
+            console.log('commits', result.Data.Commits);
+            console.log('branches', result.Data.Graph.Branches);
+            console.log('vertices', result.Data.Graph.Vertices);
+          }
+        }, () => {}, true);
       });
       commitSignData.refresh();
     },
   };
 }
 export const commitData = createCommitData();
-export const commits = derived(commitData, $commitData => $commitData.commits);
-export const HEAD = derived(commitData, $commitData => $commitData.HEAD);
-export const graph = derived(commitData, $commitData => $commitData.Graph);
-export const commitsPage = derived(commitData, $commitData => $commitData.page);
+export const commits = derived(commitData, $commitData => $commitData?.commits);
+export const HEAD = derived(commitData, $commitData => $commitData?.HEAD);
+export const graph = derived(commitData, $commitData => $commitData?.Graph);
+export const commitsPage = derived(commitData, $commitData => $commitData?.page);
 export const tree = derived(commitData, $commitData => ({
-  svg: drawGraph($commitData.Graph),
-  width: getSVGWidth($commitData.Graph),
-  height: $commitData.Graph.Height,
-  continues: $commitData.Graph.Continues,
+  svg: $commitData?.Graph ? drawGraph($commitData.Graph) : '',
+  width: $commitData?.Graph ? getSVGWidth($commitData.Graph) : '0',
+  height: $commitData?.Graph?.Height,
+  continues: $commitData?.Graph?.Continues,
 }));
 
 export type CommitsSigned = {[hash: string]: string};

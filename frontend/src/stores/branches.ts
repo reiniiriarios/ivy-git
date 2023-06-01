@@ -43,9 +43,8 @@ function createCurrentBranch() {
     refresh: async () => {
       if (get(currentRepo)) {
         GetCurrentBranch().then(result => {
-          parseResponse(result, () => {
-            set(result.Data as Branch);
-          });
+          // Ignore errors here. Sometimes there isn't a current branch.
+          set(result.Data as Branch);
         });
       }
       else {
@@ -75,8 +74,9 @@ function createCurrentBranch() {
     },
     clear: () => {
       set({} as Branch);
-    }
+    },
   };
 }
 export const currentBranch = createCurrentBranch();
-export const detachedHead = derived(currentBranch, $currentBranch => $currentBranch.Name === 'HEAD');
+export const detachedHead = derived(currentBranch, $currentBranch => $currentBranch?.Name && $currentBranch.Name === 'HEAD');
+export const noBranchSelected = derived(currentBranch, $currentBranch => !$currentBranch?.Name?.length);

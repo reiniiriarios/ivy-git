@@ -1,5 +1,5 @@
 import { parseResponse } from "scripts/parse-response";
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { Cloc, NumBranches, NumMainBranchCommits, NumTags } from "wailsjs/go/main/App";
 
 function createNumBranches() {

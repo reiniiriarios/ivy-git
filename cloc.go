@@ -8,8 +8,5 @@ func (a *App) Cloc() DataResponse {
 		return dataResponse(err, false)
 	}
 	cloc, err := cloc.Cloc(files)
-	if err != nil {
-		return dataResponse(err, false)
-	}
-	return dataResponse(nil, cloc)
+	return dataResponse(err, cloc)
 }

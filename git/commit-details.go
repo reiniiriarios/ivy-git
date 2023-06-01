@@ -22,6 +22,9 @@ type CommitAddl struct {
 func (g *Git) GetLastCommitHash() (string, error) {
 	h, err := g.RunCwd("--no-pager", "log", "--format=%H", "--max-count=1")
 	if err != nil {
+		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath || errorCode(err) == ExitStatus1 {
+			return "", nil
+		}
 		return "", err
 	}
 	h = parseOneLine(h)

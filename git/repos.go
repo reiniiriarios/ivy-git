@@ -37,8 +37,7 @@ func (g *Git) HasCommits(directory string) bool {
 	if err == nil {
 		return true
 	}
-	// Bad revision means there's no HEAD.
-	if !strings.Contains(err.Error(), "bad revision") {
+	if errorCode(err) != NoCommitsYet && errorCode(err) != BadRevision {
 		println(err.Error())
 	}
 	return false
