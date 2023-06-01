@@ -34,7 +34,7 @@ func (cf ClocFiles) Less(i, j int) bool {
 }
 
 // AnalyzeFile is analyzing file, this function calls AnalyzeReader() inside.
-func AnalyzeFile(filename string, language *Language) *ClocFile {
+func analyzeFile(filename string, language *Language) *ClocFile {
 	fp, err := os.Open(filename)
 	if err != nil {
 		// ignore error
@@ -42,11 +42,10 @@ func AnalyzeFile(filename string, language *Language) *ClocFile {
 	}
 	defer fp.Close()
 
-	return AnalyzeReader(filename, language, fp)
+	return analyzeReader(filename, language, fp)
 }
 
-// AnalyzeReader is analyzing file for io.Reader.
-func AnalyzeReader(filename string, language *Language, file io.Reader) *ClocFile {
+func analyzeReader(filename string, language *Language, file io.Reader) *ClocFile {
 	clocFile := &ClocFile{
 		Name: filename,
 		Lang: language.Data.Name,

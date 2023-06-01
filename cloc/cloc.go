@@ -26,12 +26,14 @@ func (ls AllLanguageData) Less(i, j int) bool {
 	return ls[i].Code > ls[j].Code
 }
 
-func Cloc(paths []string) (ClocData, error) {
+func Cloc(dir string, paths []string) (ClocData, error) {
 	// Get data
 	processor := Processor{
 		langs: NewDefinedLanguages(),
 	}
-	result, err := processor.Analyze(paths)
+	gitattributes_translations := parseGitAttributes(dir)
+
+	result, err := processor.analyze(paths, gitattributes_translations)
 	if err != nil {
 		return ClocData{}, err
 	}
@@ -66,9 +68,9 @@ type Result struct {
 }
 
 // Analyze executes gocloc parsing for the directory of the paths argument and returns the result.
-func (p *Processor) Analyze(files []string) (*Result, error) {
+func (p *Processor) analyze(files []string, translations map[string]string) (*Result, error) {
 	total := LanguageData{}
-	languages := parseAllFiles(files, p.langs)
+	languages := parseAllFiles(files, p.langs, translations)
 	maxPathLen := 0
 	num := 0
 	for _, lang := range languages {
@@ -84,7 +86,7 @@ func (p *Processor) Analyze(files []string) (*Result, error) {
 
 	for _, language := range languages {
 		for _, file := range language.Files {
-			cf := AnalyzeFile(file, language)
+			cf := analyzeFile(file, language)
 			cf.Lang = language.Data.Name
 
 			language.Data.Code += cf.Code

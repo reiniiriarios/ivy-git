@@ -58,7 +58,7 @@ func ignoreFile(file string) bool {
 	return strings.HasSuffix(file, "package-lock.json")
 }
 
-func parseAllFiles(files []string, languages *DefinedLanguages) (result map[string]*Language) {
+func parseAllFiles(files []string, languages *DefinedLanguages, translations map[string]string) (result map[string]*Language) {
 	result = make(map[string]*Language, 0)
 	fileCache := make(map[string]struct{})
 
@@ -69,6 +69,10 @@ func parseAllFiles(files []string, languages *DefinedLanguages) (result map[stri
 		ext, ok := getFileType(file)
 		if !ok {
 			continue
+		}
+		// Swap with language defined in gitattributes if present.
+		if translation, exists := translations[ext]; exists {
+			ext = translation
 		}
 		targetExt, ok := Exts[ext]
 		if !ok {
