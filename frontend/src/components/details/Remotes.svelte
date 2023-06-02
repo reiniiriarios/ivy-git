@@ -1,9 +1,9 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
+  import addRemote from "actions/add-remote";
   import { parseResponse } from "scripts/parse-response";
-  import { messageDialog } from "stores/message-dialog";
   import { remoteData, remotes } from "stores/remotes";
-  import { FetchRemote, PullRemote, PushRemote, AddRemote } from "wailsjs/go/main/App";
+  import { FetchRemote, PullRemote, PushRemote } from "wailsjs/go/main/App";
 
   function pull(e: MouseEvent | KeyboardEvent, remote: string) {
     let el = e.target as HTMLElement;
@@ -52,31 +52,14 @@
     }, 1000);
   }
 
-  function addRemote() {
-    messageDialog.addRemote({
-      callbackConfirm: () => {
-        let data = messageDialog.addRemoteData();
-        AddRemote(data.name, data.fetch, data.push).then(result => {
-          parseResponse(result, () => {
-            remoteData.refresh();
-            messageDialog.clear();
-          }, () => {
-            // Refresh regardless of error. The remote may be added, but
-            // an error may occur when trying to fetch from it. The list
-            // should still be updated.
-            remoteData.refresh();
-          });
-        });
-      },
-    });
-  }
+  const newRemote = () => addRemote();
 </script>
 
 <div class="remotes">
   <div class="remotes__header">
     <h2>Remotes</h2>
     <div>
-      <button class="btn btn-sm" on:click={addRemote}>
+      <button class="btn btn-sm" on:click={newRemote}>
         Add
         {@html octicons.plus.toSVG({width: 14})}
       </button>
@@ -144,5 +127,4 @@
   {:else}
     <div class="remotes__no-remote">No remotes.</div>
   {/if}
-  <!-- TODO: add, remove -->
 </div>
