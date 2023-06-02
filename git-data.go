@@ -347,3 +347,12 @@ func (a *App) UnstagePartialFile(diff git.Diff, filename string, status string) 
 	err := a.Git.UnstagePartial(diff, filename, status)
 	return dataResponse(err, false)
 }
+
+func (a *App) AddRemote(name string, fetch_url string, push_url string) DataResponse {
+	err := a.Git.AddRemote(name, fetch_url, push_url)
+	if err != nil {
+		return dataResponse(err, false)
+	}
+	err = a.Git.FetchRemote(name)
+	return dataResponse(err, false)
+}

@@ -1,8 +1,9 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
   import { parseResponse } from "scripts/parse-response";
+  import { messageDialog } from "stores/message-dialog";
   import { remoteData, remotes } from "stores/remotes";
-  import { FetchRemote, PullRemote, PushRemote } from "wailsjs/go/main/App";
+  import { FetchRemote, PullRemote, PushRemote, AddRemote } from "wailsjs/go/main/App";
 
   function pull(e: MouseEvent | KeyboardEvent, remote: string) {
     let el = e.target as HTMLElement;
@@ -50,10 +51,32 @@
       }
     }, 1000);
   }
+
+  function addRemote() {
+    messageDialog.addRemote({
+      callbackConfirm: () => {
+        let data = messageDialog.addRemoteData();
+        AddRemote(data.name, data.fetch, data.push).then(result => {
+          parseResponse(result, () => {
+            remoteData.refresh();
+            messageDialog.clear();
+          });
+        });
+      },
+    });
+  }
 </script>
 
 <div class="remotes">
-  <h2>Remotes</h2>
+  <div class="remotes__header">
+    <h2>Remotes</h2>
+    <div>
+      <button class="btn btn-sm" on:click={addRemote}>
+        Add
+        {@html octicons.plus.toSVG({width: 14})}
+      </button>
+    </div>
+  </div>
     {#if Object.entries($remotes).length}
     <table>
       <thead>

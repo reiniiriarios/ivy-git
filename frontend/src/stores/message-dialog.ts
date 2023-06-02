@@ -30,6 +30,7 @@ interface Message {
   // Specific message dialogs:
   addTag?: boolean;
   newRepo?: boolean;
+  addRemote?: boolean;
 }
 
 function createMessage() {
@@ -101,6 +102,17 @@ function createMessage() {
         callback: message.callback ?? (() => {}),
       });
     },
+    addRemote: async(message: Message) => {
+      set({
+        heading: message.heading ?? 'Add Remote',
+        message: message.message ?? 'Enter a name for the remote and URL(s).',
+        confirm: message.confirm ?? 'Add',
+        addRemote: true,
+        callbackConfirm: message.callbackConfirm ?? (() => {}),
+        okay: message.okay ?? 'Cancel',
+        callback: message.callback ?? (() => {}),
+      });
+    },
     yes: async() => {
       update(message => {
         if (message.callbackConfirm) {
@@ -145,7 +157,15 @@ function createMessage() {
         name: (document.getElementById('message-dialog-repo-name') as HTMLInputElement).value,
         location: (document.getElementById('message-dialog-repo-location') as HTMLInputElement).value,
       }
-    }
+    },
+    // Shortcut for getting add remote data.
+    addRemoteData: () => {
+      return {
+        name: (document.getElementById('message-dialog-remote-name') as HTMLInputElement).value,
+        fetch: (document.getElementById('message-dialog-remote-fetch') as HTMLInputElement).value,
+        push: (document.getElementById('message-dialog-remote-push') as HTMLInputElement).value,
+      }
+    },
   };
 }
 export const messageDialog = createMessage();

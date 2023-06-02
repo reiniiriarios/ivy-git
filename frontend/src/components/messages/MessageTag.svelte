@@ -29,8 +29,8 @@
     annotated = false;
   }
 
-  const validateRef = (e: InputEvent & { currentTarget: EventTarget & HTMLInputElement }) => {
-    tagValid = checkRef(e.currentTarget.value);
+  const validateRef = () => {
+    tagValid = checkRef(tagNameField);
   }
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {

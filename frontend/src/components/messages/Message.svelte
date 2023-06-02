@@ -2,6 +2,7 @@
   import { messageDialog } from 'stores/message-dialog';
   import MessageTag from 'components/messages/MessageTag.svelte';
   import MessageNewRepo from 'components/messages/MessageNewRepo.svelte';
+  import MessageNewRemote from 'components/messages/MessageNewRemote.svelte';
 
   let blankValue: string;
   let blankValid: boolean = true;
@@ -38,6 +39,8 @@
           <MessageTag />
         {:else if $messageDialog.newRepo}
           <MessageNewRepo />
+        {:else if $messageDialog.addRemote}
+          <MessageNewRemote />
         {:else}
           {#if $messageDialog.heading}
             <div class="modal__heading">{$messageDialog.heading}</div>

@@ -20,6 +20,15 @@
     vertical-align: middle;
   }
 
+  &-sm {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.9rem;
+
+    svg {
+      margin: -0.25rem -0.2rem 0 0.15rem;
+    }
+  }
+
   &:not(:disabled) {
     cursor: pointer;
   }

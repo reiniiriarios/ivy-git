@@ -207,3 +207,26 @@ func (g *Git) FetchRemote(remote string) error {
 	_, err := g.RunCwd("fetch", remote, "--prune")
 	return err
 }
+
+func (g *Git) AddRemote(name string, fetch_url string, push_url string) error {
+	if name == "" {
+		return errors.New("no remote name specified")
+	}
+	if fetch_url == "" {
+		return errors.New("no fetch url specified")
+	}
+
+	_, err := g.RunCwd("remote", "add", name, fetch_url)
+	if err != nil {
+		return err
+	}
+
+	if push_url != "" {
+		_, err = g.RunCwd("remote", "set-url", name, "--push", push_url)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

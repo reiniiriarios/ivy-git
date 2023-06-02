@@ -4,13 +4,17 @@
   text-align: left;
   @include no-select;
 
-  h2 {
+  &__header {
     padding: 0 1.5rem;
-    font-weight: normal;
-    margin: 2rem 0 1rem;
+    margin: 1.5rem 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    &:first-child {
-      margin-top: 1.5rem;
+    h2 {
+      font-weight: normal;
+      padding: 0 !important;
+      margin: 0 !important;
     }
   }
 
