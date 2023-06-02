@@ -20,10 +20,10 @@ func (ls AllLanguageData) Swap(i, j int) {
 }
 
 func (ls AllLanguageData) Less(i, j int) bool {
-	if ls[i].Code == ls[j].Code {
+	if ls[i].Bytes == ls[j].Bytes {
 		return ls[i].Name < ls[j].Name
 	}
-	return ls[i].Code > ls[j].Code
+	return ls[i].Bytes > ls[j].Bytes
 }
 
 func Cloc(dir string, paths []string) (ClocData, error) {
@@ -46,7 +46,7 @@ func Cloc(dir string, paths []string) (ClocData, error) {
 	for _, l := range result.Languages {
 		if l.Data.Files > 0 {
 			l.Data.CodePercent = float64(l.Data.Code) / float64(result.Total.Code) * 100
-			l.Data.TotalPercent = float64(l.Data.Total) / float64(result.Total.Total) * 100
+			l.Data.TotalPercent = float64(l.Data.Bytes) / float64(result.Total.Bytes) * 100
 			data.Languages = append(data.Languages, &l.Data)
 		}
 	}
@@ -93,6 +93,7 @@ func (p *Processor) analyze(files []string, translations map[string]string) (*Re
 			language.Data.Comments += cf.Comments
 			language.Data.Blanks += cf.Blanks
 			language.Data.Total += cf.Code + cf.Comments + cf.Blanks
+			language.Data.Bytes += cf.Bytes
 			clocFiles[file] = cf
 		}
 
@@ -106,6 +107,7 @@ func (p *Processor) analyze(files []string, translations map[string]string) (*Re
 		total.Comments += language.Data.Comments
 		total.Code += language.Data.Code
 		total.Total += language.Data.Total
+		total.Bytes += language.Data.Bytes
 	}
 
 	return &Result{

@@ -29,6 +29,7 @@ type LanguageData struct {
 	Blanks       int64
 	Total        int64
 	Files        int64
+	Bytes        int64
 	CodePercent  float64
 	TotalPercent float64
 }

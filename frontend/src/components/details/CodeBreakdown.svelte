@@ -3,10 +3,11 @@
   import { cloc } from "stores/repo-info";
   import { onMount } from "svelte";
   import languages from "style/languages.json"
+  import { formatBytes } from "scripts/bytes";
 
   onMount(() => {
     cloc.fetch();
-  })
+  });
 </script>
 
 <div class="code-breakdown">
@@ -31,6 +32,7 @@
             <th>Comments</th>
             <th>Blank Lines</th>
             <th>Files</th>
+            <th>Bytes</th>
             <th>Percent</th>
           </tr>
         </thead>
@@ -44,6 +46,7 @@
               <td>{lang.Comments}</td>
               <td>{lang.Blanks}</td>
               <td>{lang.Files}</td>
+              <td>{formatBytes(lang.Bytes)}</td>
               <td>{lang.TotalPercent.toFixed(2)}%</td>
             </tr>
           {/each}

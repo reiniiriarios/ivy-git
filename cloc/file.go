@@ -13,6 +13,7 @@ type ClocFile struct {
 	Code     int64
 	Comments int64
 	Blanks   int64
+	Bytes    int64
 	Name     string
 	Lang     string
 }
@@ -42,7 +43,13 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 	}
 	defer fp.Close()
 
-	return analyzeReader(filename, language, fp)
+	file := analyzeReader(filename, language, fp)
+	stat, err := fp.Stat()
+	if err == nil {
+		file.Bytes = stat.Size()
+	}
+
+	return file
 }
 
 func analyzeReader(filename string, language *Language, file io.Reader) *ClocFile {

@@ -59,6 +59,7 @@ interface LanguageData {
   Comments: number;
   Blanks: number;
   Total: number;
+  Bytes: number;
   CodePercent: number;
   TotalPercent: number;
 }
