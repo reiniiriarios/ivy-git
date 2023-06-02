@@ -77,7 +77,7 @@
   }
 
   &__actions {
-    width: 0;
+    width: 1px; // min-content
     white-space: nowrap;
 
     .icon {
