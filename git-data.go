@@ -74,13 +74,15 @@ func (a *App) PullRemoteBranch(remote string, branch string, rebase bool) DataRe
 
 // Get list of changed files.
 func (a *App) GitListChanges() DataResponse {
-	changesX, changesY, err := a.Git.GitListChanges()
+	changesX, changesY, changesC, err := a.Git.GitListChanges()
 	return dataResponse(err, struct {
 		ChangesX map[string]*git.Change
 		ChangesY map[string]*git.Change
+		ChangesC map[string]*git.Change
 	}{
 		ChangesX: changesX,
 		ChangesY: changesY,
+		ChangesC: changesC,
 	})
 }
 
@@ -345,6 +347,11 @@ func (a *App) GetWorkingFileParsedDiff(file string, status string, staged bool) 
 
 func (a *App) GetCommitFileParsedDiff(hash string, file string, oldfile string) DataResponse {
 	diff, err := a.Git.GetCommitFileParsedDiff(hash, file, oldfile)
+	return dataResponse(err, diff)
+}
+
+func (a *App) GetConflictParsedDiff(file string) DataResponse {
+	diff, err := a.Git.GetConflictParsedDiff(file)
 	return dataResponse(err, diff)
 }
 

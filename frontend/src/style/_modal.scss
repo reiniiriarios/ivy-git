@@ -20,7 +20,7 @@
     flex-direction: column;
     text-align: left;
     min-width: 30rem;
-    max-width: 75vw;
+    max-width: 45rem;
   }
 
   &__heading {
@@ -32,6 +32,7 @@
   &__text {
     padding: 1rem;
     white-space: pre-wrap;
+    line-height: 1.5;
   }
 
   &__options {

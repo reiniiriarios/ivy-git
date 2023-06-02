@@ -3,6 +3,7 @@
   import ChangesDiff from "components/diffs/ChangesDiff.svelte";
   import ChangesDiffActions from "components/diffs/ChangesDiffActions.svelte";
   import DiffCommitted from "components/diffs/DiffCommitted.svelte";
+  import ConflictDiff from "./ConflictDiff.svelte";
 </script>
 
 {#if $currentDiff}
@@ -15,6 +16,8 @@
         {$currentDiff.File}
       </div>
       <DiffCommitted />
+    {:else if $currentDiff.Conflict}
+      <ConflictDiff />
     {:else}
       {#if $currentDiff.File}
         <ChangesDiffActions />

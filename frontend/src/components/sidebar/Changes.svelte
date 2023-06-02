@@ -1,7 +1,7 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
   import { parseResponse } from 'scripts/parse-response';
-  import { changes } from 'stores/changes';
+  import { changes, mergeConflicts } from 'stores/changes';
   import { currentDiff } from 'stores/diffs';
   import { currentTab, branchSelect, repoSelect } from 'stores/ui';
   import { StageFile, UnstageFile, StageAll, UnstageAll, StagePartialFile, UnstagePartialFile } from 'wailsjs/go/main/App'
@@ -84,11 +84,40 @@
 
   function selectFile(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     currentTab.set('changes');
-    changes.fetchDiff(e.currentTarget.dataset.staged === 'true' ? 'x' : 'y', e.currentTarget.dataset.file);
+    changes.fetchDiff(e.currentTarget.dataset.list, e.currentTarget.dataset.file);
   }
 </script>
 
 <div class="changes" style:display={$repoSelect || $branchSelect ? 'none' : 'block'}>
+  {#if $mergeConflicts}
+    <div class="changes__header">
+      <div class="changes__header-section">Conflicts</div>
+    </div>
+    <ul class="changes__list changes__list--conflicts">
+      {#each Object.entries($changes.c) as [_, change]}
+        <li
+          class="change"
+          class:change--active={$currentDiff.File === change.File && $currentDiff.Staged && $currentTab === 'changes'}
+          class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
+          class:change--none={change.Diff?.SelectedLines === 0}
+        >
+          <div class="change__file"
+            data-file="{change.File}"
+            data-status="{change.Them}{change.Us}"
+            data-conflict="true"
+            data-list="c"
+            on:click={selectFile}
+            on:keypress={selectFile}>
+            <span class="change__filename">
+              <span class="change__basename">{change.Basename}</span>
+              <span class="change__dir">{change.Dir != '.' ? change.Dir : ''}</span>
+            </span>
+            <span class="change__status change__status--{change.Flag}" aria-label="{change.Them} {change.Us}"></span>
+          </div>
+        </li>
+      {/each}
+    </ul>
+  {/if}
   {#if Object.keys($changes.x).length}
     <div class="changes__header">
       <div class="changes__header-section">Staged</div>
@@ -108,6 +137,7 @@
             data-file="{change.File}"
             data-status="{change.Letter}"
             data-staged="true"
+            data-list="x"
             on:click={selectFile}
             on:keypress={selectFile}>
             <span class="change__filename">
@@ -147,6 +177,7 @@
             data-file="{change.File}"
             data-status="{change.Letter}"
             data-staged="false"
+            data-list="y"
             on:click={selectFile}
             on:keypress={selectFile}>
             <div class="change__filename">

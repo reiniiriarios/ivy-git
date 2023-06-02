@@ -12,11 +12,14 @@ type Change struct {
 	Dir      string
 	OldFile  string
 	Letter   string
+	Them     string
+	Us       string
 	Flag     string
 }
 
 // Get list of changed files.
-func (g *Git) GitListChanges() (map[string]*Change, map[string]*Change, error) {
+// Returns X changes, Y changes, conflicts
+func (g *Git) GitListChanges() (map[string]*Change, map[string]*Change, map[string]*Change, error) {
 	// When a merge is occurring and the merge was successful, or outside of a merge situation,
 	//   X shows the status of the index and Y shows the status of the working tree.
 	// When a merge conflict has occurred and has not yet been resolved,
@@ -28,19 +31,17 @@ func (g *Git) GitListChanges() (map[string]*Change, map[string]*Change, error) {
 
 	var changesX []Change
 	var changesY []Change
-	changesXmap := make(map[string]*Change)
-	changesYmap := make(map[string]*Change)
+	var changesC []Change
 
 	c, err := g.RunCwd("status", "--untracked-files", "--porcelain", "-z")
 	if err != nil {
-		return changesXmap, changesYmap, err
+		return nil, nil, nil, err
 	}
 
 	// https://git-scm.com/docs/git-status
 	c = parseOneLine(c)
 	// The -z option splits lines by NUL.
 	changes := strings.Split(c, "\x00")
-
 	for i := 0; i < len(changes); i++ {
 		if strings.Trim(changes[i], " ") == "" {
 			continue
@@ -51,56 +52,65 @@ func (g *Git) GitListChanges() (map[string]*Change, map[string]*Change, error) {
 		file := changes[i][3:]
 
 		old_file := ""
-		if x == "R" || y == "R" {
-			// Renames get two lines of data, the second line is the old filename.
+		if x == "R" || y == "R" || x == "C" || y == "C" {
+			// Renames and copies get two lines of data, the second line is the old filename.
 			old_file = changes[i+1]
 			i++
 		}
 
-		if x != " " && x != "?" {
-			changesX = append(changesX, Change{
+		// DD, AU, UD, UA, DU, AA, UU
+		if x == "U" || y == "U" || (x == "A" && y == "A") || (x == "D" && y == "D") {
+			changesC = append(changesC, Change{
 				File:     file,
 				Basename: filepath.Base(file),
 				Dir:      filepath.Dir(file),
 				OldFile:  old_file,
-				Letter:   x,
-				Flag:     getStatusFlag(x),
+				Them:     x,
+				Us:       y,
+				Flag:     getUnmergedStatusFlag(x, y),
 			})
-		}
-		if y != " " {
-			changesY = append(changesY, Change{
-				File:     file,
-				Basename: filepath.Base(file),
-				Dir:      filepath.Dir(file),
-				OldFile:  old_file,
-				Letter:   y,
-				Flag:     getStatusFlag(y),
-			})
+		} else {
+			if x != " " && x != "?" {
+				changesX = append(changesX, Change{
+					File:     file,
+					Basename: filepath.Base(file),
+					Dir:      filepath.Dir(file),
+					OldFile:  old_file,
+					Letter:   x,
+					Flag:     getStatusFlag(x),
+				})
+			}
+			if y != " " {
+				changesY = append(changesY, Change{
+					File:     file,
+					Basename: filepath.Base(file),
+					Dir:      filepath.Dir(file),
+					OldFile:  old_file,
+					Letter:   y,
+					Flag:     getStatusFlag(y),
+				})
+			}
 		}
 	}
 
-	// Sort X changes by alpha.
-	if len(changesX) > 0 {
-		sort.Slice(changesX, func(i, j int) bool {
-			return strings.ToUpper(changesX[i].Basename) < strings.ToUpper(changesX[j].Basename)
+	changesXmap := sortChanges(changesX)
+	changesYmap := sortChanges(changesY)
+	changesCmap := sortChanges(changesC)
+
+	return changesXmap, changesYmap, changesCmap, nil
+}
+
+func sortChanges(changes []Change) map[string]*Change {
+	if len(changes) > 0 {
+		sort.Slice(changes, func(i, j int) bool {
+			return strings.ToUpper(changes[i].Basename) < strings.ToUpper(changes[j].Basename)
 		})
 	}
-
-	// Sort Y changes by alpha.
-	if len(changesY) > 0 {
-		sort.Slice(changesY, func(i, j int) bool {
-			return strings.ToUpper(changesY[i].Basename) < strings.ToUpper(changesY[j].Basename)
-		})
+	changesmap := make(map[string]*Change)
+	for i := range changes {
+		changesmap[changes[i].File] = &changes[i]
 	}
-
-	for i := range changesX {
-		changesXmap[changesX[i].File] = &changesX[i]
-	}
-	for i := range changesY {
-		changesYmap[changesY[i].File] = &changesY[i]
-	}
-
-	return changesXmap, changesYmap, nil
+	return changesmap
 }
 
 // `git status --porcelain`
@@ -173,6 +183,27 @@ func getStatusFlag(status string) string {
 		return "ignored"
 	case FileNotUpdated:
 		return "not-updated"
+	}
+
+	return "unknown"
+}
+
+func getUnmergedStatusFlag(x string, y string) string {
+	switch x + y {
+	case "DD":
+		return "unmerged-deleted"
+	case "AA":
+		return "unmerged-added"
+	case "AU":
+		return "unmerged-added-us"
+	case "UA":
+		return "unmerged-added-them"
+	case "DU":
+		return "unmerged-deleted-us"
+	case "UD":
+		return "unmerged-deleted-them"
+	case "UU":
+		return "unmerged-modified"
 	}
 
 	return "unknown"

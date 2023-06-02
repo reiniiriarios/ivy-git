@@ -43,7 +43,7 @@ func (g *Git) ParseGitError(stderr string, err error) *GitError {
 	e.parse()
 	// Get message based on error code
 	msg := getGitErrorMessage(e.ErrorCode)
-	if msg != "" {
+	if msg != "" && e.ErrorCode != ExitStatus1 {
 		e.Message = fmt.Sprintf(msg, anystrings(e.ErrorValues)...)
 	} else if e.Stderr != "" {
 		// If not a standard error, the message will simply be stderr

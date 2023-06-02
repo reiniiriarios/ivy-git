@@ -212,10 +212,10 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	// Each line is either the status or the file. Parse two lines at a time.
 	for i := start; i < len(sl)-1; i += 2 {
 		for f := range filestats {
-			// Renames get three lines of data.
-			if sl[i][:1] == "R" {
+			// Renames and copies get three lines of data.
+			if sl[i][:1] == "R" || sl[i][:1] == "C" {
 				if filestats[f].File == sl[i+2] {
-					filestats[f].Status = "R"
+					filestats[f].Status = sl[i][:1]
 					i++
 					break
 				}

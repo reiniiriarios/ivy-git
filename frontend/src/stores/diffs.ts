@@ -14,6 +14,7 @@ export interface Diff {
   Status: string;
   Staged: boolean;
   Committed: boolean;
+  Conflict: boolean;
   Hash: string;
 }
 

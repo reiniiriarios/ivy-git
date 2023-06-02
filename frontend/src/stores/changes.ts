@@ -1,12 +1,13 @@
 import { parseResponse } from 'scripts/parse-response';
-import { get, writable } from 'svelte/store';
-import { GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
+import { derived, get, writable } from 'svelte/store';
+import { GetConflictParsedDiff, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
 import { currentRepo } from 'stores/repos';
 import { currentDiff, type Diff } from 'stores/diffs';
 
 interface Changes {
-  x: Change[],
-  y: Change[],
+  x: Change[], // staged
+  y: Change[], // unstaged
+  c: Change[], // conflicts
 }
 
 interface Change {
@@ -14,6 +15,8 @@ interface Change {
   Basename: string;
   Dir: string;
   Letter: string;
+  Them: string;
+  Us: string;
   Flag: string;
   // Addl Fetch
   Diff: Diff;
@@ -29,41 +32,69 @@ function createChanges() {
     refresh: async () => {
       if (get(currentRepo)) {
         GitListChanges().then(result => {
-          parseResponse(result, () => set({
-            x: result.Data.ChangesX ?? [],
-            y: result.Data.ChangesY ?? [],
-          }));
+          parseResponse(result, () => {
+            set({
+              x: result.Data.ChangesX ?? [],
+              y: result.Data.ChangesY ?? [],
+              c: result.Data.ChangesC ?? [],
+            });
+          });
         });
       } else {
-        set({x: [], y: []});
+        set({x: [], y: [], c: []});
       }
     },
-    fetchDiff: async (xy: string, file: string, ignoreCache: boolean = false) => {
-      if (xy !== 'x') xy = 'y';
-      let f = get(changes)[xy][file];
+    fetchDiff: async (xyc: string, file: string, ignoreCache: boolean = false) => {
+      // The file will be in the X (staged), Y (unstaged), or C (conflicts) list.
+      if (xyc !== 'x' && xyc !== 'c') xyc = 'y';
+      let f = get(changes)[xyc][file];
       // If file not in changes list, clear current diff as it's outdated.
       if (!f) {
         currentDiff.clear();
         return;
       }
+      // If the diff is already fetched, display that, don't refetch. Unless we say so.
       if (f.Diff && !ignoreCache) {
         currentDiff.set(f.Diff);
-      } else {
-        GetWorkingFileParsedDiff(file, f.Letter, xy === 'x').then(result => {
-          parseResponse(result, () => {
-            update(c => {
-              if (c[xy][file]) {
-                c[xy][file].Diff = result.Data;
-              }
-              return c;
+      }
+      else {
+        // Conflict diff.
+        if (xyc === 'c') {
+          GetConflictParsedDiff(file).then(result => {
+            parseResponse(result, () => {
+              update(c => {
+                if (c.c[file]) {
+                  c.c[file].Diff = result.Data;
+                }
+                return c;
+              });
+              result.Data.File = file;
+              result.Data.Status = f.Letter;
+              result.Data.Conflict = true;
+              result.Data.Staged = false;
+              result.Data.Committed = false;
+              currentDiff.set(result.Data);
             });
-            result.Data.File = file;
-            result.Data.Status = f.Letter;
-            result.Data.Staged = xy === 'x';
-            result.Data.Committed = false;
-            currentDiff.set(result.Data);
           });
-        });
+        }
+        // Staged or unstaged diff.
+        else {
+          GetWorkingFileParsedDiff(file, f.Letter, xyc === 'x').then(result => {
+            parseResponse(result, () => {
+              update(c => {
+                if (c[xyc][file]) {
+                  c[xyc][file].Diff = result.Data;
+                }
+                return c;
+              });
+              result.Data.File = file;
+              result.Data.Status = f.Letter;
+              result.Data.Staged = xyc === 'x';
+              result.Data.Committed = false;
+              currentDiff.set(result.Data);
+            });
+          });
+        }
       }
     },
     setPartial: async (xy: string, file: string, partial: boolean) => {
@@ -84,3 +115,4 @@ function createChanges() {
   };
 }
 export const changes = createChanges();
+export const mergeConflicts = derived(changes, $changes => $changes?.c && Object.keys($changes.c).length > 0);

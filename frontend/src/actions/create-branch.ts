@@ -19,13 +19,10 @@ function createBranch(hash: string = "") {
       checked: true,
     }],
     callbackConfirm: () => {
-      CreateBranch(
-        messageDialog.blankValue(),
-        hash,
-        messageDialog.tickboxTicked('checkout')
-      ).then(r => {
+      let name = messageDialog.blankValue();
+      CreateBranch(name, hash, messageDialog.tickboxTicked('checkout')).then(r => {
         parseResponse(r, () => {
-          currentBranch.set({Name: messageDialog.blankValue()} as Branch);
+          currentBranch.set({Name: name} as Branch);
           branchSelect.set(false);
           commitData.refresh();
           commitSignData.refresh();
