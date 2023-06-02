@@ -109,7 +109,7 @@ func (a *App) PushRemote(remote string) DataResponse {
 	if err != nil {
 		return dataResponse(err, true)
 	}
-	err = a.Git.PushRemoteBranch(remote, branch, false)
+	err = a.Git.PushRemoteBranch(remote, branch, false, false)
 	return dataResponse(err, true)
 }
 
@@ -123,8 +123,13 @@ func (a *App) PullRemote(remote string) DataResponse {
 	return dataResponse(err, true)
 }
 
-func (a *App) PushBranch(branch string) DataResponse {
-	err := a.Git.PushBranch(branch)
+func (a *App) PushBranch(branch string, force bool) DataResponse {
+	must_force, err := a.Git.PushBranch(branch, force)
+	if must_force {
+		return DataResponse{
+			Response: "must-force",
+		}
+	}
 	return dataResponse(err, true)
 }
 

@@ -24,9 +24,9 @@ func (g *Git) SwitchBranch(branch string, remote string) error {
 	return err
 }
 
-func (g *Git) PushBranch(branch string) error {
+func (g *Git) PushBranch(branch string, force bool) (bool, error) {
 	if branch == "" {
-		return errors.New("no branch name specified")
+		return false, errors.New("no branch name specified")
 	}
 
 	remote, err := g.getBranchRemote(branch, false)
@@ -35,11 +35,14 @@ func (g *Git) PushBranch(branch string) error {
 		remote = g.getRemoteFallback()
 	}
 
-	err = g.PushRemoteBranch(remote, branch, set_upstream)
-	return err
+	err = g.PushRemoteBranch(remote, branch, set_upstream, force)
+	if err != nil && errorCode(err) == PushNotFastForward {
+		return true, err
+	}
+	return false, err
 }
 
-func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool) error {
+func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool, force bool) error {
 	if branch == "" {
 		return errors.New("no branch name specified")
 	}
@@ -49,9 +52,14 @@ func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool) 
 
 	var err error
 	if set_upstream {
+		// No setting upstream and forcing at the same time, doesn't make sense.
 		_, err = g.RunCwd("push", "--set-upstream", remote, branch)
 	} else {
-		_, err = g.RunCwd("push", remote, branch+":"+branch)
+		if force {
+			_, err = g.RunCwd("push", "--force-with-lease", remote, branch+":"+branch)
+		} else {
+			_, err = g.RunCwd("push", remote, branch+":"+branch)
+		}
 	}
 	return err
 }

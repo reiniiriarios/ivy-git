@@ -47,11 +47,29 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     {
       text: "Push Branch",
       callback: (e) => {
-        PushBranch(e.dataset.name).then(r => {
-          parseResponse(r, () => {
-            commitData.refresh();
-            commitSignData.refresh();
-          });
+        PushBranch(e.dataset.name, false).then(r => {
+          if (r.Response === 'must-force' && get(settings).Workflow !== 'merge') {
+            messageDialog.confirm({
+              heading: 'Force Push Branch',
+              message: `Unable to push branch <strong>${e.dataset.branch}</strong>, as it's behind its remote counterpart.\n\nForce push this branch?`,
+              confirm: 'Force Push',
+              okay: 'Cancel',
+              callbackConfirm: () => {
+                PushBranch(e.dataset.name, true).then(r => {
+                  parseResponse(r, () => {
+                    commitData.refresh();
+                    commitSignData.refresh();
+                  });
+                });
+              },
+            });
+          }
+          else {
+            parseResponse(r, () => {
+              commitData.refresh();
+              commitSignData.refresh();
+            });
+          }
         })
       },
     },
