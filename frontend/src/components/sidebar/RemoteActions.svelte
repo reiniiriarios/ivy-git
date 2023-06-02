@@ -1,55 +1,21 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { parseResponse } from "scripts/parse-response";
-  import { currentRemote, remoteData } from "stores/remotes";
+  import fetchRemote from "actions/fetch-remote";
+  import pullRemote from "actions/pull-remote";
+  import pushRemote from "actions/push-remote";
+  import { currentRemote } from "stores/remotes";
   import { branchSelect, repoSelect } from "stores/ui";
-  import { FetchRemote, PullRemote, PushRemote } from "wailsjs/go/main/App";
 
   function pull(e: MouseEvent | KeyboardEvent, remote: string) {
-    let el = e.target as HTMLElement;
-    el.setAttribute('disabled', 'disabled');
-    PullRemote(remote).then((r) => {
-      parseResponse(r, () => {
-        checkIcon(el);
-        remoteData.refresh();
-      }, () => el.removeAttribute('disabled'));
-    });
+    pullRemote(remote, e.target as HTMLElement);
   }
 
   function push(e: MouseEvent | KeyboardEvent, remote: string) {
-    let el = e.target as HTMLElement;
-    el.setAttribute('disabled', 'disabled');
-    PushRemote(remote).then((r) => {
-      parseResponse(r, () => {
-        checkIcon(el);
-        remoteData.refresh();
-      }, () => el.removeAttribute('disabled'));
-    });
+    pushRemote(remote, e.target as HTMLElement);
   }
 
   function fetch(e: MouseEvent | KeyboardEvent, remote: string) {
-    let el = e.target as HTMLElement;
-    el.setAttribute('disabled', 'disabled');
-    FetchRemote(remote).then((r) => {
-      parseResponse(r, () => {
-        checkIcon(el, true);
-        remoteData.refresh();
-      }, () => el.removeAttribute('disabled'));
-    });
-  }
-
-  function checkIcon(el: HTMLElement, reenable: boolean = false) {
-    let icon = el.getElementsByClassName('icon')[0];
-    let normalSvg = icon.innerHTML;
-    icon.innerHTML = octicons['check'].toSVG({ "width": 14 });
-    icon.classList.add('success');
-    setTimeout(() => {
-      icon.classList.remove('success');
-      icon.innerHTML = normalSvg;
-      if (reenable) {
-        el.removeAttribute('disabled');
-      }
-    }, 1000);
+    fetchRemote(remote, e.target as HTMLElement);
   }
 </script>
 
