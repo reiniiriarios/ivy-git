@@ -17,16 +17,18 @@
   import { addLinkListener } from "scripts/links";
   import { envInit } from "scripts/env";
 
+  import { appData } from "stores/app-data";
   import { currentRepo, repos } from "stores/repos";
   import { currentRemote, remoteData } from "stores/remotes";
   import { settings } from "stores/settings";
+  import { noBranchSelected } from "stores/branches";
 
   import { enableWatcher } from "events/watcher";
   import { registerConflictEvents } from "events/conflicts";
-  import { currentBranch, noBranchSelected } from "stores/branches";
 
   // Load initial ui state.
   function init() {
+    appData.fetch();
     currentRepo.refresh();
     repos.refresh();
     settings.refresh();
