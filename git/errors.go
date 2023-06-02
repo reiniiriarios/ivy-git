@@ -10,10 +10,11 @@ import (
 type ErrorCode int64
 
 type GitError struct {
-	Stderr    string
-	Err       error
-	ErrorCode ErrorCode
-	Message   string
+	Stderr      string
+	Err         error
+	ErrorCode   ErrorCode
+	ErrorValues []string
+	Message     string
 }
 
 // Get error code for an error that may or may not be a GitError.
@@ -23,6 +24,14 @@ func errorCode(e error) ErrorCode {
 		return x.(*GitError).ErrorCode
 	}
 	return UndefinedError
+}
+
+func anystrings(strings []string) []interface{} {
+	anys := make([]interface{}, len(strings))
+	for i, v := range strings {
+		anys[i] = v
+	}
+	return anys
 }
 
 func (g *Git) ParseGitError(stderr string, err error) *GitError {
@@ -35,7 +44,7 @@ func (g *Git) ParseGitError(stderr string, err error) *GitError {
 	// Get message based on error code
 	msg := getGitErrorMessage(e.ErrorCode)
 	if msg != "" {
-		e.Message = msg
+		e.Message = fmt.Sprintf(msg, anystrings(e.ErrorValues)...)
 	} else if e.Stderr != "" {
 		// If not a standard error, the message will simply be stderr
 		e.Message = e.Stderr
@@ -62,6 +71,29 @@ func (g *Git) ParseGitError(stderr string, err error) *GitError {
 
 func (e *GitError) Error() string {
 	return e.Message
+}
+
+func (e *GitError) parse() {
+	// Search stderr first.
+	for _, r := range getGitErrorRegexes() {
+		regex := regexp.MustCompile(r.Regex)
+		matches := regex.FindStringSubmatch(e.Stderr)
+		if matches != nil {
+			e.ErrorCode = r.Code
+			e.ErrorValues = matches[1:]
+			return
+		}
+	}
+	// If stderr doesn't match, look for exec or go errors.
+	for _, r := range getGitErrorRegexes() {
+		regex := regexp.MustCompile(r.Regex)
+		matches := regex.FindStringSubmatch(e.Err.Error())
+		if matches != nil {
+			e.ErrorCode = r.Code
+			e.ErrorValues = matches[1:]
+			return
+		}
+	}
 }
 
 const (
@@ -129,22 +161,8 @@ const (
 	// End of GitHub-specific error codes
 	UnknownRevisionOrPath
 	NoCommitsYet
+	UnableToAccessUrl
 )
-
-func (e *GitError) parse() {
-	for _, r := range getGitErrorRegexes() {
-		if match, _ := regexp.MatchString(r.Regex, e.Stderr); match {
-			e.ErrorCode = r.Code
-			return
-		}
-	}
-	for _, r := range getGitErrorRegexes() {
-		if match, _ := regexp.MatchString(r.Regex, e.Err.Error()); match {
-			e.ErrorCode = r.Code
-			return
-		}
-	}
-}
 
 type GitErrorRegex struct {
 	Code  ErrorCode
@@ -411,6 +429,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Code:  ExitStatus1,
 			Regex: "exit status 1",
 		},
+		{
+			Code:  UnableToAccessUrl,
+			Regex: "fatal: unable to access '(.+?)': The requested URL returned error: (.+)",
+		},
 	}
 }
 
@@ -515,6 +537,8 @@ func getGitErrorMessage(code ErrorCode) string {
 		return ""
 	case NoCommitsYet:
 		return "There are not yet any commits in this repository."
+	case UnableToAccessUrl:
+		return "An error occurred while trying to access the url '%s'. (%s)"
 	case MergeWithLocalChanges:
 	case RebaseWithLocalChanges:
 	case GPGFailedToSignData:
