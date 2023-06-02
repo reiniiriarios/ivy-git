@@ -1,35 +1,9 @@
 <script lang="ts">
-  import { CreateBranch } from 'wailsjs/go/main/App';
-
-  import { checkRef } from 'scripts/check-ref';
-  import { parseResponse } from 'scripts/parse-response';
-
   import { branches, currentBranch, type Branch, detachedHead } from 'stores/branches';
-  import { commitData, commitSignData } from 'stores/commit-data';
-  import { messageDialog } from 'stores/message-dialog';
   import { branchSelect, repoSelect } from 'stores/ui';
+  import createBranch from 'actions/create-branch';
 
-  function newBranch() {
-    messageDialog.confirm({
-      heading: 'Create Branch',
-      message: `Create a branch?`,
-      blank: "Name of Branch",
-      validateBlank: checkRef,
-      confirm: 'Create',
-      callbackConfirm: () => {
-        console.log(messageDialog.blankValue())
-        CreateBranch(messageDialog.blankValue(), "", true).then(r => {
-          console.log(r)
-          parseResponse(r, () => {
-            currentBranch.set({Name: messageDialog.blankValue()} as Branch);
-            branchSelect.set(false);
-            commitData.refresh();
-            commitSignData.refresh();
-          })
-        });
-      }
-    });
-  }
+  const newBranch = () => createBranch();
 
   function switchBranch(b: string) {
     currentBranch.switch(b);
