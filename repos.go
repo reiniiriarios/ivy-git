@@ -169,6 +169,9 @@ func (a *App) CreateRepo(name string, dir string) RepoResponse {
 	a.RepoSaveData.Repos[id] = newRepo
 	a.saveRepoData()
 
+	// Update recent directory
+	a.saveRecentRepoDir(dir)
+
 	return RepoResponse{
 		Response: "success",
 		Id:       id,

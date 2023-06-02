@@ -1,10 +1,11 @@
 <script lang="ts">
   import { parseResponse } from "scripts/parse-response";
+  import { appData } from "stores/app-data";
   import { messageDialog } from "stores/message-dialog";
   import { DirExists, SelectDirectory } from "wailsjs/go/main/App";
 
   let repoName: string;
-  let repoLocation: string;
+  let repoLocation: string = $appData.RecentRepoDir;
   let repoValid: boolean = false;
 
   const focusBlank = (e: HTMLInputElement) => {

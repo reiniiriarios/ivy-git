@@ -28,8 +28,9 @@ type Settings struct {
 }
 
 type AppData struct {
-	WindowWidth  int
-	WindowHeight int
+	WindowWidth   int
+	WindowHeight  int
+	RecentRepoDir string
 }
 
 // Load configuration yaml for app.
@@ -136,6 +137,11 @@ func (a *App) saveData() {
 	}
 }
 
+// After app data is saved, sometimes we emit to the frontend.
+func (a *App) emitData() {
+	runtime.EventsEmit(a.ctx, "appdata", a.AppData)
+}
+
 // Return file data, create empty file if not found.
 func (a *App) initConfigFile(file string) []byte {
 	if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
@@ -215,6 +221,16 @@ func (a *App) settingsDirName() string {
 	return SHORT_NAME
 }
 
+// Get settings in frontend.
+func (a *App) GetSettings() Settings {
+	return a.Settings
+}
+
+// Get app data in frontend.
+func (a *App) GetAppData() AppData {
+	return a.AppData
+}
+
 // When window resizes, save that info.
 func (a *App) ResizeWindow() bool {
 	w, h := runtime.WindowGetSize(a.ctx)
@@ -224,7 +240,10 @@ func (a *App) ResizeWindow() bool {
 	return true
 }
 
-// Get settings in frontend.
-func (a *App) GetSettings() Settings {
-	return a.Settings
+// Save most recent directory location for repos.
+func (a *App) saveRecentRepoDir(dir string) bool {
+	a.AppData.RecentRepoDir = dir
+	a.saveData()
+	a.emitData()
+	return true
 }
