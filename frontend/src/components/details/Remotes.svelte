@@ -60,6 +60,11 @@
           parseResponse(result, () => {
             remoteData.refresh();
             messageDialog.clear();
+          }, () => {
+            // Refresh regardless of error. The remote may be added, but
+            // an error may occur when trying to fetch from it. The list
+            // should still be updated.
+            remoteData.refresh();
           });
         });
       },
@@ -89,7 +94,7 @@
       </thead>
       <tbody>
         {#each Object.entries($remotes) as [_, remote]}
-          <tr class="remote">
+          <tr class="remote" data-name="{remote.Name}" data-menu="remote">
             <td>
               <div class="remote__name">{remote.Name}</div>
               <div class="remote__fetch-push">

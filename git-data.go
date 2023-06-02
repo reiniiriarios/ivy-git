@@ -356,3 +356,8 @@ func (a *App) AddRemote(name string, fetch_url string, push_url string) DataResp
 	err = a.Git.FetchRemote(name)
 	return dataResponse(err, false)
 }
+
+func (a *App) DeleteRemote(name string) DataResponse {
+	err := a.Git.RemoveRemote(name)
+	return dataResponse(err, false)
+}

@@ -230,3 +230,11 @@ func (g *Git) AddRemote(name string, fetch_url string, push_url string) error {
 
 	return nil
 }
+
+func (g *Git) RemoveRemote(name string) error {
+	if name == "" {
+		return errors.New("no remote name specified")
+	}
+	_, err := g.RunCwd("remote", "rm", name)
+	return err
+}
