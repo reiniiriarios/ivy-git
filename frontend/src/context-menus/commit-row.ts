@@ -1,17 +1,17 @@
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { CreateBranch, AddTag, CheckoutCommit, RevertCommit, HardReset, SoftReset, CherryPick } from "wailsjs/go/main/App";
 
 import { get } from 'svelte/store';
 
 import type { Menu, MenuItem } from "context-menus/_all";
 
-import { parseResponse } from "scripts/parse-response";
-
-import { commitData, commitSignData, HEAD } from "stores/commit-data";
-import { messageDialog } from "stores/message-dialog";
-import { checkRef } from "scripts/check-ref";
-import { currentBranch, type Branch, detachedHead } from "stores/branches";
-import { inProgressCommitMessage } from "stores/ui";
+import { HEAD } from "stores/commit-data";
+import createBranch from "actions/create-branch";
+import addTag from "actions/add-tag";
+import checkoutCommit from "actions/checkout-commit";
+import cherryPick from "actions/cherry-pick";
+import revertCommit from "actions/revert-commit";
+import softReset from "actions/soft-reset";
+import hardReset from "actions/hard-reset";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -19,50 +19,11 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
   m = m.concat([
     {
       text: "Create Branch",
-      callback: () => {
-        messageDialog.confirm({
-          heading: 'Create Branch',
-          message: `Create a branch at commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
-          blank: "Name of Branch",
-          validateBlank: checkRef,
-          confirm: 'Create',
-          checkboxes: [{
-            id: 'checkout',
-            label: 'Checkout Branch',
-            checked: true,
-          }],
-          callbackConfirm: () => {
-            CreateBranch(
-              messageDialog.blankValue(),
-              e.dataset.hash,
-              messageDialog.tickboxTicked('checkout')
-            ).then(r => {
-              parseResponse(r, () => {
-                currentBranch.set({Name: messageDialog.blankValue()} as Branch);
-                commitData.refresh();
-                commitSignData.refresh();
-              })
-            });
-          }
-        });
-      }
+      callback: () => createBranch(e.dataset.hash),
     },
     {
       text: "Add Tag",
-      callback: () => {
-        messageDialog.addTag({
-          message: `Add tag to commit <strong>${e.dataset.hash.substring(0, 7)}</strong>:`,
-          callbackConfirm: () => {
-            let data = messageDialog.addTagData();
-            AddTag(e.dataset.hash, data.name, data.type === 'annotated', data.message, data.push).then(r => {
-              parseResponse(r, () => {
-                commitData.refresh();
-                commitSignData.refresh();
-              });
-            });
-          },
-        });
-      },
+      callback: () => addTag(e.dataset.hash),
     },
     {
       sep: true,
@@ -73,26 +34,7 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
     m = m.concat([
       {
         text: "Checkout Commit",
-        callback: () => {
-          let co = () => CheckoutCommit(e.dataset.hash).then(result => {
-            parseResponse(result, () => {
-              commitData.refresh();
-              commitSignData.refresh();
-              currentBranch.detach();
-            });
-          });
-          if (get(detachedHead)) {
-            messageDialog.confirm({
-              heading: 'Checkout Commit',
-              message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a different commit could result in lost work. Continue?',
-              confirm: 'Checkout',
-              callbackConfirm: co,
-            });
-          }
-          else {
-            co();
-          }
-        },
+        callback: () => checkoutCommit(e.dataset.hash),
       },
     ]);
   }
@@ -101,37 +43,7 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
     m = m.concat([
       {
         text: "Cherry Pick Commit",
-        callback: () => {
-          messageDialog.confirm({
-            heading: 'Cherry Pick Commit',
-            message: `Cherry pick commit <strong>${e.dataset.hash.substring(0, 7)}</strong>.`,
-            checkboxes: [
-              {
-                id: 'record',
-                label: 'Record Original Hash',
-              },
-              {
-                id: 'no_commit',
-                label: 'No Commit',
-              },
-            ],
-            confirm: 'Cherry Pick',
-            callbackConfirm: () => {
-              let no_commit = messageDialog.tickboxTicked('no_commit');
-              CherryPick(e.dataset.hash, messageDialog.tickboxTicked('record'), no_commit).then(result => {
-                parseResponse(result, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                  if (no_commit) {
-                    inProgressCommitMessage.fetch();
-                  }
-                }, () => {
-                  inProgressCommitMessage.fetch();
-                });
-              });
-            }
-          });
-        },
+        callback: () => cherryPick(e.dataset.hash),
       },
     ]);
   }
@@ -142,41 +54,12 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
     },
     {
       text: "Revert Commit",
-      callback: () => {
-        messageDialog.confirm({
-          heading: 'Revert Commit',
-          message: `Are you sure you want to revert <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
-          confirm: 'Revert',
-          callbackConfirm: () => {
-            RevertCommit(e.dataset.hash).then(result => {
-              parseResponse(result, () => {
-                commitData.refresh();
-                commitSignData.refresh();
-              });
-            });
-          },
-        });
-      },
+      callback: () => revertCommit(e.dataset.hash),
     },
     // todo: do not enable until there's a safety check dumdum
     // {
     //   text: "Drop Commit",
-    //   callback: () => {
-    //     messageDialog.confirm({
-    //       heading: 'Drop Commit',
-    //       message: `Are you sure you want to drop <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
-    //       confirm: 'Drop',
-    //       callbackConfirm: () => {
-    //         DropCommit(e.dataset.hash).then(result => {
-    //           parseResponse(result, () => {
-    //             commitData.refresh();
-    //             commitSignData.refresh();
-    //             currentBranch.clear();
-    //           });
-    //         });
-    //       },
-    //     });
-    //   },
+    //   callback: () => dropCommit(e.dataset.hash),
     // }
   ]);
 
@@ -184,39 +67,11 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
     m = m.concat([
       {
         text: 'Soft Reset to This Commit',
-        callback: () => {
-          messageDialog.confirm({
-            heading: 'Soft Reset',
-            message: `Are you sure you want to soft reset to <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
-            confirm: 'Soft Reset',
-            callbackConfirm: () => {
-              SoftReset(e.dataset.hash).then(result => {
-                parseResponse(result, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                });
-              });
-            },
-          });
-        },
+        callback: () => softReset(e.dataset.hash),
       },
       {
         text: 'Hard Reset to This Commit',
-        callback: () => {
-          messageDialog.confirm({
-            heading: 'Hard Reset',
-            message: `Are you sure you want to hard reset to <strong>${e.dataset.hash.substring(0, 7)}</strong>?`,
-            confirm: 'Hard Reset',
-            callbackConfirm: () => {
-              HardReset(e.dataset.hash).then(result => {
-                parseResponse(result, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                });
-              });
-            },
-          });
-        },
+        callback: () => hardReset(e.dataset.hash),
       }
     ]);
   }

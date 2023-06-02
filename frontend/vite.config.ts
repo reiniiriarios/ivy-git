@@ -14,6 +14,7 @@ export default defineConfig({
       scripts: resolve('./src/scripts'),
       stores: resolve('./src/stores'),
       style: resolve('./src/style'),
+      actions: resolve('./src/actions'),
       src: resolve('./src'),
     }
   }

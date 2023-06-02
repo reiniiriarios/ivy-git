@@ -1,16 +1,10 @@
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import { PullRemoteBranch, DeleteRemoteBranch } from "wailsjs/go/main/App";
-
-import { get } from "svelte/store";
 
 import type { Menu, MenuItem } from "context-menus/_all";
 
-import { parseResponse } from "scripts/parse-response";
-
-import { currentBranch, detachedHead } from "stores/branches";
-import { commitData, commitSignData } from "stores/commit-data";
-import { messageDialog } from "stores/message-dialog";
-
+import checkoutBranch from "actions/checkout-branch";
+import pullBranch from "actions/pull-branch";
+import deleteRemoteBranch from "actions/delete-remote-branch";
 
 export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -18,58 +12,18 @@ export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
   if (e.dataset.current !== "true") {
     m.push({
       text: "Checkout Branch",
-      callback: () => {
-        if (get(detachedHead)) {
-          messageDialog.confirm({
-            heading: 'Checkout Branch',
-            message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a branch could result in lost work. Continue?',
-            confirm: 'Checkout',
-            callbackConfirm: () => currentBranch.switch(e.dataset.branch, e.dataset.remote),
-          });
-        }
-        else {
-          currentBranch.switch(e.dataset.branch, e.dataset.remote);
-        }
-      },
+      callback: () => checkoutBranch(e.dataset.branch, e.dataset.remote),
     });
   }
 
   m = m.concat([
     {
       text: "Pull Branch",
-      callback: () => {
-        PullRemoteBranch(e.dataset.remote, e.dataset.branch, true).then(r => {
-          parseResponse(r, () => {
-            commitData.refresh();
-            commitSignData.refresh();
-          });
-        })
-      },
+      callback: () => pullBranch(e.dataset.branch, e.dataset.remote),
     },
     {
       text: "Delete Remote Branch",
-      callback: () => {
-        let opts = [{id: 'force', label: 'Force Delete'}];
-        messageDialog.confirm({
-          heading: 'Delete Remote Branch',
-          message: `Are you sure you want to delete the remote branch <strong>${e.dataset.remote}/${e.dataset.branch}</strong>?`,
-          confirm: 'Delete',
-          okay: 'Cancel',
-          checkboxes: opts,
-          callbackConfirm: () => {
-            DeleteRemoteBranch(
-              e.dataset.branch,
-              e.dataset.remote,
-              messageDialog.tickboxTicked('force')
-            ).then(r => {
-              parseResponse(r, () => {
-                commitData.refresh();
-                commitSignData.refresh();
-              });
-            });
-          },
-        });
-      },
+      callback: () => deleteRemoteBranch(e.dataset.branch, e.dataset.remote),
     },
     {
       sep: true,

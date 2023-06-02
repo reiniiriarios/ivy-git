@@ -1,162 +1,52 @@
 import { type Menu, type MenuItem } from "context-menus/_all";
 
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
-import {
-  PushBranch,
-  ResetBranchToRemote,
-  DeleteBranch,
-  RenameBranch,
-  RebaseOnBranch,
-  MergeCommit,
-  MergeRebase,
-  MergeSquash,
-  MergeFastForward
-} from "wailsjs/go/main/App";
 
 import { get } from 'svelte/store';
-import { currentBranch, detachedHead } from "stores/branches";
-import { commitData, commitSignData } from "stores/commit-data";
-import { messageDialog } from "stores/message-dialog";
+
+import { detachedHead } from "stores/branches";
 import { settings } from "stores/settings";
 
-import { parseResponse } from "scripts/parse-response";
-import { checkRef } from "scripts/check-ref";
-import { inProgressCommitMessage } from "stores/ui";
+import deleteBranch from "actions/delete-branch";
+import pushBranch from "actions/push-branch";
+import renameBranch from "actions/rename-branch";
+import checkoutBranch from "actions/checkout-branch";
+import resetBranchToRemote from "actions/reset-branch-to-remote";
+import rebaseOnBranch from "actions/rebase-on-branch";
+import rebaseAndMergeIntoCurrentBranch from "actions/rebase-merge-into-current";
+import fastForwardMerge from "actions/fast-forward-merge";
+import mergeBranch from "actions/merge-branch";
+import squashMergeBranch from "actions/squash-merge-branch";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
   if (e.dataset.current !== "true") {
     m.push({
       text: "Checkout Branch",
-      callback: () => {
-        if (get(detachedHead)) {
-          messageDialog.confirm({
-            heading: 'Checkout Branch',
-            message: 'You are currently in a <strong>detached HEAD</strong> state. Checking out a branch could result in lost work. Continue?',
-            confirm: 'Checkout',
-            callbackConfirm: () => currentBranch.switch(e.dataset.name),
-          });
-        }
-        else {
-          currentBranch.switch(e.dataset.name);
-        }
-      },
+      callback: () => checkoutBranch(e.dataset.name),
     });
   }
   m = m.concat([
     {
       text: "Push Branch",
-      callback: (e) => {
-        PushBranch(e.dataset.name, false).then(r => {
-          if (r.Response === 'must-force' && get(settings).Workflow !== 'merge') {
-            messageDialog.confirm({
-              heading: 'Force Push Branch',
-              message: `Unable to push branch <strong>${e.dataset.branch}</strong>, as it's behind its remote counterpart.\n\nForce push this branch?`,
-              confirm: 'Force Push',
-              okay: 'Cancel',
-              callbackConfirm: () => {
-                PushBranch(e.dataset.name, true).then(r => {
-                  parseResponse(r, () => {
-                    commitData.refresh();
-                    commitSignData.refresh();
-                  });
-                });
-              },
-            });
-          }
-          else {
-            parseResponse(r, () => {
-              commitData.refresh();
-              commitSignData.refresh();
-            });
-          }
-        })
-      },
+      callback: (e) => pushBranch(e.dataset.name, e.dataset.branch),
     },
     {
       text: "Rename Branch",
-      callback: () => {
-        messageDialog.confirm({
-          heading: 'Rename Branch',
-          message: `Rename <strong>${e.dataset.branch}</strong> locally and on all remotes to:`,
-          confirm: 'Rename',
-          blank: 'New Name',
-          validateBlank: checkRef,
-          okay: 'Cancel',
-          callbackConfirm: () => {
-            RenameBranch(e.dataset.branch, messageDialog.blankValue()).then(r => {
-              parseResponse(r, () => {
-                commitData.refresh();
-                commitSignData.refresh();
-              });
-            });
-          },
-        });
-      },
+      callback: () => renameBranch(e.dataset.branch),
     },
   ]);
   if (e.dataset.current !== "true") {
     m.push({
       text: "Delete Branch",
-      callback: () => {
-        let opts = [{id: 'force', label: 'Force Delete'}];
-        if (e.dataset.upstream) {
-          opts.push({id: 'remote', label: 'Delete on Remote'});
-        }
-        messageDialog.confirm({
-          heading: 'Delete Branch',
-          message: `Are you sure you want to delete the branch <strong>${e.dataset.branch}</strong>?`,
-          confirm: 'Delete',
-          okay: 'Cancel',
-          checkboxes: opts,
-          callbackConfirm: () => {
-            let remote = messageDialog.tickboxTicked('remote');
-            DeleteBranch(e.dataset.branch, messageDialog.tickboxTicked('force'), remote).then(r => {
-              if (r.Response === 'must-force') {
-                messageDialog.confirm({
-                  heading: 'Force Delete Branch',
-                  message: `The branch <strong>${e.dataset.branch}</strong> could not be deleted because it is not fully merged.\n\nWould you like to force delete the branch?`,
-                  confirm: 'Force Delete',
-                  okay: 'Cancel',
-                  callbackConfirm: () => {
-                    DeleteBranch(e.dataset.branch, true, remote).then(r => {
-                      parseResponse(r, () => {
-                        commitData.refresh();
-                        commitSignData.refresh();
-                      });
-                    });
-                  }
-                });
-              } else {
-                parseResponse(r, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                });
-              }
-            });
-          },
-        });
-      },
+      callback: () => deleteBranch(e.dataset.branch, !!e.dataset.upstream),
     });
   }
 
   if (e.dataset.upstream) {
     m.push({
       text: "Reset Local Branch to Remote",
-      callback: (e) => {
-        messageDialog.confirm({
-          heading: 'Reset Local Branch to Remote',
-          message: `Are you sure you want to reset the local branch <strong>${e.dataset.branch}</strong> to its default remote?`,
-          confirm: 'Reset',
-          okay: 'Cancel',
-          callbackConfirm: () => {
-            ResetBranchToRemote(e.dataset.branch).then(() => {
-              commitData.refresh();
-              commitSignData.refresh();
-            });
-          },
-        });
-      },
+      callback: (e) => resetBranchToRemote(e.dataset.branch),
     });
   }
 
@@ -169,120 +59,29 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
     if (workflow === 'rebase' || workflow === 'squash') {
       m.push({
         text: "Rebase on Branch",
-        callback: () => {
-          RebaseOnBranch(e.dataset.branch).then(r => {
-            parseResponse(r, () => {
-              commitData.refresh();
-              commitSignData.refresh();
-            }, () => {
-              inProgressCommitMessage.fetch();
-            });
-          });
-        },
+        callback: () => rebaseOnBranch(e.dataset.branch),
       });
     }
     if (workflow === 'rebase') {
       m.push({
         text: "Rebase and Merge into Current Branch",
-        callback: () => {
-          messageDialog.confirm({
-            heading: 'Rebase and Merge into Current Branch',
-            message: `Rebase <strong>${e.dataset.branch}</strong> onto current branch and merge?`,
-            confirm: 'Merge',
-            okay: 'Cancel',
-            callbackConfirm: () => {
-              MergeRebase(e.dataset.branch).then(r => {
-                parseResponse(r, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                }, () => {
-                  inProgressCommitMessage.fetch();
-                });
-              });
-            },
-          });
-        },
+        callback: () => rebaseAndMergeIntoCurrentBranch(e.dataset.branch),
       });
       m.push({
         text: "Fast-forward Merge",
-        callback: () => {
-          messageDialog.confirm({
-            heading: 'Fast-forward Merge',
-            message: `Merge the current branch into <strong>${e.dataset.branch}</strong> via fast-forward only?`,
-            confirm: 'Merge',
-            okay: 'Cancel',
-            callbackConfirm: () => {
-              MergeFastForward(e.dataset.branch).then(r => {
-                parseResponse(r, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                });
-              });
-            },
-          });
-        },
+        callback: () => fastForwardMerge(e.dataset.branch),
       });
     }
     if (workflow === 'squash' || workflow === 'merge') {
       m.push({
         text: "Merge into Current Branch",
-        callback: () => {
-          messageDialog.confirm({
-            heading: 'Merge into Current Branch',
-            message: `Merge <strong>${e.dataset.branch}</strong> into current branch?`,
-            confirm: 'Merge',
-            okay: 'Cancel',
-            checkboxes: [
-              {
-                id: 'no-ff',
-                label: 'Create a new commit even if fast-forward is possible',
-                checked: true,
-              },
-              {
-                id: 'no-commit',
-                label: 'No Commit',
-                checked: false,
-              },
-            ],
-            callbackConfirm: () => {
-              let no_commit = messageDialog.tickboxTicked('no-commit');
-              let no_ff = messageDialog.tickboxTicked('no-ff');
-              MergeCommit(e.dataset.branch, no_commit, no_ff).then(r => {
-                parseResponse(r, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                  if (no_commit) {
-                    inProgressCommitMessage.fetch();
-                  }
-                }, () => {
-                  inProgressCommitMessage.fetch();
-                });
-              });
-            },
-          });
-        },
+        callback: () => mergeBranch(e.dataset.branch),
       });
     }
     if (workflow === 'squash') {
       m.push({
         text: "Squash & Merge onto Current Branch",
-        callback: () => {
-          messageDialog.confirm({
-            heading: 'Squash & Merge onto Current Branch',
-            message: `Squash <strong>${e.dataset.branch}</strong> and merge onto current branch?`,
-            confirm: 'Merge',
-            okay: 'Cancel',
-            callbackConfirm: () => {
-              MergeSquash(e.dataset.branch).then(r => {
-                parseResponse(r, () => {
-                  commitData.refresh();
-                  commitSignData.refresh();
-                });
-                inProgressCommitMessage.fetch();
-              });
-            },
-          });
-        },
+        callback: () => squashMergeBranch(e.dataset.branch),
       });
     }
   }
