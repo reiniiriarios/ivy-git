@@ -5,6 +5,7 @@ import (
 	"ivy-git/git"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -95,6 +96,40 @@ func (a *App) AddRepo() RepoResponse {
 		Name:      filepath.Base(d),
 		Directory: d,
 		Main:      a.Git.NameOfMainBranchForRepo(d),
+	}
+
+	if a.RepoSaveData.Repos == nil {
+		a.RepoSaveData.Repos = make(map[string]git.Repo)
+	}
+	a.RepoSaveData.Repos[id] = newRepo
+	a.saveRepoData()
+
+	return RepoResponse{
+		Response: "success",
+		Id:       id,
+		Repo:     newRepo,
+	}
+}
+
+func (a *App) CloneRepo(url string, dir string) RepoResponse {
+	r := regexp.MustCompile(`^.*\/([^\/]+?)\/?(?:\.git\/?)?$`)
+	name := r.ReplaceAllString(url, "$1")
+
+	err := a.Git.CloneRepo(url, name, dir)
+	if err != nil {
+		return RepoResponse{
+			Response: "error",
+			Message:  err.Error(),
+		}
+	}
+
+	repo_dir := filepath.Join(dir, name)
+
+	id := uuid.New().String()
+	newRepo := git.Repo{
+		Name:      name,
+		Directory: repo_dir,
+		Main:      a.Git.NameOfMainBranchForRepo(repo_dir),
 	}
 
 	if a.RepoSaveData.Repos == nil {

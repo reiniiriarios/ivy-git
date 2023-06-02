@@ -4,7 +4,7 @@
   import { messageDialog } from "stores/message-dialog";
   import { DirExists, SelectDirectory } from "wailsjs/go/main/App";
 
-  let repoName: string;
+  let repoUrl: string;
   let repoLocation: string = $appData.RecentRepoDir;
   let repoValid: boolean = false;
 
@@ -12,11 +12,12 @@
     e.focus();
   }
 
-  function validateName() {
-    repoValid = /^[a-z0-9_\-]+?$/i.test(repoName);
-    if (repoValid && repoLocation) {
-      DirExists(repoName, repoLocation).then(exists => repoValid = !exists);
-    }
+  const validateUrl = () => {
+    // This is very difficult to validate for all possible URLs
+    // https://www.git-scm.com/docs/git-clone#_git_urls
+    // Let's just check if it doesn't start or end with a space.
+    // Do something with this later.
+    repoValid = (repoUrl[0] != " " && repoUrl[repoUrl.length-1] != " ");
   }
 
   function chooseDir() {
@@ -24,7 +25,8 @@
       parseResponse(result, () => {
         if (result.Response !== 'none') {
           repoLocation = result.Data;
-          if (repoValid && repoName) {
+          if (repoValid && repoUrl) {
+            let repoName = repoUrl.replace(/^.*\/([^\/]+?)\/?(?:\.git\/?)?$/i, '$1');
             DirExists(repoName, repoLocation).then(exists => repoValid = !exists);
           }
         }
@@ -33,20 +35,20 @@
   }
 </script>
 
-<div class="modal__new-repo">
+<div class="modal__clone-repo">
   <label class="blank-field">
-    <span>Repo Name</span>
+    <span>Repo URL</span>
     <input
       use:focusBlank
       type="text"
-      id="message-dialog-repo-name"
-      class:invalid={repoName && !repoValid}
-      bind:value={repoName}
-      on:input={validateName}
+      id="message-dialog-repo-url"
+      class:invalid={repoUrl && !repoValid}
+      bind:value={repoUrl}
+      on:input={validateUrl}
     >
   </label>
   <label class="blank-field">
-    <span>Repo Location</span>
+    <span>Clone To</span>
     <input
       type="text"
       id="message-dialog-repo-location"
@@ -63,7 +65,7 @@
     <button
       class="btn yes"
       on:click={messageDialog.yes}
-      disabled={!repoName || !repoValid}
+      disabled={!repoUrl || !repoValid}
     >
       {$messageDialog.confirm}
     </button>

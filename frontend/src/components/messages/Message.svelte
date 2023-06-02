@@ -3,6 +3,7 @@
   import MessageTag from 'components/messages/MessageTag.svelte';
   import MessageNewRepo from 'components/messages/MessageNewRepo.svelte';
   import MessageNewRemote from 'components/messages/MessageNewRemote.svelte';
+  import MessageCloneRepo from './MessageCloneRepo.svelte';
 
   let blankValue: string;
   let blankValid: boolean = true;
@@ -35,19 +36,21 @@
   <div role="dialog" class="modal" id="modal-message">
     <div class="overlay">
       <div class="modal__box">
+        {#if $messageDialog.heading}
+          <div class="modal__heading">{$messageDialog.heading}</div>
+        {/if}
+        {#if $messageDialog.message}
+          <div class="modal__text">{@html $messageDialog.message}</div>
+        {/if}
         {#if $messageDialog.addTag}
           <MessageTag />
         {:else if $messageDialog.newRepo}
           <MessageNewRepo />
+        {:else if $messageDialog.cloneRepo}
+          <MessageCloneRepo />
         {:else if $messageDialog.addRemote}
           <MessageNewRemote />
         {:else}
-          {#if $messageDialog.heading}
-            <div class="modal__heading">{$messageDialog.heading}</div>
-          {/if}
-          {#if $messageDialog.message}
-            <div class="modal__text">{@html $messageDialog.message}</div>
-          {/if}
           {#if $messageDialog.options}
             <div class="modal__options">
               {#each $messageDialog.options as option}

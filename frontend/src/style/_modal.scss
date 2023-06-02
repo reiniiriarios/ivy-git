@@ -99,12 +99,14 @@
     }
   }
 
-  &__new-repo {
+  &__new-repo,
+  &__clone-repo {
     padding: 0 1rem;
     margin-bottom: 1.5rem;
     min-width: 35rem;
 
-    #message-dialog-repo-name {
+    #message-dialog-repo-name,
+    #message-dialog-repo-url {
       width: 100%;
       margin-bottom: 0.5rem;
     }

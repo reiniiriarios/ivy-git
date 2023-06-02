@@ -30,6 +30,7 @@ interface Message {
   // Specific message dialogs:
   addTag?: boolean;
   newRepo?: boolean;
+  cloneRepo?: boolean;
   addRemote?: boolean;
 }
 
@@ -102,6 +103,17 @@ function createMessage() {
         callback: message.callback ?? (() => {}),
       });
     },
+    cloneRepo: async(message: Message) => {
+      set({
+        heading: message.heading ?? 'Clone Repo',
+        message: message.message ?? 'Enter a URL and select a directory to clone the repository into.',
+        confirm: message.confirm ?? 'Clone',
+        cloneRepo: true,
+        callbackConfirm: message.callbackConfirm ?? (() => {}),
+        okay: message.okay ?? 'Cancel',
+        callback: message.callback ?? (() => {}),
+      });
+    },
     addRemote: async(message: Message) => {
       set({
         heading: message.heading ?? 'Add Remote',
@@ -155,6 +167,13 @@ function createMessage() {
     addRepoData: () => {
       return {
         name: (document.getElementById('message-dialog-repo-name') as HTMLInputElement).value,
+        location: (document.getElementById('message-dialog-repo-location') as HTMLInputElement).value,
+      }
+    },
+    // Shortcut for getting clone repo data.
+    cloneRepoData: () => {
+      return {
+        url: (document.getElementById('message-dialog-repo-url') as HTMLInputElement).value,
         location: (document.getElementById('message-dialog-repo-location') as HTMLInputElement).value,
       }
     },

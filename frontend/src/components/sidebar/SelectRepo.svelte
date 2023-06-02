@@ -29,7 +29,7 @@
         {
           text: 'Clone Repo',
           icon: octicons['repo-clone'].toSVG({ width: 32 }),
-          callback: () => console.warn('todo'),
+          callback: repos.clone,
         },
         {
           text: 'Create New Repo',

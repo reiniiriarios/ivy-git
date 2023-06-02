@@ -40,12 +40,6 @@
   });
 </script>
 
-{#if $messageDialog.heading}
-  <div class="modal__heading">{$messageDialog.heading}</div>
-{/if}
-{#if $messageDialog.message}
-  <div class="modal__text">{@html $messageDialog.message}</div>
-{/if}
 <div class="modal__add-tag">
   <label class="blank-field">
     <span>Tag Name</span>

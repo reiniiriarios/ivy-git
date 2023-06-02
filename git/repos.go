@@ -32,6 +32,12 @@ func (g *Git) IsGitRepo(directory string) bool {
 	return r == ""
 }
 
+func (g *Git) CloneRepo(url string, name string, directory string) error {
+	// Directory error checking happens before this method is called.
+	_, err := g.Run(directory, "clone", url, name)
+	return err
+}
+
 func (g *Git) HasCommits(directory string) bool {
 	_, err := g.Run(directory, "rev-list", "--count", "HEAD", "--")
 	if err == nil {
