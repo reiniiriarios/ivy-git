@@ -117,9 +117,9 @@ func (g *Git) ResetBranchToRemote(branch string) error {
 }
 
 // Delete a branch.
-func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) error {
+func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) (bool, error) {
 	if branch == "" {
-		return errors.New("no branch name specified")
+		return false, errors.New("no branch name specified")
 	}
 
 	delete := "-d"
@@ -129,25 +129,33 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) er
 
 	_, err := g.RunCwd("branch", delete, branch)
 	if err != nil {
-		return err
+		println(err.Error())
+		println(errorCode(err))
+		if errorCode(err) == MustForceDeleteBranch {
+			return true, err
+		}
+		return false, err
 	}
 
 	if delete_on_remotes {
 		remotes, err := g.getRemoteNames()
 		if err != nil {
-			return err
+			return false, err
 		}
 		for _, remote := range remotes {
 			if g.branchExistsOnRemote(branch, remote) {
 				_, err := g.RunCwd("push", delete, remote, branch)
 				if err != nil {
-					return err
+					if errorCode(err) == MustForceDeleteBranch {
+						return true, err
+					}
+					return false, err
 				}
 			}
 		}
 	}
 
-	return nil
+	return false, nil
 }
 
 // Delete a remote branch.

@@ -162,6 +162,7 @@ const (
 	UnknownRevisionOrPath
 	NoCommitsYet
 	UnableToAccessUrl
+	MustForceDeleteBranch
 )
 
 type GitErrorRegex struct {
@@ -414,12 +415,12 @@ func getGitErrorRegexes() []GitErrorRegex {
 		},
 		{
 			Code:  PushWithPrivateEmail,
-			Regex: "error: GH007: Your push would publish a private email address.",
+			Regex: "error: GH007: Your push would publish a private email address",
 		},
 		// End GitHub-specific errors
 		{
 			Code:  UnknownRevisionOrPath,
-			Regex: "fatal: ambiguous argument '(.+?)': unknown revision or path not in the working tree.",
+			Regex: "fatal: ambiguous argument '(.+?)': unknown revision or path not in the working tree",
 		},
 		{
 			Code:  NoCommitsYet,
@@ -432,6 +433,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 		{
 			Code:  UnableToAccessUrl,
 			Regex: "fatal: unable to access '(.+?)': The requested URL returned error: (.+)",
+		},
+		{
+			Code:  MustForceDeleteBranch,
+			Regex: "error: The branch '(.+?)' is not fully merged",
 		},
 	}
 }
@@ -539,6 +544,8 @@ func getGitErrorMessage(code ErrorCode) string {
 		return "There are not yet any commits in this repository."
 	case UnableToAccessUrl:
 		return "An error occurred while trying to access the url '%s'. (%s)"
+	case MustForceDeleteBranch:
+		return "Unable to delete branch '%s', as it is not fully merged. Branch must be force-deleted."
 	case MergeWithLocalChanges:
 	case RebaseWithLocalChanges:
 	case GPGFailedToSignData:

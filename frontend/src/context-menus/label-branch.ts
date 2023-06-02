@@ -92,15 +92,29 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
           okay: 'Cancel',
           checkboxes: opts,
           callbackConfirm: () => {
-            DeleteBranch(
-              e.dataset.branch,
-              messageDialog.tickboxTicked('force'),
-              messageDialog.tickboxTicked('remote')
-            ).then(r => {
-              parseResponse(r, () => {
-                commitData.refresh();
-                commitSignData.refresh();
-              });
+            let remote = messageDialog.tickboxTicked('remote');
+            DeleteBranch(e.dataset.branch, messageDialog.tickboxTicked('force'), remote).then(r => {
+              if (r.Response === 'must-force') {
+                messageDialog.confirm({
+                  heading: 'Force Delete Branch',
+                  message: `The branch <strong>${e.dataset.branch}</strong> could not be deleted because it is not fully merged.\n\nWould you like to force delete the branch?`,
+                  confirm: 'Force Delete',
+                  okay: 'Cancel',
+                  callbackConfirm: () => {
+                    DeleteBranch(e.dataset.branch, true, remote).then(r => {
+                      parseResponse(r, () => {
+                        commitData.refresh();
+                        commitSignData.refresh();
+                      });
+                    });
+                  }
+                });
+              } else {
+                parseResponse(r, () => {
+                  commitData.refresh();
+                  commitSignData.refresh();
+                });
+              }
             });
           },
         });

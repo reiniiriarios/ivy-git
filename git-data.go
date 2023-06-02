@@ -184,7 +184,12 @@ func (a *App) GetCommitSignature(hash string) DataResponse {
 }
 
 func (a *App) DeleteBranch(branch string, force bool, remote bool) DataResponse {
-	err := a.Git.DeleteBranch(branch, force, remote)
+	must_force, err := a.Git.DeleteBranch(branch, force, remote)
+	if must_force {
+		return DataResponse{
+			Response: "must-force",
+		}
+	}
 	return dataResponse(err, true)
 }
 
