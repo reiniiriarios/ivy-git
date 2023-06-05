@@ -8,6 +8,7 @@ export const DiffConflict = {
   Neither: 0,
   Theirs: 1,
   Both: 2,
+  BothInverse: 3,
 }
 
 export interface Diff {
