@@ -15,6 +15,10 @@ const (
 	DiffChangeStartLine = "DiffChangeStartLine"
 	DiffChangeEndLine   = "DiffChangeEndLine"
 	DiffChangeFlipLine  = "DiffChangeFlipLine"
+
+	DiffOurs    = -1
+	DiffNeither = 0
+	DiffTheirs  = 1
 )
 
 type Diff struct {
@@ -222,27 +226,30 @@ func (d *Diff) parseConflicts() error {
 		var mini_hunk int64 = -1
 
 		if strings.HasPrefix(lines[ln][1:], "<<<<<<<") {
+			change_mini_hunk++
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
-				Line:      lines[ln][1:],
-				Type:      DiffChangeStartLine,
-				RawLineNo: int64(ln),
-				OldLineNo: -1,
-				NewLineNo: -1,
-				MiniHunk:  change_mini_hunk,
+				Line:       lines[ln][1:],
+				Type:       DiffChangeStartLine,
+				RawLineNo:  int64(ln),
+				OldLineNo:  -1,
+				NewLineNo:  -1,
+				MiniHunk:   change_mini_hunk,
+				OursTheirs: DiffOurs,
 			})
 			// Start the "ours" side of the conflict.
-			conflict_ours_theirs = -1
+			conflict_ours_theirs = DiffOurs
 		} else if strings.HasPrefix(lines[ln][1:], "=======") {
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
-				Line:      lines[ln][1:],
-				Type:      DiffChangeFlipLine,
-				RawLineNo: int64(ln),
-				OldLineNo: -1,
-				NewLineNo: -1,
-				MiniHunk:  change_mini_hunk,
+				Line:       lines[ln][1:],
+				Type:       DiffChangeFlipLine,
+				RawLineNo:  int64(ln),
+				OldLineNo:  -1,
+				NewLineNo:  -1,
+				MiniHunk:   change_mini_hunk,
+				OursTheirs: DiffNeither,
 			})
 			// Start the "theirs" side of the conflict.
-			conflict_ours_theirs = 1
+			conflict_ours_theirs = DiffTheirs
 			// Roll back before and after to before the "ours" side.
 			before -= int64(conflict_before)
 			after -= int64(conflict_after)
@@ -251,13 +258,17 @@ func (d *Diff) parseConflicts() error {
 			conflict_after = 0
 		} else if strings.HasPrefix(lines[ln][1:], ">>>>>>>") {
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
-				Line:      lines[ln][1:],
-				Type:      DiffChangeEndLine,
-				RawLineNo: int64(ln),
-				OldLineNo: -1,
-				NewLineNo: -1,
-				MiniHunk:  change_mini_hunk,
+				Line:       lines[ln][1:],
+				Type:       DiffChangeEndLine,
+				RawLineNo:  int64(ln),
+				OldLineNo:  -1,
+				NewLineNo:  -1,
+				MiniHunk:   change_mini_hunk,
+				OursTheirs: DiffTheirs,
 			})
+			// End conflict.
+			conflict_ours_theirs = DiffNeither
+			change_mini_hunk++
 		} else {
 			if conflict_ours_theirs != 0 {
 				mini_hunk = change_mini_hunk
@@ -277,42 +288,45 @@ func (d *Diff) parseConflicts() error {
 				return nil
 			case "+":
 				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
-					Line:      lines[ln][1:],
-					Type:      DiffAddLine,
-					RawLineNo: int64(ln),
-					OldLineNo: -1,
-					NewLineNo: after,
-					MiniHunk:  mini_hunk,
+					Line:       lines[ln][1:],
+					Type:       DiffAddLine,
+					RawLineNo:  int64(ln),
+					OldLineNo:  -1,
+					NewLineNo:  after,
+					MiniHunk:   mini_hunk,
+					OursTheirs: conflict_ours_theirs,
 				})
 				// Rolling new line number.
 				after++
 				// Rolling new line number offset.
-				if conflict_ours_theirs == -1 {
+				if conflict_ours_theirs == DiffOurs {
 					conflict_after++
 				}
 			case "-":
 				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
-					Line:      lines[ln][1:],
-					Type:      DiffDeleteLine,
-					RawLineNo: int64(ln),
-					OldLineNo: before,
-					NewLineNo: -1,
-					MiniHunk:  mini_hunk,
+					Line:       lines[ln][1:],
+					Type:       DiffDeleteLine,
+					RawLineNo:  int64(ln),
+					OldLineNo:  before,
+					NewLineNo:  -1,
+					MiniHunk:   mini_hunk,
+					OursTheirs: conflict_ours_theirs,
 				})
 				// Rolling old line number.
 				before++
 				// Rolling old line number offset.
-				if conflict_ours_theirs == -1 {
+				if conflict_ours_theirs == DiffOurs {
 					conflict_before++
 				}
 			case " ":
 				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
-					Line:      lines[ln][1:],
-					Type:      DiffContextLine,
-					RawLineNo: int64(ln),
-					OldLineNo: before,
-					NewLineNo: after,
-					MiniHunk:  mini_hunk,
+					Line:       lines[ln][1:],
+					Type:       DiffContextLine,
+					RawLineNo:  int64(ln),
+					OldLineNo:  before,
+					NewLineNo:  after,
+					MiniHunk:   mini_hunk,
+					OursTheirs: conflict_ours_theirs,
 				})
 				// Rolling old and new line number.
 				before++

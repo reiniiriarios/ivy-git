@@ -3,6 +3,13 @@ import { changes } from "./changes";
 import { GetCommitFileParsedDiff } from "wailsjs/go/main/App";
 import { parseResponse } from "scripts/parse-response";
 
+export const DiffConflict = {
+  Ours: -1,
+  Neither: 0,
+  Theirs: 1,
+  Both: 2,
+}
+
 export interface Diff {
   Raw: string;
   Hunks: DiffHunk[];
@@ -36,6 +43,7 @@ export interface DiffLine {
   NewLineNo: number;
   NoNewline: boolean;
   MiniHunk: number;
+  OursTheirs: number; // -1 ours, 0 neither, 1 theirs
   // UI
   Selected: boolean;
 }

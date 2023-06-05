@@ -2,7 +2,7 @@
   import { currentDiff } from "stores/diffs";
 </script>
 
-<div class="diff">
+<div class="diff diff--committed">
   {#if $currentDiff.Hunks?.length}
     <div class="diff__grid">
       {#each $currentDiff.Hunks as hunk}
@@ -17,9 +17,7 @@
         </div>
         {#each hunk.Lines as line}
           <div class="diff__row">
-            <div class="diff__line-toggle-minihunk"></div>
             <div class="diff__line diff__line--{line.Type} diff__line--noclick">
-              <div class="diff__line-toggle"></div>
               <div class="diff__line-no">{line.Type === 'DiffDeleteLine' ? line.OldLineNo : line.NewLineNo}</div>
               <div class="diff__line-type"></div>
               <div class="diff__line-code" class:diff__line--nonewline={line.NoNewline}>{line.Line}</div>
