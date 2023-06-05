@@ -1,9 +1,9 @@
 <script lang="ts">
   import { currentDiff } from "stores/diffs";
-  import ChangesDiff from "components/diffs/ChangesDiff.svelte";
-  import ChangesDiffActions from "components/diffs/ChangesDiffActions.svelte";
+  import DiffChanges from "components/diffs/DiffChanges.svelte";
+  import DiffChangesActions from "components/diffs/DiffChangesActions.svelte";
   import DiffCommitted from "components/diffs/DiffCommitted.svelte";
-  import ConflictDiff from "./ConflictDiff.svelte";
+  import DiffConflict from "components/diffs/DiffConflict.svelte";
 </script>
 
 {#if $currentDiff}
@@ -17,12 +17,12 @@
       </div>
       <DiffCommitted />
     {:else if $currentDiff.Conflict}
-      <ConflictDiff />
+      <DiffConflict />
     {:else}
       {#if $currentDiff.File}
-        <ChangesDiffActions />
+        <DiffChangesActions />
       {/if}
-      <ChangesDiff />
+      <DiffChanges />
     {/if}
   </div>
 {/if}
