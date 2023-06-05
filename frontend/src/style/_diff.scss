@@ -33,20 +33,14 @@
     display: contents;
   }
 
-  &--conflict,
-  &--committed {
-    .diff__grid {
-      grid-template-columns: min-content min-content auto;
-    }
-
-    .diff__hunk-header {
-      grid-column: 1 / span 3;
-    }
-  }
-
   &__change-start {
-    grid-column: 1 / span 3;
-    padding: 0.25rem 1.5rem;
+    grid-column: 1 / span 4;
+    padding: 0.5rem 2.5rem;
+
+    .btn {
+      font-size: 0.9rem;
+      padding: 0.5rem 0.9rem;
+    }
   }
 
   &__line {
@@ -176,23 +170,6 @@
       }
     }
 
-    &--DiffAddLine,
-    &--DiffDeleteLine {
-      cursor: pointer;
-
-      &:hover {
-        > div {
-          filter: brightness(1.3);
-        }
-      }
-    }
-
-    &--hover {
-      > div {
-        filter: brightness(1.3);
-      }
-    }
-
     &--on {
       .diff__line-toggle {
         background-color: var(--color-diff-toggle-bg);
@@ -223,6 +200,58 @@
       .diff__line-no,
       .diff__line-type {
         cursor: default !important;
+      }
+    }
+  }
+
+  &__row {
+    &--hover .diff__line {
+      > div {
+        filter: brightness(1.3);
+      }
+    }
+  }
+
+  &--changes {
+    .diff__line--DiffAddLine,
+    .diff__line--DiffDeleteLine {
+      cursor: pointer;
+
+      &:hover {
+        > div {
+          filter: brightness(1.3);
+        }
+      }
+    }
+  }
+
+  &--committed {
+    .diff__grid {
+      grid-template-columns: min-content min-content auto;
+    }
+
+    .diff__hunk-header {
+      grid-column: 1 / span 3;
+    }
+  }
+
+  &--conflict {
+    .diff__grid {
+      grid-template-columns: min-content min-content min-content auto;
+    }
+
+    .diff__hunk-header {
+      grid-column: 1 / span 4;
+    }
+
+    .diff__row--hover.diff__row--DiffAddLine,
+    .diff__row--hover.diff__row--DiffDeleteLine,
+    .diff__row--hover.diff__row--DiffContextLine {
+      .diff__line-toggle-minihunk {
+        background-size: 80%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="rgba(255 255 255 / 25%)" d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l2.97-2.97H3.75a.75.75 0 0 1 0-1.5h7.44L8.22 4.03a.75.75 0 0 1 0-1.06Z"/></svg>');
       }
     }
   }

@@ -62,7 +62,7 @@
   }
 </script>
 
-<div class="diff">
+<div class="diff diff--changes">
   {#if $currentDiff.Hunks?.length}
     <div class="diff__grid">
       {#each $currentDiff.Hunks as hunk, hunk_id}
