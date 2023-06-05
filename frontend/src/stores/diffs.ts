@@ -3,29 +3,31 @@ import { changes } from "./changes";
 import { GetCommitFileParsedDiff } from "wailsjs/go/main/App";
 import { parseResponse } from "scripts/parse-response";
 
-export const DiffConflict = {
+type OursTheirs = number;
+
+export const DiffConflictType = {
   Ours: -1,
   Neither: 0,
   Theirs: 1,
   Both: 2,
-  BothInverse: 3,
+  BothInverse: -2,
 }
 
 export interface Diff {
+  File: string;
   Raw: string;
   Hunks: DiffHunk[];
   Binary: boolean;
   SelectableLines: number;
   SelectedLines: number;
   NumConflicts: number;
+  Conflicts: DiffConflict[];
   // UI
-  File: string;
   Status: string;
   Staged: boolean;
   Committed: boolean;
   Conflict: boolean;
   Hash: string;
-  ConflictSelections: number[];
   Resolved: boolean;
 }
 
@@ -45,11 +47,18 @@ export interface DiffLine {
   RawLineNo: number;
   OldLineNo: number;
   NewLineNo: number;
+  CurLineNo: number;
   NoNewline: boolean;
   MiniHunk: number;
-  OursTheirs: number; // -1 ours, 0 neither, 1 theirs
+  OursTheirs: OursTheirs;
   // UI
   Selected: boolean;
+}
+
+interface DiffConflict {
+	Ours: DiffLine[];
+	Theirs: DiffLine[];
+	Resolution: OursTheirs;
 }
 
 function createCurrentDiff() {
@@ -82,7 +91,7 @@ function createCurrentDiff() {
     },
     setConflictResolution: (conflict: number, resolution: number) => {
       update(d => {
-        d.ConflictSelections[conflict] = resolution;
+        d.Conflicts[conflict].Resolution = resolution;
         changes.setResolved(d.File, d.Resolved);
         return d;
       });

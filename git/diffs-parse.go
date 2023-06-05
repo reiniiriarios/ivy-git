@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+type OursTheirs int8
+
 const (
 	DiffAddLine         = "DiffAddLine"
 	DiffDeleteLine      = "DiffDeleteLine"
@@ -16,18 +18,22 @@ const (
 	DiffChangeEndLine   = "DiffChangeEndLine"
 	DiffChangeFlipLine  = "DiffChangeFlipLine"
 
-	DiffOurs    = -1
-	DiffNeither = 0
-	DiffTheirs  = 1
+	DiffOurs        OursTheirs = -1 // Between <<<<<<< and =======
+	DiffNeither     OursTheirs = 0  // Outside <<<<<<< and >>>>>>>
+	DiffTheirs      OursTheirs = 1  // Between ======= and >>>>>>>
+	DiffBoth        OursTheirs = 2  // Between <<<<<<< and ======= first, ======= and >>>>>>> second
+	DiffBothInverse OursTheirs = -2 // Between ======= and >>>>>>> first, <<<<<<< and ======= second
 )
 
 type Diff struct {
+	File            string
 	Raw             string
 	Hunks           []DiffHunk
 	Binary          bool
 	SelectableLines uint64
 	SelectedLines   uint64
 	NumConflicts    uint16
+	Conflicts       map[int64]DiffConflict // map[MiniHunk_id]DiffConflict
 }
 
 type DiffHunk struct {
@@ -43,13 +49,20 @@ type DiffHunk struct {
 type DiffLine struct {
 	Line       string
 	Type       string
-	RawLineNo  int64
-	OldLineNo  int64
-	NewLineNo  int64
+	RawLineNo  int64 // Line number in the diff
+	OldLineNo  int64 // Line number in the old version
+	NewLineNo  int64 // Line number in the new version
+	CurLineNo  int64 // Line number in the current file (during conflicts)
 	NoNewline  bool
 	MiniHunk   int64
 	Selected   bool
-	OursTheirs int8
+	OursTheirs OursTheirs
+}
+
+type DiffConflict struct {
+	Ours       []DiffLine
+	Theirs     []DiffLine
+	Resolution OursTheirs
 }
 
 const HiddenBidiCharsRegex = "/[\u202A-\u202E]|[\u2066-\u2069]/"
@@ -171,6 +184,8 @@ func (d *Diff) parse() error {
 }
 
 func (d *Diff) parseConflicts() error {
+	d.Conflicts = make(map[int64]DiffConflict)
+
 	// Do not use parseLines() here, will strip relevant data.
 	lines := strings.Split(strings.ReplaceAll(d.Raw, "\r\n", "\n"), "\n")
 	var ln int
@@ -195,10 +210,9 @@ func (d *Diff) parseConflicts() error {
 
 	// Continue ln where we left off with the last loop
 	current_hunk := -1
-	var before, after int64
+	var before, after, cur int64
 	var change_mini_hunk int64 = 0
-	// -1 ours, 0 not conflict, 1 theirs
-	var conflict_ours_theirs int8 = 0
+	var conflict_ours_theirs OursTheirs = DiffNeither
 	var conflict_before int16 = 0
 	var conflict_after int16 = 0
 	for ; ln < len(lines); ln++ {
@@ -224,32 +238,38 @@ func (d *Diff) parseConflicts() error {
 			continue
 		}
 
+		cur = after
 		var mini_hunk int64 = -1
+		var new_line DiffLine
 
 		if strings.HasPrefix(lines[ln][1:], "<<<<<<<") {
 			change_mini_hunk++
 			d.NumConflicts++
-			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+			new_line = DiffLine{
 				Line:       lines[ln][1:],
 				Type:       DiffChangeStartLine,
 				RawLineNo:  int64(ln),
 				OldLineNo:  -1,
 				NewLineNo:  -1,
+				CurLineNo:  cur,
 				MiniHunk:   change_mini_hunk,
 				OursTheirs: DiffOurs,
-			})
+			}
+			cur++
 			// Start the "ours" side of the conflict.
 			conflict_ours_theirs = DiffOurs
 		} else if strings.HasPrefix(lines[ln][1:], "=======") {
-			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+			new_line = DiffLine{
 				Line:       lines[ln][1:],
 				Type:       DiffChangeFlipLine,
 				RawLineNo:  int64(ln),
 				OldLineNo:  -1,
 				NewLineNo:  -1,
+				CurLineNo:  cur,
 				MiniHunk:   change_mini_hunk,
 				OursTheirs: DiffNeither,
-			})
+			}
+			cur++
 			// Start the "theirs" side of the conflict.
 			conflict_ours_theirs = DiffTheirs
 			// Roll back before and after to before the "ours" side.
@@ -259,15 +279,17 @@ func (d *Diff) parseConflicts() error {
 			conflict_before = 0
 			conflict_after = 0
 		} else if strings.HasPrefix(lines[ln][1:], ">>>>>>>") {
-			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+			new_line = DiffLine{
 				Line:       lines[ln][1:],
 				Type:       DiffChangeEndLine,
 				RawLineNo:  int64(ln),
 				OldLineNo:  -1,
 				NewLineNo:  -1,
+				CurLineNo:  cur,
 				MiniHunk:   change_mini_hunk,
 				OursTheirs: DiffTheirs,
-			})
+			}
+			cur++
 			// End conflict.
 			conflict_ours_theirs = DiffNeither
 			change_mini_hunk++
@@ -289,31 +311,34 @@ func (d *Diff) parseConflicts() error {
 				d.Hunks[current_hunk].Lines[len(d.Hunks[current_hunk].Lines)-1].NoNewline = true
 				return nil
 			case "+":
-				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+				new_line = DiffLine{
 					Line:       lines[ln][1:],
 					Type:       DiffAddLine,
 					RawLineNo:  int64(ln),
 					OldLineNo:  -1,
 					NewLineNo:  after,
+					CurLineNo:  cur,
 					MiniHunk:   mini_hunk,
 					OursTheirs: conflict_ours_theirs,
-				})
+				}
 				// Rolling new line number.
 				after++
+				cur++
 				// Rolling new line number offset.
 				if conflict_ours_theirs == DiffOurs {
 					conflict_after++
 				}
 			case "-":
-				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+				new_line = DiffLine{
 					Line:       lines[ln][1:],
 					Type:       DiffDeleteLine,
 					RawLineNo:  int64(ln),
 					OldLineNo:  before,
 					NewLineNo:  -1,
+					CurLineNo:  -1,
 					MiniHunk:   mini_hunk,
 					OursTheirs: conflict_ours_theirs,
-				})
+				}
 				// Rolling old line number.
 				before++
 				// Rolling old line number offset.
@@ -321,18 +346,20 @@ func (d *Diff) parseConflicts() error {
 					conflict_before++
 				}
 			case " ":
-				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+				new_line = DiffLine{
 					Line:       lines[ln][1:],
 					Type:       DiffContextLine,
 					RawLineNo:  int64(ln),
 					OldLineNo:  before,
 					NewLineNo:  after,
+					CurLineNo:  cur,
 					MiniHunk:   mini_hunk,
 					OursTheirs: conflict_ours_theirs,
-				})
+				}
 				// Rolling old and new line number.
 				before++
 				after++
+				cur++
 				// Rolling old and new line number offsets.
 				if conflict_ours_theirs == -1 {
 					conflict_before++
@@ -342,7 +369,18 @@ func (d *Diff) parseConflicts() error {
 				println(lines[ln])
 				return errors.New("malformed diff, unrecognized line type")
 			}
+			// Add to list of conflicts.
+			if conflict_ours_theirs == DiffOurs {
+				c := d.Conflicts[mini_hunk]
+				c.Ours = append(d.Conflicts[mini_hunk].Ours, new_line)
+				d.Conflicts[mini_hunk] = c
+			} else if conflict_ours_theirs == DiffTheirs {
+				c := d.Conflicts[mini_hunk]
+				c.Theirs = append(d.Conflicts[mini_hunk].Theirs, new_line)
+				d.Conflicts[mini_hunk] = c
+			}
 		}
+		d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, new_line)
 	}
 	return nil
 }

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { DiffConflict, currentDiff } from "stores/diffs";
+  import { DiffConflictType, currentDiff } from "stores/diffs";
 
   let changesStatus: number[] = [];
 
   function hoverMiniHunk(minihunk: number, oursTheirs: number) {
     // select each time to capture updates
     let divs: NodeListOf<HTMLElement>;
-    if (oursTheirs === DiffConflict.Both) {
+    if (oursTheirs === DiffConflictType.Both) {
       divs = document.querySelectorAll(`.diff__row[data-minihunk="${minihunk}"]`);
     }
     else {
@@ -31,7 +31,6 @@
 
   function selectConflict(minihunk: number, oursTheirs: number) {
     currentDiff.setConflictResolution(minihunk, oursTheirs);
-    changesStatus = $currentDiff.ConflictSelections;
   }
 </script>
 
@@ -52,42 +51,53 @@
           <div class="diff__row  diff__row--{line.Type}"
             data-minihunk="{line.MiniHunk}"
             data-ourstheirs="{line.OursTheirs}"
-            class:diff__row--yes={changesStatus[line.MiniHunk] === line.OursTheirs || changesStatus[line.MiniHunk] >= 2}
-            class:diff__row--no={changesStatus[line.MiniHunk] && changesStatus[line.MiniHunk] !== line.OursTheirs && changesStatus[line.MiniHunk] < 2}
+            class:diff__row--yes={
+              $currentDiff.Conflicts[line.MiniHunk] && (
+                $currentDiff.Conflicts[line.MiniHunk].Resolution === line.OursTheirs
+                || $currentDiff.Conflicts[line.MiniHunk].Resolution === DiffConflictType.Both
+                || $currentDiff.Conflicts[line.MiniHunk].Resolution === DiffConflictType.BothInverse
+              )
+            }
+            class:diff__row--no={
+              $currentDiff.Conflicts[line.MiniHunk]?.Resolution
+              && $currentDiff.Conflicts[line.MiniHunk].Resolution !== line.OursTheirs
+              && $currentDiff.Conflicts[line.MiniHunk].Resolution !== DiffConflictType.Both
+              && $currentDiff.Conflicts[line.MiniHunk].Resolution !== DiffConflictType.BothInverse
+            }
           >
             {#if line.Type === 'DiffChangeStartLine'}
               <div class="diff__change-start">
                 <button class="btn btn-text"
-                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Ours)}
+                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Ours)}
                   on:mouseout={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Ours)}
+                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Ours)}
                   on:blur={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:click={() => selectConflict(line.MiniHunk, DiffConflict.Ours)}
-                  class:btn--active={changesStatus[line.MiniHunk] === DiffConflict.Ours}
+                  on:click={() => selectConflict(line.MiniHunk, DiffConflictType.Ours)}
+                  class:btn--active={$currentDiff.Conflicts[line.MiniHunk].Resolution === DiffConflictType.Ours}
                 >Accept Current</button>
                 <button class="btn btn-text"
-                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Theirs)}
+                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Theirs)}
                   on:mouseout={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Theirs)}
+                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Theirs)}
                   on:blur={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:click={() => selectConflict(line.MiniHunk, DiffConflict.Theirs)}
-                  class:btn--active={changesStatus[line.MiniHunk] === DiffConflict.Theirs}
+                  on:click={() => selectConflict(line.MiniHunk, DiffConflictType.Theirs)}
+                  class:btn--active={$currentDiff.Conflicts[line.MiniHunk].Resolution === DiffConflictType.Theirs}
                 >Accept Incoming</button>
                 <button class="btn btn-text"
-                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Both)}
+                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Both)}
                   on:mouseout={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Both)}
+                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Both)}
                   on:blur={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:click={() => selectConflict(line.MiniHunk, DiffConflict.Both)}
-                  class:btn--active={changesStatus[line.MiniHunk] === DiffConflict.Both}
+                  on:click={() => selectConflict(line.MiniHunk, DiffConflictType.Both)}
+                  class:btn--active={$currentDiff.Conflicts[line.MiniHunk].Resolution === DiffConflictType.Both}
                 >Accept Both (Current First)</button>
                 <button class="btn btn-text"
-                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Both)}
+                  on:mouseover={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Both)}
                   on:mouseout={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflict.Both)}
+                  on:focus={() => hoverMiniHunk(line.MiniHunk, DiffConflictType.Both)}
                   on:blur={() => unHoverMiniHunk(line.MiniHunk)}
-                  on:click={() => selectConflict(line.MiniHunk, DiffConflict.BothInverse)}
-                  class:btn--active={changesStatus[line.MiniHunk] === DiffConflict.BothInverse}
+                  on:click={() => selectConflict(line.MiniHunk, DiffConflictType.BothInverse)}
+                  class:btn--active={$currentDiff.Conflicts[line.MiniHunk].Resolution === DiffConflictType.BothInverse}
                 >Accept Both (Incoming First)</button>
               </div>
             {/if}

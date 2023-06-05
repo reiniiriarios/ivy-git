@@ -138,23 +138,6 @@ func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
 	return diff, nil
 }
 
-func (g *Git) getDiffOurs(file string) (string, error) {
-	d, err := g.RunCwd("diff", "--ours", file)
-	if err != nil {
-		return "", err
-	}
-	return d, nil
-}
-
-func (g *Git) getDiffTheirs(file string) (string, error) {
-	// -b ignore whitespace
-	d, err := g.RunCwd("diff", "--theirs", "-b", file)
-	if err != nil {
-		return "", err
-	}
-	return d, nil
-}
-
 func (g *Git) getDiffBase(file string) (string, error) {
 	d, err := g.RunCwd("diff", "--base", file)
 	if err != nil {
