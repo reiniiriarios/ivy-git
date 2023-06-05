@@ -123,46 +123,6 @@ func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (strin
 	return d, nil
 }
 
-func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
-	base, err := g.getDiffBase(file)
-	if err != nil {
-		return Diff{}, err
-	}
-	diff := Diff{
-		Raw: base,
-	}
-	err = diff.parseConflicts()
-	if err != nil {
-		return Diff{}, err
-	}
-	return diff, nil
-}
-
-func (g *Git) getDiffOurs(file string) (string, error) {
-	d, err := g.RunCwd("diff", "--ours", file)
-	if err != nil {
-		return "", err
-	}
-	return d, nil
-}
-
-func (g *Git) getDiffTheirs(file string) (string, error) {
-	// -b ignore whitespace
-	d, err := g.RunCwd("diff", "--theirs", "-b", file)
-	if err != nil {
-		return "", err
-	}
-	return d, nil
-}
-
-func (g *Git) getDiffBase(file string) (string, error) {
-	d, err := g.RunCwd("diff", "--base", file)
-	if err != nil {
-		return "", err
-	}
-	return d, nil
-}
-
 func (g *Git) GetCommitFileParsedDiff(hash string, file string, oldfile string) (Diff, error) {
 	raw, err := g.getCommitFileDiff(hash, file, oldfile)
 	if err != nil {

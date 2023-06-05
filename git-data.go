@@ -350,11 +350,6 @@ func (a *App) GetCommitFileParsedDiff(hash string, file string, oldfile string) 
 	return dataResponse(err, diff)
 }
 
-func (a *App) GetConflictParsedDiff(file string) DataResponse {
-	diff, err := a.Git.GetConflictParsedDiff(file)
-	return dataResponse(err, diff)
-}
-
 func (a *App) GetConflictParsedFile(file string) DataResponse {
 	f, err := a.Git.GetParsedConflictFile(file)
 	return dataResponse(err, f)
