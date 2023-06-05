@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { currentDiff, isDiff } from "stores/diffs";
+  import { currentDiff } from "stores/diffs";
 </script>
 
 <div class="diff diff--committed">
-  {#if isDiff($currentDiff) && $currentDiff.Hunks?.length}
+  {#if $currentDiff.Hunks?.length}
     <div class="diff__grid">
       {#each $currentDiff.Hunks as hunk}
         <div class="diff__hunk-header">

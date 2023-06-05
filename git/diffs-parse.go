@@ -170,6 +170,183 @@ func (d *Diff) parse() error {
 	return nil
 }
 
+func (d *Diff) parseConflicts() error {
+	// Do not use parseLines() here, will strip relevant data.
+	lines := strings.Split(strings.ReplaceAll(d.Raw, "\r\n", "\n"), "\n")
+	var ln int
+	for ln = 0; ln < len(lines); ln++ {
+		if strings.HasPrefix(lines[ln], "Binary files ") && strings.HasSuffix(lines[ln], "differ") {
+			d.Binary = true
+			break
+		}
+		if strings.HasPrefix(lines[ln], "+++") {
+			d.Binary = false
+			break
+		}
+	}
+	if ln == len(lines)-1 {
+		// Couldn't parse header
+		return nil
+	}
+	if d.Binary {
+		// No parsing binary files
+		return nil
+	}
+
+	// Continue ln where we left off with the last loop
+	current_hunk := -1
+	var before, after int64
+	var change_mini_hunk int64 = 0
+	// -1 ours, 0 not conflict, 1 theirs
+	var conflict_ours_theirs int8 = 0
+	var conflict_before int16 = 0
+	var conflict_after int16 = 0
+	for ; ln < len(lines); ln++ {
+		// Parse hunk heading
+		if strings.HasPrefix(lines[ln], "@@") {
+			hunk, err := parseHunkHeading(lines[ln])
+			if err != nil {
+				return err
+			}
+			d.Hunks = append(d.Hunks, hunk)
+			current_hunk++
+			before = d.Hunks[current_hunk].StartOld
+			after = d.Hunks[current_hunk].StartNew
+			continue
+		}
+		// Keep looking until we've found at least the first hunk
+		if current_hunk == -1 {
+			continue
+		}
+
+		// Skip empty lines (e.g. trailing line)
+		if len(lines[ln]) == 0 {
+			continue
+		}
+
+		var mini_hunk int64 = -1
+
+		if strings.HasPrefix(lines[ln][1:], "<<<<<<<") {
+			change_mini_hunk++
+			d.NumConflicts++
+			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+				Line:       lines[ln][1:],
+				Type:       DiffChangeStartLine,
+				RawLineNo:  int64(ln),
+				OldLineNo:  -1,
+				NewLineNo:  -1,
+				MiniHunk:   change_mini_hunk,
+				OursTheirs: DiffOurs,
+			})
+			// Start the "ours" side of the conflict.
+			conflict_ours_theirs = DiffOurs
+		} else if strings.HasPrefix(lines[ln][1:], "=======") {
+			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+				Line:       lines[ln][1:],
+				Type:       DiffChangeFlipLine,
+				RawLineNo:  int64(ln),
+				OldLineNo:  -1,
+				NewLineNo:  -1,
+				MiniHunk:   change_mini_hunk,
+				OursTheirs: DiffNeither,
+			})
+			// Start the "theirs" side of the conflict.
+			conflict_ours_theirs = DiffTheirs
+			// Roll back before and after to before the "ours" side.
+			before -= int64(conflict_before)
+			after -= int64(conflict_after)
+			// Reset these counters.
+			conflict_before = 0
+			conflict_after = 0
+		} else if strings.HasPrefix(lines[ln][1:], ">>>>>>>") {
+			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+				Line:       lines[ln][1:],
+				Type:       DiffChangeEndLine,
+				RawLineNo:  int64(ln),
+				OldLineNo:  -1,
+				NewLineNo:  -1,
+				MiniHunk:   change_mini_hunk,
+				OursTheirs: DiffTheirs,
+			})
+			// End conflict.
+			conflict_ours_theirs = DiffNeither
+			change_mini_hunk++
+		} else {
+			if conflict_ours_theirs != 0 {
+				mini_hunk = change_mini_hunk
+			}
+			// Parse other lines
+			prefix := lines[ln][:1]
+			switch prefix {
+			case "\\":
+				if len(lines[ln]) < 12 {
+					return errors.New("malformed diff, ending not recognized")
+				}
+				if len(d.Hunks[current_hunk].Lines) < 1 {
+					return errors.New("malformed diff, invalid length")
+				}
+				// Last line didn't have a newline, don't add this line, and we're done
+				d.Hunks[current_hunk].Lines[len(d.Hunks[current_hunk].Lines)-1].NoNewline = true
+				return nil
+			case "+":
+				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+					Line:       lines[ln][1:],
+					Type:       DiffAddLine,
+					RawLineNo:  int64(ln),
+					OldLineNo:  -1,
+					NewLineNo:  after,
+					MiniHunk:   mini_hunk,
+					OursTheirs: conflict_ours_theirs,
+				})
+				// Rolling new line number.
+				after++
+				// Rolling new line number offset.
+				if conflict_ours_theirs == DiffOurs {
+					conflict_after++
+				}
+			case "-":
+				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+					Line:       lines[ln][1:],
+					Type:       DiffDeleteLine,
+					RawLineNo:  int64(ln),
+					OldLineNo:  before,
+					NewLineNo:  -1,
+					MiniHunk:   mini_hunk,
+					OursTheirs: conflict_ours_theirs,
+				})
+				// Rolling old line number.
+				before++
+				// Rolling old line number offset.
+				if conflict_ours_theirs == DiffOurs {
+					conflict_before++
+				}
+			case " ":
+				d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
+					Line:       lines[ln][1:],
+					Type:       DiffContextLine,
+					RawLineNo:  int64(ln),
+					OldLineNo:  before,
+					NewLineNo:  after,
+					MiniHunk:   mini_hunk,
+					OursTheirs: conflict_ours_theirs,
+				})
+				// Rolling old and new line number.
+				before++
+				after++
+				// Rolling old and new line number offsets.
+				if conflict_ours_theirs == -1 {
+					conflict_before++
+					conflict_after++
+				}
+			default:
+				println(lines[ln])
+				return errors.New("malformed diff, unrecognized line type")
+			}
+		}
+	}
+	return nil
+}
+
 func parseHunkHeading(line string) (DiffHunk, error) {
 	r := regexp.MustCompile(`^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@`)
 	matches := r.FindStringSubmatch(line)

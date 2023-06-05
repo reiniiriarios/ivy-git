@@ -1,6 +1,6 @@
 import { parseResponse } from 'scripts/parse-response';
 import { derived, get, writable } from 'svelte/store';
-import { GetConflictParsedFile, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
+import { GetConflictParsedDiff, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
 import { currentRepo } from 'stores/repos';
 import { currentDiff, type Diff } from 'stores/diffs';
 
@@ -61,7 +61,7 @@ function createChanges() {
       else {
         // Conflict diff.
         if (xyc === 'c') {
-          GetConflictParsedFile(file).then(result => {
+          GetConflictParsedDiff(file).then(result => {
             parseResponse(result, () => {
               update(c => {
                 if (c.c[file]) {
@@ -69,8 +69,12 @@ function createChanges() {
                 }
                 return c;
               });
+              result.Data.File = file;
+              result.Data.Status = f.Letter;
+              result.Data.Conflict = true;
+              result.Data.Staged = false;
+              result.Data.Committed = false;
               result.Data.ConflictSelections = [];
-              console.log(result.Data)
               currentDiff.set(result.Data);
             });
           });

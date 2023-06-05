@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentDiff, isConflict, isDiff } from "stores/diffs";
+  import { currentDiff } from "stores/diffs";
   import DiffChanges from "components/diffs/DiffChanges.svelte";
   import DiffChangesActions from "components/diffs/DiffChangesActions.svelte";
   import DiffCommitted from "components/diffs/DiffCommitted.svelte";
@@ -9,7 +9,7 @@
 
 {#if $currentDiff}
   <div class="diffs">
-    {#if isDiff($currentDiff) && $currentDiff.Committed}
+    {#if $currentDiff.Committed}
       <div class="diffs__hash">
         {$currentDiff.Hash}
       </div>
@@ -17,7 +17,7 @@
         {$currentDiff.File}
       </div>
       <DiffCommitted />
-    {:else if isConflict($currentDiff)}
+    {:else if $currentDiff.Conflict}
       <DiffConflictActions />
       <DiffConflict />
     {:else}
