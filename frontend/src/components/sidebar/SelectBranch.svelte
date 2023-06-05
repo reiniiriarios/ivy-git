@@ -2,6 +2,7 @@
   import { branches, currentBranch, type Branch, detachedHead } from 'stores/branches';
   import { branchSelect, repoSelect } from 'stores/ui';
   import createBranch from 'actions/create-branch';
+  import { mergeConflicts } from 'stores/changes';
 
   const newBranch = () => createBranch();
 
@@ -30,6 +31,7 @@
   class="btn btn-drop sidebar-big-button"
   class:active={$branchSelect}
   class:detached={$detachedHead}
+  class:merge-conflicts={$mergeConflicts}
   style:display={$repoSelect ? 'none' : 'flex'}
   on:click={toggleList}
 >
@@ -38,7 +40,9 @@
     $currentBranch?.Name
       ? $detachedHead
         ? 'DETACHED HEAD'
-        : $currentBranch.Name
+        : $mergeConflicts
+          ? $currentBranch.Name + ' (Merge Conflicts)'
+          : $currentBranch.Name
       : "none selected"
   }</div>
 </button>

@@ -25,12 +25,24 @@
     }
   }
 
+  &.merge-conflicts {
+    background-color: var(--color-scale-n-8-75);
+  
+    &:hover {
+      background-color: var(--color-scale-n-7-75) !important;
+    }
+  }
+
   &__label {
     color: var(--color-text-label);
     font-size: 0.9rem;
 
     .detached & {
       color: var(--color-scale-r-1-100);
+    }
+
+    .merge-conflicts & {
+      color: var(--color-scale-n-1-100);
     }
   }
 }
