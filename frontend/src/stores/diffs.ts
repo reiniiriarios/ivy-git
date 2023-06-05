@@ -17,6 +17,7 @@ export interface Diff {
   Binary: boolean;
   SelectableLines: number;
   SelectedLines: number;
+  NumConflicts: number;
   // UI
   File: string;
   Status: string;
@@ -24,6 +25,7 @@ export interface Diff {
   Committed: boolean;
   Conflict: boolean;
   Hash: string;
+  ConflictSelections: number[];
 }
 
 export interface DiffHunk {

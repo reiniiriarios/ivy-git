@@ -27,6 +27,7 @@ type Diff struct {
 	Binary          bool
 	SelectableLines uint64
 	SelectedLines   uint64
+	NumConflicts    uint16
 }
 
 type DiffHunk struct {
@@ -227,6 +228,7 @@ func (d *Diff) parseConflicts() error {
 
 		if strings.HasPrefix(lines[ln][1:], "<<<<<<<") {
 			change_mini_hunk++
+			d.NumConflicts++
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:       lines[ln][1:],
 				Type:       DiffChangeStartLine,

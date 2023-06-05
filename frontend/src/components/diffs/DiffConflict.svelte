@@ -31,7 +31,8 @@
 
   function selectConflict(minihunk: number, oursTheirs: number) {
     changesStatus[minihunk] = oursTheirs;
-    changesStatus = changesStatus;
+    $currentDiff.ConflictSelections[minihunk] = oursTheirs;
+    changesStatus = $currentDiff.ConflictSelections;
   }
 </script>
 
