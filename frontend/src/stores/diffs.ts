@@ -25,7 +25,6 @@ export interface Diff {
   Committed: boolean;
   Conflict: boolean;
   Hash: string;
-  ConflictSelections: number[];
 }
 
 export interface DiffHunk {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { conflicts } from "stores/conflicts";
   import { DiffConflict, currentDiff } from "stores/diffs";
 
   let changesStatus: number[] = [];
@@ -31,8 +32,8 @@
 
   function selectConflict(minihunk: number, oursTheirs: number) {
     changesStatus[minihunk] = oursTheirs;
-    $currentDiff.ConflictSelections[minihunk] = oursTheirs;
-    changesStatus = $currentDiff.ConflictSelections;
+    $conflicts[$currentDiff.File].ConflictSelections[minihunk] = oursTheirs;
+    changesStatus = $conflicts[$currentDiff.File].ConflictSelections;
   }
 </script>
 

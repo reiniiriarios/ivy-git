@@ -3,6 +3,7 @@ import { derived, get, writable } from 'svelte/store';
 import { GetConflictParsedDiff, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
 import { currentRepo } from 'stores/repos';
 import { currentDiff, type Diff } from 'stores/diffs';
+import { conflicts } from './conflicts';
 
 interface Changes {
   x: Change[], // staged
@@ -38,6 +39,7 @@ function createChanges() {
               y: result.Data.ChangesY ?? [],
               c: result.Data.ChangesC ?? [],
             });
+            conflicts.setFiles(result.Data.ChangesC ?? []);
           });
         });
       } else {
@@ -115,4 +117,4 @@ function createChanges() {
   };
 }
 export const changes = createChanges();
-export const mergeConflicts = derived(changes, $changes => $changes?.c && Object.keys($changes.c).length > 0);
+export const mergeConflicts = derived(changes, $changes => $changes?.c && Object.keys($changes.c).length);
