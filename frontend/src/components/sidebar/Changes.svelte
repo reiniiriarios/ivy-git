@@ -97,7 +97,7 @@
       {#each Object.entries($changes.c) as [_, change]}
         <li
           class="change"
-          class:change--active={$currentDiff.File === change.File && $currentDiff.Staged && $currentTab === 'changes'}
+          class:change--active={$currentDiff.File === change.File && $currentDiff.Conflict && $currentTab === 'changes'}
           class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
           class:change--none={change.Diff?.SelectedLines === 0}
         >
