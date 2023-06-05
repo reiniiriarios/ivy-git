@@ -34,7 +34,7 @@
   }
 
   &__change-start {
-    grid-column: 1 / span 4;
+    grid-column: 1 / span 3;
     padding: 0.5rem 2.5rem;
 
     .btn {
@@ -160,21 +160,39 @@
       }
     }
   
-    &--DiffChangeStartLine {
+    &--LineConflictStart {
       > div {
         background-color: var(--color-diff-line-bg-change-start);
       }
     }
+
+    &--LineOurs {
+      > div {
+        background-color: var(--color-diff-line-bg-conflict-ours);
+      }
+    }
   
-    &--DiffChangeFlipLine {
+    &--LineConflictFlip {
       > div {
         background-color: var(--color-diff-line-bg-change-flip);
       }
     }
+
+    &--LineTheirs {
+      > div {
+        background-color: var(--color-diff-line-bg-conflict-theirs);
+      }
+    }
   
-    &--DiffChangeEndLine {
+    &--LineConflictEnd {
       > div {
         background-color: var(--color-diff-line-bg-change-end);
+      }
+    }
+
+    &--LineNormal {
+      > div {
+        background-color: var(--color-diff-line-bg-context);
       }
     }
 
@@ -245,16 +263,11 @@
 
   &--conflict {
     .diff__grid {
-      grid-template-columns: min-content min-content min-content auto;
+      grid-template-columns: min-content min-content auto;
     }
 
-    .diff__hunk-header {
-      grid-column: 1 / span 4;
-    }
-
-    .diff__row--yes.diff__row--DiffAddLine,
-    .diff__row--yes.diff__row--DiffDeleteLine,
-    .diff__row--yes.diff__row--DiffContextLine {
+    .diff__row--yes.diff__row--LineOurs,
+    .diff__row--yes.diff__row--LineTheirs {
       .diff__line-toggle-minihunk {
         background-color: var(--color-diff-toggle-bg);
         background-size: 80%;
@@ -264,9 +277,8 @@
       }
     }
 
-    .diff__row--no.diff__row--DiffAddLine,
-    .diff__row--no.diff__row--DiffDeleteLine,
-    .diff__row--no.diff__row--DiffContextLine {
+    .diff__row--no.diff__row--LineOurs,
+    .diff__row--no.diff__row--LineTheirs {
       .diff__line-toggle-minihunk {
         background-color: var(--color-diff-toggle-bg-off);
         background-size: 80%;
@@ -276,9 +288,8 @@
       }
     }
 
-    .diff__row--hover.diff__row--DiffAddLine,
-    .diff__row--hover.diff__row--DiffDeleteLine,
-    .diff__row--hover.diff__row--DiffContextLine {
+    .diff__row--hover.diff__row--LineOurs,
+    .diff__row--hover.diff__row--LineTheirs {
       .diff__line-toggle-minihunk {
         background-size: 80%;
         background-position: center;

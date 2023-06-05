@@ -1,6 +1,6 @@
 <script lang="ts">
   import { changes } from "stores/changes";
-  import { currentDiff, type DiffLine } from "stores/diffs";
+  import { currentDiff, isDiff, type DiffLine } from "stores/diffs";
 
   let miniHunkElements: HTMLElement[] = [];
 
@@ -25,45 +25,49 @@
   }
 
   function toggleMiniHunk(hunk: number, miniHunk: number) {
-    // Whether more lines are on or off.
-    let onOff = $currentDiff.Hunks[hunk].Lines.reduce(([on, off], ln: DiffLine) => {
-      if (ln.MiniHunk === miniHunk) {
-        if (ln.Selected) {
-          return [on + 1, off];
-        } else {
-          return [on, off + 1];
+    if (isDiff($currentDiff)) {
+      // Whether more lines are on or off.
+      let onOff = $currentDiff.Hunks[hunk].Lines.reduce(([on, off], ln: DiffLine) => {
+        if (ln.MiniHunk === miniHunk) {
+          if (ln.Selected) {
+            return [on + 1, off];
+          } else {
+            return [on, off + 1];
+          }
         }
-      }
-      return [on, off];
-    }, [0, 0]);
-    let moreLinesOn = onOff[0] > onOff[1];
+        return [on, off];
+      }, [0, 0]);
+      let moreLinesOn = onOff[0] > onOff[1];
 
-    // Toggle minihunk lines all on or all off.
-    // Adjust number of selected lines for diff.
-    let adj = 0;
-    for (let i = 0; i < $currentDiff.Hunks[hunk].Lines.length; i++) {
-      if ($currentDiff.Hunks[hunk].Lines[i].MiniHunk === miniHunk) {
-        if (moreLinesOn && $currentDiff.Hunks[hunk].Lines[i].Selected) {
-          adj--;
-        } else if (!moreLinesOn && !$currentDiff.Hunks[hunk].Lines[i].Selected) {
-          adj++;
+      // Toggle minihunk lines all on or all off.
+      // Adjust number of selected lines for diff.
+      let adj = 0;
+      for (let i = 0; i < $currentDiff.Hunks[hunk].Lines.length; i++) {
+        if ($currentDiff.Hunks[hunk].Lines[i].MiniHunk === miniHunk) {
+          if (moreLinesOn && $currentDiff.Hunks[hunk].Lines[i].Selected) {
+            adj--;
+          } else if (!moreLinesOn && !$currentDiff.Hunks[hunk].Lines[i].Selected) {
+            adj++;
+          }
+          $currentDiff.Hunks[hunk].Lines[i].Selected = !moreLinesOn;
         }
-        $currentDiff.Hunks[hunk].Lines[i].Selected = !moreLinesOn;
       }
+      $currentDiff.SelectedLines += adj;
+      changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
     }
-    $currentDiff.SelectedLines += adj;
-    changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
   }
 
   function toggleLine(hunk: number, i: number) {
-    $currentDiff.Hunks[hunk].Lines[i].Selected = !$currentDiff.Hunks[hunk].Lines[i].Selected;
-    $currentDiff.SelectedLines += $currentDiff.Hunks[hunk].Lines[i].Selected ? 1 : -1;
-    changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
+    if (isDiff($currentDiff)) {
+      $currentDiff.Hunks[hunk].Lines[i].Selected = !$currentDiff.Hunks[hunk].Lines[i].Selected;
+      $currentDiff.SelectedLines += $currentDiff.Hunks[hunk].Lines[i].Selected ? 1 : -1;
+      changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
+    }
   }
 </script>
 
 <div class="diff diff--changes">
-  {#if $currentDiff.Hunks?.length}
+  {#if isDiff($currentDiff) && $currentDiff.Hunks?.length}
     <div class="diff__grid">
       {#each $currentDiff.Hunks as hunk, hunk_id}
         <div class="diff__hunk-header">

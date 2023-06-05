@@ -85,9 +85,11 @@
   --color-diff-line-bg-add: var(--color-scale-g-5-25);
   --color-diff-line-bg-delete: var(--color-scale-r-5-25);
   --color-diff-line-bg-context: var(--color-scale-a-5-25);
-  --color-diff-line-bg-change-start: var(--color-scale-n-5-50);
-  --color-diff-line-bg-change-flip: var(--color-scale-p-5-50);
-  --color-diff-line-bg-change-end: var(--color-scale-b-5-50);
+  --color-diff-line-bg-change-start: var(--color-scale-n-5-25);
+  --color-diff-line-bg-change-flip: var(--color-scale-a-4-25);
+  --color-diff-line-bg-change-end: var(--color-scale-o-5-25);
+  --color-diff-line-bg-conflict-ours: var(--color-scale-n-7-25);
+  --color-diff-line-bg-conflict-theirs: var(--color-scale-o-7-25);
   --color-diff-line-add: var(--color-scale-g-3-100);
   --color-diff-line-delete: var(--color-scale-r-3-100);
   --color-diff-line-no: var(--color-scale-a-3-100);

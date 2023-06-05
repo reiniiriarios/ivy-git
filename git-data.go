@@ -355,6 +355,11 @@ func (a *App) GetConflictParsedDiff(file string) DataResponse {
 	return dataResponse(err, diff)
 }
 
+func (a *App) GetConflictParsedFile(file string) DataResponse {
+	f, err := a.Git.GetParsedConflictFile(file)
+	return dataResponse(err, f)
+}
+
 func (a *App) StagePartialFile(diff git.Diff, filename string, status string) DataResponse {
 	err := a.Git.StagePartial(diff, filename, status)
 	return dataResponse(err, false)
