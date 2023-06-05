@@ -3,7 +3,6 @@ import { derived, get, writable } from 'svelte/store';
 import { GetConflictParsedDiff, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
 import { currentRepo } from 'stores/repos';
 import { currentDiff, type Diff } from 'stores/diffs';
-import { conflicts } from './conflicts';
 
 interface Changes {
   x: Change[], // staged
@@ -23,6 +22,7 @@ interface Change {
   Diff: Diff;
   // UI
   Partial: boolean;
+  Resolved: boolean;
 }
 
 function createChanges() {
@@ -39,7 +39,6 @@ function createChanges() {
               y: result.Data.ChangesY ?? [],
               c: result.Data.ChangesC ?? [],
             });
-            conflicts.setFiles(result.Data.ChangesC ?? []);
           });
         });
       } else {
@@ -75,6 +74,7 @@ function createChanges() {
               result.Data.Conflict = true;
               result.Data.Staged = false;
               result.Data.Committed = false;
+              result.Data.ConflictSelections = [];
               currentDiff.set(result.Data);
             });
           });
@@ -108,13 +108,25 @@ function createChanges() {
         return c;
       });
     },
+    setResolved: async (file: string, resolved: boolean) => {
+      update(c => {
+        if (c.c[file]) {
+          c.c[file].Resolved = resolved;
+        }
+        return c;
+      })
+    },
     numStaged: () => {
       return Object.keys(get(changes).x).length;
     },
     numUnstaged: () => {
       return Object.keys(get(changes).y).length;
     },
+    numConflicts: () => {
+      return Object.keys(get(changes).c).length;
+    },
   };
 }
 export const changes = createChanges();
 export const mergeConflicts = derived(changes, $changes => $changes?.c && Object.keys($changes.c).length);
+export const mergeConflictsResolved = derived(changes, $changes => $changes?.c && Object.values($changes.c).every(c => c.Resolved));

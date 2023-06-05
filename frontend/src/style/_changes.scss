@@ -246,4 +246,12 @@
       }
     }
   }
+
+  &--unresolved {
+    background-color: var(--color-scale-n-7-50);
+
+    &.change--active {
+      background-color: var(--color-scale-n-6-50);
+    }
+  }
 }

@@ -25,6 +25,8 @@ export interface Diff {
   Committed: boolean;
   Conflict: boolean;
   Hash: string;
+  ConflictSelections: number[];
+  Resolved: boolean;
 }
 
 export interface DiffHunk {
@@ -51,7 +53,7 @@ export interface DiffLine {
 }
 
 function createCurrentDiff() {
-  const { subscribe, set } = writable({} as Diff);
+  const { subscribe, set, update } = writable({} as Diff);
 
   return {
     subscribe,
@@ -82,6 +84,14 @@ function createCurrentDiff() {
         changes.fetchDiff(cd.Staged ? 'x' : 'y', cd.File, true);
       }
     },
+    setConflictResolution(minihunk: number, resolution: number) {
+      update(d => {
+        d.ConflictSelections[minihunk] = resolution;
+        d.Resolved = Object.keys(d.ConflictSelections).length === d.NumConflicts;
+        changes.setResolved(d.File, d.Resolved);
+        return d;
+      });
+    }
   }
 }
 export const currentDiff = createCurrentDiff();

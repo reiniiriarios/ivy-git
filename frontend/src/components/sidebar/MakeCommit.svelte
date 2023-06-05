@@ -2,7 +2,7 @@
   import { isDarwin } from "scripts/env";
   import { parseResponse } from "scripts/parse-response";
   import { currentBranch, detachedHead } from "stores/branches";
-  import { changes, mergeConflicts } from "stores/changes";
+  import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoSelect, branchSelect, inProgressCommitMessage } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
 
@@ -41,7 +41,7 @@
 <div
   class="make-commit"
   class:detached={$detachedHead}
-  class:merge-conflicts={$mergeConflicts}
+  class:merge-conflicts={$mergeConflicts && !$mergeConflictsResolved}
   style:display={$repoSelect || $branchSelect ? 'none' : 'block'}
 >
   <div class="make-commit__subject">
@@ -57,7 +57,12 @@
     </label>
   </div>
   <div class="make-commit__button">
-    <button class="btn" id="make-commit-button" disabled={!subject || running || (!changes.numStaged() && !changes.numUnstaged())} on:click={make}>
+    <button
+      class="btn"
+      id="make-commit-button"
+      disabled={!subject || running || (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts()) || ($mergeConflicts && !$mergeConflictsResolved)}
+      on:click={make}
+    >
       Commit to <strong>{$currentBranch?.Name}</strong>
     </button>
   </div>
