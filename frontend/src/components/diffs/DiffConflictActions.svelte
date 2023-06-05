@@ -10,7 +10,7 @@
   }
 </script>
 
-<div class="diff-actions">
+<div class="diff-actions diff-actions--conflict">
   {#if isConflict($currentDiff)}
     <button
       class="btn btn--apply"
