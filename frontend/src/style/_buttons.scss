@@ -46,6 +46,20 @@
   &:hover:not(:disabled) {
     background-color: var(--color-btn-bg-hover);
   }
+
+  &--apply {
+    background-color: var(--color-btn-bg-green);
+
+    &:disabled {
+      color: var(--color-text-muted);
+      fill: var(--color-text-muted);
+      background-color: var(--color-btn-bg-disabled);
+    }
+  
+    &:hover:not(:disabled) {
+      background-color: var(--color-btn-bg-green-hover);
+    }
+  }
 }
 
 .textbtn {

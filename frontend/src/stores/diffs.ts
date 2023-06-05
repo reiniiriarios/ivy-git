@@ -108,17 +108,24 @@ function createCurrentDiff() {
         changes.fetchDiff('c', cd.File, true);
       }
     },
-    setConflictResolution(conflict: number, resolution: number) {
+    setConflictResolution: (conflict: number, resolution: number) => {
       update(d => {
         if (isConflict(d)) {
           d.ConflictSelections[conflict] = resolution;
-          d.Resolved = Object.keys(d.ConflictSelections).length === d.NumConflicts;
-          console.log(d)
           changes.setResolved(d.File, d.Resolved);
         }
         return d;
       });
-    }
+    },
+    setResolved: (resolved: boolean) => {
+      update(d => {
+        if (isConflict(d)) {
+          d.Resolved = resolved;
+          changes.setResolved(d.File, resolved);
+        }
+        return d;
+      })
+    },
   }
 }
 export const currentDiff = createCurrentDiff();
