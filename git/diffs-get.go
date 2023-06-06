@@ -139,7 +139,7 @@ func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
 }
 
 func (g *Git) getDiffBase(file string) (string, error) {
-	d, err := g.RunCwd("diff", "--base", file)
+	d, err := g.RunCwd("diff", "--base", "--", file)
 	if err != nil {
 		return "", err
 	}
