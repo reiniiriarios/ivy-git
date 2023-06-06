@@ -32,7 +32,7 @@
             <th>Comments</th>
             <th>Blank Lines</th>
             <th>Files</th>
-            <th>Bytes</th>
+            <th>Size</th>
             <th>Percent</th>
           </tr>
         </thead>
