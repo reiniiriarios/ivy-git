@@ -108,20 +108,18 @@ func (a *App) FetchRemote(remote string) DataResponse {
 
 func (a *App) PushRemote(remote string) DataResponse {
 	branch, err := a.Git.GetCurrentBranch()
-	if err != nil {
-		return dataResponse(err, true)
+	if err == nil {
+		err = a.Git.PushRemoteBranch(remote, branch, false, false)
 	}
-	err = a.Git.PushRemoteBranch(remote, branch, false, false)
 	return dataResponse(err, true)
 }
 
 func (a *App) PullRemote(remote string) DataResponse {
 	branch, err := a.Git.GetCurrentBranch()
-	if err != nil {
-		return dataResponse(err, true)
+	if err == nil {
+		// todo: set rebase flag depending on user settings
+		err = a.Git.PullRemoteBranch(remote, branch, true)
 	}
-	// todo: set rebase flag depending on user settings
-	err = a.Git.PullRemoteBranch(remote, branch, true)
 	return dataResponse(err, true)
 }
 
@@ -367,10 +365,9 @@ func (a *App) UnstagePartialFile(diff git.Diff, filename string, status string) 
 
 func (a *App) AddRemote(name string, fetch_url string, push_url string) DataResponse {
 	err := a.Git.AddRemote(name, fetch_url, push_url)
-	if err != nil {
-		return dataResponse(err, false)
+	if err == nil {
+		err = a.Git.FetchRemote(name)
 	}
-	err = a.Git.FetchRemote(name)
 	return dataResponse(err, false)
 }
 
