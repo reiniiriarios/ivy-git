@@ -1,6 +1,7 @@
 @use "!mixins" as *;
 
 .changes {
+  padding-top: 0.25rem;
   text-align: left;
   background-color: var(--color-changes-bg);
   flex: 2;

@@ -6,7 +6,6 @@
 .repo-state {
   &__banner {
     padding: 0.75rem;
-    margin-bottom: 0.25rem;
     @include no-select;
     background-color: var(--color-scale-r-8-100);
   }
