@@ -378,3 +378,11 @@ func (a *App) DeleteRemote(name string) DataResponse {
 	err := a.Git.RemoveRemote(name)
 	return dataResponse(err, false)
 }
+
+func (a *App) ResolveDiffConflicts(diff git.Diff) DataResponse {
+	err := a.Git.ResolveDiffConflicts(diff)
+	if err == nil {
+		err = a.Git.StageFiles(diff.File)
+	}
+	return dataResponse(err, false)
+}

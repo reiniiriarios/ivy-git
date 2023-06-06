@@ -63,19 +63,20 @@ function createChanges() {
         if (xyc === 'c') {
           GetConflictParsedDiff(file).then(result => {
             parseResponse(result, () => {
-              update(c => {
-                if (c.c[file]) {
-                  c.c[file].Diff = result.Data;
-                }
-                return c;
-              });
               result.Data.File = file;
               result.Data.Status = f.Letter;
               result.Data.Conflict = true;
               result.Data.Staged = false;
               result.Data.Committed = false;
               result.Data.ConflictSelections = [];
+              update(c => {
+                if (c.c[file]) {
+                  c.c[file].Diff = result.Data;
+                }
+                return c;
+              });
               currentDiff.set(result.Data);
+              console.log(result.Data)
             });
           });
         }
@@ -83,16 +84,16 @@ function createChanges() {
         else {
           GetWorkingFileParsedDiff(file, f.Letter, xyc === 'x').then(result => {
             parseResponse(result, () => {
+              result.Data.File = file;
+              result.Data.Status = f.Letter;
+              result.Data.Staged = xyc === 'x';
+              result.Data.Committed = false;
               update(c => {
                 if (c[xyc][file]) {
                   c[xyc][file].Diff = result.Data;
                 }
                 return c;
               });
-              result.Data.File = file;
-              result.Data.Status = f.Letter;
-              result.Data.Staged = xyc === 'x';
-              result.Data.Committed = false;
               currentDiff.set(result.Data);
             });
           });

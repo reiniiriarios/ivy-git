@@ -62,8 +62,11 @@ type DiffLine struct {
 type DiffConflict struct {
 	Ours       []DiffLine
 	Theirs     []DiffLine
+	Markers    []int64 // <<<<<<<, =======, >>>>>>>
 	Resolution OursTheirs
 }
+
+type DiffConflicts []DiffConflict
 
 const HiddenBidiCharsRegex = "/[\u202A-\u202E]|[\u2066-\u2069]/"
 
@@ -226,6 +229,8 @@ func (d *Diff) parseConflicts() error {
 			current_hunk++
 			before = d.Hunks[current_hunk].StartOld
 			after = d.Hunks[current_hunk].StartNew
+			cur = after
+
 			continue
 		}
 		// Keep looking until we've found at least the first hunk
@@ -238,7 +243,6 @@ func (d *Diff) parseConflicts() error {
 			continue
 		}
 
-		cur = after
 		var mini_hunk int64 = -1
 		var new_line DiffLine
 
@@ -255,9 +259,14 @@ func (d *Diff) parseConflicts() error {
 				MiniHunk:   change_mini_hunk,
 				OursTheirs: DiffOurs,
 			}
+			// Add this marker line to its conflict.
+			c := d.Conflicts[change_mini_hunk]
+			c.Markers = append(c.Markers, cur)
+			d.Conflicts[change_mini_hunk] = c
 			cur++
 			// Start the "ours" side of the conflict.
 			conflict_ours_theirs = DiffOurs
+
 		} else if strings.HasPrefix(lines[ln][1:], "=======") {
 			new_line = DiffLine{
 				Line:       lines[ln][1:],
@@ -269,6 +278,10 @@ func (d *Diff) parseConflicts() error {
 				MiniHunk:   change_mini_hunk,
 				OursTheirs: DiffNeither,
 			}
+			// Add this marker line to its conflict.
+			c := d.Conflicts[change_mini_hunk]
+			c.Markers = append(c.Markers, cur)
+			d.Conflicts[change_mini_hunk] = c
 			cur++
 			// Start the "theirs" side of the conflict.
 			conflict_ours_theirs = DiffTheirs
@@ -278,6 +291,7 @@ func (d *Diff) parseConflicts() error {
 			// Reset these counters.
 			conflict_before = 0
 			conflict_after = 0
+
 		} else if strings.HasPrefix(lines[ln][1:], ">>>>>>>") {
 			new_line = DiffLine{
 				Line:       lines[ln][1:],
@@ -289,10 +303,15 @@ func (d *Diff) parseConflicts() error {
 				MiniHunk:   change_mini_hunk,
 				OursTheirs: DiffTheirs,
 			}
+			// Add this marker line to its conflict.
+			c := d.Conflicts[change_mini_hunk]
+			c.Markers = append(c.Markers, cur)
+			d.Conflicts[change_mini_hunk] = c
 			cur++
 			// End conflict.
 			conflict_ours_theirs = DiffNeither
 			change_mini_hunk++
+
 		} else {
 			if conflict_ours_theirs != 0 {
 				mini_hunk = change_mini_hunk
@@ -385,6 +404,17 @@ func (d *Diff) parseConflicts() error {
 	return nil
 }
 
+// Parse a hunk header.
+//
+// Currently only supports default format:
+//
+//	@@ -n,n +n,n @@ heading
+//	Where -n,n is the old line number range and +n,n is the new range.
+//
+// todo: allow support for custom hunk headers.
+//
+// https://git-scm.com/docs/diff-format
+// https://git-scm.com/docs/git-diff
 func parseHunkHeading(line string) (DiffHunk, error) {
 	r := regexp.MustCompile(`^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@`)
 	matches := r.FindStringSubmatch(line)
@@ -560,4 +590,58 @@ func (d *Diff) createDiscardPatch(filename string) string {
 		return ""
 	}
 	return patchHeader(filename, filename) + patch
+}
+
+// Parse conflict resolutions into a list of lines to delete and
+// a map of replacement strings for some lines.
+func (d *Diff) parseConflictResolutions() ([]int64, map[int64]string) {
+	var delete_lines []int64
+	replace_lines := make(map[int64]string)
+
+	for i := range d.Conflicts {
+		switch d.Conflicts[i].Resolution {
+
+		case DiffOurs:
+			for n := range d.Conflicts[i].Theirs {
+				delete_lines = append(delete_lines, d.Conflicts[i].Theirs[n].CurLineNo)
+			}
+
+		case DiffTheirs:
+			for n := range d.Conflicts[i].Ours {
+				delete_lines = append(delete_lines, d.Conflicts[i].Ours[n].CurLineNo)
+			}
+
+		case DiffBoth:
+			// Nothing to do.
+
+		case DiffBothInverse:
+			// Start at the beginning of Ours and add Theirs as replacement lines.
+			ln := d.Conflicts[i].Ours[0].CurLineNo
+			for n := range d.Conflicts[i].Theirs {
+				replace_lines[ln] = d.Conflicts[i].Theirs[n].Line
+				ln++
+			}
+			// Skip =======
+			ln++
+			// Add Ours below Theirs.
+			for n := range d.Conflicts[i].Ours {
+				replace_lines[ln] = d.Conflicts[i].Ours[n].Line
+				ln++
+			}
+			// Move the ======= delete line to the new center of ours vs theirs.
+			mv := len(d.Conflicts[i].Theirs) - len(d.Conflicts[i].Ours)
+			d.Conflicts[i].Markers[1] += int64(mv)
+		}
+
+		delete_lines = append(delete_lines, d.Conflicts[i].Markers...)
+	}
+
+	return delete_lines, replace_lines
+}
+
+// Resolve diff conflicts by editing the file.
+func (g *Git) ResolveDiffConflicts(d Diff) error {
+	del, rep := d.parseConflictResolutions()
+	err := g.deleteAndReplaceLinesFromFile(d.File, del, rep)
+	return err
 }

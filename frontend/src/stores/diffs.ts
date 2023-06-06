@@ -1,6 +1,6 @@
-import { get, writable } from "svelte/store";
+import { derived, get, writable } from "svelte/store";
 import { changes } from "./changes";
-import { GetCommitFileParsedDiff } from "wailsjs/go/main/App";
+import { GetCommitFileParsedDiff, ResolveDiffConflicts } from "wailsjs/go/main/App";
 import { parseResponse } from "scripts/parse-response";
 
 type OursTheirs = number;
@@ -89,20 +89,25 @@ function createCurrentDiff() {
         changes.fetchDiff(cd.Staged ? 'x' : 'y', cd.File, true);
       }
     },
+    // Set the resolution for a specific conflict.
     setConflictResolution: (conflict: number, resolution: number) => {
       update(d => {
         d.Conflicts[conflict].Resolution = resolution;
-        changes.setResolved(d.File, d.Resolved);
         return d;
       });
     },
-    setResolved: (resolved: boolean) => {
-      update(d => {
-        d.Resolved = resolved;
-        changes.setResolved(d.File, resolved);
-        return d;
-      })
+    // Call the backend to edit the file, applying the conflict resolutions.
+    resolveConflicts: async () => {
+      // call backend
+      ResolveDiffConflicts(get(currentDiff)).then(result => {
+        parseResponse(result, () => {
+          changes.setResolved(get(currentDiff).File, true);
+        });
+      });
     },
   }
 }
 export const currentDiff = createCurrentDiff();
+export const currentDiffResolved = derived(currentDiff, $currentDiff =>
+  $currentDiff?.Conflicts && Object.values($currentDiff.Conflicts).every(c => c.Resolution !== 0)
+);

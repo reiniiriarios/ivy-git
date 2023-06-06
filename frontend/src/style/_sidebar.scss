@@ -53,6 +53,9 @@
 
   .btn {
     border-radius: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .overlay {

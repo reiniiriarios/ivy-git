@@ -1,19 +1,19 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { currentDiff } from "stores/diffs";
+  import { currentDiff, currentDiffResolved } from "stores/diffs";
 
   let applyBtn: HTMLButtonElement;
 
   function applyChanges() {
-    currentDiff.setResolved(true);
     applyBtn.disabled = true;
+    currentDiff.resolveConflicts();
   }
 </script>
 
 <div class="diff-actions diff-actions--conflict">
   <button
     class="btn btn--apply"
-    disabled={$currentDiff.NumConflicts !== Object.keys($currentDiff.ConflictSelections).length}
+    disabled={!$currentDiffResolved}
     on:click={applyChanges}
     bind:this={applyBtn}
   >

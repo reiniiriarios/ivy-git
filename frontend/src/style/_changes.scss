@@ -54,8 +54,10 @@
     margin: 0 0 0.5rem;
     padding: 0;
 
-    .change__status {
-      margin-right: 1rem;
+    &--conflicts {
+      .change__status {
+        margin-right: 1rem;
+      }
     }
   }
 }
