@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 )
 
 func (g *Git) deleteAndReplaceLinesFromFile(filename string, delete_lines []int64, replace_lines map[int64]string) error {
@@ -40,10 +39,8 @@ func (g *Git) deleteAndReplaceLinesFromFile(filename string, delete_lines []int6
 			line_counter++
 			if delete_counter < len(delete_lines) && line_counter == delete_lines[delete_counter] {
 				// Do nothing.
-				println(line_counter, "del", strings.ReplaceAll(line, "\n", "\\n"))
 				delete_counter++
 			} else if replacement, exists := replace_lines[line_counter]; exists {
-				println(line_counter, "rep", strings.ReplaceAll(replacement, "\n", "\\n"))
 				var crlf string
 				if len(line) >= 2 && line[len(line)-2:len(line)-1] == "\r" {
 					crlf = "\r\n"
@@ -52,7 +49,6 @@ func (g *Git) deleteAndReplaceLinesFromFile(filename string, delete_lines []int6
 				}
 				tmpfile.WriteString(replacement + crlf)
 			} else {
-				println(line_counter, "kep", strings.ReplaceAll(line, "\n", "\\n"))
 				tmpfile.WriteString(line)
 			}
 		}
