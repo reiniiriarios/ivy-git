@@ -1,6 +1,8 @@
-![](docs/ivy-git-07a-mac.png)
+![](docs/ivy-git-07d-mac.png)
 
 ![](docs/ivy-git-07b-mac.png)
+
+![](docs/ivy-git-07a-mac.png)
 
 ![](docs/ivy-git-07c-mac.png)
 
