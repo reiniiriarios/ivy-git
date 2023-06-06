@@ -20,6 +20,7 @@ import { currentTab, repoSelect } from 'stores/ui';
 import { messageDialog } from 'stores/message-dialog';
 import { cloc, numBranches, numCommits, numTags } from 'stores/repo-info';
 import { currentDiff } from 'stores/diffs';
+import { repoState } from 'stores/repo-state';
 
 import { parseResponse } from 'scripts/parse-response';
 
@@ -137,6 +138,7 @@ function createCurrentRepo() {
     refresh: async () => {
       GetSelectedRepo().then((result: string) => {
         set(result);
+        repoState.refresh();
         currentBranch.refresh();
         branches.refresh();
         changes.refresh();
@@ -156,6 +158,7 @@ function createCurrentRepo() {
             numTags.fetch();
             cloc.fetch();
           }
+          repoState.clear();
           currentDiff.clear();
           branches.refresh();
           currentBranch.refresh();
@@ -182,6 +185,7 @@ function createCurrentRepo() {
             numTags.fetch();
             cloc.fetch();
           }
+          repoState.refresh();
           currentDiff.clear();
           branches.refresh();
           currentBranch.refresh();

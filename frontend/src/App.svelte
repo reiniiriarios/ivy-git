@@ -10,6 +10,7 @@
   import GetStarted from "components/GetStarted.svelte";
   import MakeCommit from "components/sidebar/MakeCommit.svelte";
   import RemoteActions from "components/sidebar/RemoteActions.svelte";
+  import RepoStateBanner from "components/sidebar/RepoStateBanner.svelte";
 
   import { ResizeWindow } from "wailsjs/go/main/App";
 
@@ -75,6 +76,7 @@
     {#if $currentRepo}
       <SelectBranch />
     {/if}
+    <RepoStateBanner />
     <Changes />
     {#if $currentRepo}
       {#if $currentRemote?.Name}

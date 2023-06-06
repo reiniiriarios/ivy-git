@@ -3,6 +3,7 @@
   import { parseResponse } from "scripts/parse-response";
   import { currentBranch, detachedHead } from "stores/branches";
   import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
+  import { repoState } from "stores/repo-state";
   import { repoSelect, branchSelect, inProgressCommitMessage } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
 
@@ -41,24 +42,23 @@
 <div
   class="make-commit"
   class:detached={$detachedHead}
-  class:merge-conflicts={$mergeConflicts && !$mergeConflictsResolved}
   style:display={$repoSelect || $branchSelect ? 'none' : 'block'}
 >
   <div class="make-commit__subject">
     <label class="make-commit__label">
       <span class="make-commit__label-desc">Summary</span>
-      <input type="text" bind:value={subject} on:keypress={makeCommitKeypress}>
+      <input class="text-input repo-state--{$repoState}" type="text" bind:value={subject} on:keypress={makeCommitKeypress}>
     </label>
   </div>
   <div class="make-commit__body">
     <label class="make-commit__label">
       <span class="make-commit__label-desc">Description</span>
-      <textarea bind:value={body} on:keypress={makeCommitKeypress}></textarea>
+      <textarea class="text-input repo-state--{$repoState}" bind:value={body} on:keypress={makeCommitKeypress}></textarea>
     </label>
   </div>
   <div class="make-commit__button">
     <button
-      class="btn"
+      class="btn repo-state--{$repoState}"
       id="make-commit-button"
       disabled={!subject || running || (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts()) || ($mergeConflicts && !$mergeConflictsResolved)}
       on:click={make}

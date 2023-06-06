@@ -383,3 +383,10 @@ func (a *App) ResolveDiffConflicts(diff git.Diff) DataResponse {
 	}
 	return dataResponse(err, false)
 }
+
+func (a *App) GetRepoState() git.RepoState {
+	if a.RepoSaveData.CurrentRepo == "" || a.Git.Repo.Directory == "" {
+		return git.RepoStateNil
+	}
+	return a.Git.GetRepoState()
+}

@@ -31,7 +31,6 @@
   class="btn btn-drop sidebar-big-button"
   class:active={$branchSelect}
   class:detached={$detachedHead}
-  class:merge-conflicts={$mergeConflicts}
   style:display={$repoSelect ? 'none' : 'flex'}
   on:click={toggleList}
 >

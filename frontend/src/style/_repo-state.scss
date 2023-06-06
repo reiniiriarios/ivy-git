@@ -1,0 +1,152 @@
+@use "!mixins" as *;
+
+// Place this modifier class, e.g. `repo-state--{$repoState}`, on
+// any element we wish to directly change, depending on the state
+// of the repo.
+.repo-state {
+  &__banner {
+    padding: 0.75rem;
+    margin-bottom: 0.25rem;
+    @include no-select;
+    background-color: var(--color-scale-r-8-100);
+  }
+
+  // &--RepoStateNone {}
+
+  &--RepoStateRebase,
+  &--RepoStateRebaseInteractive {
+    .repo-state__banner {
+      background-color: var(--color-scale-p-8-100);
+    }
+
+    &.btn {
+      background-color: var(--color-scale-p-8-100) !important;
+
+      &:hover {
+        background-color: var(--color-scale-p-7-100) !important;
+      }
+
+      &:disabled {
+        background-color: var(--color-scale-p-8-75) !important;
+      }
+    }
+
+    &.text-input:focus {
+      border-color: var(--color-scale-p-5-100);
+    }
+  }
+
+  &--RepoStateMerge,
+  &--RepoStateRebaseMerge {
+    .repo-state__banner {
+      background-color: var(--color-scale-n-8-100);
+    }
+
+    &.btn {
+      background-color: var(--color-scale-n-8-100) !important;
+
+      &:hover {
+        background-color: var(--color-scale-n-7-100) !important;
+      }
+
+      &:disabled {
+        background-color: var(--color-scale-n-8-75) !important;
+      }
+    }
+
+    &.text-input:focus {
+      border-color: var(--color-scale-n-5-100);
+    }
+  }
+
+  &--RepoStateApply,
+  &--RepoStateApplyOrRebase {
+    .repo-state__banner {
+      background-color: var(--color-scale-p-8-100);
+    }
+
+    &.btn {
+      background-color: var(--color-scale-p-8-100) !important;
+
+      &:hover {
+        background-color: var(--color-scale-p-7-100) !important;
+      }
+
+      &:disabled {
+        background-color: var(--color-scale-p-8-75) !important;
+      }
+    }
+
+    &.text-input:focus {
+      border-color: var(--color-scale-p-5-100);
+    }
+  }
+
+  &--RepoStateRevert,
+  &--RepoStateRevertSequence {
+    .repo-state__banner {
+      background-color: var(--color-scale-p-8-100);
+    }
+
+    &.btn {
+      background-color: var(--color-scale-p-8-100) !important;
+
+      &:hover {
+        background-color: var(--color-scale-p-7-100) !important;
+      }
+
+      &:disabled {
+        background-color: var(--color-scale-p-8-75) !important;
+      }
+    }
+
+    &.text-input:focus {
+      border-color: var(--color-scale-p-5-100);
+    }
+  }
+
+  &--RepoStateCherryPick,
+  &--RepoStateCherryPickSequence {
+    .repo-state__banner {
+      background-color: var(--color-scale-n-8-100);
+    }
+
+    &.btn {
+      background-color: var(--color-scale-n-8-100) !important;
+
+      &:hover {
+        background-color: var(--color-scale-n-7-100) !important;
+      }
+
+      &:disabled {
+        background-color: var(--color-scale-n-8-75) !important;
+      }
+    }
+
+    &.text-input:focus {
+      border-color: var(--color-scale-n-5-100);
+    }
+  }
+
+  &--RepoStateBisect {
+    .repo-state__banner {
+      background-color: var(--color-scale-o-8-100);
+    }
+
+    &.btn {
+      background-color: var(--color-scale-o-8-100) !important;
+
+      &:hover {
+        background-color: var(--color-scale-o-7-100) !important;
+      }
+
+      &:disabled {
+        background-color: var(--color-scale-o-8-75) !important;
+      }
+    }
+
+    &.text-input:focus {
+      border-color: var(--color-scale-o-5-100);
+    }
+  }
+}

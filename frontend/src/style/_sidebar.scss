@@ -18,18 +18,10 @@
   border-bottom: 1px solid var(--color-btn-border);
 
   &.detached {
-    background-color: var(--color-scale-r-8-75);
+    background-color: var(--color-scale-r-8-75) !important;
   
     &:hover {
       background-color: var(--color-scale-r-7-75) !important;
-    }
-  }
-
-  &.merge-conflicts {
-    background-color: var(--color-scale-n-8-75);
-  
-    &:hover {
-      background-color: var(--color-scale-n-7-75) !important;
     }
   }
 
@@ -38,11 +30,7 @@
     font-size: 0.9rem;
 
     .detached & {
-      color: var(--color-scale-r-1-100);
-    }
-
-    .merge-conflicts & {
-      color: var(--color-scale-n-1-100);
+      color: var(--color-scale-r-1-100) !important;
     }
   }
 }

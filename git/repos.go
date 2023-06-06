@@ -87,3 +87,89 @@ func (g *Git) LsFiles() ([]string, error) {
 	}
 	return files, nil
 }
+
+type RepoState string
+
+const (
+	RepoStateNil                = ""
+	RepoStateNone               = "RepoStateNone"
+	RepoStateRebaseInteractive  = "RepoStateRebaseInteractive"
+	RepoStateRebaseMerge        = "RepoStateRebaseMerge"
+	RepoStateMerge              = "RepoStateMerge"
+	RepoStateRebase             = "RepoStateRebase"
+	RepoStateApply              = "RepoStateApply"
+	RepoStateApplyOrRebase      = "RepoStateApplyOrRebase"
+	RepoStateRevert             = "RepoStateRevert"
+	RepoStateRevertSequence     = "RepoStateRevertSequence"
+	RepoStateCherryPick         = "RepoStateCherryPick"
+	RepoStateCherryPickSequence = "RepoStateCherryPickSequence"
+	RepoStateBisect             = "RepoStateBisect"
+
+	GitFileHead                   = "HEAD"
+	GitFileOrigHead               = "ORIG_HEAD"
+	GitFileFetchHead              = "FETCH_HEAD"
+	GitFileMergeHead              = "MERGE_HEAD"
+	GitFileRevertHead             = "REVERT_HEAD"
+	GitFileCherryPickHead         = "CHERRY_PICK_HEAD"
+	GitFileBisectLog              = "BISECT_LOG"
+	GitDirRebaseMerge             = "rebase-merge"
+	GitFileRebaseMergeInteractive = "interactive" // in GitDirRebaseMerge
+	GitDirRebaseApply             = "rebase-apply"
+	GitFileRebaseApplyRebasing    = "rebasing" // in GitDirRebaseApply
+	GitFileRebaseApplyApplying    = "applying" // in GitDirRebaseApply
+	GitDirSequencer               = "sequencer"
+	GitFileSequencerHead          = "head"    // in GitDirSequencer
+	GitFileSequencerOptions       = "options" // in GitDirSequencer
+	GitFileSequencerTodo          = "todo"    // in GitDirSequencer
+	GitFileStash                  = "stash"
+	GitDirRefs                    = "refs"
+	GitDirRefsHeads               = "heads"       // in GitDirRefs
+	GitDirRefsTags                = "tags"        // in GitDirRefs
+	GitDirRefsRemotes             = "remotes"     // in GitDirRefs
+	GitDirRefsNotes               = "notes"       // in GitDirRefs
+	GitFileRenamedRef             = "RENAMED-REF" // in GitDirRefs
+	GitFileRefsHeadsMaster        = "master"      // in GitDirRefsHeads
+)
+
+func (g *Git) GetRepoState() RepoState {
+	if g.gitDirHasFile(filepath.Join(GitDirRebaseMerge, GitFileRebaseMergeInteractive)) {
+		return RepoStateRebaseInteractive
+	}
+	if g.gitDirHasFile(GitDirRebaseMerge) {
+		return RepoStateRebaseMerge
+	}
+	if g.gitDirHasFile(filepath.Join(GitDirRebaseApply, GitFileRebaseApplyRebasing)) {
+		return RepoStateRebase
+	}
+	if g.gitDirHasFile(filepath.Join(GitDirRebaseApply, GitFileRebaseApplyApplying)) {
+		return RepoStateApply
+	}
+	if g.gitDirHasFile(GitDirRebaseApply) {
+		return RepoStateApplyOrRebase
+	}
+	if g.gitDirHasFile(GitFileMergeHead) {
+		return RepoStateMerge
+	}
+	if g.gitDirHasFile(GitFileRevertHead) {
+		if g.gitDirHasFile(filepath.Join(GitDirSequencer, GitFileSequencerTodo)) {
+			return RepoStateRevertSequence
+		}
+		return RepoStateRevert
+	}
+	if g.gitDirHasFile(GitFileCherryPickHead) {
+		if g.gitDirHasFile(filepath.Join(GitDirSequencer, GitFileSequencerTodo)) {
+			return RepoStateCherryPickSequence
+		}
+		return RepoStateCherryPick
+	}
+	if g.gitDirHasFile(GitFileBisectLog) {
+		return RepoStateBisect
+	}
+
+	return RepoStateNone
+}
+
+func (g *Git) gitDirHasFile(file string) bool {
+	_, err := os.Stat(filepath.Join(g.Repo.Directory, ".git", file))
+	return !os.IsNotExist(err)
+}

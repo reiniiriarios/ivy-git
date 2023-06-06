@@ -3,6 +3,7 @@ import { changes } from 'stores/changes';
 import { commitData, commitSignData } from 'stores/commit-data';
 import { currentDiff } from 'stores/diffs';
 import { remoteData } from 'stores/remotes';
+import { repoState } from 'stores/repo-state';
 import { EventsOn } from 'wailsjs/runtime/runtime';
 
 interface WatcherEvent {
@@ -17,6 +18,7 @@ interface WatcherEvent {
 export function enableWatcher() {
   EventsOn('watcher', (e: WatcherEvent) => {
     console.log('Watcher updating...');
+    repoState.refresh();
     changes.refresh();
     commitData.refresh();
     currentDiff.refresh();

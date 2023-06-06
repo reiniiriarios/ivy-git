@@ -52,26 +52,14 @@
       }
 
       .detached & {
-        background-color: var(--color-scale-r-8-100);
+        background-color: var(--color-scale-r-8-100) !important;
       
         &:hover {
-          background-color: var(--color-scale-r-7-100);
+          background-color: var(--color-scale-r-7-100) !important;
         }
 
         &:disabled {
-          background-color: var(--color-scale-r-8-75);
-        }
-      }
-
-      .merge-conflicts & {
-        background-color: var(--color-scale-n-8-100);
-      
-        &:hover {
-          background-color: var(--color-scale-n-7-100);
-        }
-
-        &:disabled {
-          background-color: var(--color-scale-n-8-75);
+          background-color: var(--color-scale-r-8-75) !important;
         }
       }
     }
