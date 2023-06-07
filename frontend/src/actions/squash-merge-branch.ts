@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { inProgressCommitMessage } from "stores/ui";
+import { commitMessage } from "stores/ui";
 import { MergeSquash } from "wailsjs/go/main/App";
 
 function squashMergeBranch(branch: string) {
@@ -16,7 +16,7 @@ function squashMergeBranch(branch: string) {
           commitData.refresh();
           commitSignData.refresh();
         });
-        inProgressCommitMessage.fetch();
+        commitMessage.fetch();
       });
     },
   });

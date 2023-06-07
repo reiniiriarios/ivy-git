@@ -35,13 +35,15 @@ function createInProgMsg() {
         case RepoState.RevertSequence:
         case RepoState.CherryPick:
         case RepoState.CherryPickSequence:
-          inProgressCommitMessage.fetchMerge();
+          commitMessage.fetchMerge();
       }
     },
     fetchMerge: async () => {
       GetInProgressCommitMessageMerge().then(result => {
         parseResponse(result, () => {
           set(result.Data);
+          commitMessageSubject.set(result.Data.Subject ?? "");
+          commitMessageBody.set(result.Data.Body ?? "");
         });
       });
     },
@@ -49,25 +51,30 @@ function createInProgMsg() {
       GetInProgressCommitMessageEdit().then(result => {
         parseResponse(result, () => {
           set(result.Data);
+          commitMessageSubject.set("");
+          commitMessageBody.set("");
         });
       });
     },
     // Check if there's anything currently loaded or typed into the commit message fields.
     check: async () => {
       if (!get(commitMessageSubject) && !get(commitMessageBody)) {
-        inProgressCommitMessage.fetch();
+        commitMessage.fetch();
       }
     },
     clear: async () => {
       set({} as CommitMessage);
+      commitMessageSubject.set("");
+      commitMessageBody.set("");
     },
     refresh: async () => {
-      inProgressCommitMessage.clear().then(() => {
-        inProgressCommitMessage.fetch();
+      commitMessage.clear().then(() => {
+        commitMessage.fetch();
       });
     }
   };
 }
-export const inProgressCommitMessage = createInProgMsg();
-export const commitMessageSubject = derived(inProgressCommitMessage, $inProgressCommitMessage => $inProgressCommitMessage.Subject);
-export const commitMessageBody = derived(inProgressCommitMessage, $inProgressCommitMessage => $inProgressCommitMessage.Body);
+export const commitMessage = createInProgMsg();
+// These two must be writable strings and not derived in order to bind them.
+export const commitMessageSubject = writable("");
+export const commitMessageBody = writable("");

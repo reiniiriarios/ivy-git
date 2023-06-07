@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { inProgressCommitMessage } from "stores/ui";
+import { commitMessage } from "stores/ui";
 import { CherryPick } from "wailsjs/go/main/App";
 
 function cherryPick(hash: string) {
@@ -26,10 +26,10 @@ function cherryPick(hash: string) {
           commitData.refresh();
           commitSignData.refresh();
           if (no_commit) {
-            inProgressCommitMessage.fetch();
+            commitMessage.fetch();
           }
         }, () => {
-          inProgressCommitMessage.fetch();
+          commitMessage.fetch();
         });
       });
     }

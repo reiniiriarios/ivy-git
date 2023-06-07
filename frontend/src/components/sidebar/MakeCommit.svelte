@@ -4,7 +4,7 @@
   import { currentBranch, detachedHead } from "stores/branches";
   import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
-  import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody } from "stores/ui";
+  import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody, commitMessage } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
 
   let running: boolean = false;
@@ -14,8 +14,7 @@
       running = true;
       MakeCommit($commitMessageSubject, $commitMessageBody).then(result => {
         parseResponse(result, () => {
-          $commitMessageSubject = '';
-          $commitMessageBody = '';
+          commitMessage.clear();
         });
         running = false;
       })

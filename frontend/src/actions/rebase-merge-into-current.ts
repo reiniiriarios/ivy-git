@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { inProgressCommitMessage } from "stores/ui";
+import { commitMessage } from "stores/ui";
 import { MergeRebase } from "wailsjs/go/main/App";
 
 function rebaseAndMergeIntoCurrentBranch(branch: string) {
@@ -16,7 +16,7 @@ function rebaseAndMergeIntoCurrentBranch(branch: string) {
           commitData.refresh();
           commitSignData.refresh();
         }, () => {
-          inProgressCommitMessage.fetch();
+          commitMessage.fetch();
         });
       });
     },

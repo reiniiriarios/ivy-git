@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
-import { inProgressCommitMessage } from "stores/ui";
+import { commitMessage } from "stores/ui";
 import { MergeCommit } from "wailsjs/go/main/App";
 
 function mergeBranch(branch: string) {
@@ -30,10 +30,10 @@ function mergeBranch(branch: string) {
           commitData.refresh();
           commitSignData.refresh();
           if (no_commit) {
-            inProgressCommitMessage.fetch();
+            commitMessage.fetch();
           }
         }, () => {
-          inProgressCommitMessage.fetch();
+          commitMessage.fetch();
         });
       });
     },
