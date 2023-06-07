@@ -3,6 +3,7 @@ import { derived, get, writable } from 'svelte/store';
 import { GetConflictParsedDiff, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
 import { currentRepo } from 'stores/repos';
 import { currentDiff, type Diff } from 'stores/diffs';
+import { currentTab } from 'stores/ui';
 
 interface Changes {
   x: Change[], // staged
@@ -39,6 +40,12 @@ function createChanges() {
               y: result.Data.ChangesY ?? [],
               c: result.Data.ChangesC ?? [],
             });
+            // If there's nothing left to do, switch away from the changes tab.
+            if (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts()) {
+              if (get(currentTab) === 'changes') {
+                currentTab.set('tree');
+              }
+            }
           });
         });
       } else {
