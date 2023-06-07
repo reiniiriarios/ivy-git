@@ -33,6 +33,10 @@
       text-overflow: ellipsis;
     }
 
+    .uncommitted & {
+      pointer-events: none;
+    }
+
     &:not(:first-child) {
       .uncommitted & {
         color: var(--color-scale-a-3-100);
