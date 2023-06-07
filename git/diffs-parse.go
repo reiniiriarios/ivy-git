@@ -622,18 +622,31 @@ func (d *Diff) parseConflictResolutions() ([]int64, map[int64]string) {
 			// Nothing to do.
 
 		case DiffBothInverse:
-			// Start at the beginning of Ours and add Theirs as replacement lines.
-			ln := d.Conflicts[i].Ours[0].CurLineNo
-			for n := range d.Conflicts[i].Theirs {
-				replace_lines[ln] = d.Conflicts[i].Theirs[n].Line
-				ln++
-			}
-			// Skip =======
-			ln++
-			// Add Ours below Theirs.
-			for n := range d.Conflicts[i].Ours {
-				replace_lines[ln] = d.Conflicts[i].Ours[n].Line
-				ln++
+			// If Ours...
+			if len(d.Conflicts[i].Ours) > 0 {
+				// Start at the beginning of Ours and add Theirs as replacement lines.
+				ln := d.Conflicts[i].Ours[0].CurLineNo
+				for n := range d.Conflicts[i].Theirs {
+					replace_lines[ln] = d.Conflicts[i].Theirs[n].Line
+					ln++
+				}
+				// If Ours and Theirs...
+				if len(d.Conflicts[i].Theirs) > 0 {
+					// Skip =======
+					ln++
+					// Add Ours below Theirs.
+					for n := range d.Conflicts[i].Ours {
+						replace_lines[ln] = d.Conflicts[i].Ours[n].Line
+						ln++
+					}
+				}
+				// If just Theirs...
+			} else if len(d.Conflicts[i].Theirs) > 0 {
+				ln := d.Conflicts[i].Theirs[0].CurLineNo
+				for n := range d.Conflicts[i].Theirs {
+					replace_lines[ln] = d.Conflicts[i].Theirs[n].Line
+					ln++
+				}
 			}
 			// Move the ======= delete line to the new center of ours vs theirs.
 			mv := len(d.Conflicts[i].Theirs) - len(d.Conflicts[i].Ours)

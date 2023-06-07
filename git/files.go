@@ -25,9 +25,6 @@ func (g *Git) deleteAndReplaceLinesFromFile(filename string, delete_lines []int6
 	defer tmpfile.Close()
 
 	sort.Slice(delete_lines, func(i, j int) bool { return delete_lines[i] < delete_lines[j] })
-	for _, d := range delete_lines {
-		println(d)
-	}
 
 	// Delete and replace lines, writing into the temp file.
 	reader := bufio.NewReader(file)
