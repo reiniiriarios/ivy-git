@@ -3,12 +3,20 @@
   import { branchSelect, repoSelect } from 'stores/ui';
   import createBranch from 'actions/create-branch';
   import { mergeConflicts } from 'stores/changes';
+  import { RepoState, repoState } from 'stores/repo-state';
+  import { messageDialog } from 'stores/message-dialog';
 
   const newBranch = () => createBranch();
 
   function switchBranch(b: string) {
-    currentBranch.switch(b);
-    branchSelect.set(false);
+    if (![RepoState.Nil, RepoState.None].includes($repoState)) {
+      messageDialog.error({
+        message: "The repo is currently in a state that you cannot (or should not) switch branches."
+      });
+    } else {
+      currentBranch.switch(b);
+      branchSelect.set(false);
+    }
   }
 
   function toggleList(e?: MouseEvent | KeyboardEvent) {
