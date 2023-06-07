@@ -7,6 +7,7 @@
 
   import { HEAD, type Commit } from 'stores/commit-data';
   import { currentCommit } from 'stores/commit-details';
+  import { RepoState, repoState } from 'stores/repo-state';
   import { settings } from 'stores/settings';
 
   export let commit: Commit;
@@ -56,11 +57,11 @@
   }
 </script>
 
-<tr class="commit c-{commit.Color % NUM_COLORS}"
+<tr class="commit c-{commit.Color % NUM_COLORS} {commit.Hash === UNCOMMITED_HASH ? `repo-state--${$repoState}` : ''}"
   class:uncommitted={commit.Hash === UNCOMMITED_HASH}
   class:merge={commit.Merge}
   class:stash={commit.Stash}
-  class:head={commit.Hash === $HEAD.Hash}
+  class:head={commit.Hash === $HEAD.Hash && [RepoState.Nil, RepoState.None].includes($repoState)}
   data-id="{commit.Id}"
   data-hash="{commit.Hash}"
   data-head="{commit.Hash === $HEAD.Hash}"

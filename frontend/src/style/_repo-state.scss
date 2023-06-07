@@ -33,6 +33,10 @@
     &.text-input:focus {
       border-color: var(--color-scale-p-5-100);
     }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-p-4-100);
+    }
   }
 
   &--RepoStateMerge,
@@ -55,6 +59,10 @@
 
     &.text-input:focus {
       border-color: var(--color-scale-n-5-100);
+    }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-n-4-100);
     }
   }
 
@@ -79,6 +87,10 @@
     &.text-input:focus {
       border-color: var(--color-scale-p-5-100);
     }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-p-4-100);
+    }
   }
 
   &--RepoStateRevert,
@@ -102,6 +114,10 @@
     &.text-input:focus {
       border-color: var(--color-scale-p-5-100);
     }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-p-4-100);
+    }
   }
 
   &--RepoStateCherryPick,
@@ -124,6 +140,10 @@
 
     &.text-input:focus {
       border-color: var(--color-scale-n-5-100);
+    }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-n-4-100);
     }
   }
 
