@@ -56,9 +56,7 @@ func (g *Git) getStashes() []Commit {
 			// Get timestamp and formatted datetime for author
 			ts, err := strconv.ParseInt(parts[5], 10, 64)
 			dt := ""
-			if err != nil {
-				println(err.Error())
-			} else {
+			if err == nil {
 				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
 			}
 

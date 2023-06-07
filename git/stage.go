@@ -7,7 +7,6 @@ import (
 func (g *Git) isStagedEmpty() bool {
 	d, err := g.RunCwd("diff", "--name-only", "--cached")
 	if err != nil {
-		println(err.Error())
 		return true
 	}
 	d = parseOneLine(d)

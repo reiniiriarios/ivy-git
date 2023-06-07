@@ -25,7 +25,6 @@ func (g *Git) IsGitRepo(directory string) bool {
 	}
 	r, err := g.Run(directory, "rev-parse")
 	if err != nil {
-		println(err.Error())
 		return false
 	}
 

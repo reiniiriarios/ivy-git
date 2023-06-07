@@ -33,7 +33,6 @@ function createRemotes() {
 }
 export const remoteData = createRemotes();
 export const remotes = derived(remoteData, $remoteData => {
-  console.log($remoteData);
   return $remoteData?.Remotes?.length ? $remoteData.Remotes : [];
 });
 export const currentRemote = derived(remoteData, $remoteData => {

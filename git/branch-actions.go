@@ -137,8 +137,6 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) (b
 
 	_, err := g.RunCwd("branch", delete, branch)
 	if err != nil {
-		println(err.Error())
-		println(errorCode(err))
 		if errorCode(err) == MustForceDeleteBranch {
 			return true, err
 		}

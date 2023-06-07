@@ -84,7 +84,6 @@ function createChanges() {
                 return c;
               });
               currentDiff.set(result.Data);
-              console.log(result.Data)
             });
           });
         }

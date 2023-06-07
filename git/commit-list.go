@@ -89,9 +89,7 @@ func (g *Git) getLog(limit uint64, offset uint64) ([]Commit, map[string]uint64, 
 			// Get timestamp and formatted datetime for author
 			ts, err := strconv.ParseInt(parts[4], 10, 64)
 			dt := ""
-			if err != nil {
-				println(err.Error())
-			} else {
+			if err == nil {
 				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
 			}
 
@@ -172,7 +170,6 @@ func (g *Git) getCommits(limit uint64, offset uint64) ([]Commit, map[string]uint
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision {
 			return commits, lookup, Ref{}, nil
 		}
-		println(err.Error())
 		return commits, lookup, Ref{}, err
 	}
 
@@ -181,7 +178,6 @@ func (g *Git) getCommits(limit uint64, offset uint64) ([]Commit, map[string]uint
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision {
 			return commits, lookup, Ref{}, nil
 		}
-		println(err.Error())
 		return commits, lookup, Ref{}, err
 	}
 

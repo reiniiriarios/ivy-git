@@ -115,10 +115,6 @@ function createCommitData() {
               Graph: result.Data.Graph,
               page: page,
             });
-            console.log('HEAD', result.Data.HEAD);
-            console.log('commits', result.Data.Commits);
-            console.log('branches', result.Data.Graph.Branches);
-            console.log('vertices', result.Data.Graph.Vertices);
           }
         }, () => {}, true);
       });

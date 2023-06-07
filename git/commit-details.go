@@ -59,9 +59,7 @@ func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 	// Get timestamp and formatted datetime for committer
 	ts, err := strconv.ParseInt(parts[2], 10, 64)
 	dt := ""
-	if err != nil {
-		println(err.Error())
-	} else {
+	if err == nil {
 		dt = time.Unix(ts, 0).Format(DATE_FORMAT)
 	}
 

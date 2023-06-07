@@ -8,7 +8,6 @@ import (
 func (g *Git) NumTags() uint64 {
 	b, err := g.RunCwd("tag")
 	if err != nil {
-		println(err.Error())
 		return 0
 	}
 	lines := parseLines(b)

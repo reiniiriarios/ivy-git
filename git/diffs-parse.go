@@ -180,7 +180,6 @@ func (d *Diff) parse() error {
 			before++
 			after++
 		default:
-			println(lines[ln])
 			return errors.New("malformed diff, unrecognized line type")
 		}
 	}
@@ -389,7 +388,6 @@ func (d *Diff) parseConflicts() error {
 					conflict_after++
 				}
 			default:
-				println(lines[ln])
 				return errors.New("malformed diff, unrecognized line type")
 			}
 			// Add to list of conflicts.
