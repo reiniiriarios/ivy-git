@@ -3,8 +3,6 @@ package git
 import (
 	"fmt"
 	"regexp"
-
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type ErrorCode int64
@@ -52,18 +50,6 @@ func (g *Git) ParseGitError(stderr string, err error) *GitError {
 		e.Message = err.Error()
 	} else {
 		e.Message = fmt.Sprintf("Unrecognized git error occurred [%d]", e.ErrorCode)
-	}
-
-	// Handle events for some errors.
-	switch e.ErrorCode {
-	case RebaseConflicts:
-		runtime.EventsEmit(g.AppCtx, "rebase-conflicts")
-	case MergeConflicts:
-		runtime.EventsEmit(g.AppCtx, "merge-conflicts")
-	case RevertConflicts:
-		runtime.EventsEmit(g.AppCtx, "revert-conflicts")
-	case UnresolvedConflicts:
-		runtime.EventsEmit(g.AppCtx, "unresolved-conflicts")
 	}
 
 	return &e

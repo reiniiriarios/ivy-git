@@ -25,7 +25,6 @@
   import { noBranchSelected } from "stores/branches";
 
   import { enableWatcher } from "events/watcher";
-  import { registerConflictEvents } from "events/conflicts";
 
   // Load initial ui state.
   function init() {
@@ -66,7 +65,6 @@
 
   // Backend Listeners
   enableWatcher();
-  registerConflictEvents();
 </script>
 
 <TitleBar />
