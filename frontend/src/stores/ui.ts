@@ -1,5 +1,5 @@
 import { derived, get, writable } from 'svelte/store';
-import { GetInProgressCommitMessageEither } from 'wailsjs/go/main/App'
+import { GetInProgressCommitMessageMerge, GetInProgressCommitMessageEdit } from 'wailsjs/go/main/App'
 
 import { RepoState, repoState } from 'stores/repo-state';
 import { parseResponse } from 'scripts/parse-response';
@@ -22,31 +22,40 @@ function createInProgMsg() {
 
   return {
     subscribe,
+    // If the repo is in a state where there might be an in-progress message, then fetch it.
     fetch: async () => {
-      GetInProgressCommitMessageEither().then(result => {
+      switch (get(repoState)) {
+        case RepoState.Merge:
+        case RepoState.Rebase:
+        case RepoState.RebaseMerge:
+        case RepoState.Apply:
+        case RepoState.ApplyOrRebase:
+        case RepoState.Interactive:
+        case RepoState.Revert:
+        case RepoState.RevertSequence:
+        case RepoState.CherryPick:
+        case RepoState.CherryPickSequence:
+          inProgressCommitMessage.fetchMerge();
+      }
+    },
+    fetchMerge: async () => {
+      GetInProgressCommitMessageMerge().then(result => {
+        parseResponse(result, () => {
+          set(result.Data);
+        });
+      });
+    },
+    fetchEdit: async () => {
+      GetInProgressCommitMessageEdit().then(result => {
         parseResponse(result, () => {
           set(result.Data);
         });
       });
     },
     // Check if there's anything currently loaded or typed into the commit message fields.
-    // If not, and the repo is in a state where there might be an in-progress message,
-    // then fetch it.
     check: async () => {
       if (!get(commitMessageSubject) && !get(commitMessageBody)) {
-        switch (get(repoState)) {
-          case RepoState.Merge:
-          case RepoState.Rebase:
-          case RepoState.RebaseMerge:
-          case RepoState.Apply:
-          case RepoState.ApplyOrRebase:
-          case RepoState.Interactive:
-          case RepoState.Revert:
-          case RepoState.RevertSequence:
-          case RepoState.CherryPick:
-          case RepoState.CherryPickSequence:
-            inProgressCommitMessage.fetch();
-        }
+        inProgressCommitMessage.fetch();
       }
     },
     clear: async () => {
@@ -54,7 +63,7 @@ function createInProgMsg() {
     },
     refresh: async () => {
       inProgressCommitMessage.clear().then(() => {
-        inProgressCommitMessage.check();
+        inProgressCommitMessage.fetch();
       });
     }
   };

@@ -333,9 +333,12 @@ func (a *App) UpdateMain(branch string) DataResponse {
 	return dataResponse(nil, true)
 }
 
-func (a *App) GetInProgressCommitMessageEither() DataResponse {
-	msg := a.Git.GetInProgressCommitMessageEither()
-	message := a.Git.ParseCommitMessage(msg)
+func (a *App) GetInProgressCommitMessageEdit() DataResponse {
+	message := git.CommitMessage{}
+	msg, err := a.Git.GetInProgressCommitMessage(false)
+	if err == nil {
+		message = a.Git.ParseCommitMessage(msg)
+	}
 	return dataResponse(nil, message)
 }
 

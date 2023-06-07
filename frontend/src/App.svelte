@@ -30,7 +30,7 @@
   // Load initial ui state.
   function init() {
     appData.fetch();
-    currentRepo.refresh();
+    currentRepo.load();
     repos.refresh();
     settings.refresh();
     remoteData.refresh();

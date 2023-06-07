@@ -23,10 +23,16 @@ function createRepoState() {
   
   return {
     subscribe,
-    refresh: async () => {
+    load: async () => {
       GetRepoState().then(result => {
         set(result);
         inProgressCommitMessage.refresh();
+      });
+    },
+    refresh: async () => {
+      GetRepoState().then(result => {
+        set(result);
+        inProgressCommitMessage.check();
       });
     },
     clear: async () => set(RepoState.Nil),

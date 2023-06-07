@@ -135,6 +135,15 @@ function createCurrentRepo() {
   
   return {
     subscribe,
+    load: async () => {
+      GetSelectedRepo().then((result: string) => {
+        set(result);
+        repoState.load();
+        currentBranch.refresh();
+        branches.refresh();
+        changes.refresh();
+      });
+    },
     refresh: async () => {
       GetSelectedRepo().then((result: string) => {
         set(result);
@@ -185,7 +194,7 @@ function createCurrentRepo() {
             numTags.fetch();
             cloc.fetch();
           }
-          repoState.refresh();
+          repoState.load();
           currentDiff.clear();
           branches.refresh();
           currentBranch.refresh();

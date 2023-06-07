@@ -31,16 +31,6 @@ func (g *Git) ParseCommitMessage(msg string) CommitMessage {
 	}
 }
 
-func (g *Git) GetInProgressCommitMessageEither() string {
-	msg, err := g.GetInProgressCommitMessage(true)
-	msg = parseOneLine(msg)
-	if err != nil || msg == "" {
-		msg, _ = g.GetInProgressCommitMessage(false)
-	}
-
-	return msg
-}
-
 func (g *Git) GetInProgressCommitMessage(merge bool) (string, error) {
 	var file string
 	if merge {
