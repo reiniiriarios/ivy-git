@@ -154,3 +154,11 @@ code {
     height: var(--resize-bar-width);
   }
 }
+
+.text-sep {
+  &::before {
+    content: '|';
+    color: var(--color-scale-a-3-50);
+    padding: 0 0.25rem;
+  }
+}
