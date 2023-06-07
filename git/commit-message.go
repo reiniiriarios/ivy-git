@@ -23,6 +23,7 @@ func (g *Git) ParseCommitMessage(msg string) CommitMessage {
 		if len(body) > 1 && body[:1] == "\n" {
 			body = body[1:]
 		}
+		body = removeCommentLines(body, "#")
 	}
 	return CommitMessage{
 		Subject: subject,
@@ -63,4 +64,17 @@ func (g *Git) GetInProgressCommitMessage(merge bool) (string, error) {
 	}
 
 	return string(msg), nil
+}
+
+func removeCommentLines(input string, starts_with string) string {
+	lines := strings.Split(strings.ReplaceAll(input, "\r\n", "\n"), "\n")
+	trimmed := []string{}
+
+	for i := range lines {
+		if !strings.HasPrefix(lines[i], starts_with) {
+			trimmed = append(trimmed, lines[i])
+		}
+	}
+
+	return strings.TrimSpace(strings.Join(trimmed, "\n"))
 }
