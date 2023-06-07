@@ -118,13 +118,16 @@ function createChanges() {
       })
     },
     numStaged: () => {
-      return Object.keys(get(changes).x).length;
+      let c = get(changes);
+      return c?.x ? Object.keys(get(changes).x).length : 0;
     },
     numUnstaged: () => {
-      return Object.keys(get(changes).y).length;
+      let c = get(changes);
+      return c?.y ? Object.keys(get(changes).y).length : 0;
     },
     numConflicts: () => {
-      return Object.keys(get(changes).c).length;
+      let c = get(changes);
+      return c?.c ? Object.keys(get(changes).c).length : 0;
     },
   };
 }
