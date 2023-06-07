@@ -2,6 +2,7 @@
   import octicons from '@primer/octicons';
 
   import CommitLabels from 'components/commits/CommitLabels.svelte';
+  import { highlightConventionalCommits } from 'scripts/conventional-commits';
 
   import { NUM_COLORS, UNCOMMITED_HASH } from 'scripts/graph';
 
@@ -51,6 +52,14 @@
     currentCommit.toggle(commit);
   }
 
+  function formatSubject(s: string): string {
+    s = codify(s);
+    if ($settings.HighlightConventionalCommits) {
+      s = highlightConventionalCommits(s);
+    }
+    return s;
+  }
+
   function codify(s: string): string {
     s = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     return s.replaceAll(/`([^`]+?)`/g, '<code>$1</code>');
@@ -78,7 +87,7 @@
   <td class="commit__td commit__td--tree"></td>
   <!-- The following is interactive via the tr, which doesn't take a tabindex because it's set to display: contents. -->
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <td class="commit__td commit__td--subject" tabindex="0">{@html codify(commit.Subject)}</td>
+  <td class="commit__td commit__td--subject" tabindex="0">{@html formatSubject(commit.Subject)}</td>
   {#if $settings.DisplayCommitSignatureInList}
     <td class="commit__td commit__td--gpg">
       {#if commit.Hash === UNCOMMITED_HASH}

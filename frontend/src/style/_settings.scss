@@ -1,3 +1,5 @@
+@use "!mixins" as *;
+
 .settings {
   text-align: left;
   padding: 2rem;
@@ -11,13 +13,20 @@
     padding: 0.5rem 0 0;
     border-top: 1px solid var(--color-scale-a-7-100);
   }
-}
 
-.setting {
-  &__name {
-    margin: 0.5rem 0;
-    color: var(--color-text-muted);
-    font-weight: normal;
+  .setting {
+    margin-bottom: 1rem;
+
+    &:not(:first-of-type) {
+      margin-top: 1rem;
+    }
+  
+    &__name {
+      margin: 0.5rem 0;
+      color: var(--color-text-muted);
+      font-weight: normal;
+      @include no-select;
+    }
   }
 }
 

@@ -6,6 +6,7 @@ interface Settings {
 	Version: string;
 	DisplayCommitSignatureInList: boolean;
   Workflow: string;
+  HighlightConventionalCommits: boolean;
 }
 
 // These stores reflec the current ui state and can be used
@@ -27,6 +28,13 @@ function createSettings() {
       }
       update(s => {
         s.Workflow = workflow;
+        return s;
+      });
+      settings.save();
+    },
+    toggleHighlightConventionalCommits: () => {
+      update(s => {
+        s.HighlightConventionalCommits = !s.HighlightConventionalCommits;
         return s;
       });
       settings.save();

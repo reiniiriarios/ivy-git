@@ -1,0 +1,41 @@
+.conv-commit-label {
+  &--feat {
+    color: var(--color-scale-g-1-100);
+  }
+
+  &--fix {
+    color: var(--color-scale-o-1-100);
+  }
+
+  &--chore {
+    color: var(--color-scale-t-1-100);
+  }
+
+  &--refactor {
+    color: var(--color-scale-p-1-100);
+  }
+
+  &--docs {
+    color: var(--color-scale-b-1-100);
+  }
+
+  &--test {
+    color: var(--color-scale-y-1-100);
+  }
+
+  &--style {
+    color: var(--color-scale-n-1-100);
+  }
+
+  &--revert {
+    color: var(--color-scale-o2-2-100);
+  }
+
+  &--wip {
+    color: var(--color-scale-a-2-100);
+  }
+
+  &--drop {
+    color: var(--color-scale-r-3-100);
+  }
+}

@@ -25,6 +25,7 @@ type Settings struct {
 	Version                      string
 	DisplayCommitSignatureInList bool
 	Workflow                     string
+	HighlightConventionalCommits bool
 }
 
 type AppData struct {
