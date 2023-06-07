@@ -98,8 +98,6 @@
         <li
           class="change"
           class:change--active={$currentDiff.File === change.File && $currentDiff.Conflict && $currentTab === 'changes'}
-          class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
-          class:change--none={change.Diff?.SelectedLines === 0}
           class:change--unresolved={!change.Diff?.Resolved}
         >
           <div class="change__file"
@@ -132,7 +130,7 @@
           class="change"
           class:change--active={$currentDiff.File === change.File && $currentDiff.Staged && $currentTab === 'changes'}
           class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
-          class:change--none={change.Diff?.SelectedLines === 0}
+          class:change--none={change.Diff?.SelectableLines > 0 && change.Diff?.SelectedLines === 0}
         >
           <div class="change__file"
             data-file="{change.File}"
@@ -172,7 +170,7 @@
           class="change"
           class:change--active={$currentDiff.File === change.File && !$currentDiff.Staged && $currentTab === 'changes'}
           class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
-          class:change--none={change.Diff?.SelectedLines === 0}
+          class:change--none={change.Diff?.SelectableLines > 0 && change.Diff?.SelectedLines === 0}
         >
           <div class="change__file"
             data-file="{change.File}"
