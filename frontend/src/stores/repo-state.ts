@@ -1,5 +1,6 @@
 import { derived, writable } from "svelte/store";
 import { GetRepoState } from "wailsjs/go/main/App";
+import { inProgressCommitMessage } from "stores/ui";
 
 export const RepoState = {
   Nil: "", // Default, no current repo, etc.
@@ -22,7 +23,12 @@ function createRepoState() {
   
   return {
     subscribe,
-    refresh: async () => GetRepoState().then(result => set(result)),
+    refresh: async () => {
+      GetRepoState().then(result => {
+        set(result);
+        inProgressCommitMessage.refresh();
+      });
+    },
     clear: async () => set(RepoState.Nil),
   };
 }

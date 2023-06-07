@@ -1,5 +1,8 @@
-import { writable } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 import { GetInProgressCommitMessageEither } from 'wailsjs/go/main/App'
+
+import { RepoState, repoState } from 'stores/repo-state';
+import { parseResponse } from 'scripts/parse-response';
 
 // These stores reflec the current ui state and can be used
 // across the app to change the ui state from components
@@ -20,11 +23,42 @@ function createInProgMsg() {
   return {
     subscribe,
     fetch: async () => {
-      GetInProgressCommitMessageEither().then(result => { console.log(result); set(result) });
+      GetInProgressCommitMessageEither().then(result => {
+        parseResponse(result, () => {
+          set(result.Data);
+        });
+      });
+    },
+    // Check if there's anything currently loaded or typed into the commit message fields.
+    // If not, and the repo is in a state where there might be an in-progress message,
+    // then fetch it.
+    check: async () => {
+      if (!get(commitMessageSubject) && !get(commitMessageBody)) {
+        switch (get(repoState)) {
+          case RepoState.Merge:
+          case RepoState.Rebase:
+          case RepoState.RebaseMerge:
+          case RepoState.Apply:
+          case RepoState.ApplyOrRebase:
+          case RepoState.Interactive:
+          case RepoState.Revert:
+          case RepoState.RevertSequence:
+          case RepoState.CherryPick:
+          case RepoState.CherryPickSequence:
+            inProgressCommitMessage.fetch();
+        }
+      }
     },
     clear: async () => {
       set({} as CommitMessage);
+    },
+    refresh: async () => {
+      inProgressCommitMessage.clear().then(() => {
+        inProgressCommitMessage.check();
+      });
     }
   };
 }
 export const inProgressCommitMessage = createInProgMsg();
+export const commitMessageSubject = derived(inProgressCommitMessage, $inProgressCommitMessage => $inProgressCommitMessage.Subject);
+export const commitMessageBody = derived(inProgressCommitMessage, $inProgressCommitMessage => $inProgressCommitMessage.Body);

@@ -4,26 +4,18 @@
   import { currentBranch, detachedHead } from "stores/branches";
   import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
-  import { repoSelect, branchSelect, inProgressCommitMessage } from "stores/ui";
+  import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
-
-  let subject: string;
-  let body: string;
-
-  inProgressCommitMessage.subscribe(msg => {
-    subject = msg.Subject;
-    body = msg.Body;
-  });
 
   let running: boolean = false;
 
   function make() {
-    if (subject && !running && (changes.numStaged() || changes.numUnstaged())) {
+    if ($commitMessageSubject && !running && (changes.numStaged() || changes.numUnstaged())) {
       running = true;
-      MakeCommit(subject, body).then(result => {
+      MakeCommit($commitMessageSubject, $commitMessageBody).then(result => {
         parseResponse(result, () => {
-          subject = '';
-          body = '';
+          $commitMessageSubject = '';
+          $commitMessageBody = '';
         });
         running = false;
       })
@@ -47,20 +39,25 @@
   <div class="make-commit__subject">
     <label class="make-commit__label">
       <span class="make-commit__label-desc">Summary</span>
-      <input class="text-input repo-state--{$repoState}" type="text" bind:value={subject} on:keypress={makeCommitKeypress}>
+      <input class="text-input repo-state--{$repoState}" type="text" bind:value={$commitMessageSubject} on:keypress={makeCommitKeypress}>
     </label>
   </div>
   <div class="make-commit__body">
     <label class="make-commit__label">
       <span class="make-commit__label-desc">Description</span>
-      <textarea class="text-input repo-state--{$repoState}" bind:value={body} on:keypress={makeCommitKeypress}></textarea>
+      <textarea class="text-input repo-state--{$repoState}" bind:value={$commitMessageBody} on:keypress={makeCommitKeypress}></textarea>
     </label>
   </div>
   <div class="make-commit__button">
     <button
       class="btn repo-state--{$repoState}"
       id="make-commit-button"
-      disabled={!subject || running || (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts()) || ($mergeConflicts && !$mergeConflictsResolved)}
+      disabled={
+        !$commitMessageSubject
+        || running
+        || (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts())
+        || ($mergeConflicts && !$mergeConflictsResolved)
+      }
       on:click={make}
     >
       Commit to <strong>{$currentBranch?.Name}</strong>

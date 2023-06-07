@@ -333,9 +333,19 @@ func (a *App) UpdateMain(branch string) DataResponse {
 	return dataResponse(nil, true)
 }
 
-func (a *App) GetInProgressCommitMessageEither() git.CommitMessage {
+func (a *App) GetInProgressCommitMessageEither() DataResponse {
 	msg := a.Git.GetInProgressCommitMessageEither()
-	return a.Git.ParseCommitMessage(msg)
+	message := a.Git.ParseCommitMessage(msg)
+	return dataResponse(nil, message)
+}
+
+func (a *App) GetInProgressCommitMessageMerge() DataResponse {
+	message := git.CommitMessage{}
+	msg, err := a.Git.GetInProgressCommitMessage(true)
+	if err == nil {
+		message = a.Git.ParseCommitMessage(msg)
+	}
+	return dataResponse(err, message)
 }
 
 func (a *App) GetWorkingFileParsedDiff(file string, status string, staged bool) DataResponse {
