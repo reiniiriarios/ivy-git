@@ -129,14 +129,16 @@
         &::after {
           position: absolute;
           left: 0;
-          bottom: -0.75rem;
-          width: 1rem;
+          bottom: -1.5rem;
           height: 1rem;
+          padding-left: 1.5rem;
           pointer-events: none;
-          content: '';
-          background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="red" d="M6 0a6 6 0 1 1 0 12A6 6 0 0 1 6 0Zm3 5H3v2h6Z"/></svg>');
+          content: 'Missing Trailing Newline';
+          font-size: 0.9rem;
+          color: var(--color-scale-r-4-100);
+          background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="rgb(218, 54, 51)" d="M6 0a6 6 0 1 1 0 12A6 6 0 0 1 6 0Zm3 5H3v2h6Z"/></svg>');
           background-size: contain;
-          background-position: center;
+          background-position: left;
           background-repeat: no-repeat;
         }
       }

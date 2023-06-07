@@ -37,4 +37,5 @@
   padding: 4rem;
   font-family: var(--font-main);
   color: var(--color-text-muted);
+  @include no-select;
 }

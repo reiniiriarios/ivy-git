@@ -40,6 +40,7 @@ function createChanges() {
               y: result.Data.ChangesY ?? [],
               c: result.Data.ChangesC ?? [],
             });
+            currentDiff.refresh();
             // If there's nothing left to do, switch away from the changes tab.
             if (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts()) {
               if (get(currentTab) === 'changes') {
