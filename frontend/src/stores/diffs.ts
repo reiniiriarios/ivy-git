@@ -18,6 +18,7 @@ export interface Diff {
   Raw: string;
   Hunks: DiffHunk[];
   Binary: boolean;
+  Empty: boolean;
   SelectableLines: number;
   SelectedLines: number;
   NumConflicts: number;

@@ -30,6 +30,7 @@ type Diff struct {
 	Raw             string
 	Hunks           []DiffHunk
 	Binary          bool
+	Empty           bool
 	SelectableLines uint64
 	SelectedLines   uint64
 	NumConflicts    uint16
@@ -182,6 +183,9 @@ func (d *Diff) parse() error {
 			println(lines[ln])
 			return errors.New("malformed diff, unrecognized line type")
 		}
+	}
+	if len(d.Hunks) == 0 {
+		d.Empty = true
 	}
 	return nil
 }
@@ -400,6 +404,9 @@ func (d *Diff) parseConflicts() error {
 			}
 		}
 		d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, new_line)
+	}
+	if len(d.Hunks) == 0 {
+		d.Empty = true
 	}
 	return nil
 }

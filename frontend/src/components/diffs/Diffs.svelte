@@ -21,7 +21,7 @@
       <DiffConflictActions />
       <DiffConflict />
     {:else}
-      {#if $currentDiff.File}
+      {#if $currentDiff.File && !$currentDiff.Binary && !$currentDiff.Empty}
         <DiffChangesActions />
       {/if}
       <DiffChanges />

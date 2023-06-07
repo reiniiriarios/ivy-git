@@ -24,7 +24,7 @@ body {
 body, button, input, textarea {
   font-size: 1rem;
   color: var(--color-text);
-  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: var(--font-main);
   font-weight: 400;
   text-rendering: optimizeLegibility;
   font-variant: common-ligatures slashed-zero tabular-nums;
@@ -74,7 +74,7 @@ ul {
 
 code,
 pre {
-  font-family: FiraCode, monospace;
+  font-family: var(--font-code);
   font-size: 0.9rem;
 }
 

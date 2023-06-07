@@ -1,5 +1,7 @@
 <script lang="ts">
   import { currentDiff } from "stores/diffs";
+  import DiffBinary from "components/diffs/DiffBinary.svelte";
+  import DiffEmpty from "components/diffs/DiffEmpty.svelte";
 </script>
 
 <div class="diff diff--committed">
@@ -26,5 +28,9 @@
         {/each}
       {/each}
     </div>
+  {:else if $currentDiff.Binary}
+    <DiffBinary />
+  {:else if $currentDiff.Empty}
+    <DiffEmpty />
   {/if}
 </div>
