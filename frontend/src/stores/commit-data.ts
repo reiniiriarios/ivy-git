@@ -132,7 +132,7 @@ export const HEAD = derived(commitData, $commitData => $commitData?.HEAD);
 export const graph = derived(commitData, $commitData => $commitData?.Graph);
 export const commitsPage = derived(commitData, $commitData => $commitData?.page);
 export const tree = derived(commitData, $commitData => ({
-  svg: $commitData?.Graph ? drawGraph($commitData.Graph) : '',
+  svg: $commitData?.Graph ? drawGraph($commitData.Graph) : null,
   width: $commitData?.Graph ? getSVGWidth($commitData.Graph) : '0',
   height: $commitData?.Graph?.Height,
   continues: $commitData?.Graph?.Continues,
