@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { changes } from "stores/changes";
+  import { changes, changesNumConflicts, changesNumStaged, changesNumUnstaged } from "stores/changes";
   import { currentDiff, type DiffLine } from "stores/diffs";
   import DiffBinary from "components/diffs/DiffBinary.svelte";
   import DiffEmpty from "components/diffs/DiffEmpty.svelte";
+  import NoChanges from "./NoChanges.svelte";
 
   let miniHunkElements: HTMLElement[] = [];
 
@@ -121,5 +122,7 @@
     <DiffBinary />
   {:else if $currentDiff.Empty}
     <DiffEmpty />
+  {:else if !$changesNumStaged && !$changesNumUnstaged && !$changesNumConflicts}
+    <NoChanges />
   {/if}
 </div>

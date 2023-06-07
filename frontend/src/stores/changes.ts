@@ -42,7 +42,7 @@ function createChanges() {
             });
             currentDiff.refresh();
             // If there's nothing left to do, switch away from the changes tab.
-            if (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts()) {
+            if (!get(changesNumStaged) && !get(changesNumUnstaged) && !get(changesNumConflicts)) {
               if (get(currentTab) === 'changes') {
                 currentTab.set('tree');
               }
@@ -124,20 +124,11 @@ function createChanges() {
         return c;
       })
     },
-    numStaged: () => {
-      let c = get(changes);
-      return c?.x ? Object.keys(get(changes).x).length : 0;
-    },
-    numUnstaged: () => {
-      let c = get(changes);
-      return c?.y ? Object.keys(get(changes).y).length : 0;
-    },
-    numConflicts: () => {
-      let c = get(changes);
-      return c?.c ? Object.keys(get(changes).c).length : 0;
-    },
   };
 }
 export const changes = createChanges();
 export const mergeConflicts = derived(changes, $changes => $changes?.c && Object.keys($changes.c).length);
 export const mergeConflictsResolved = derived(changes, $changes => $changes?.c && Object.values($changes.c).every(c => c.Resolved));
+export const changesNumStaged = derived(changes, $changes => $changes?.x ? Object.keys(get(changes).x).length : 0);
+export const changesNumUnstaged = derived(changes, $changes => $changes?.y ? Object.keys(get(changes).y).length : 0);
+export const changesNumConflicts = derived(changes, $changes => $changes?.c ? Object.keys(get(changes).c).length : 0);

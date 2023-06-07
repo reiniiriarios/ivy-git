@@ -2,7 +2,7 @@
   import { isDarwin } from "scripts/env";
   import { parseResponse } from "scripts/parse-response";
   import { currentBranch, detachedHead } from "stores/branches";
-  import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
+  import { changes, changesNumConflicts, changesNumStaged, changesNumUnstaged, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
   import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody, commitMessage } from "stores/ui";
   import { MakeCommit } from "wailsjs/go/main/App";
@@ -10,7 +10,7 @@
   let running: boolean = false;
 
   function make() {
-    if ($commitMessageSubject && !running && (changes.numStaged() || changes.numUnstaged())) {
+    if ($commitMessageSubject && !running && ($changesNumStaged || $changesNumUnstaged)) {
       running = true;
       MakeCommit($commitMessageSubject, $commitMessageBody).then(result => {
         parseResponse(result, () => {
@@ -54,7 +54,7 @@
       disabled={
         !$commitMessageSubject
         || running
-        || (!changes.numStaged() && !changes.numUnstaged() && !changes.numConflicts())
+        || (!$changesNumStaged && !$changesNumUnstaged && !$changesNumConflicts)
         || ($mergeConflicts && !$mergeConflictsResolved)
       }
       on:click={make}
