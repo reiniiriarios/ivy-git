@@ -16,6 +16,10 @@ textarea {
   &.invalid {
     border-color: var(--color-scale-r-5-100);
   }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 textarea {

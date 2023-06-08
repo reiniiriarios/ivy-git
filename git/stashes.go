@@ -77,6 +77,19 @@ func (g *Git) getStashes() []Commit {
 	return stashes
 }
 
+func (g *Git) MakeStash(subject string) error {
+	if g.isStagedEmpty() {
+		err := g.StageAll()
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err := g.RunCwd("stash", "push", "--staged", "--message", subject)
+
+	return err
+}
+
 // Pop a stash, optionally reinstating index.
 // Stash should be a ref in the form of `stash@{<revision>}`.
 func (g *Git) PopStash(stash string, index bool) error {

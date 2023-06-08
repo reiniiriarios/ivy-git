@@ -31,6 +31,19 @@ func (g *Git) GetLastCommitHash() (string, error) {
 	return h, nil
 }
 
+// Get subject and body of most recent commit message.
+func (g *Git) GetLastCommitMessage() (CommitMessage, error) {
+	m, err := g.RunCwd("--no-pager", "log", "--format=%s"+GIT_LOG_SEP+"%b", "--max-count=1")
+	if err != nil {
+		return CommitMessage{}, err
+	}
+	ms := strings.Split(m, GIT_LOG_SEP)
+	return CommitMessage{
+		Subject: strings.TrimSpace(ms[0]),
+		Body:    strings.TrimSpace(ms[1]),
+	}, nil
+}
+
 // Get additional commit details not listed in the table.
 func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 	if hash == "" {

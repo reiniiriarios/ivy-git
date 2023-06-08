@@ -5,8 +5,10 @@ import (
 	"ivy-git/git"
 )
 
-// This file has commands for the frontend to use to get
-// data from the git package.
+// This file has commands for the frontend to use to get data from the git package.
+// Minimal processing to translate reasonable data to a standard DataResponse, along
+// with occasional combination of methods when those methods don't make sense to
+// combine in the context of the git package.
 
 type DataResponse struct {
 	Response       string
@@ -289,8 +291,13 @@ func (a *App) NumMainBranchCommits() DataResponse {
 	return dataResponse(err, n)
 }
 
-func (a *App) MakeCommit(subject string, body string) DataResponse {
-	err := a.Git.MakeCommit(subject, body)
+func (a *App) MakeCommit(subject string, body string, amend bool) DataResponse {
+	err := a.Git.MakeCommit(subject, body, amend)
+	return dataResponse(err, true)
+}
+
+func (a *App) MakeStash(subject string) DataResponse {
+	err := a.Git.MakeStash(subject)
 	return dataResponse(err, true)
 }
 
@@ -348,6 +355,11 @@ func (a *App) GetInProgressCommitMessageMerge() DataResponse {
 	if err == nil {
 		message = a.Git.ParseCommitMessage(msg)
 	}
+	return dataResponse(err, message)
+}
+
+func (a *App) GetLastCommitMessage() DataResponse {
+	message, err := a.Git.GetLastCommitMessage()
 	return dataResponse(err, message)
 }
 

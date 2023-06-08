@@ -1,5 +1,5 @@
 import { derived, get, writable } from 'svelte/store';
-import { GetInProgressCommitMessageMerge, GetInProgressCommitMessageEdit } from 'wailsjs/go/main/App'
+import { GetInProgressCommitMessageMerge, GetInProgressCommitMessageEdit, GetLastCommitMessage } from 'wailsjs/go/main/App'
 
 import { RepoState, repoState } from 'stores/repo-state';
 import { parseResponse } from 'scripts/parse-response';
@@ -53,6 +53,14 @@ function createInProgMsg() {
           set(result.Data);
           commitMessageSubject.set("");
           commitMessageBody.set("");
+        });
+      });
+    },
+    fetchLast: async () => {
+      GetLastCommitMessage().then(result => {
+        parseResponse(result, () => {
+          commitMessageSubject.set(result.Data.Subject ?? "");
+          commitMessageBody.set(result.Data.Body ?? "");
         });
       });
     },

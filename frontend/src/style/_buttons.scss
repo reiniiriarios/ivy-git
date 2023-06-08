@@ -45,6 +45,10 @@
 
   &:hover:not(:disabled) {
     background-color: var(--color-btn-bg-hover);
+
+    + .btn--arrow {
+      background-color: var(--color-btn-bg-hover);
+    }
   }
 
   &--apply {
@@ -58,6 +62,93 @@
   
     &:hover:not(:disabled) {
       background-color: var(--color-btn-bg-green-hover);
+    }
+  }
+}
+
+.btn-arrow {
+  display: flex;
+  position: relative;
+
+  &__optionscontainer {
+    position: relative;
+    z-index: 1000;
+    display: none;
+  }
+
+  &__options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    bottom: 2.3rem;
+    left: -2rem;
+    background-color: var(--color-btn-bg);
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+
+  &__option {
+    white-space: nowrap;
+    padding: 0.5rem 0.75rem;
+    @include no-select-click;
+    border-bottom: 1px solid rgba(0 0 0 / 15%);
+
+    &:first-child {
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+    }
+
+    &:last-child {
+      border-bottom-right-radius: 0.25rem;
+    }
+
+    &:hover {
+      background-color: var(--color-btn-bg-hover);
+    }
+  }
+
+  .btn {
+    &__main {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &__arrow {
+      flex: 2.25rem;
+      margin-left: 0;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: 1px solid rgba(0 0 0 / 25%);
+      padding: 0.25rem;
+
+      svg {
+        margin: 0 0 0.2rem;
+      }
+
+      // Style to enable use when the main button is disabled, but
+      // this button should still be usable, just needs to match style.
+      &--faux-disabled {
+        // Will override if not in :not.
+        &:not(:hover) {
+          --color-btn-bg: var(--color-btn-bg-disabled);
+        }
+
+        &:hover {
+          --color-btn-bg-hover: var(--color-btn-bg);
+        }
+      }
+    }
+  }
+
+  &--open {
+    .btn__arrow {
+      border-top-right-radius: 0;
+    }
+
+    .btn-arrow__optionscontainer {
+      display: block;
     }
   }
 }
