@@ -65,7 +65,7 @@
       <ul class="sidebar-dropdown__list">
         {#if $branches?.length}
           {#each Object.entries($branches) as [_, branch]}
-            <li>
+            <li class="sidebar-dropdown__item" class:sidebar-dropdown__item--selected={branch?.Name === $currentBranch.Name}>
               <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>{branch?.Name}</button>
             </li>
           {/each}

@@ -62,7 +62,7 @@
       </div>
       <ul class="sidebar-dropdown__list">
         {#each Object.entries($repos) as [id, repo]}
-          <li>
+          <li class="sidebar-dropdown__item" class:sidebar-dropdown__item--selected={id === $currentRepo}>
             <button class="list-btn name" on:click={() => selectRepo(id)}>{repo.Name}</button>
             <button class="list-btn x" on:click={() => repos.delete(id)}>&times;</button>
           </li>
