@@ -1,3 +1,7 @@
+import applyStash from "actions/apply-stash";
+import createBranchFromStash from "actions/create-branch-from-stash";
+import dropStash from "actions/drop-stash";
+import popStash from "actions/pop-stash";
 import type { Menu } from "context-menus/_all";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
@@ -6,15 +10,22 @@ export const menuLabelStash: Menu = (e: HTMLElement) => {
   return [
     {
       text: "Apply Stash",
-      callback: () => alert("todo: apply"),
+      callback: (e) => applyStash(e.dataset.ref),
     },
     {
       text: "Pop Stash",
-      callback: () => alert("todo: pop"),
+      callback: (e) => popStash(e.dataset.ref, e.dataset.hash),
     },
     {
       text: "Drop Stash",
-      callback: () => alert("todo: drop"),
+      callback: (e) => dropStash(e.dataset.ref, e.dataset.hash),
+    },
+    {
+      sep: true,
+    },
+    {
+      text: "Create Branch from Stash",
+      callback: (e) => createBranchFromStash(e.dataset.ref, e.dataset.hash),
     },
     {
       sep: true,
@@ -23,6 +34,12 @@ export const menuLabelStash: Menu = (e: HTMLElement) => {
       text: "Copy Stash Hash to Clipboard",
       callback: (e) => {
         ClipboardSetText(e.dataset.hash);
+      },
+    },
+    {
+      text: "Copy Stash Ref to Clipboard",
+      callback: (e) => {
+        ClipboardSetText(e.dataset.ref);
       },
     },
     {

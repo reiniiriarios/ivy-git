@@ -110,6 +110,7 @@ const (
 	GitFileMergeHead              = "MERGE_HEAD"
 	GitFileRevertHead             = "REVERT_HEAD"
 	GitFileCherryPickHead         = "CHERRY_PICK_HEAD"
+	GitFileRebaseHead             = "REBASE_HEAD"
 	GitFileBisectLog              = "BISECT_LOG"
 	GitDirRebaseMerge             = "rebase-merge"
 	GitFileRebaseMergeInteractive = "interactive" // in GitDirRebaseMerge

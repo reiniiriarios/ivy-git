@@ -76,3 +76,41 @@ func (g *Git) getStashes() []Commit {
 
 	return stashes
 }
+
+// Pop a stash, optionally reinstating index.
+// Stash should be a ref in the form of `stash@{<revision>}`.
+func (g *Git) PopStash(stash string, index bool) error {
+	cmd := []string{"stash", "pop"}
+	if index {
+		cmd = append(cmd, "--index")
+	}
+	cmd = append(cmd, stash)
+	_, err := g.RunCwd(cmd...)
+	return err
+}
+
+// Apply a stash, optionally reinstating index.
+// Stash should be a ref in the form of `stash@{<revision>}`.
+func (g *Git) ApplyStash(stash string, index bool) error {
+	cmd := []string{"stash", "apply"}
+	if index {
+		cmd = append(cmd, "--index")
+	}
+	cmd = append(cmd, stash)
+	_, err := g.RunCwd(cmd...)
+	return err
+}
+
+// Drop a stash.
+// Stash should be a ref in the form of `stash@{<revision>}`.
+func (g *Git) DropStash(stash string) error {
+	_, err := g.RunCwd("stash", "drop", stash)
+	return err
+}
+
+// Create a branch from a stash.
+// Stash should be a ref in the form of `stash@{<revision>}`.
+func (g *Git) CreateBranchFromStash(stash string, branch_name string) error {
+	_, err := g.RunCwd("stash", "branch", branch_name, stash)
+	return err
+}

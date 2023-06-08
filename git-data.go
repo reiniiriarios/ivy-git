@@ -403,3 +403,23 @@ func (a *App) GetRepoState() git.RepoState {
 	}
 	return a.Git.GetRepoState()
 }
+
+func (a *App) PopStash(hash string, index bool) DataResponse {
+	err := a.Git.PopStash(hash, index)
+	return dataResponse(err, false)
+}
+
+func (a *App) ApplyStash(stash string, index bool) DataResponse {
+	err := a.Git.ApplyStash(stash, index)
+	return dataResponse(err, false)
+}
+
+func (a *App) DropStash(stash string) DataResponse {
+	err := a.Git.DropStash(stash)
+	return dataResponse(err, false)
+}
+
+func (a *App) CreateBranchFromStash(stash string, branch_name string) DataResponse {
+	err := a.Git.CreateBranchFromStash(stash, branch_name)
+	return dataResponse(err, false)
+}

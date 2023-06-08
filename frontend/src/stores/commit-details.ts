@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { GetCommitDetails, GetCommitDiffSummary, GetCommitSignature } from "wailsjs/go/main/App";
 import type { Commit } from "stores/commit-data";
 import { parseResponse } from "scripts/parse-response";
@@ -69,6 +69,11 @@ function createCurrentCommit() {
       commitDiffSummary.set({} as FileStatDir);
       commitSignature.set({} as CommitSignature);
       set({} as Commit);
+    },
+    clearIfCurrent: (hash: string) => {
+      if (get(currentCommit).Hash === hash) {
+        currentCommit.unset();
+      }
     },
   };
 }
