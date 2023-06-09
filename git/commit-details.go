@@ -184,6 +184,7 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 			if strings.HasSuffix(oldrel, string(os.PathSeparator)+".") {
 				oldrel = oldrel[:len(oldrel)-2]
 			}
+			oldrel = strings.ReplaceAll(oldrel, "\\", "/")
 
 			filestats = append(filestats, FileStat{
 				File:    file,
