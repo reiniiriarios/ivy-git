@@ -1,7 +1,7 @@
 <script lang="ts">
   import { branches } from "stores/branches";
   import { currentRepo, repos } from "stores/repos";
-  import Select from "components/Select.svelte";
+  import Select from "components/elements/Select.svelte";
 
   function saveMain(e: CustomEvent) {
     repos.updateMain(e.detail.value);
