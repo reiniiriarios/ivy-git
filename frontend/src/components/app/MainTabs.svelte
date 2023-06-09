@@ -1,7 +1,7 @@
 <script lang="ts">
   import LayoutDetails from 'components/details/LayoutDetails.svelte';
   import Commits from 'components/commits/Commits.svelte';
-  import Settings from 'components/Settings.svelte';
+  import LayoutSettings from 'components/settings/LayoutSettings.svelte';
   import { currentTab } from 'stores/ui';
   import octicons from '@primer/octicons';
   import LayoutDiffs from 'components/diffs/LayoutDiffs.svelte';
@@ -21,7 +21,7 @@
     },
     settings: {
       n: '<span aria-label="Settings">' + octicons.gear.toSVG({width: 18}) + '</span>',
-      c: Settings,
+      c: LayoutSettings,
     }
   };
 
