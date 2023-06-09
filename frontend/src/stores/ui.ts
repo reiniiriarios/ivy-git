@@ -1,4 +1,4 @@
-import { derived, get, writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { GetInProgressCommitMessageMerge, GetInProgressCommitMessageEdit, GetLastCommitMessage } from 'wailsjs/go/main/App'
 
 import { RepoState, repoState } from 'stores/repo-state';

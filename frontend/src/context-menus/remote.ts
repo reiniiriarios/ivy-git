@@ -1,4 +1,4 @@
-import deleteRemote from "actions/delete-remote";
+import deleteRemote from "actions/remote/delete";
 import type { Menu } from "context-menus/_all";
 
 export const menuRemote: Menu = (e: HTMLElement) => {

@@ -1,4 +1,3 @@
-
 export function toggleDir(e: MouseEvent & { currentTarget: HTMLElement } | KeyboardEvent & { currentTarget: HTMLElement }) {
   let el = e.currentTarget.parentNode as HTMLElement;
   el.classList.contains('filestatdir__dir--closed') ? expandDir(el) : collapseDir(el);

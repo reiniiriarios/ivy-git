@@ -2,9 +2,9 @@ import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 import type { Menu, MenuItem } from "context-menus/_all";
 
-import checkoutBranch from "actions/checkout-branch";
-import pullBranch from "actions/pull-branch";
-import deleteRemoteBranch from "actions/delete-remote-branch";
+import checkoutBranch from "actions/branch/checkout";
+import pullBranch from "actions/branch/pull";
+import deleteRemoteBranch from "actions/branch/remote-delete";
 
 export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];

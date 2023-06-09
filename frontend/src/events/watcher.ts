@@ -3,8 +3,7 @@ import { changes } from 'stores/changes';
 import { commitData, commitSignData } from 'stores/commit-data';
 import { currentDiff } from 'stores/diffs';
 import { remoteData } from 'stores/remotes';
-import { RepoState, repoState } from 'stores/repo-state';
-import { get } from 'svelte/store';
+import { repoState } from 'stores/repo-state';
 import { EventsOn } from 'wailsjs/runtime/runtime';
 
 interface WatcherEvent {

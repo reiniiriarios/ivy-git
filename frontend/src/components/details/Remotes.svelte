@@ -1,9 +1,9 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import addRemote from "actions/add-remote";
-  import fetchRemote from "actions/fetch-remote";
-  import pullRemote from "actions/pull-remote";
-  import pushRemote from "actions/push-remote";
+  import addRemote from "actions/remote/add";
+  import fetchRemote from "actions/remote/fetch";
+  import pullRemote from "actions/remote/pull";
+  import pushRemote from "actions/remote/push";
   import { remotes } from "stores/remotes";
 
   function pull(e: MouseEvent | KeyboardEvent, remote: string) {

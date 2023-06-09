@@ -1,7 +1,7 @@
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 import { type Menu } from "context-menus/_all";
-import pushTag from "actions/push-tag";
-import deleteTag from "actions/delete-tag";
+import pushTag from "actions/tag/push";
+import deleteTag from "actions/tag/delete";
 
 export const menuLabelTag: Menu = (e: HTMLElement) => {
   return [

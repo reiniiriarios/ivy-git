@@ -7,16 +7,16 @@ import { get } from 'svelte/store';
 import { detachedHead } from "stores/branches";
 import { settings } from "stores/settings";
 
-import deleteBranch from "actions/delete-branch";
-import pushBranch from "actions/push-branch";
-import renameBranch from "actions/rename-branch";
-import checkoutBranch from "actions/checkout-branch";
-import resetBranchToRemote from "actions/reset-branch-to-remote";
-import rebaseOnBranch from "actions/rebase-on-branch";
-import rebaseAndMergeIntoCurrentBranch from "actions/rebase-merge-into-current";
-import fastForwardMerge from "actions/fast-forward-merge";
-import mergeBranch from "actions/merge-branch";
-import squashMergeBranch from "actions/squash-merge-branch";
+import deleteBranch from "actions/branch/delete";
+import pushBranch from "actions/branch/push";
+import renameBranch from "actions/branch/rename";
+import checkoutBranch from "actions/branch/checkout";
+import resetBranchToRemote from "actions/branch/reset-to-remote";
+import rebaseOnBranch from "actions/branch/rebase-on";
+import rebaseAndMergeIntoCurrentBranch from "actions/branch/merge-rebase";
+import fastForwardMerge from "actions/branch/merge-ff";
+import mergeBranch from "actions/branch/merge";
+import squashMergeBranch from "actions/branch/merge-squash";
 
 export const menuLabelBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { branches, currentBranch, type Branch, detachedHead } from 'stores/branches';
   import { branchSelect, repoSelect } from 'stores/ui';
-  import createBranch from 'actions/create-branch';
+  import createBranch from 'actions/branch-create';
   import { mergeConflicts } from 'stores/changes';
   import { RepoState, repoState } from 'stores/repo-state';
   import { messageDialog } from 'stores/message-dialog';

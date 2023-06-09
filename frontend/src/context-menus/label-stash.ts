@@ -1,7 +1,7 @@
-import applyStash from "actions/apply-stash";
-import createBranchFromStash from "actions/create-branch-from-stash";
-import dropStash from "actions/drop-stash";
-import popStash from "actions/pop-stash";
+import applyStash from "actions/stash/apply";
+import createBranchFromStash from "actions/stash/create-branch";
+import dropStash from "actions/stash/drop";
+import popStash from "actions/stash/pop";
 import type { Menu } from "context-menus/_all";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 

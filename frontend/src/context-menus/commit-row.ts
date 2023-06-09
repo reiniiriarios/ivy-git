@@ -5,13 +5,13 @@ import { get } from 'svelte/store';
 import type { Menu, MenuItem } from "context-menus/_all";
 
 import { HEAD } from "stores/commit-data";
-import createBranch from "actions/create-branch";
-import addTag from "actions/add-tag";
-import checkoutCommit from "actions/checkout-commit";
-import cherryPick from "actions/cherry-pick";
-import revertCommit from "actions/revert-commit";
-import softReset from "actions/soft-reset";
-import hardReset from "actions/hard-reset";
+import createBranch from "actions/branch/create";
+import addTag from "actions/tag/add";
+import checkoutCommit from "actions/commit/checkout";
+import cherryPick from "actions/commit/cherry-pick";
+import revertCommit from "actions/commit/revert";
+import softReset from "actions/commit/reset-soft";
+import hardReset from "actions/commit/reset-hard";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];

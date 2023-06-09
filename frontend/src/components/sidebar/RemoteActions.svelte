@@ -1,8 +1,8 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import fetchRemote from "actions/fetch-remote";
-  import pullRemote from "actions/pull-remote";
-  import pushRemote from "actions/push-remote";
+  import fetchRemote from "actions/remote/fetch";
+  import pullRemote from "actions/remote/pull";
+  import pushRemote from "actions/remote/push";
   import { currentRemote } from "stores/remotes";
   import { branchSelect, repoSelect } from "stores/ui";
 
