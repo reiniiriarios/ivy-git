@@ -1,15 +1,15 @@
 <script lang="ts">
-  import Details from 'components/details/Details.svelte';
+  import LayoutDetails from 'components/details/LayoutDetails.svelte';
   import Commits from 'components/commits/Commits.svelte';
   import Settings from 'components/Settings.svelte';
   import { currentTab } from 'stores/ui';
   import octicons from '@primer/octicons';
-  import Diffs from 'components/diffs/Diffs.svelte';
+  import LayoutDiffs from 'components/diffs/LayoutDiffs.svelte';
 
   let tabs = {
     changes: {
       n:'Changes',
-      c: Diffs,
+      c: LayoutDiffs,
     },
     tree: {
       n:'Commits',
@@ -17,7 +17,7 @@
     },
     details: {
       n:'Details',
-      c: Details,
+      c: LayoutDetails,
     },
     settings: {
       n: '<span aria-label="Settings">' + octicons.gear.toSVG({width: 18}) + '</span>',
