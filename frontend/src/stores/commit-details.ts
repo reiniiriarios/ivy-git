@@ -49,7 +49,7 @@ function createCurrentCommit() {
     subscribe,
     toggle: (commit: Commit) => {
       if (get(currentCommit).Hash === commit.Hash) {
-        currentCommit.unset();
+        currentCommit.clear();
       } else {
         currentCommit.set(commit);
       }
@@ -64,7 +64,7 @@ function createCurrentCommit() {
       commitSignature.set({} as CommitSignature);
       commitSignature.fetch(commit.Hash);
     },
-    unset: () => {
+    clear: () => {
       commitDetails.set({} as CommitDetails);
       commitDiffSummary.set({} as FileStatDir);
       commitSignature.set({} as CommitSignature);
@@ -72,7 +72,7 @@ function createCurrentCommit() {
     },
     clearIfCurrent: (hash: string) => {
       if (get(currentCommit).Hash === hash) {
-        currentCommit.unset();
+        currentCommit.clear();
       }
     },
   };

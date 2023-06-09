@@ -159,7 +159,6 @@ function createCurrentRepo() {
           if (cTab === 'tree') {
             commitData.refresh();
             commitSignData.refresh();
-            currentCommit.unset();
           } else if (cTab === 'details') {
             remoteData.refresh();
             numCommits.fetch();
@@ -167,6 +166,7 @@ function createCurrentRepo() {
             numTags.fetch();
             cloc.fetch();
           }
+          currentCommit.clear();
           repoState.clear();
           currentDiff.clear();
           branches.refresh();
@@ -186,7 +186,6 @@ function createCurrentRepo() {
           if (cTab === 'tree') {
             commitData.refresh();
             commitSignData.refresh();
-            currentCommit.unset();
           } else if (cTab === 'details') {
             remoteData.refresh();
             numCommits.fetch();
@@ -194,6 +193,7 @@ function createCurrentRepo() {
             numTags.fetch();
             cloc.fetch();
           }
+          currentCommit.clear();
           repoState.load();
           currentDiff.clear();
           branches.refresh();
