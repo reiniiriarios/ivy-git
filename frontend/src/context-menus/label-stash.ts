@@ -1,5 +1,5 @@
 import applyStash from "actions/stash/apply";
-import createBranchFromStash from "actions/stash/create-branch";
+import createBranchFromStash from "actions/stash/branch-create";
 import dropStash from "actions/stash/drop";
 import popStash from "actions/stash/pop";
 import type { Menu } from "context-menus/_all";

@@ -16,7 +16,7 @@ import { changes } from 'stores/changes';
 import { currentCommit } from 'stores/commit-details';
 import { branches, currentBranch } from 'stores/branches';
 import { remoteData } from 'stores/remotes';
-import { currentTab, commitMessage, repoSelect } from 'stores/ui';
+import { currentTab, repoSelect } from 'stores/ui';
 import { messageDialog } from 'stores/message-dialog';
 import { cloc, numBranches, numCommits, numTags } from 'stores/repo-info';
 import { currentDiff } from 'stores/diffs';
