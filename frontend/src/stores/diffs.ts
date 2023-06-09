@@ -24,6 +24,7 @@ export interface Diff {
   NumConflicts: number;
   Conflicts: DiffConflict[];
   // UI
+  TooLarge: boolean;
   Status: string;
   Staged: boolean;
   Committed: boolean;
@@ -71,9 +72,14 @@ function createCurrentDiff() {
     clear: () => set({} as Diff),
     // Fetch diff from specific commit.
     fetchDiff: async (hash: string, file: string, oldfile: string) => {
-      GetCommitFileParsedDiff(hash, file, oldfile).then(result => {
+      GetCommitFileParsedDiff(hash, file, oldfile, false).then(result => {
         parseResponse(result, () => {
-          let diff = result.Data;
+          let diff = {} as Diff;
+          if (result.Response === 'too-large') {
+            diff.TooLarge = true;
+          } else {
+            diff = result.Data;
+          }
           diff.Staged = false;
           diff.Committed = true;
           diff.Hash = hash;

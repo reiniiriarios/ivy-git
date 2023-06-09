@@ -1,17 +1,15 @@
-package git
+package files
 
 import (
 	"bufio"
 	"io"
 	"os"
-	"path/filepath"
 	"sort"
 )
 
-func (g *Git) deleteAndReplaceLinesFromFile(filename string, delete_lines []int64, replace_lines map[int64]int64) error {
-	file_path := filepath.Join(g.Repo.Directory, filename)
+func DeleteAndReplaceLinesFromFile(filename string, delete_lines []int64, replace_lines map[int64]int64) error {
 	// Open the source file.
-	file, err := os.Open(file_path)
+	file, err := os.Open(filename)
 	if err != nil {
 		return err
 	}
@@ -41,7 +39,7 @@ func (g *Git) deleteAndReplaceLinesFromFile(filename string, delete_lines []int6
 	}
 
 	// Create a temp file to write to.
-	tmpfile, err := os.Create(file_path + "~")
+	tmpfile, err := os.Create(filename + "~")
 	if err != nil {
 		return err
 	}
@@ -84,13 +82,13 @@ func (g *Git) deleteAndReplaceLinesFromFile(filename string, delete_lines []int6
 	}
 
 	// Delete the original.
-	err = os.Remove(file_path)
+	err = os.Remove(filename)
 	if err != nil {
 		return err
 	}
 
 	// Replace the original with the temp file.
-	err = os.Rename(file_path+"~", file_path)
+	err = os.Rename(filename+"~", filename)
 	if err != nil {
 		return err
 	}

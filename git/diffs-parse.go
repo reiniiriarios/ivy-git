@@ -3,6 +3,8 @@ package git
 import (
 	"errors"
 	"fmt"
+	"ivy-git/files"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -679,6 +681,6 @@ func (d *Diff) parseConflictResolutions() ([]int64, map[int64]int64) {
 // Resolve diff conflicts by editing the file.
 func (g *Git) ResolveDiffConflicts(d Diff) error {
 	del, rep := d.parseConflictResolutions()
-	err := g.deleteAndReplaceLinesFromFile(d.File, del, rep)
+	err := files.DeleteAndReplaceLinesFromFile(filepath.Join(g.Repo.Directory, d.File), del, rep)
 	return err
 }

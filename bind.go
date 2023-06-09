@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"ivy-git/files"
 	"ivy-git/git"
+	"path/filepath"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // This file has commands for the frontend to use to get data from the git package.
@@ -29,6 +33,15 @@ func dataResponse(err error, data any) DataResponse {
 		Response: "success",
 		Data:     data,
 	}
+}
+
+func (a *App) fileTooLarge(file string) bool {
+	if a.RepoSaveData.CurrentRepo == "" {
+		runtime.LogError(a.ctx, fmt.Sprintf("trying to find size of file %s without current repo selected", file))
+		return false
+	}
+	f := filepath.Join(a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo].Directory, file)
+	return files.FileTooLarge(f)
 }
 
 // Get current branch for currently selected repo.
@@ -363,19 +376,37 @@ func (a *App) GetLastCommitMessage() DataResponse {
 	return dataResponse(err, message)
 }
 
-func (a *App) GetWorkingFileParsedDiff(file string, status string, staged bool) DataResponse {
-	diff, err := a.Git.GetWorkingFileParsedDiff(file, status, staged)
-	return dataResponse(err, diff)
+func (a *App) GetWorkingFileParsedDiff(file string, status string, staged bool, ignore_size bool) DataResponse {
+	if !ignore_size && a.fileTooLarge(file) {
+		return DataResponse{
+			Response: "too-large",
+		}
+	} else {
+		diff, err := a.Git.GetWorkingFileParsedDiff(file, status, staged)
+		return dataResponse(err, diff)
+	}
 }
 
-func (a *App) GetCommitFileParsedDiff(hash string, file string, oldfile string) DataResponse {
-	diff, err := a.Git.GetCommitFileParsedDiff(hash, file, oldfile)
-	return dataResponse(err, diff)
+func (a *App) GetCommitFileParsedDiff(hash string, file string, oldfile string, ignore_size bool) DataResponse {
+	if !ignore_size && a.fileTooLarge(file) {
+		return DataResponse{
+			Response: "too-large",
+		}
+	} else {
+		diff, err := a.Git.GetCommitFileParsedDiff(hash, file, oldfile)
+		return dataResponse(err, diff)
+	}
 }
 
-func (a *App) GetConflictParsedDiff(file string) DataResponse {
-	diff, err := a.Git.GetConflictParsedDiff(file)
-	return dataResponse(err, diff)
+func (a *App) GetConflictParsedDiff(file string, ignore_size bool) DataResponse {
+	if !ignore_size && a.fileTooLarge(file) {
+		return DataResponse{
+			Response: "too-large",
+		}
+	} else {
+		diff, err := a.Git.GetConflictParsedDiff(file)
+		return dataResponse(err, diff)
+	}
 }
 
 func (a *App) StagePartialFile(diff git.Diff, filename string, status string) DataResponse {

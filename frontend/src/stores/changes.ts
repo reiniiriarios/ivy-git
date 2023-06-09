@@ -69,39 +69,50 @@ function createChanges() {
       else {
         // Conflict diff.
         if (xyc === 'c') {
-          GetConflictParsedDiff(file).then(result => {
+          GetConflictParsedDiff(file, false).then(result => {
             parseResponse(result, () => {
-              result.Data.File = file;
-              result.Data.Status = f.Letter;
-              result.Data.Conflict = true;
-              result.Data.Staged = false;
-              result.Data.Committed = false;
-              result.Data.ConflictSelections = [];
+              let diff = {} as Diff;
+              if (result.Response === 'too-large') {
+                diff.TooLarge = true;
+              } else {
+                diff = result.Data;
+              }
+              diff.File = file;
+              diff.Status = f.Letter;
+              diff.Conflict = true;
+              diff.Staged = false;
+              diff.Committed = false;
               update(c => {
                 if (c.c[file]) {
-                  c.c[file].Diff = result.Data;
+                  c.c[file].Diff = diff;
                 }
                 return c;
               });
-              currentDiff.set(result.Data);
+              currentDiff.set(diff);
             });
           });
         }
         // Staged or unstaged diff.
         else {
-          GetWorkingFileParsedDiff(file, f.Letter, xyc === 'x').then(result => {
+          GetWorkingFileParsedDiff(file, f.Letter, xyc === 'x', false).then(result => {
             parseResponse(result, () => {
-              result.Data.File = file;
-              result.Data.Status = f.Letter;
-              result.Data.Staged = xyc === 'x';
-              result.Data.Committed = false;
+              let diff = {} as Diff;
+              if (result.Response === 'too-large') {
+                diff.TooLarge = true;
+              } else {
+                diff = result.Data;
+              }
+              diff.File = file;
+              diff.Status = f.Letter;
+              diff.Staged = xyc === 'x';
+              diff.Committed = false;
               update(c => {
                 if (c[xyc][file]) {
-                  c[xyc][file].Diff = result.Data;
+                  c[xyc][file].Diff = diff;
                 }
                 return c;
               });
-              currentDiff.set(result.Data);
+              currentDiff.set(diff);
             });
           });
         }

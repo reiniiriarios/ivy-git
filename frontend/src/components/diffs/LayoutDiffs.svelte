@@ -6,6 +6,7 @@
   import DiffConflict from "components/diffs/DiffConflict.svelte";
   import DiffConflictActions from "components/diffs/DiffConflictActions.svelte";
   import CommitLink from "components/CommitLink.svelte";
+  import FileTooLarge from "./FileTooLarge.svelte";
 </script>
 
 {#if $currentDiff}
@@ -17,6 +18,10 @@
       <div class="diffs__filename">
         {$currentDiff.File}
       </div>
+    {/if}
+    {#if $currentDiff.TooLarge}
+      <FileTooLarge />
+    {:else if $currentDiff.Committed}
       <DiffCommitted />
     {:else if $currentDiff.Conflict}
       <DiffConflictActions />
