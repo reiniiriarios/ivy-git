@@ -127,6 +127,10 @@ function createChanges() {
         return c;
       });
     },
+    setPartialFromCurrent: async () => {
+      let diff = get(currentDiff);
+      changes.setPartial(diff.Staged ? 'x' : 'y', diff.File, diff.SelectableLines !== diff.SelectedLines);
+    },
     setResolved: async (file: string, resolved: boolean) => {
       update(c => {
         if (c.c[file]) {

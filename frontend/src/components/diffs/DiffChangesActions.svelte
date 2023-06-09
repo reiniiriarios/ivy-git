@@ -60,6 +60,7 @@
       }
     }
     $currentDiff.SelectedLines = selected ? $currentDiff.SelectableLines : 0;
+    changes.setPartialFromCurrent();
   }
 </script>
 

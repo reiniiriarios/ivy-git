@@ -55,13 +55,13 @@
       }
     }
     $currentDiff.SelectedLines += adj;
-    changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
+    changes.setPartialFromCurrent();
   }
 
   function toggleLine(hunk: number, i: number) {
     $currentDiff.Hunks[hunk].Lines[i].Selected = !$currentDiff.Hunks[hunk].Lines[i].Selected;
     $currentDiff.SelectedLines += $currentDiff.Hunks[hunk].Lines[i].Selected ? 1 : -1;
-    changes.setPartial($currentDiff.Staged ? 'x' : 'y', $currentDiff.File, $currentDiff.SelectableLines !== $currentDiff.SelectedLines);
+    changes.setPartialFromCurrent();
   }
 </script>
 
