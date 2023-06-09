@@ -11,7 +11,7 @@ interface Changes {
   c: Change[], // conflicts
 }
 
-interface Change {
+export interface Change {
   File: string;
   Basename: string;
   Dir: string;

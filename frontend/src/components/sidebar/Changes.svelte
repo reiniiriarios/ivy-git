@@ -1,54 +1,58 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
   import { parseResponse } from 'scripts/parse-response';
-  import { changes, mergeConflicts } from 'stores/changes';
+  import { changes, mergeConflicts, type Change } from 'stores/changes';
   import { currentDiff } from 'stores/diffs';
   import { currentTab, branchSelect, repoSelect } from 'stores/ui';
   import { StageFile, UnstageFile, StageAll, UnstageAll, StagePartialFile, UnstagePartialFile } from 'wailsjs/go/main/App'
 
   function stage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
-    if (e.currentTarget.dataset.partial === 'true') {
-      let f = $changes.y[e.currentTarget.dataset.file];
-      StagePartialFile(f.Diff, f.File, f.Letter).then(result => {
-        parseResponse(result, () => {
-          changes.refresh();
-          if ($currentDiff.File === f.File && !$currentDiff.Staged && $currentTab === 'changes') {
-            currentDiff.refresh();
-          }
+    let file: Change = $changes.y[e.currentTarget?.dataset?.file];
+    if (file) {
+      if (e.currentTarget?.dataset?.partial === 'true') {
+        StagePartialFile(file.Diff, file.File, file.Letter).then(result => {
+          parseResponse(result, () => {
+            changes.refresh();
+            if ($currentDiff.File === file.File && !$currentDiff.Staged && $currentTab === 'changes') {
+              currentDiff.refresh();
+            }
+          });
         });
-      });
-    } else {
-      StageFile(e.currentTarget.dataset.file).then(result => {
-        parseResponse(result, () => {
-          changes.refresh();
-          if ($currentDiff.File === e.currentTarget.dataset.file && !$currentDiff.Staged && $currentTab === 'changes') {
-            currentDiff.clear();
-          }
+      } else {
+        StageFile(file.File).then(result => {
+          parseResponse(result, () => {
+            changes.refresh();
+            if ($currentDiff.File === file.File && !$currentDiff.Staged && $currentTab === 'changes') {
+              currentDiff.clear();
+            }
+          });
         });
-      });
+      }
     }
   }
 
   function unstage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
-    if (e.currentTarget.dataset.partial === 'true') {
-      let f = $changes.x[e.currentTarget.dataset.file];
-      UnstagePartialFile(f.Diff, f.File, f.Letter).then(result => {
-        parseResponse(result, () => {
-          changes.refresh();
-          if ($currentDiff.File === f.File && $currentDiff.Staged && $currentTab === 'changes') {
-            currentDiff.refresh();
-          }
+    let file: Change = $changes.x[e.currentTarget?.dataset?.file];
+    if (file) {
+      if (e.currentTarget.dataset.partial === 'true') {
+        UnstagePartialFile(file.Diff, file.File, file.Letter).then(result => {
+          parseResponse(result, () => {
+            changes.refresh();
+            if ($currentDiff.File === file.File && $currentDiff.Staged && $currentTab === 'changes') {
+              currentDiff.refresh();
+            }
+          });
         });
-      });
-    } else {
-      UnstageFile(e.currentTarget.dataset.file).then(result => {
-        parseResponse(result, () => {
-          changes.refresh();
-          if ($currentDiff.File === e.currentTarget.dataset.file && $currentDiff.Staged && $currentTab === 'changes') {
-            currentDiff.clear();
-          }
+      } else {
+        UnstageFile(file.File).then(result => {
+          parseResponse(result, () => {
+            changes.refresh();
+            if ($currentDiff.File === file.File && $currentDiff.Staged && $currentTab === 'changes') {
+              currentDiff.clear();
+            }
+          });
         });
-      });
+      }
     }
   }
 
