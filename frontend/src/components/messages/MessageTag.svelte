@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Checkbox from "components/elements/Checkbox.svelte";
   import { checkRef } from "scripts/check-ref";
   import { messageDialog } from "stores/message-dialog";
 
@@ -77,10 +78,7 @@
     <span>Message</span>
     <input type="text" id="message-dialog-tag-message" bind:value={tagMessageField}>
   </label>
-  <label class="checkbox">
-    <input type="checkbox" id="message-dialog-tag-push">
-    <span></span> Push to Remote
-  </label>
+  <Checkbox display="Push to Remote" id="message-dialog-tag-push" />
 </div>
 <div class="modal__response">
   {#if $messageDialog.confirm}

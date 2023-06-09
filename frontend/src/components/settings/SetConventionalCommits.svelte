@@ -1,12 +1,13 @@
 <script lang="ts">
+  import Checkbox from "components/elements/Checkbox.svelte";
   import { settings } from "stores/settings";
 </script>
 
 <div class="setting">
   <h4 class="setting__name">Conventional Commits</h4>
-  <label class="checkbox">
-    <input type="checkbox" checked={$settings.HighlightConventionalCommits} on:click={settings.toggleHighlightConventionalCommits}>
-    <span></span>
-    Highlight
-  </label>
+  <Checkbox
+    display="Highlight"
+    checked={$settings.HighlightConventionalCommits}
+    on:click={settings.toggleHighlightConventionalCommits}
+  />
 </div>

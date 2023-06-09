@@ -3,6 +3,7 @@
   import MessageTag from 'components/messages/MessageTag.svelte';
   import MessageNewRepo from 'components/messages/MessageNewRepo.svelte';
   import MessageNewRemote from 'components/messages/MessageNewRemote.svelte';
+  import Checkbox from 'components/elements/Checkbox.svelte';
   import MessageCloneRepo from './MessageCloneRepo.svelte';
 
   let blankValue: string;
@@ -83,11 +84,7 @@
           {#if $messageDialog.checkboxes}
             <div class="modal__checkboxes">
               {#each $messageDialog.checkboxes as checkbox}
-                <label class="checkbox">
-                  <input type="checkbox" name="{checkbox.id}" id="checkbox-{checkbox.id}" checked={checkbox.checked}>
-                  <span></span>
-                  {checkbox.label}
-                </label>
+                <Checkbox display={checkbox.label} checked={checkbox.checked} id="checkbox-{checkbox.id}" />
               {/each}
             </div>
           {/if}
