@@ -7,6 +7,8 @@
   export let files: FileStatDir;
 
   function fetchDiff(file: string, oldfile: string = "") {
+    // Since we're switching tabs, clear the old diff away first.
+    currentDiff.clear();
     currentDiff.fetchDiff(hash, file, oldfile);
     currentTab.set('changes');
   }
