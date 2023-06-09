@@ -14,18 +14,11 @@
   export let commit: Commit;
   export let signStatus: string;
 
-  function clearActive() {
-    let all = document.getElementsByClassName('commit');
-    for (let i = 0; i < all.length; i++) {
-      all[i].classList.remove('active');
-    }
-  }
-
   function mouseShowDetails(e: MouseEvent & { currentTarget: HTMLElement }) {
     if (e.currentTarget.dataset.uncommitted === 'true') {
       return;
     }
-    toggleCommitDetails(e.currentTarget);
+    currentCommit.toggle(commit);
   }
 
   function keyShowDetails(e: KeyboardEvent & { currentTarget: HTMLElement }) {
@@ -37,19 +30,10 @@
     }
     e.preventDefault();
     if ([' ', '\n', 'Enter'].includes(e.key)) {
-      toggleCommitDetails(e.currentTarget);
+      currentCommit.toggle(commit);
     } else if ($currentCommit.Hash) {
-      clearActive();
       currentCommit.unset();
     }
-  }
-
-  function toggleCommitDetails(el: HTMLElement) {
-    clearActive();
-    if ($currentCommit.Hash !== commit.Hash) {
-      el.classList.add('active');
-    }
-    currentCommit.toggle(commit);
   }
 
   function formatSubject(s: string): string {
@@ -71,6 +55,7 @@
   class:merge={commit.Merge}
   class:stash={commit.Stash}
   class:head={commit.Hash === $HEAD.Hash && [RepoState.Nil, RepoState.None].includes($repoState)}
+  class:active={commit.Hash === $currentCommit.Hash}
   data-id="{commit.Id}"
   data-hash="{commit.Hash}"
   data-head="{commit.Hash === $HEAD.Hash}"

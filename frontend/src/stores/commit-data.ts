@@ -27,6 +27,8 @@ export interface Commit {
   Merge: boolean;
 }
 
+type Commits = {[hash: string]: Commit}[];
+
 export interface Ref {
   Hash: string;
   Name: string;
@@ -124,6 +126,11 @@ function createCommitData() {
 }
 export const commitData = createCommitData();
 export const commits = derived(commitData, $commitData => $commitData?.commits);
+export const commitsMap = derived(commitData, $commitData => {
+  let map = new Map<string, number>();
+  $commitData.commits.map((c, i) => map.set(c.Hash, i));
+  return map;
+});
 export const HEAD = derived(commitData, $commitData => $commitData?.HEAD);
 export const graph = derived(commitData, $commitData => $commitData?.Graph);
 export const commitsPage = derived(commitData, $commitData => $commitData?.page);

@@ -69,7 +69,6 @@
 
   onMount(() => {
     commitData.refresh();
-    currentCommit.unset();
     commitData.subscribe(() => setAutoCols());
   });
 

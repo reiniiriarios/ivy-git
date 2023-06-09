@@ -162,3 +162,11 @@ code {
     padding: 0 0.25rem;
   }
 }
+
+.linked-commit {
+  &--linkable {
+    color: var(--color-links);
+    text-decoration: none;
+    cursor: pointer;
+  }
+}

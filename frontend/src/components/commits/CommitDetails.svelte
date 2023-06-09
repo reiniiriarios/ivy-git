@@ -1,5 +1,6 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
+  import CommitLink from 'components/CommitLink.svelte';
   import CommitDetailsFiles from 'components/commits/CommitDetailsFiles.svelte';
   import { resetDirs } from 'scripts/commit-details-collapse';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
@@ -42,7 +43,7 @@
           <th>Parents</th>
           <td>
             {#each commit.Parents as p, i}
-              {p}
+              <CommitLink hash={p} />
               {#if i < commit.Parents.length}<br>{/if}
             {/each}
           </td>

@@ -5,13 +5,14 @@
   import DiffCommitted from "components/diffs/DiffCommitted.svelte";
   import DiffConflict from "components/diffs/DiffConflict.svelte";
   import DiffConflictActions from "components/diffs/DiffConflictActions.svelte";
+  import CommitLink from "components/CommitLink.svelte";
 </script>
 
 {#if $currentDiff}
   <div class="diffs">
     {#if $currentDiff.Committed}
       <div class="diffs__hash">
-        {$currentDiff.Hash}
+        <CommitLink hash={$currentDiff.Hash} />
       </div>
       <div class="diffs__filename">
         {$currentDiff.File}

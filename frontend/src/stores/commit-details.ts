@@ -47,23 +47,23 @@ function createCurrentCommit() {
 
   return {
     subscribe,
-    toggle: (commit: Commit) =>
-      update((c) => {
-        if (commit.Hash === c.Hash) {
-          commitDetails.set({} as CommitDetails);
-          commitDiffSummary.set({} as FileStatDir);
-          commitSignature.set({} as CommitSignature);
-          return {} as Commit;
-        }
-        commitDetails.fetch(commit.Hash);
-        // Clear first, wait for data to display.
-        commitDiffSummary.set({} as FileStatDir);
-        commitDiffSummary.fetch(commit.Stash ? commit.Parents[1] : commit.Hash);
-        // Clear first, wait for data to display.
-        commitSignature.set({} as CommitSignature);
-        commitSignature.fetch(commit.Hash);
-        return commit;
-      }),
+    toggle: (commit: Commit) => {
+      if (get(currentCommit).Hash === commit.Hash) {
+        currentCommit.unset();
+      } else {
+        currentCommit.set(commit);
+      }
+    },
+    set: (commit: Commit) => {
+      set(commit);
+      commitDetails.fetch(commit.Hash);
+      // Clear first, wait for data to display.
+      commitDiffSummary.set({} as FileStatDir);
+      commitDiffSummary.fetch(commit.Stash ? commit.Parents[1] : commit.Hash);
+      // Clear first, wait for data to display.
+      commitSignature.set({} as CommitSignature);
+      commitSignature.fetch(commit.Hash);
+    },
     unset: () => {
       commitDetails.set({} as CommitDetails);
       commitDiffSummary.set({} as FileStatDir);
