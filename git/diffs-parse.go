@@ -135,9 +135,8 @@ func (d *Diff) parse() error {
 			if len(d.Hunks[current_hunk].Lines) < 1 {
 				return errors.New("malformed diff, invalid length")
 			}
-			// Last line didn't have a newline, don't add this line, and we're done
+			// Last line didn't have a newline, don't add this line, just mark the previous
 			d.Hunks[current_hunk].Lines[len(d.Hunks[current_hunk].Lines)-1].NoNewline = true
-			return nil
 		case "+":
 			d.SelectableLines++
 			d.SelectedLines++

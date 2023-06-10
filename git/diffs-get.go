@@ -99,7 +99,7 @@ func (g *Git) GetWorkingFileParsedDiff(file string, status string, staged bool) 
 }
 
 func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (string, []string, error) {
-	cmd := []string{"diff", "-w", "--no-ext-diff", "--patch-with-raw", "-z", "--no-color"}
+	cmd := []string{"diff", "-w", "--no-ext-diff", "--patch", "-z", "--no-color"}
 
 	var d string
 	flags := []string{}
@@ -175,7 +175,7 @@ func (g *Git) GetCommitFileParsedDiff(hash string, file string, oldfile string) 
 }
 
 func (g *Git) getCommitFileDiff(hash string, file string, oldfile string) (string, error) {
-	cmd := []string{"log", hash, "-w", "-m", "-1", "--first-parent", "--patch-with-raw", "-z", "--no-color", "--", file}
+	cmd := []string{"log", hash, "-w", "-m", "-1", "--first-parent", "--patch", "-z", "--no-color", "--", file}
 	if oldfile != "" {
 		cmd = append(cmd, oldfile)
 	}

@@ -126,10 +126,9 @@
       position: relative;
   
       &--nonewline {
-        &::after {
-          position: absolute;
-          left: 0;
-          bottom: -1.5rem;
+        span::after {
+          position: relative;
+          left: 0.5rem;
           height: 1rem;
           padding-left: 1.5rem;
           pointer-events: none;

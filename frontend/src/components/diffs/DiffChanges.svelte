@@ -101,7 +101,9 @@
                 <div class="diff__line-toggle"></div>
                 <div class="diff__line-no">{line.Type === 'DiffDeleteLine' ? line.OldLineNo : line.NewLineNo}</div>
                 <div class="diff__line-type"></div>
-                <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>{line.Line}</div>
+                <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
+                  <span>{line.Line}</span>
+                </div>
               </div>
             </div>
           {:else}
@@ -111,7 +113,9 @@
                 <div class="diff__line-toggle"></div>
                 <div class="diff__line-no">{line.NewLineNo}</div>
                 <div class="diff__line-type"></div>
-                <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>{line.Line}</div>
+                <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
+                  <span>{line.Line}</span>
+                </div>
               </div>
             </div>
           {/if}
