@@ -46,7 +46,7 @@ func (g *Git) ParseGitError(stderr string, err error) *GitError {
 	} else if e.Stderr != "" {
 		// If not a standard error, the message will simply be stderr
 		e.Message = e.Stderr
-	} else if err.Error() != "" {
+	} else if err != nil && err.Error() != "" {
 		e.Message = err.Error()
 	} else {
 		e.Message = fmt.Sprintf("Unrecognized git error occurred [%d]", e.ErrorCode)
@@ -71,13 +71,15 @@ func (e *GitError) parse() {
 		}
 	}
 	// If stderr doesn't match, look for exec or go errors.
-	for _, r := range getGitErrorRegexes() {
-		regex := regexp.MustCompile(r.Regex)
-		matches := regex.FindStringSubmatch(e.Err.Error())
-		if matches != nil {
-			e.ErrorCode = r.Code
-			e.ErrorValues = matches[1:]
-			return
+	if e.Err != nil {
+		for _, r := range getGitErrorRegexes() {
+			regex := regexp.MustCompile(r.Regex)
+			matches := regex.FindStringSubmatch(e.Err.Error())
+			if matches != nil {
+				e.ErrorCode = r.Code
+				e.ErrorValues = matches[1:]
+				return
+			}
 		}
 	}
 }
@@ -149,6 +151,7 @@ const (
 	NoCommitsYet
 	UnableToAccessUrl
 	MustForceDeleteBranch
+	ReplaceLineEndings
 )
 
 type GitErrorRegex struct {
@@ -424,6 +427,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Code:  MustForceDeleteBranch,
 			Regex: "error: The branch '(.+?)' is not fully merged",
 		},
+		{
+			Code:  ReplaceLineEndings,
+			Regex: "warning: ([A-Z]+) will be replaced by ([A-Z]+) in (.+).",
+		},
 	}
 }
 
@@ -532,6 +539,8 @@ func getGitErrorMessage(code ErrorCode) string {
 		return "An error occurred while trying to access the url '%s'. (%s)"
 	case MustForceDeleteBranch:
 		return "Unable to delete branch '%s', as it is not fully merged. Branch must be force-deleted."
+	case ReplaceLineEndings:
+		return "%s will be replaced by %s."
 	case MergeWithLocalChanges:
 	case RebaseWithLocalChanges:
 	case GPGFailedToSignData:

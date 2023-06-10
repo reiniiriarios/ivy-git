@@ -30,6 +30,7 @@ const (
 type Diff struct {
 	File            string
 	Raw             string
+	Flags           []string
 	Hunks           []DiffHunk
 	Binary          bool
 	Empty           bool

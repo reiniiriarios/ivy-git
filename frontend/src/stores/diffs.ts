@@ -16,6 +16,7 @@ export const DiffConflictType = {
 export interface Diff {
   File: string;
   Raw: string;
+  Flags: string[];
   Hunks: DiffHunk[];
   Binary: boolean;
   Empty: boolean;

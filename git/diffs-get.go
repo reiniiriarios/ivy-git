@@ -83,12 +83,13 @@ func (g *Git) findMergeBase(hash1 string, hash2 string) (string, error) {
 }
 
 func (g *Git) GetWorkingFileParsedDiff(file string, status string, staged bool) (Diff, error) {
-	raw, err := g.getWorkingFileDiff(file, status, staged)
+	raw, flags, err := g.getWorkingFileDiff(file, status, staged)
 	if err != nil {
 		return Diff{}, err
 	}
 	diff := Diff{
-		Raw: raw,
+		Raw:   raw,
+		Flags: flags,
 	}
 	err = diff.parse()
 	if err != nil {
@@ -97,30 +98,42 @@ func (g *Git) GetWorkingFileParsedDiff(file string, status string, staged bool) 
 	return diff, nil
 }
 
-func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (string, error) {
+func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (string, []string, error) {
 	cmd := []string{"diff", "-w", "--no-ext-diff", "--patch-with-raw", "-z", "--no-color"}
 
 	var d string
+	flags := []string{}
+	var err error
 
+	// UNTRACKED FILES
 	if status == FileUntracked {
+		cmd = append(cmd, "--no-index", "--", "/dev/null", file)
+		d, err = g.RunCwdWithStderr(cmd...)
+		if errorCode(err) == ReplaceLineEndings {
+			flags = append(flags, "replace-line-endings")
+		}
 		// --no-index emulates exit codes from `diff`, will return 1 when changes found
 		// https://github.com/git/git/blob/1f66975deb8402131fbf7c14330d0c7cdebaeaa2/diff-no-index.c#L300
-		cmd = append(cmd, "--no-index", "--", "/dev/null", file)
-		d, _ = g.RunCwdNoError(cmd...)
+		if err != nil && errorCode(err) != ExitStatus1 {
+			return "", flags, err
+		}
 	} else {
 		if staged {
+			// STAGED TRACKED FILES
 			cmd = append(cmd, "--cached", "--", file)
 		} else {
+			// UNSTAGED TRACKED FILES
 			cmd = append(cmd, "--", file)
 		}
-		var err error
-		d, err = g.RunCwd(cmd...)
-		if err != nil {
-			return "", err
+		d, err = g.RunCwdWithStderr(cmd...)
+		if errorCode(err) == ReplaceLineEndings {
+			flags = append(flags, "replace-line-endings")
+		} else if err != nil {
+			return "", flags, err
 		}
 	}
 
-	return d, nil
+	return d, flags, nil
 }
 
 func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
