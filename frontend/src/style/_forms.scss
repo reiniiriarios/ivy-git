@@ -22,17 +22,12 @@ textarea {
   }
 }
 
-textarea {
-  resize: none;
+input[type="text"][readonly] {
+  border: 0;
 }
 
-.blank-field {
-  span {
-    display: block;
-    padding: 0 0 0.25rem 0;
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-  }
+textarea {
+  resize: none;
 }
 
 .checkbox {
@@ -218,5 +213,30 @@ textarea {
       visibility: visible;
       pointer-events: all;
     }
+  }
+}
+
+.text-input,
+.file-input {
+  span {
+    display: block;
+    padding: 0 0 0.25rem 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+}
+
+.file-input {
+  &__input {
+    width: 80%;
+    margin-bottom: 0.5rem;
+    height: 2.5rem;
+    border: 0;
+  }
+
+  &__btn {
+    width: 19%;
+    margin-bottom: 0.5rem;
+    height: 2.5rem;
   }
 }

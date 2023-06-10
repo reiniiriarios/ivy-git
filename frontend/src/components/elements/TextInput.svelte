@@ -10,7 +10,7 @@
   $: if (validate) valid = validate(value);
 </script>
 
-<label class={classes}>
+<label class="text-input {classes}">
   {#if display}
     <span>{display}</span>
   {/if}

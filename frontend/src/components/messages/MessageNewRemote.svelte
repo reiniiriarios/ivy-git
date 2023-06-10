@@ -37,7 +37,6 @@
   <TextInput
     use={(e) => e.focus()}
     display="Remote Name"
-    classes="blank-field"
     id="message-dialog-remote-name"
     validate={validateName}
     bind:value={remoteName}
@@ -45,7 +44,6 @@
   />
   <TextInput
     display="Fetch URL"
-    classes="blank-field"
     id="message-dialog-remote-fetch"
     validate={validUrl}
     bind:value={fetchUrl}
@@ -53,7 +51,6 @@
   />
   <TextInput
     display="Push URL (Optional)"
-    classes="blank-field"
     id="message-dialog-remote-push"
     validate={validUrl}
     bind:value={pushUrl}

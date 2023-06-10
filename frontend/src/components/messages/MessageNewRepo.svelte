@@ -1,61 +1,37 @@
 <script lang="ts">
-  import { parseResponse } from "scripts/parse-response";
+  import FileInput from "components/elements/FileInput.svelte";
+  import TextInput from "components/elements/TextInput.svelte";
   import { appData } from "stores/app-data";
   import { messageDialog } from "stores/message-dialog";
-  import { DirExists, SelectDirectory } from "wailsjs/go/main/App";
+  import { DirExists } from "wailsjs/go/main/App";
 
   let repoName: string;
   let repoLocation: string = $appData.RecentRepoDir;
   let repoValid: boolean = false;
 
-  const focusBlank = (e: HTMLInputElement) => {
-    e.focus();
-  }
+  const validateName = (name: string) => /^[a-z0-9_\-]+?$/i.test(name);
 
-  function validateName() {
-    repoValid = /^[a-z0-9_\-]+?$/i.test(repoName);
-    if (repoValid && repoLocation) {
-      DirExists(repoName, repoLocation).then(exists => repoValid = !exists);
-    }
-  }
-
-  function chooseDir() {
-    SelectDirectory().then(result => {
-      parseResponse(result, () => {
-        if (result.Response !== 'none') {
-          repoLocation = result.Data;
-          if (repoValid && repoName) {
-            DirExists(repoName, repoLocation).then(exists => repoValid = !exists);
-          }
-        }
-      });
-    });
+  const validateRepoNameDir = () => {
+    DirExists(repoName, repoLocation).then(exists => repoValid = !exists);
   }
 </script>
 
 <div class="modal__new-repo">
-  <label class="blank-field">
-    <span>Repo Name</span>
-    <input
-      use:focusBlank
-      type="text"
-      id="message-dialog-repo-name"
-      class:invalid={repoName && !repoValid}
-      bind:value={repoName}
-      on:input={validateName}
-    >
-  </label>
-  <label class="blank-field">
-    <span>Repo Location</span>
-    <input
-      type="text"
-      id="message-dialog-repo-location"
-      bind:value={repoLocation}
-      on:click={chooseDir}
-      readonly
-    >
-    <button class="btn" id="message-dialog-repo-location-btn" on:click={chooseDir}>Choose</button>
-  </label>
+  <TextInput
+    use={(e) => e.focus()}
+    display="Repo Name"
+    id="message-dialog-repo-name"
+    validate={validateName}
+    bind:value={repoName}
+    bind:valid={repoValid}
+  />
+  <FileInput
+    display="Repo Location"
+    id="message-dialog-repo-location"
+    directory={true}
+    bind:value={repoLocation}
+    on:change={validateRepoNameDir}
+  />
 </div>
 
 <div class="modal__response">

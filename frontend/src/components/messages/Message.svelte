@@ -69,7 +69,6 @@
               <TextInput
                 use={(e) => e.focus()}
                 display={$messageDialog.blank}
-                classes="blank-field"
                 id="message-dialog-blank"
                 validate={validateBlank}
                 bind:value={blankValue}

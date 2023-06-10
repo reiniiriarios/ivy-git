@@ -24,7 +24,6 @@
   <TextInput
     use={(e) => e.focus()}
     display="Tag Name"
-    classes="blank-field"
     id="message-dialog-tag-name"
     validate={checkRef}
     bind:value={tagName}
@@ -32,7 +31,6 @@
   />
   <TextInput
     display="Message"
-    classes="blank-field"
     id="message-dialog-tag-message"
     bind:value={tagMessage}
   />
