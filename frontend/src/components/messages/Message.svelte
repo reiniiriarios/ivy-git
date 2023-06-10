@@ -5,9 +5,10 @@
   import MessageNewRemote from 'components/messages/MessageNewRemote.svelte';
   import Checkbox from 'components/elements/Checkbox.svelte';
   import MessageCloneRepo from './MessageCloneRepo.svelte';
+  import TextInput from 'components/elements/TextInput.svelte';
 
+  let blankValid: boolean;
   let blankValue: string;
-  let blankValid: boolean = true;
 
   messageDialog.subscribe(() => {
     blankValue = null;
@@ -22,14 +23,11 @@
     }
   });
 
-  const focusBlank = (e: HTMLInputElement) => {
-    e.focus();
-  }
-
-  const validateBlank = (e: InputEvent & { currentTarget: EventTarget & HTMLInputElement }) => {
+  const validateBlank = (value: string): boolean => {
     if ($messageDialog.validateBlank) {
-      blankValid = !e.currentTarget.value ? true : $messageDialog.validateBlank(e.currentTarget.value);
+      return !value ? true : $messageDialog.validateBlank(value);
     }
+    return true;
   }
 </script>
 
@@ -68,17 +66,15 @@
           {/if}
           {#if $messageDialog.blank}
             <div class="modal__blank">
-              <label class="blank-field">
-                <span>{$messageDialog.blank}</span>
-                <input
-                  use:focusBlank
-                  type="text"
-                  id="message-dialog-blank"
-                  bind:value={blankValue}
-                  class:invalid={blankValue && !blankValid}
-                  on:input={validateBlank}
-                >
-              </label>
+              <TextInput
+                use={(e) => e.focus()}
+                display={$messageDialog.blank}
+                classes="blank-field"
+                id="message-dialog-blank"
+                validate={validateBlank}
+                bind:value={blankValue}
+                bind:valid={blankValid}
+              />
             </div>
           {/if}
           {#if $messageDialog.checkboxes}

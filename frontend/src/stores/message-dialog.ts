@@ -158,7 +158,6 @@ function createMessage() {
     addTagData: () => {
       return {
         name: (document.getElementById('message-dialog-tag-name') as HTMLInputElement).value,
-        type: (document.querySelector('input[name="message-dialog-tag-type"]:checked') as HTMLInputElement).value,
         message: (document.getElementById('message-dialog-tag-message') as HTMLInputElement).value,
         push: (document.getElementById('message-dialog-tag-push') as HTMLInputElement).checked,
       }

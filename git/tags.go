@@ -44,7 +44,7 @@ func (g *Git) DeleteTag(name string) error {
 	return err
 }
 
-func (g *Git) AddTag(hash string, name string, annotated bool, message string, push bool) error {
+func (g *Git) AddTag(hash string, name string, message string, push bool) error {
 	if hash == "" {
 		return errors.New("no commit hash specified")
 	}
@@ -53,10 +53,7 @@ func (g *Git) AddTag(hash string, name string, annotated bool, message string, p
 	}
 
 	var err error
-	if annotated {
-		if message == "" {
-			message = name
-		}
+	if message != "" {
 		_, err = g.RunCwd("tag", "-a", name, hash, "-m", message)
 	} else {
 		_, err = g.RunCwd("tag", name, hash)

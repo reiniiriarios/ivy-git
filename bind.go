@@ -239,8 +239,8 @@ func (a *App) PushTag(name string) DataResponse {
 	return dataResponse(err, true)
 }
 
-func (a *App) AddTag(hash string, name string, annotated bool, message string, push bool) DataResponse {
-	err := a.Git.AddTag(hash, name, annotated, message, push)
+func (a *App) AddTag(hash string, name string, message string, push bool) DataResponse {
+	err := a.Git.AddTag(hash, name, message, push)
 	return dataResponse(err, true)
 }
 

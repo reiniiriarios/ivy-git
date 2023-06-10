@@ -8,7 +8,7 @@ function addTag(hash: string) {
     message: `Add tag to commit <strong>${hash.substring(0, 7)}</strong>:`,
     callbackConfirm: () => {
       let data = messageDialog.addTagData();
-      AddTag(hash, data.name, data.type === 'annotated', data.message, data.push).then(r => {
+      AddTag(hash, data.name, data.message, data.push).then(r => {
         parseResponse(r, () => {
           commitData.refresh();
           commitSignData.refresh();

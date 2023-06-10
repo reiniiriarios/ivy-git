@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TextInput from "components/elements/TextInput.svelte";
   import { messageDialog } from "stores/message-dialog";
 
   let remoteName: string;
@@ -8,10 +9,6 @@
   let fetchValid: boolean = false;
   let pushValid: boolean = false;
 
-  const focusBlank = (e: HTMLInputElement) => {
-    e.focus();
-  }
-
   messageDialog.subscribe(() => {
     remoteName = null;
     fetchUrl = null;
@@ -20,8 +17,6 @@
   });
 
   const validateName = () => nameValid = /^[a-z0-9_\-]+?$/i.test(remoteName);
-  const validateFetch = () => fetchValid = validUrl(fetchUrl);
-  const validatePush = () => pushValid = validUrl(pushUrl);
 
   const validUrl = (url: string): boolean => {
     // This is very difficult to validate for all possible URLs
@@ -39,37 +34,31 @@
 </script>
 
 <div class="modal__add-tag">
-  <label class="blank-field">
-    <span>Remote Name</span>
-    <input
-      use:focusBlank
-      type="text"
-      id="message-dialog-remote-name"
-      class:invalid={remoteName && !nameValid}
-      bind:value={remoteName}
-      on:input={validateName}
-    >
-  </label>
-  <label class="blank-field">
-    <span>Fetch URL</span>
-    <input
-      type="text"
-      id="message-dialog-remote-fetch"
-      class:invalid={fetchUrl && !fetchValid}
-      bind:value={fetchUrl}
-      on:input={validateFetch}
-    >
-  </label>
-  <label class="blank-field">
-    <span>Push URL (Optional)</span>
-    <input
-      type="text"
-      id="message-dialog-remote-push"
-      class:invalid={pushUrl && !pushValid}
-      bind:value={pushUrl}
-      on:input={validatePush}
-    >
-  </label>
+  <TextInput
+    use={(e) => e.focus()}
+    display="Remote Name"
+    classes="blank-field"
+    id="message-dialog-remote-name"
+    validate={validateName}
+    bind:value={remoteName}
+    bind:valid={nameValid}
+  />
+  <TextInput
+    display="Fetch URL"
+    classes="blank-field"
+    id="message-dialog-remote-fetch"
+    validate={validUrl}
+    bind:value={fetchUrl}
+    bind:valid={fetchValid}
+  />
+  <TextInput
+    display="Push URL (Optional)"
+    classes="blank-field"
+    id="message-dialog-remote-push"
+    validate={validUrl}
+    bind:value={pushUrl}
+    bind:valid={pushValid}
+  />
 </div>
 <div class="modal__response">
   {#if $messageDialog.confirm}
