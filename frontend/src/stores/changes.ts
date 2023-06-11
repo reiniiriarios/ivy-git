@@ -113,6 +113,7 @@ function createChanges() {
                 return c;
               });
               currentDiff.set(diff);
+              currentDiff.fetchHighlight(file);
             });
           });
         }

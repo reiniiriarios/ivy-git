@@ -466,3 +466,9 @@ func (a *App) CreateBranchFromStash(stash string, branch_name string) DataRespon
 	err := a.Git.CreateBranchFromStash(stash, branch_name)
 	return dataResponse(err, false)
 }
+
+func (a *App) GetHighlightedFile(file string) DataResponse {
+	path := filepath.Join(a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo].Directory, file)
+	data, err := files.HighlightFile(path)
+	return dataResponse(err, data)
+}

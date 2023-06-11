@@ -1,6 +1,6 @@
 import { derived, get, writable } from "svelte/store";
 import { changes } from "./changes";
-import { GetCommitFileParsedDiff, ResolveDiffConflicts } from "wailsjs/go/main/App";
+import { GetCommitFileParsedDiff, GetHighlightedFile, ResolveDiffConflicts } from "wailsjs/go/main/App";
 import { parseResponse } from "scripts/parse-response";
 
 type OursTheirs = number;
@@ -32,6 +32,8 @@ export interface Diff {
   Conflict: boolean;
   Hash: string;
   Resolved: boolean;
+  // Separate fetch
+  Highlight: HighlightedLines;
 }
 
 export interface DiffHunk {
@@ -64,6 +66,15 @@ interface DiffConflict {
 	Resolution: OursTheirs;
 }
 
+type HighlightedLines = {[line: number]: string}[];
+
+interface HighlightedFile {
+	Size: number;
+	TooLarge: boolean;
+	Lang: string;
+	Highlight: HighlightedLines;
+}
+
 function createCurrentDiff() {
   const { subscribe, set, update } = writable({} as Diff);
 
@@ -86,8 +97,24 @@ function createCurrentDiff() {
           diff.Hash = hash;
           diff.File = oldfile ? `${file} -> ${oldfile}` : file; // ???
           set(diff);
+          currentDiff.fetchHighlight(file);
         });
       });
+    },
+    // Fetch syntax highlighting for file.
+    fetchHighlight: async (file: string) => {
+      GetHighlightedFile(file).then(result => {
+        parseResponse(result, () => {
+          let f = result.Data as HighlightedFile;
+          if (!f.TooLarge && f.Lang) {
+            update(diff => {
+              diff.Highlight = f.Highlight;
+              return diff;
+            });
+            console.log(f.Highlight);
+          }
+        });
+      })
     },
     // Refetch the current diff.
     refresh: () => {

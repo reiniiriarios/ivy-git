@@ -3,6 +3,7 @@ module ivy-git
 go 1.18
 
 require (
+	github.com/alecthomas/chroma/v2 v2.7.0
 	github.com/go-enry/go-enry/v2 v2.8.0
 	github.com/gomarkdown/markdown v0.0.0-20230322041520-c84983bdbf2a
 	github.com/google/uuid v1.3.0
@@ -17,6 +18,7 @@ require github.com/go-enry/go-oniguruma v1.2.1 // indirect
 require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
+	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/google/pprof v0.0.0-20211214055906-6f57359322fd // indirect

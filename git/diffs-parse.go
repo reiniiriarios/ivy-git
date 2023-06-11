@@ -147,6 +147,7 @@ func (d *Diff) parse() error {
 				RawLineNo: int64(ln),
 				OldLineNo: -1,
 				NewLineNo: after,
+				CurLineNo: after,
 				MiniHunk:  mini_hunk,
 				Selected:  true,
 			})
@@ -161,6 +162,7 @@ func (d *Diff) parse() error {
 				RawLineNo: int64(ln),
 				OldLineNo: before,
 				NewLineNo: -1,
+				CurLineNo: -1,
 				MiniHunk:  mini_hunk,
 				Selected:  true,
 			})
@@ -177,6 +179,7 @@ func (d *Diff) parse() error {
 				RawLineNo: int64(ln),
 				OldLineNo: before,
 				NewLineNo: after,
+				CurLineNo: after,
 				MiniHunk:  -1,
 			})
 			before++

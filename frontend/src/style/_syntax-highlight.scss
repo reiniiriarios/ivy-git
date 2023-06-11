@@ -1,0 +1,42 @@
+.highlight {
+  .err { color: #d80000 } // Error
+  .k  { color: #66d9ef } // Keyword
+  .kt { color: #f92672 } // KeywordType
+  .kd { color: #f92672 } // KeywordDeclaration
+  .kc { color: #f92672 } // KeywordConstant
+  .kn { color: #66d9ef } // KeywordNamespace
+  .kr { color: #f92672 } // KeywordReserved
+  .n  { color: #a6e22e } // Name
+  .nc { color: #a6e22e } // NameClass
+  .nd { color: #a6e22e } // NameDecorator
+  .nf { color: #a6e22e } // NameFunction
+  .nx { color: #a6e22e } // NameOther
+  .nb { color: #66d9ef } // NameBuiltin
+  .nt { color: #a6e22e } // NameTag
+  .na { color: #66d9ef } // NameAttribute
+  .ni { color: #66d9ef } // NameEntity
+  .nn { color: #a6e22e } // NameNamespace
+  .s  { color: #e6db74 } // String / LiteralString
+  .s1 { color: #e6db74 } // StringSingle
+  .s2 { color: #e6db74 } // StringDouble
+  .sb { color: #e6db74 } // StringBacktick
+  .si { color: #66d9ef } // StringInterpol
+  .o  { color: #e0f8f8 } // Operator
+  .ow { color: #f92672 } // OperatorWord
+  .c  { color: #75715e } // Comment
+  .c1 { color: #7571e3 } // CommentSingle
+  .cp { color: #5e7175 } // CommentPreproc
+  .p  { color: #f8f8f2 } // Punctuation
+  .m  { color: #f92672 } // Number
+  .mb { color: #f92672 } // NumberBin
+  .mf { color: #f92672 } // NumberFloat
+  .mh { color: #f92672 } // NumberHex
+  .mi { color: #f92672 } // NumberInteger
+  .il { color: #f92672 } // NumberIntegerLong
+  .mo { color: #f92672 } // NumberOct
+  .ge { font-style: italic; } // GenericEmph
+  .gh { font-weight: bold; } // GenericHeading
+  .gp { font-weight: bold; } // GenericPrompt
+  .gs { font-weight: bold; } // GenericStrong
+  .gu { font-weight: bold; } // GenericSubheading
+}

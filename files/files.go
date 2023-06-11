@@ -4,6 +4,16 @@ import (
 	"os"
 )
 
+type File struct {
+	Filename  string
+	Filepath  string
+	Size      int64
+	TooLarge  bool
+	Raw       string
+	Lang      string
+	Highlight map[int]string
+}
+
 const MAX_FILE_SIZE = 25 << 20 // 25 MiB
 
 func FileTooLarge(file string) bool {
