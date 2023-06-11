@@ -89,6 +89,7 @@ function createChanges() {
                 return c;
               });
               currentDiff.set(diff);
+              currentDiff.fetchHighlight();
             });
           });
         }
@@ -113,7 +114,7 @@ function createChanges() {
                 return c;
               });
               currentDiff.set(diff);
-              currentDiff.fetchHighlight(file);
+              currentDiff.fetchHighlight();
             });
           });
         }

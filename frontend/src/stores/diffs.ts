@@ -99,19 +99,22 @@ function createCurrentDiff() {
           diff.Hash = hash;
           diff.File = oldfile ? `${file} -> ${oldfile}` : file; // ???
           set(diff);
-          currentDiff.fetchHighlight(file);
+          currentDiff.fetchHighlight();
         });
       });
     },
     // Fetch syntax highlighting for file.
-    fetchHighlight: async (file: string) => {
+    fetchHighlight: async () => {
+      let diff = get(currentDiff);
+      if (diff.TooLarge || diff.Binary) {
+        return;
+      }
       // Get lines to highlight from diff hunks.
       let ranges: number[][] = [];
-      let hunks = get(currentDiff).Hunks;
-      if (hunks.length) {
-        hunks.map(h => ranges.push([h.StartCur, h.EndCur]));
+      if (diff.Hunks.length) {
+        diff.Hunks.map(h => ranges.push([h.StartCur, h.EndCur]));
       }
-      GetHighlightedFileRange(file, ranges).then(result => {
+      GetHighlightedFileRange(diff.File, ranges).then(result => {
         parseResponse(result, () => {
           let f = result.Data as HighlightedFile;
           if (!f.TooLarge && f.Lang) {

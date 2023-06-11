@@ -111,7 +111,17 @@
                 : ''
               }</div>
               <div class="diff__line-type"></div>
-              <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>{line.Line}</div>
+              <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
+                <span class="diff__line-code-contents highlight">
+                  {#if $currentDiff.Highlight && $currentDiff.Highlight[line.CurLineNo]}
+                    {@html $currentDiff.Highlight[line.CurLineNo]}
+                  {:else if $currentDiff.Highlight}
+                    <span class="mute">{line.Line}</span>
+                  {:else}
+                    {line.Line}
+                  {/if}
+                </span>
+              </div>
             </div>
           </div>
         {/each}
