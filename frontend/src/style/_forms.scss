@@ -218,6 +218,8 @@ textarea {
 
 .text-input,
 .file-input {
+  display: block;
+
   span {
     display: block;
     padding: 0 0 0.25rem 0;

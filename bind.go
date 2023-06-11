@@ -483,3 +483,18 @@ func (a *App) GetHighlightedFileRange(file string, ranges [][2]int) DataResponse
 	data, err := files.HighlightFileSelection(path, ranges)
 	return dataResponse(err, data)
 }
+
+func (a *App) GetGitConfigLocal() DataResponse {
+	cfg, err := a.Git.GetConfigLocal()
+	return dataResponse(err, cfg)
+}
+
+func (a *App) GetGitConfigGlobal() DataResponse {
+	cfg, err := a.Git.GetConfigGlobal()
+	return dataResponse(err, cfg)
+}
+
+func (a *App) GetGitConfigSystem() DataResponse {
+	cfg, err := a.Git.GetConfigSystem()
+	return dataResponse(err, cfg)
+}
