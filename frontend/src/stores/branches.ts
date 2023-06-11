@@ -58,7 +58,7 @@ function createCurrentBranch() {
             if (cTab === 'tree') {
               commitData.refresh();
               commitSignData.refresh();
-              currentCommit.unset();
+              currentCommit.clear();
             } else if (cTab === 'details') {
               remoteData.refresh();
               cloc.fetch();

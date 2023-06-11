@@ -5,6 +5,8 @@
   import { mergeConflicts } from 'stores/changes';
   import { RepoState, repoState } from 'stores/repo-state';
   import { messageDialog } from 'stores/message-dialog';
+  import deleteBranch from 'actions/branch/delete';
+  import { currentRepo, repos } from 'stores/repos';
 
   const newBranch = () => createBranch();
 
@@ -67,6 +69,9 @@
           {#each Object.entries($branches) as [_, branch]}
             <li class="sidebar-dropdown__item" class:sidebar-dropdown__item--selected={branch?.Name === $currentBranch.Name}>
               <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>{branch?.Name}</button>
+              {#if branch?.Name && branch.Name !== $currentBranch.Name && branch.Name !== $repos[$currentRepo].Main }
+                <button class="list-btn x" on:click={() => deleteBranch(branch.Name, !!branch.Upstream)}>&times;</button>
+              {/if}
             </li>
           {/each}
         {/if}
