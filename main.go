@@ -51,7 +51,7 @@ func main() {
 			WindowIsTranslucent: false,
 		},
 		Debug: options.Debug{
-			OpenInspectorOnStartup: false,
+			OpenInspectorOnStartup: true,
 		},
 	})
 
