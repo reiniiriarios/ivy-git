@@ -1,5 +1,4 @@
 import { parseResponse } from "scripts/parse-response";
-import { currentBranch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commit-data";
 import { messageDialog } from "stores/message-dialog";
 import { DropCommit } from "wailsjs/go/main/App";
@@ -14,7 +13,6 @@ function dropCommit(hash: string) {
         parseResponse(result, () => {
           commitData.refresh();
           commitSignData.refresh();
-          currentBranch.clear();
         });
       });
     },

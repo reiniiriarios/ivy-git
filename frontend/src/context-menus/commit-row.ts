@@ -12,6 +12,7 @@ import cherryPick from "actions/commit/cherry-pick";
 import revertCommit from "actions/commit/revert";
 import softReset from "actions/commit/reset-soft";
 import hardReset from "actions/commit/reset-hard";
+import dropCommit from "actions/commit/drop";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -56,11 +57,11 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
       text: "Revert Commit",
       callback: () => revertCommit(e.dataset.hash),
     },
-    // todo: do not enable until there's a safety check dumdum
-    // {
-    //   text: "Drop Commit",
-    //   callback: () => dropCommit(e.dataset.hash),
-    // }
+    {
+      // todo: safety check for this one, woof.
+      text: "Drop Commit",
+      callback: () => dropCommit(e.dataset.hash),
+    }
   ]);
 
   if (e.dataset.hash !== get(HEAD).Hash) {
