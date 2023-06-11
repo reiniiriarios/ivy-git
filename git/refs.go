@@ -248,13 +248,69 @@ func (g *Git) getUpstreamsForRefs() (map[string]string, error) {
 		return upstream, err
 	}
 
+	// refs/remotes/origin/*
+	origin_remotes := []string{}
+	// refs/remotes/[not origin]*
+	remotes := []string{}
+
 	refs_lines := parseLines(refs)
 	for _, line := range refs_lines {
 		parts := strings.Split(line, GIT_LOG_SEP)
 		if len(parts) == 2 {
 			upstream[parts[0]] = parts[1]
+		} else {
+			upstream[parts[0]] = ""
+		}
+		if strings.HasPrefix(parts[0], "refs/remotes/origin/") {
+			origin_remotes = append(origin_remotes, parts[0][13:])
+		} else if strings.HasPrefix(parts[0], "refs/remotes/") {
+			remotes = append(remotes, parts[0][13:])
+		}
+	}
+
+	// If no upstream was found for any heads, loop through the remote refs and see
+	// if there's a match. If so, we assume the two are related. Start with origin
+	// in order to default to that remote, then loop through any remaining.
+	for ref := range upstream {
+		if upstream[ref] == "" && strings.HasPrefix(ref, "refs/heads/") {
+			name := ref[11:]
+			for i := range origin_remotes {
+				if strings.HasSuffix(origin_remotes[i], "/"+name) {
+					upstream[ref] = origin_remotes[i]
+					break
+				}
+			}
+			if upstream[ref] == "" {
+				for i := range remotes {
+					if strings.HasSuffix(remotes[i], "/"+name) {
+						upstream[ref] = remotes[i]
+						break
+					}
+				}
+			}
 		}
 	}
 
 	return upstream, nil
+}
+
+// In the case when a branch isn't tracking a remote, search for one that
+// matches its name and make the assumption that the two are related.
+func (g *Git) findRemoteBranch(branch string) (string, error) {
+	r, err := g.RunCwd("rev-parse", "--abbrev-ref", "--remotes", "*/"+branch)
+	if err != nil {
+		return "", err
+	}
+	remotes := parseLines(r)
+	if len(remotes) == 0 {
+		return "", nil
+	}
+	// Loop through and see if there's an origin remote. Default to that.
+	for i := range remotes {
+		if strings.HasPrefix(remotes[i], "origin/") {
+			return remotes[i], nil
+		}
+	}
+	// Otherwise return the first remote branch found.
+	return remotes[0], nil
 }

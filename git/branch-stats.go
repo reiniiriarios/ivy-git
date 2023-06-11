@@ -138,13 +138,24 @@ func (g *Git) getBranchRemote(branch string, fallback bool) (string, error) {
 	}
 
 	r, err := g.RunCwd("config", "branch."+branch+".remote")
-	if err != nil {
+	if err != nil && errorCode(err) != ExitStatus1 {
 		return "", err
 	}
 	r = parseOneLine(r)
 
 	if r == "" && fallback {
 		r = g.getRemoteFallback()
+	}
+
+	if r == "" {
+		// This is a last ditch. Ignore errors.
+		r, _ = g.findRemoteBranch(branch)
+		if r != "" {
+			// Turn 'origin/main' into 'origin'.
+			if idx := strings.IndexByte(r, '/'); idx >= 0 {
+				r = r[:idx]
+			}
+		}
 	}
 
 	return r, nil
