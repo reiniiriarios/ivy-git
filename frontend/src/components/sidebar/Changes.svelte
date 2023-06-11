@@ -1,58 +1,26 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
+  import { stageFile } from 'actions/stage/stage';
+  import { unstageFile } from 'actions/stage/unstage';
   import { parseResponse } from 'scripts/parse-response';
   import { changes, mergeConflicts, type Change } from 'stores/changes';
   import { currentDiff } from 'stores/diffs';
   import { currentTab, branchSelect, repoSelect } from 'stores/ui';
-  import { StageFile, UnstageFile, StageAll, UnstageAll, StagePartialFile, UnstagePartialFile } from 'wailsjs/go/main/App'
+  import { StageAll, UnstageAll } from 'wailsjs/go/main/App'
 
   function stage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     let file: Change = $changes.y[e.currentTarget?.dataset?.file];
     if (file) {
-      if (e.currentTarget?.dataset?.partial === 'true') {
-        StagePartialFile(file.Diff, file.File, file.Letter).then(result => {
-          parseResponse(result, () => {
-            changes.refresh();
-            if ($currentDiff.File === file.File && !$currentDiff.Staged && $currentTab === 'changes') {
-              currentDiff.refresh();
-            }
-          });
-        });
-      } else {
-        StageFile(file.File).then(result => {
-          parseResponse(result, () => {
-            changes.refresh();
-            if ($currentDiff.File === file.File && !$currentDiff.Staged && $currentTab === 'changes') {
-              currentDiff.clear();
-            }
-          });
-        });
-      }
+      let partial = e.currentTarget?.dataset?.partial === 'true';
+      stageFile(file, partial);
     }
   }
 
   function unstage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     let file: Change = $changes.x[e.currentTarget?.dataset?.file];
     if (file) {
-      if (e.currentTarget.dataset.partial === 'true') {
-        UnstagePartialFile(file.Diff, file.File, file.Letter).then(result => {
-          parseResponse(result, () => {
-            changes.refresh();
-            if ($currentDiff.File === file.File && $currentDiff.Staged && $currentTab === 'changes') {
-              currentDiff.refresh();
-            }
-          });
-        });
-      } else {
-        UnstageFile(file.File).then(result => {
-          parseResponse(result, () => {
-            changes.refresh();
-            if ($currentDiff.File === file.File && $currentDiff.Staged && $currentTab === 'changes') {
-              currentDiff.clear();
-            }
-          });
-        });
-      }
+      let partial = e.currentTarget?.dataset?.partial === 'true';
+      unstageFile(file, partial);
     }
   }
 
@@ -103,6 +71,9 @@
           class="change"
           class:change--active={$currentDiff.File === change.File && $currentDiff.Conflict && $currentTab === 'changes'}
           class:change--unresolved={!change.Diff?.Resolved}
+          data-menu="change"
+          data-file="{change.File}"
+          data-conflict="true"
         >
           <div class="change__file"
             data-file="{change.File}"
@@ -135,6 +106,10 @@
           class:change--active={$currentDiff.File === change.File && $currentDiff.Staged && $currentTab === 'changes'}
           class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
           class:change--none={change.Diff?.SelectableLines > 0 && change.Diff?.SelectedLines === 0}
+          data-menu="change"
+          data-file="{change.File}"
+          data-staged="true"
+          data-partial="{change.Diff?.SelectableLines !== change.Diff?.SelectedLines}"
         >
           <div class="change__file"
             data-file="{change.File}"
@@ -175,6 +150,10 @@
           class:change--active={$currentDiff.File === change.File && !$currentDiff.Staged && $currentTab === 'changes'}
           class:change--partial={change.Diff?.SelectableLines !== change.Diff?.SelectedLines}
           class:change--none={change.Diff?.SelectableLines > 0 && change.Diff?.SelectedLines === 0}
+          data-menu="change"
+          data-file="{change.File}"
+          data-staged="false"
+          data-partial="{change.Diff?.SelectableLines !== change.Diff?.SelectedLines}"
         >
           <div class="change__file"
             data-file="{change.File}"
