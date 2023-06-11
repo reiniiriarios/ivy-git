@@ -4,6 +4,7 @@ import type { Menu, MenuItem } from "context-menus/_all";
 import { changes, type Change } from "stores/changes";
 import { get } from "svelte/store";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
+import { discardChanges } from "actions/stage/discard-changes";
 
 export const menuChangesFile: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -40,7 +41,7 @@ export const menuChangesFile: Menu = (e: HTMLElement) => {
       },
       {
         text: "Discard Changes",
-        callback: () => console.log('todo'),
+        callback: () => discardChanges(e.dataset.file),
       },
       {
         sep: true,

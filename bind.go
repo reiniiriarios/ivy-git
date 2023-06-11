@@ -289,6 +289,11 @@ func (a *App) UnstageAll() DataResponse {
 	return dataResponse(err, true)
 }
 
+func (a *App) DiscardChanges(file string) DataResponse {
+	err := a.Git.DiscardChanges(file)
+	return dataResponse(err, true)
+}
+
 func (a *App) NumBranches() DataResponse {
 	n := a.Git.NumBranches()
 	return dataResponse(nil, n)
