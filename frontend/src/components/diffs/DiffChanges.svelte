@@ -1,9 +1,10 @@
 <script lang="ts">
   import { changes, changesNumConflicts, changesNumStaged, changesNumUnstaged } from "stores/changes";
-  import { currentDiff, type DiffLine } from "stores/diffs";
+  import { currentDiff, type DiffLine as DiffLineData } from "stores/diffs";
   import DiffBinary from "components/diffs/DiffBinary.svelte";
   import DiffEmpty from "components/diffs/DiffEmpty.svelte";
   import NoChanges from "./NoChanges.svelte";
+  import DiffLine from "./DiffLine.svelte";
 
   let miniHunkElements: HTMLElement[] = [];
 
@@ -29,7 +30,7 @@
 
   function toggleMiniHunk(hunk: number, miniHunk: number) {
     // Whether more lines are on or off.
-    let onOff = $currentDiff.Hunks[hunk].Lines.reduce(([on, off], ln: DiffLine) => {
+    let onOff = $currentDiff.Hunks[hunk].Lines.reduce(([on, off], ln: DiffLineData) => {
       if (ln.MiniHunk === miniHunk) {
         if (ln.Selected) {
           return [on + 1, off];
@@ -92,45 +93,15 @@
                 on:keypress={() => toggleMiniHunk(hunk_id, line.MiniHunk)}
                 bind:this={miniHunkElements[line.RawLineNo]}
               ></div>
-              <div class="diff__line diff__line--{line.Type} diff__line--{line.Selected ? 'on' : 'off'}"
-                data-hunk="{hunk_id}"
-                data-minihunk="{line.MiniHunk}"
+              <DiffLine bind:line={line} hunkId={hunk_id} 
                 on:click={() => toggleLine(hunk_id, line_id)}
                 on:keypress={() => toggleLine(hunk_id, line_id)}
-              >
-                <div class="diff__line-toggle"></div>
-                <div class="diff__line-no">{line.Type === 'DiffDeleteLine' ? line.OldLineNo : line.NewLineNo}</div>
-                <div class="diff__line-type"></div>
-                <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
-                  <span class="diff__line-code-contents highlight">
-                    {#if $currentDiff.Highlight && $currentDiff.Highlight[line.CurLineNo]}
-                      {@html $currentDiff.Highlight[line.CurLineNo]}
-                    {:else if $currentDiff.Highlight}
-                      <span class="mute">{line.Line}</span>
-                    {:else}
-                      {line.Line}
-                    {/if}
-                  </span>
-                </div>
-              </div>
+              />
             </div>
           {:else}
             <div class="diff__row">
               <div class="diff__line-toggle-minihunk"></div>
-              <div class="diff__line diff__line--{line.Type}">
-                <div class="diff__line-toggle"></div>
-                <div class="diff__line-no">{line.NewLineNo}</div>
-                <div class="diff__line-type"></div>
-                <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
-                  <span class="diff__line-code-contents highlight">
-                    {#if $currentDiff.Highlight && $currentDiff.Highlight[line.CurLineNo]}
-                      {@html $currentDiff.Highlight[line.CurLineNo]}
-                    {:else}
-                      {line.Line}
-                    {/if}
-                  </span>
-                </div>
-              </div>
+              <DiffLine bind:line={line} />
             </div>
           {/if}
         {/each}

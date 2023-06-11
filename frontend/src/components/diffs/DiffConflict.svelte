@@ -1,7 +1,6 @@
 <script lang="ts">
   import { DiffConflictType, currentDiff } from "stores/diffs";
-
-  let changesStatus: number[] = [];
+  import DiffLine from "./DiffLine.svelte";
 
   function hoverMiniHunk(minihunk: number, oursTheirs: number) {
     // select each time to capture updates
@@ -102,27 +101,7 @@
               </div>
             {/if}
             <div class="diff__line-toggle-minihunk"></div>
-            <div class="diff__line diff__line--{line.Type} diff__line--noclick">
-              <div class="diff__line-no">{
-                line.Type === 'DiffDeleteLine'
-                  ? line.OldLineNo
-                : line.Type === 'DiffAddLine' || line.Type === 'DiffContextLine'
-                  ? line.NewLineNo
-                : ''
-              }</div>
-              <div class="diff__line-type"></div>
-              <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
-                <span class="diff__line-code-contents highlight">
-                  {#if $currentDiff.Highlight && $currentDiff.Highlight[line.CurLineNo]}
-                    {@html $currentDiff.Highlight[line.CurLineNo]}
-                  {:else if $currentDiff.Highlight}
-                    <span class="mute">{line.Line}</span>
-                  {:else}
-                    {line.Line}
-                  {/if}
-                </span>
-              </div>
-            </div>
+            <DiffLine line={line} />
           </div>
         {/each}
       {/each}
