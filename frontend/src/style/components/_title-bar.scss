@@ -1,0 +1,19 @@
+@use "../mixins" as *;
+
+.titlebar {
+  --wails-draggable: drag;
+  @include no-select;
+
+  height: var(--title-bar-height);
+  width: 100vw;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 0.1rem;
+
+  &__title {
+    @include no-select;
+    width: 8rem;
+  }
+}

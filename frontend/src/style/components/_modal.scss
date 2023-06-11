@@ -1,4 +1,4 @@
-@use "!mixins" as *;
+@use "../mixins" as *;
 
 .modal {
   --color-btn-bg: var(--color-scale-a-6-100);

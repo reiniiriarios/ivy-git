@@ -1,27 +1,32 @@
-@use "colors";
-@use "variables";
+@use "variables/colors";
+@use "variables/variables";
+
 @use "main";
-@use "app-control";
-@use "modal";
 @use "buttons";
-@use "sidebar";
-@use "tabs";
-@use "changes";
-@use "commits";
-@use "commit";
-@use "commit-labels";
-@use "commit-details";
-@use "tree";
-@use "repo-state";
-@use "repo-info";
-@use "remotes";
-@use "getting-started";
 @use "forms";
-@use "settings";
-@use "make-commit";
-@use "details";
-@use "code-breakdown";
-@use "diffs";
-@use "diff";
-@use "conventional-commits";
+
+@use "components/app-control";
+@use "components/title-bar";
+@use "components/modal";
+@use "components/sidebar";
+@use "components/tabs";
+@use "components/changes";
+@use "components/commits";
+@use "components/commit";
+@use "components/commit-labels";
+@use "components/commit-details";
+@use "components/tree";
+@use "components/repo-info";
+@use "components/remotes";
+@use "components/getting-started";
+@use "components/settings";
+@use "components/make-commit";
+@use "components/details";
+@use "components/code-breakdown";
+@use "components/diffs";
+@use "components/diff";
+
+@use "modifiers/repo-state";
+@use "modifiers/conventional-commits";
+
 @use "syntax-highlight";
