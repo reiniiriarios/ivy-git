@@ -23,7 +23,13 @@
               <div class="diff__line-no">{line.Type === 'DiffDeleteLine' ? line.OldLineNo : line.NewLineNo}</div>
               <div class="diff__line-type"></div>
               <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
-                <span>{line.Line}</span>
+                <span class="diff__line-code-contents highlight">
+                  {#if $currentDiff.Highlight && $currentDiff.Highlight[line.CurLineNo]}
+                    {@html $currentDiff.Highlight[line.CurLineNo]}
+                  {:else}
+                    {line.Line}
+                  {/if}
+                </span>
               </div>
             </div>
           </div>
