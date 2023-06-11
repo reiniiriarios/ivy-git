@@ -3,7 +3,7 @@
   import TextInput from "components/elements/TextInput.svelte";
   import { appData } from "stores/app-data";
   import { messageDialog } from "stores/message-dialog";
-  import { DirExists } from "wailsjs/go/main/App";
+  import { FileExists } from "wailsjs/go/main/App";
 
   let repoUrl: string;
   let repoLocation: string = $appData.RecentRepoDir;
@@ -22,7 +22,7 @@
 
   const validateRepoNameDir = () => {
     let repoName = repoUrl.replace(/^.*\/([^\/]+?)\/?(?:\.git\/?)?$/i, '$1');
-    DirExists(repoName, repoLocation).then(exists => repoValid = !exists);
+    FileExists(repoName, repoLocation).then(exists => repoValid = !exists);
   }
 </script>
 

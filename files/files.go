@@ -9,6 +9,7 @@ type File struct {
 	Filepath  string
 	Size      int64
 	TooLarge  bool
+	NotFound  bool
 	Raw       string
 	Lang      string
 	Highlight map[int]string

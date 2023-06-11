@@ -215,7 +215,7 @@ func (a *App) CreateRepo(name string, dir string) RepoResponse {
 }
 
 // If directory already exists.
-func (a *App) DirExists(name string, dir string) bool {
+func (a *App) FileExists(name string, dir string) bool {
 	_, err := os.Stat(filepath.Join(dir, name))
 	return !os.IsNotExist(err)
 }

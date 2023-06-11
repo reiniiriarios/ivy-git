@@ -18,7 +18,16 @@ func HighlightFile(path string) (File, error) {
 		Filepath: path,
 	}
 
-	err := f.getSize()
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			f.NotFound = true
+			return f, nil
+		}
+		return f, err
+	}
+
+	err = f.getSize()
 	if err != nil {
 		return f, err
 	}
