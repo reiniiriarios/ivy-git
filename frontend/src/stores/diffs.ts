@@ -1,6 +1,6 @@
 import { derived, get, writable } from "svelte/store";
 import { changes } from "./changes";
-import { GetCommitFileParsedDiff, GetHighlightedFile, ResolveDiffConflicts } from "wailsjs/go/main/App";
+import { GetCommitFileParsedDiff, GetHighlightedFileRange, ResolveDiffConflicts } from "wailsjs/go/main/App";
 import { parseResponse } from "scripts/parse-response";
 
 type OursTheirs = number;
@@ -42,6 +42,8 @@ export interface DiffHunk {
   EndOld: number;
   StartNew: number;
   EndNew: number;
+  StartCur: number;
+  EndCur: number;
   Heading: string;
   Lines: DiffLine[];
 }
@@ -103,7 +105,13 @@ function createCurrentDiff() {
     },
     // Fetch syntax highlighting for file.
     fetchHighlight: async (file: string) => {
-      GetHighlightedFile(file).then(result => {
+      // Get lines to highlight from diff hunks.
+      let ranges: number[][] = [];
+      let hunks = get(currentDiff).Hunks;
+      if (hunks.length) {
+        hunks.map(h => ranges.push([h.StartCur, h.EndCur]));
+      }
+      GetHighlightedFileRange(file, ranges).then(result => {
         parseResponse(result, () => {
           let f = result.Data as HighlightedFile;
           if (!f.TooLarge && f.Lang) {
@@ -111,7 +119,6 @@ function createCurrentDiff() {
               diff.Highlight = f.Highlight;
               return diff;
             });
-            console.log(f.Highlight);
           }
         });
       })

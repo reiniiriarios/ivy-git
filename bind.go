@@ -472,3 +472,9 @@ func (a *App) GetHighlightedFile(file string) DataResponse {
 	data, err := files.HighlightFile(path)
 	return dataResponse(err, data)
 }
+
+func (a *App) GetHighlightedFileRange(file string, ranges [][2]int) DataResponse {
+	path := filepath.Join(a.RepoSaveData.Repos[a.RepoSaveData.CurrentRepo].Directory, file)
+	data, err := files.HighlightFileSelection(path, ranges)
+	return dataResponse(err, data)
+}

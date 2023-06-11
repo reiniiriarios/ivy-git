@@ -26,10 +26,10 @@ type Vertex struct {
 	Id          int64
 	Children    []int64
 	Parents     []int64
-	NextParent  int
+	nextParent  int
 	BranchId    int64
 	X           uint16
-	XNext       uint16
+	xNext       uint16
 	Connections map[uint16]Connection
 	Committed   bool
 	Stash       bool
@@ -218,7 +218,7 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 			}
 
 			// Update the current vertex's parent.
-			v1.NextParent++
+			v1.nextParent++
 			// Move the current parent to the current vertex.
 			v1 = &g.Vertices[p.Id]
 			// Move the next parent to the current parent.
@@ -270,7 +270,7 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 
 	// If we looped through every vertex and the parent is a null vertex.
 	if i == len(g.Vertices) && null_parent {
-		v.NextParent++
+		v.nextParent++
 	}
 }
 
@@ -329,7 +329,7 @@ func (g *Graph) buildMergePath(v1 *Vertex) {
 
 		// If point was found connected to parent, move vertex to next parent and be done.
 		if found {
-			v1.NextParent++
+			v1.nextParent++
 			break
 		}
 	}
@@ -353,11 +353,11 @@ func (g *Graph) getHeight() uint16 {
 }
 
 func (v *Vertex) hasNextParent() bool {
-	return v.NextParent < len(v.Parents)
+	return v.nextParent < len(v.Parents)
 }
 
 func (v *Vertex) getNextParent() int64 {
-	return v.Parents[v.NextParent]
+	return v.Parents[v.nextParent]
 }
 
 func (v *Vertex) getPoint() Point {
@@ -369,14 +369,14 @@ func (v *Vertex) getPoint() Point {
 
 func (v *Vertex) getNextPoint() Point {
 	return Point{
-		X: v.XNext,
+		X: v.xNext,
 		Y: v.Id,
 	}
 }
 
 func (v *Vertex) addUnavailPoint(x uint16, v2 *Vertex, b int64) {
-	if x == v.XNext {
-		v.XNext = x + 1
+	if x == v.xNext {
+		v.xNext = x + 1
 		var vId int64 = NULL_VERTEX
 		if v2 != nil {
 			vId = v2.Id

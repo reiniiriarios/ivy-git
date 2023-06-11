@@ -13,9 +13,14 @@ import (
 const HIGHLIGHT_STYLE = "vs"
 
 func HighlightFile(path string) (File, error) {
+	return HighlightFileSelection(path, highlightRanges{})
+}
+
+func HighlightFileSelection(path string, ranges highlightRanges) (File, error) {
 	f := File{
 		Filename: filepath.Base(path),
 		Filepath: path,
+		ranges:   ranges,
 	}
 
 	_, err := os.Stat(path)
@@ -70,21 +75,21 @@ func (f *File) getContents() error {
 	if err != nil {
 		return err
 	}
-	f.Raw = string(bytes)
+	f.raw = string(bytes)
 	return nil
 }
 
 func (f *File) highlight() error {
 	lexer := lexers.Match(f.Filepath)
 	if lexer == nil {
-		lexer = lexers.Analyse(f.Raw)
+		lexer = lexers.Analyse(f.raw)
 		if lexer == nil {
 			return nil
 		}
 	}
 	f.Lang = lexer.Config().Name
 
-	iterator, err := lexer.Tokenise(nil, f.Raw)
+	iterator, err := lexer.Tokenise(nil, f.raw)
 	if err != nil {
 		return err
 	}
@@ -93,7 +98,7 @@ func (f *File) highlight() error {
 	if style == nil {
 		style = styles.Fallback
 	}
-	formatter := LinesFormatter()
+	formatter := LinesFormatter(HighlightLines(f.ranges))
 
 	f.Highlight = formatter.Format(style, iterator)
 

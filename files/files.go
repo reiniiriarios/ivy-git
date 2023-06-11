@@ -10,8 +10,9 @@ type File struct {
 	Size      int64
 	TooLarge  bool
 	NotFound  bool
-	Raw       string
+	raw       string
 	Lang      string
+	ranges    highlightRanges
 	Highlight map[int]string
 }
 

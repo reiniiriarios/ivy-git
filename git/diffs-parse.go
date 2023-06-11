@@ -29,7 +29,7 @@ const (
 
 type Diff struct {
 	File            string
-	Raw             string
+	raw             string
 	Flags           []string
 	Hunks           []DiffHunk
 	Binary          bool
@@ -46,6 +46,8 @@ type DiffHunk struct {
 	EndOld   int64
 	StartNew int64
 	EndNew   int64
+	StartCur int64
+	EndCur   int64
 	Heading  string
 	Lines    []DiffLine
 }
@@ -76,7 +78,7 @@ const HiddenBidiCharsRegex = "/[\u202A-\u202E]|[\u2066-\u2069]/"
 
 func (d *Diff) parse() error {
 	// Do not use parseLines() here, will strip relevant data.
-	lines := strings.Split(strings.ReplaceAll(d.Raw, "\r\n", "\n"), "\n")
+	lines := strings.Split(strings.ReplaceAll(d.raw, "\r\n", "\n"), "\n")
 	var ln int
 	for ln = 0; ln < len(lines); ln++ {
 		if strings.HasPrefix(lines[ln], "Binary files ") && strings.HasSuffix(lines[ln], "differ") {
@@ -198,7 +200,7 @@ func (d *Diff) parseConflicts() error {
 	d.Conflicts = make(map[int64]DiffConflict)
 
 	// Do not use parseLines() here, will strip relevant data.
-	lines := strings.Split(strings.ReplaceAll(d.Raw, "\r\n", "\n"), "\n")
+	lines := strings.Split(strings.ReplaceAll(d.raw, "\r\n", "\n"), "\n")
 	var ln int
 	for ln = 0; ln < len(lines); ln++ {
 		if strings.HasPrefix(lines[ln], "Binary files ") && strings.HasSuffix(lines[ln], "differ") {
@@ -407,6 +409,7 @@ func (d *Diff) parseConflicts() error {
 			}
 		}
 		d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, new_line)
+		d.Hunks[current_hunk].EndCur = cur
 	}
 	if len(d.Hunks) == 0 {
 		d.Empty = true
@@ -455,6 +458,8 @@ func parseHunkHeading(line string) (DiffHunk, error) {
 		EndOld:   end_old,
 		StartNew: start_new,
 		EndNew:   end_new,
+		StartCur: start_new,
+		EndCur:   end_new,
 	}, nil
 }
 

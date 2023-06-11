@@ -37,12 +37,6 @@ type Commit struct {
 	X               uint16
 }
 
-type CommitDetails struct {
-	Commits []Commit
-	Lookup  map[string]uint64
-	HEAD    Ref
-}
-
 // Get commit details from `git log`.
 func (g *Git) getLog(limit uint64, offset uint64) ([]Commit, map[string]uint64, error) {
 	var commits []Commit

@@ -63,10 +63,8 @@ export interface Vertex {
   Id: number;
   Children: Vertex[];
   Parents: Vertex[];
-  NextParent: number;
   BranchId: number;
   X: number;
-  XNext: number;
   Connections: Connection[];
   Committed: boolean;
   Stash: boolean;

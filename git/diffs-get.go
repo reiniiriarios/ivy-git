@@ -88,7 +88,7 @@ func (g *Git) GetWorkingFileParsedDiff(file string, status string, staged bool) 
 		return Diff{}, err
 	}
 	diff := Diff{
-		Raw:   raw,
+		raw:   raw,
 		Flags: flags,
 	}
 	err = diff.parse()
@@ -142,7 +142,7 @@ func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
 		return Diff{}, err
 	}
 	diff := Diff{
-		Raw: base,
+		raw: base,
 	}
 	err = diff.parseConflicts()
 	if err != nil {
@@ -165,7 +165,7 @@ func (g *Git) GetCommitFileParsedDiff(hash string, file string, oldfile string) 
 		return Diff{}, err
 	}
 	diff := Diff{
-		Raw: raw,
+		raw: raw,
 	}
 	err = diff.parse()
 	if err != nil {

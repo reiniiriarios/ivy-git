@@ -105,6 +105,8 @@
                   <span class="diff__line-code-contents highlight">
                     {#if $currentDiff.Highlight && $currentDiff.Highlight[line.CurLineNo]}
                       {@html $currentDiff.Highlight[line.CurLineNo]}
+                    {:else if $currentDiff.Highlight}
+                      <span class="mute">{line.Line}</span>
                     {:else}
                       {line.Line}
                     {/if}

@@ -1,4 +1,5 @@
 .highlight {
+  .mute { color: var(--color-scale-a-1-100) } // dim text to match surrounding (e.g. deleted lines)
   .err { color: var(--color-scale-r-4-100) } // Error
   .k  { color: var(--color-scale-b-2-100) } // Keyword
   .kt { color: var(--color-scale-o-2-100) } // KeywordType
