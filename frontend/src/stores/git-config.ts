@@ -1,6 +1,6 @@
 import { parseResponse } from 'scripts/parse-response';
-import { writable } from 'svelte/store';
-import { GetGitConfigGlobal, GetGitConfigLocal } from 'wailsjs/go/main/App';
+import { get, writable } from 'svelte/store';
+import { GetGitConfigGlobal, GetGitConfigLocal, UpdateGitConfigSignCommits, UpdateGitConfigUserEmail, UpdateGitConfigUserName, UpdateGitConfigUserSigningKey } from 'wailsjs/go/main/App';
 
 interface GitConfigAll {
   local: GitConfig,
@@ -23,9 +23,7 @@ function createGitConfig() {
   
   return {
     subscribe,
-    set: async (value: any) => {
-      set(value);
-    },
+    set,
     fetch: async () => {
       GetGitConfigLocal().then(result => {
         parseResponse(result, () => {
@@ -49,6 +47,18 @@ function createGitConfig() {
         cfg[list][setting] = value;
         return cfg;
       });
+    },
+    setUserName: (list: string, value: string) => {
+      UpdateGitConfigUserName(list, value).then(r => parseResponse(r));
+    },
+    setUserEmail: (list: string, value: string) => {
+      UpdateGitConfigUserEmail(list, value).then(r => parseResponse(r));
+    },
+    setUserSigningKey: (list: string, value: string) => {
+      UpdateGitConfigUserSigningKey(list, value).then(r => parseResponse(r));
+    },
+    setSignCommits: (list: string, value: boolean) => {
+      UpdateGitConfigSignCommits(list, value).then(r => parseResponse(r));
     },
   };
 }

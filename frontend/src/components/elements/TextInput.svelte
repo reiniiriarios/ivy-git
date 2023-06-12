@@ -6,6 +6,7 @@
   export let valid: boolean = true;
   export let use: (el: HTMLInputElement) => void = () => {};
   export let validate: (value: any) => boolean = null;
+  export let update: (value: any) => void = null;
 
   $: if (validate) valid = validate(value);
 </script>
@@ -20,7 +21,10 @@
     bind:value={value}
     class:invalid={value && !valid}
     on:input={() => {
-      if (validate) valid = validate(value)
+      if (validate) valid = validate(value);
+    }}
+    on:change={() => {
+      if (update) update(value);
     }}
   >
 </label>

@@ -65,3 +65,42 @@ func (g *Git) parseConfig(cfg map[string]string) GitConfig {
 
 	return config
 }
+
+func (g *Git) UpdateUserName(list string, value string) error {
+	return g.updateConfig(list, "user.name", value)
+}
+
+func (g *Git) UpdateUserEmail(list string, value string) error {
+	return g.updateConfig(list, "user.email", value)
+}
+
+func (g *Git) UpdateUserSigningKey(list string, value string) error {
+	return g.updateConfig(list, "user.signingkey", value)
+}
+
+func (g *Git) UpdateCommitGpgSign(list string, value bool) error {
+	var value_s string
+	if value {
+		value_s = "true"
+	} else {
+		value_s = "false"
+	}
+	return g.updateConfig(list, "commit.gpgsign", value_s)
+}
+
+func (g *Git) updateConfig(list string, key string, value string) error {
+	// list "system" not currently supported
+	if list != "global" {
+		list = "local"
+	}
+	if value == "" {
+		return g.clearConfig(list, key)
+	}
+	_, err := g.RunCwd("config", "--"+list, key, value)
+	return err
+}
+
+func (g *Git) clearConfig(list string, key string) error {
+	_, err := g.RunCwd("config", "--"+list, "--unset-all", key)
+	return err
+}

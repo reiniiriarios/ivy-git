@@ -498,3 +498,23 @@ func (a *App) GetGitConfigSystem() DataResponse {
 	cfg, err := a.Git.GetConfigSystem()
 	return dataResponse(err, cfg)
 }
+
+func (a *App) UpdateGitConfigUserName(list string, value string) DataResponse {
+	err := a.Git.UpdateUserName(list, value)
+	return dataResponse(err, true)
+}
+
+func (a *App) UpdateGitConfigUserEmail(list string, value string) DataResponse {
+	err := a.Git.UpdateUserEmail(list, value)
+	return dataResponse(err, true)
+}
+
+func (a *App) UpdateGitConfigUserSigningKey(list string, value string) DataResponse {
+	err := a.Git.UpdateUserSigningKey(list, value)
+	return dataResponse(err, true)
+}
+
+func (a *App) UpdateGitConfigSignCommits(list string, value bool) DataResponse {
+	err := a.Git.UpdateCommitGpgSign(list, value)
+	return dataResponse(err, true)
+}
