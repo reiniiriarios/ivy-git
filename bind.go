@@ -513,8 +513,3 @@ func (a *App) UpdateGitConfigUserSigningKey(list string, value string) DataRespo
 	err := a.Git.UpdateUserSigningKey(list, value)
 	return dataResponse(err, true)
 }
-
-func (a *App) UpdateGitConfigSignCommits(list string, value bool) DataResponse {
-	err := a.Git.UpdateCommitGpgSign(list, value)
-	return dataResponse(err, true)
-}

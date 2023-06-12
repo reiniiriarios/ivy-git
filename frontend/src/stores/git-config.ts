@@ -1,6 +1,13 @@
+import { checkGpgKeyFormat, cleanGpgKey } from 'scripts/check-gpg';
 import { parseResponse } from 'scripts/parse-response';
-import { get, writable } from 'svelte/store';
-import { GetGitConfigGlobal, GetGitConfigLocal, UpdateGitConfigSignCommits, UpdateGitConfigUserEmail, UpdateGitConfigUserName, UpdateGitConfigUserSigningKey } from 'wailsjs/go/main/App';
+import { writable } from 'svelte/store';
+import {
+  GetGitConfigGlobal,
+  GetGitConfigLocal,
+  UpdateGitConfigUserEmail,
+  UpdateGitConfigUserName,
+  UpdateGitConfigUserSigningKey,
+} from 'wailsjs/go/main/App';
 
 interface GitConfigAll {
   local: GitConfig,
@@ -12,7 +19,6 @@ interface GitConfig {
 	UserName: string;
 	UserEmail: string;
 	UserSigningKey: string;
-	CommitGpgSign: boolean;
 }
 
 function createGitConfig() {
@@ -55,10 +61,17 @@ function createGitConfig() {
       UpdateGitConfigUserEmail(list, value).then(r => parseResponse(r));
     },
     setUserSigningKey: (list: string, value: string) => {
-      UpdateGitConfigUserSigningKey(list, value).then(r => parseResponse(r));
-    },
-    setSignCommits: (list: string, value: boolean) => {
-      UpdateGitConfigSignCommits(list, value).then(r => parseResponse(r));
+      if (checkGpgKeyFormat(value)) {
+        value = cleanGpgKey(value);
+        UpdateGitConfigUserSigningKey(list, value).then(r => {
+          parseResponse(r, () => {
+            update(cfg => {
+              cfg[list].UpdateGitConfigUserSigningKey = value;
+              return cfg;
+            });
+          });
+        });
+      }
     },
   };
 }

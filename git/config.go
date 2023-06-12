@@ -6,7 +6,6 @@ type GitConfig struct {
 	UserName       string
 	UserEmail      string
 	UserSigningKey string
-	CommitGpgSign  bool
 }
 
 func (g *Git) GetConfigLocal() (GitConfig, error) {
@@ -58,8 +57,6 @@ func (g *Git) parseConfig(cfg map[string]string) GitConfig {
 			config.UserEmail = v
 		case "user.signingkey":
 			config.UserSigningKey = v
-		case "commit.gpgsign":
-			config.CommitGpgSign = v == "true"
 		}
 	}
 
@@ -75,17 +72,18 @@ func (g *Git) UpdateUserEmail(list string, value string) error {
 }
 
 func (g *Git) UpdateUserSigningKey(list string, value string) error {
-	return g.updateConfig(list, "user.signingkey", value)
-}
-
-func (g *Git) UpdateCommitGpgSign(list string, value bool) error {
-	var value_s string
-	if value {
-		value_s = "true"
-	} else {
-		value_s = "false"
+	err := g.updateConfig(list, "user.signingkey", value)
+	if err != nil {
+		return err
 	}
-	return g.updateConfig(list, "commit.gpgsign", value_s)
+	if value == "" {
+		if list == "local" {
+			return g.clearConfig(list, "commit.gpgsign")
+		} else {
+			return g.updateConfig(list, "commit.gpgsign", "false")
+		}
+	}
+	return g.updateConfig(list, "commit.gpgsign", "true")
 }
 
 func (g *Git) updateConfig(list string, key string, value string) error {
