@@ -23,7 +23,7 @@
     // https://www.git-scm.com/docs/git-clone#_git_urls
     // Let's just check if it doesn't start or end with a space.
     // Do something with this later.
-    return (url[0] != " " && url[url.length-1] != " ");
+    return (url && url[0] != " " && url[url.length-1] != " ");
   }
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {
