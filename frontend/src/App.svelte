@@ -1,16 +1,10 @@
 <script lang="ts">
   import "style/style.scss";
-  import SelectRepo from "components/sidebar/SelectRepo.svelte";
   import Message from "components/messages/Message.svelte";
-  import SelectBranch from "components/sidebar/SelectBranch.svelte";
-  import Changes from "components/sidebar/Changes.svelte";
   import MainTabs from "components/app/MainTabs.svelte";
   import TitleBar from "components/app/TitleBar.svelte";
   import ContextMenu from "components/ContextMenu.svelte";
   import GetStarted from "components/GetStarted.svelte";
-  import MakeCommit from "components/sidebar/MakeCommit.svelte";
-  import RemoteActions from "components/sidebar/RemoteActions.svelte";
-  import RepoStateBanner from "components/sidebar/RepoStateBanner.svelte";
 
   import { ResizeWindow } from "wailsjs/go/main/App";
 
@@ -20,11 +14,12 @@
 
   import { appData } from "stores/app-data";
   import { currentRepo, repos } from "stores/repos";
-  import { currentRemote, remoteData } from "stores/remotes";
+  import { remoteData } from "stores/remotes";
   import { settings } from "stores/settings";
   import { noBranchSelected } from "stores/branches";
 
   import { enableWatcher } from "events/watcher";
+  import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
 
   // Load initial ui state.
   function init() {
@@ -69,22 +64,7 @@
 
 <TitleBar />
 <div id="container">
-  <div class="sidebar">
-    <SelectRepo />
-    {#if $currentRepo}
-      <SelectBranch />
-    {/if}
-    <RepoStateBanner />
-    <Changes />
-    {#if $currentRepo}
-      {#if $currentRemote?.Name}
-        <RemoteActions />
-      {/if}
-      {#if !$noBranchSelected}
-        <MakeCommit />
-      {/if}
-    {/if}
-  </div>
+  <LayoutSidebar />
   <main>
     {#if $currentRepo}
       {#if $noBranchSelected}
