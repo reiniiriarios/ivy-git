@@ -29,7 +29,7 @@
 
 <label class="file-input {classes}">
   {#if display}
-    <span>{display}</span>
+    <span class="file-input__display">{display}</span>
   {/if}
   <input type="text"
     class="file-input__input"

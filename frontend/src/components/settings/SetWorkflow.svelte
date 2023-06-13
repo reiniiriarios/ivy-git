@@ -1,5 +1,6 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
+  import Info from "components/elements/Info.svelte";
   import { settings } from "stores/settings";
 
   function saveWorkflow(workflow: string) {
@@ -8,7 +9,12 @@
 </script>
 
 <div class="setting">
-  <h4 class="setting__name">Workflow</h4>
+  <h4 class="setting__name">
+    Workflow
+    <Info>
+      This setting changes which items are available in some context menus.
+    </Info>
+  </h4>
   <div class="big-option">
     <button class="btn big-option__option"
       class:big-option__option--active={$settings.Workflow === 'merge'}

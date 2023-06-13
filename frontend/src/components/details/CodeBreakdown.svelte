@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import languages from "style/languages.json"
   import { formatBytes } from "scripts/bytes";
+  import Info from "components/elements/Info.svelte";
 
   onMount(() => {
     cloc.fetch();
@@ -11,7 +12,14 @@
 </script>
 
 <div class="code-breakdown">
-  <h2>Code</h2>
+  <h2>
+    Code
+    <Info>
+      May not be exact.
+      Some auto-generated files, such as <code>package-lock.json</code>, are ignored.
+      Calculated based on current repo status.
+    </Info>
+  </h2>
   <div class="code-breakdown__inner">
     {#if $cloc.Languages && Object.entries($cloc.Languages).length}
       <div class="code-breakdown__bar">
