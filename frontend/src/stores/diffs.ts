@@ -106,12 +106,12 @@ function createCurrentDiff() {
     // Fetch syntax highlighting for file.
     fetchHighlight: async () => {
       let diff = get(currentDiff);
-      if (diff.TooLarge || diff.Binary) {
+      if (!diff || diff.TooLarge || diff.Binary) {
         return;
       }
       // Get lines to highlight from diff hunks.
       let ranges: number[][] = [];
-      if (diff.Hunks.length) {
+      if (diff.Hunks?.length) {
         diff.Hunks.map(h => ranges.push([h.StartCur, h.EndCur]));
       }
       GetHighlightedFileRange(diff.File, ranges).then(result => {
