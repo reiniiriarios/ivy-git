@@ -10,8 +10,11 @@
 
     &-name {
       color: var(--color-text-muted);
-      cursor: pointer;
       position: relative;
+
+      > span {
+        cursor: pointer;
+      }
 
       &::before {
         content: '';
@@ -44,11 +47,14 @@
   }
 
   &__file {
-    cursor: pointer;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
     margin-left: 1rem;
     color: var(--color-text);
+
+    > span {
+      cursor: pointer;
+    }
 
     &--M {
       color: var(--color-scale-o-1-100);

@@ -16,8 +16,10 @@
 
 <div class="filestatdir__dir">
   {#if files?.Name}
-    <div class="filestatdir__dir-name" on:click={toggleDir} on:keypress={toggleDir}>
-      {files.Name}
+    <div class="filestatdir__dir-name">
+      <span on:click={toggleDir} on:keypress={toggleDir}>
+        {files.Name}
+      </span>
     </div>
   {/if}
   {#if files?.Dirs?.length}
@@ -28,27 +30,25 @@
   {/if}
   {#if files?.Files?.length}
     {#each Object.entries(files.Files) as [_, f]}
-      <div
-        class="filestatdir__file filestatdir__file--{f.Status}"
-        on:click={() => fetchDiff(f.File, f.OldFile)}
-        on:keypress={() => fetchDiff(f.File, f.OldFile)}
-      >
-        {#if f.OldFile}
-          <span class="filestatdir__file-old">
-            {#if f.Dir === f.OldDir}
-              {f.OldName}
-            {:else}
-              {#if f.OldRel}{f.OldRel}/{/if}{f.OldName}
-            {/if}
-            →
-          </span>
-        {/if}
-        {f.Name}
-        {#if !f.Binary && f.Added || f.Deleted}
-          <span class="filestatdir__diff">
-            ({#if f.Status !== 'D'}<span class="added">+{f.Added}</span>{/if}{#if !['A','D'].includes(f.Status)}, {/if}{#if f.Status !== 'A'}<span class="deleted">-{f.Deleted}</span>{/if})
-          </span>
-        {/if}
+      <div class="filestatdir__file filestatdir__file--{f.Status}">
+        <span on:click={() => fetchDiff(f.File, f.OldFile)} on:keypress={() => fetchDiff(f.File, f.OldFile)}>
+          {#if f.OldFile}
+            <span class="filestatdir__file-old">
+              {#if f.Dir === f.OldDir}
+                {f.OldName}
+              {:else}
+                {#if f.OldRel}{f.OldRel}/{/if}{f.OldName}
+              {/if}
+              →
+            </span>
+          {/if}
+          {f.Name}
+          {#if !f.Binary && f.Added || f.Deleted}
+            <span class="filestatdir__diff">
+              ({#if f.Status !== 'D'}<span class="added">+{f.Added}</span>{/if}{#if !['A','D'].includes(f.Status)}, {/if}{#if f.Status !== 'A'}<span class="deleted">-{f.Deleted}</span>{/if})
+            </span>
+          {/if}
+        </span>
       </div>
     {/each}
   {/if}
