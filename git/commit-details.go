@@ -351,17 +351,17 @@ func (g *Git) GetCommitSignature(hash string) (CommitSignature, error) {
 	var desc string
 	switch parts[0] {
 	case "G":
-		desc = "Good"
+		desc = "Good signature"
 	case "B":
-		desc = "Bad"
+		desc = "Bad signature"
 	case "U":
-		desc = "Unknown Validity"
+		desc = "Signature has unknown validity"
 	case "X":
-		desc = "Expired"
+		desc = "Signature is expired"
 	case "Y":
-		desc = "Expired Key"
+		desc = "Signed with expired key"
 	case "E":
-		desc = "Missing Key"
+		desc = "No key available to validate signature"
 	case "N":
 		desc = "None"
 	}

@@ -10,7 +10,7 @@
         <span class="gpg-status__icon">{@html octicons.verified.toSVG({width: 16})}</span>
         <span class="gpg-status__tip">
           <span class="gpg-status__text">
-            testing
+            {$commitSignature.Description}
           </span>
         </span>
       </span>
