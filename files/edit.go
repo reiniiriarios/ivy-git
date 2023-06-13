@@ -8,6 +8,29 @@ import (
 )
 
 func DeleteAndReplaceLinesFromFile(filename string, delete_lines []int64, replace_lines map[int64]int64) error {
+	// Run the replacement.
+	err := deleteAndReplaceLinesFromFileIntoTemp(filename, delete_lines, replace_lines)
+	if err != nil {
+		return err
+	}
+	// The two files used by the previous method are now closed.
+
+	// Delete the original.
+	err = os.Remove(filename)
+	if err != nil {
+		return err
+	}
+
+	// Replace the original with the temp file.
+	err = os.Rename(filename+"~", filename)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func deleteAndReplaceLinesFromFileIntoTemp(filename string, delete_lines []int64, replace_lines map[int64]int64) error {
 	// Open the source file.
 	file, err := os.Open(filename)
 	if err != nil {
@@ -79,18 +102,6 @@ func DeleteAndReplaceLinesFromFile(filename string, delete_lines []int64, replac
 			}
 			break
 		}
-	}
-
-	// Delete the original.
-	err = os.Remove(filename)
-	if err != nil {
-		return err
-	}
-
-	// Replace the original with the temp file.
-	err = os.Rename(filename+"~", filename)
-	if err != nil {
-		return err
 	}
 
 	return nil
