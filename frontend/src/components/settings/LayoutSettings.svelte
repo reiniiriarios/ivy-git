@@ -2,7 +2,7 @@
   import SetWorkflow from "components/settings/SetWorkflow.svelte";
   import SetConventionalCommits from "components/settings/SetConventionalCommits.svelte";
   import SetMainBranch from "components/settings/SetMainBranch.svelte";
-  import Info from "components/settings/Info.svelte";
+  import AppInfo from "components/settings/AppInfo.svelte";
   import SetGitConfig from "./SetGitConfig.svelte";
   import { onMount } from "svelte";
   import { gitConfig } from "stores/git-config";
@@ -26,5 +26,5 @@
   <SetGitConfig />
 
   <h2>Info</h2>
-  <Info />
+  <AppInfo />
 </div>
