@@ -1,12 +1,13 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
   import CommitLink from 'components/CommitLink.svelte';
-  import CommitDetailsFiles from 'components/commits/CommitDetailsFiles.svelte';
+  import CommitFileChanges from 'components/commit-details/CommitFileChanges.svelte';
   import { resetDirs } from 'scripts/commit-details-collapse';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
   import { type Commit } from 'stores/commit-data';
   import { currentCommit, commitDetails, commitDiffSummary, commitSignature } from 'stores/commit-details';
   import { commitDetailsWindow } from 'stores/ui';
+  import SignatureDetails from './SignatureDetails.svelte';
 
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
@@ -79,19 +80,7 @@
         <tr>
           <th>Signature</th>
           <td class="commit-details__gpg">
-            {#if $commitSignature?.Status}
-              {#if $commitSignature.Status !== 'N'}
-                <span class="gpg-status gpg-status--{$commitSignature.Status}">
-                  {@html octicons.verified.toSVG({width: 16})}
-                </span>
-                <span class="commit-details__gpg-key">{$commitSignature.Key}</span>
-                {#if $commitSignature.Name}
-                  <span class="commit-details__gpg-name">{$commitSignature.Name}</span>
-                {/if}
-              {:else}
-                None
-              {/if}
-            {/if}
+            <SignatureDetails />
           </td>
         </tr>
         <tr>
@@ -105,7 +94,7 @@
     </div>
     <div class="commit-details__right">
       <div class="filestatdir">
-        <CommitDetailsFiles hash={commit.Hash} files={$commitDiffSummary} />
+        <CommitFileChanges hash={commit.Hash} files={$commitDiffSummary} />
       </div>
     </div>
   {/if}

@@ -1,0 +1,85 @@
+@use "../mixins" as *;
+
+.filestatdir {
+  cursor: default;
+
+  // The first dir is the root, skip styling that one.
+  &__dir &__dir {
+    margin-left: 1rem;
+    @include no-select;
+
+    &-name {
+      color: var(--color-text-muted);
+      cursor: pointer;
+      position: relative;
+
+      &::before {
+        content: '';
+        @include carat-down;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 50%;
+        position: absolute;
+        left: -1.5rem;
+        top: 0rem;
+        width: 0.67rem;
+        height: 0.67rem;
+        padding: 0.45rem;
+      }
+    }
+
+    &--closed {
+      > .filestatdir__dir-name::before {
+        transform: rotate(-90deg) translate(0.1rem, 0.05rem);
+      }
+
+      > .filestatdir__file {
+        display: none;
+      }
+
+      .filestatdir__dir {
+        display: none;
+      }
+    }
+  }
+
+  &__file {
+    cursor: pointer;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    margin-left: 1rem;
+    color: var(--color-text);
+
+    &--M {
+      color: var(--color-scale-o-1-100);
+    }
+
+    &--A {
+      color: var(--color-scale-g-1-100);
+    }
+
+    &--D {
+      color: var(--color-scale-r-3-100);
+    }
+
+    &--R {
+      color: var(--color-scale-b-2-100);
+    }
+
+    &-old {
+      color: var(--color-text-muted);
+    }
+  }
+
+  &__diff {
+    color: var(--color-text-muted);
+
+    .added {
+      color: var(--color-scale-g-3-100);
+    }
+
+    .deleted {
+      color: var(--color-scale-r-4-100);
+    }
+  }
+}

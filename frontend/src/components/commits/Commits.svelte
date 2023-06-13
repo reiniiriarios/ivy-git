@@ -2,14 +2,13 @@
   import { afterUpdate, onMount } from 'svelte';
 
   import CommitRow from 'components/commits/CommitRow.svelte';
-  import CommitDetails from 'components/commits/CommitDetails.svelte';
+  import CommitDetails from 'components/commit-details/CommitDetails.svelte';
   import LoadMoreCommits from 'components/commits/LoadMoreCommits.svelte';
 
   import { setCommitsContainer } from 'scripts/commit-details-resize';
 
   import { commitData, commits, tree, commitSignData } from 'stores/commit-data';
   import { setFade } from 'scripts/graph';
-  import { currentCommit } from 'stores/commit-details';
   import { settings } from 'stores/settings';
 
   let scrollDiv: HTMLElement;
