@@ -10,5 +10,6 @@ export function checkGpgKeyFormat(key: string): boolean {
 // Clean GPG Key to last 8 digits.
 export function cleanGpgKey(key: string): string {
   key = key.replaceAll(' ','');
-  return key.substring(key.length - 8);
+  let short = key.length >= 16 ? 16 : 8;
+  return key.substring(key.length - short);
 }
