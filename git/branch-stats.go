@@ -1,7 +1,10 @@
 package git
 
 import (
+	"bufio"
 	"errors"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -22,6 +25,49 @@ func (g *Git) NumBranches() uint64 {
 
 // Get current branch for currently selected repo.
 func (g *Git) GetCurrentBranch() (string, error) {
+	g.GetRepoState()
+	if g.Repo.State == RepoStateRebase || g.Repo.State == RepoStateRebaseMerge || g.Repo.State == RepoStateRebaseInteractive {
+		return g.getCurrentBranchDuringRebaseMerge()
+	}
+	return g.getCurrentBranchFromSymbolicRef()
+}
+
+func (g *Git) getCurrentBranchDuringRebaseMerge() (string, error) {
+	// GitDirRebaseApply
+	branch := ""
+	dirs := []string{GitDirRebaseMerge, GitDirRebaseApply}
+	var err error = nil
+	for _, dir := range dirs {
+		branch, err = g.getCurrentBranchDuringRebase(dir)
+		if branch != "" {
+			break
+		}
+	}
+	return branch, err
+}
+
+func (g *Git) getCurrentBranchDuringRebase(dir string) (string, error) {
+	path := filepath.Join(g.Repo.Directory, ".git", dir, GitFileRebaseMergeHeadName)
+	_, err := os.Stat(path)
+	if err != nil {
+		return "", err
+	}
+	fi, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer fi.Close()
+	scanner := bufio.NewScanner(fi)
+	if scanner.Scan() {
+		ref := scanner.Text()
+		if strings.HasPrefix(ref, "refs/heads/") {
+			return ref[11:], nil
+		}
+	}
+	return "", err
+}
+
+func (g *Git) getCurrentBranchFromSymbolicRef() (string, error) {
 	// Git 2.22+  `git branch --show-current`
 	// Git 1.8+   `git symbolic-ref --short HEAD`
 	// Git 1.7+   `git rev-parse --abbrev-ref HEAD` -- fails when no commits

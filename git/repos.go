@@ -12,6 +12,7 @@ type Repo struct {
 	Name      string
 	Directory string
 	Main      string
+	State     RepoState
 }
 
 func (g *Git) IsDir(directory string) bool {
@@ -114,6 +115,7 @@ const (
 	GitFileBisectLog              = "BISECT_LOG"
 	GitDirRebaseMerge             = "rebase-merge"
 	GitFileRebaseMergeInteractive = "interactive" // in GitDirRebaseMerge
+	GitFileRebaseMergeHeadName    = "head-name"   // in GitDirRebaseMerge or GitDirRebaseApply
 	GitDirRebaseApply             = "rebase-apply"
 	GitFileRebaseApplyRebasing    = "rebasing" // in GitDirRebaseApply
 	GitFileRebaseApplyApplying    = "applying" // in GitDirRebaseApply
@@ -132,41 +134,39 @@ const (
 )
 
 func (g *Git) GetRepoState() RepoState {
+	var state RepoState = RepoStateNone
+
 	if g.gitDirHasFile(filepath.Join(GitDirRebaseMerge, GitFileRebaseMergeInteractive)) {
-		return RepoStateRebaseInteractive
-	}
-	if g.gitDirHasFile(GitDirRebaseMerge) {
-		return RepoStateRebaseMerge
-	}
-	if g.gitDirHasFile(filepath.Join(GitDirRebaseApply, GitFileRebaseApplyRebasing)) {
-		return RepoStateRebase
-	}
-	if g.gitDirHasFile(filepath.Join(GitDirRebaseApply, GitFileRebaseApplyApplying)) {
-		return RepoStateApply
-	}
-	if g.gitDirHasFile(GitDirRebaseApply) {
-		return RepoStateApplyOrRebase
-	}
-	if g.gitDirHasFile(GitFileMergeHead) {
-		return RepoStateMerge
-	}
-	if g.gitDirHasFile(GitFileRevertHead) {
+		state = RepoStateRebaseInteractive
+	} else if g.gitDirHasFile(GitDirRebaseMerge) {
+		state = RepoStateRebaseMerge
+	} else if g.gitDirHasFile(filepath.Join(GitDirRebaseApply, GitFileRebaseApplyRebasing)) {
+		state = RepoStateRebase
+	} else if g.gitDirHasFile(filepath.Join(GitDirRebaseApply, GitFileRebaseApplyApplying)) {
+		state = RepoStateApply
+	} else if g.gitDirHasFile(GitDirRebaseApply) {
+		state = RepoStateApplyOrRebase
+	} else if g.gitDirHasFile(GitFileMergeHead) {
+		state = RepoStateMerge
+	} else if g.gitDirHasFile(GitFileRevertHead) {
 		if g.gitDirHasFile(filepath.Join(GitDirSequencer, GitFileSequencerTodo)) {
-			return RepoStateRevertSequence
+			state = RepoStateRevertSequence
+		} else {
+			state = RepoStateRevert
 		}
-		return RepoStateRevert
-	}
-	if g.gitDirHasFile(GitFileCherryPickHead) {
+	} else if g.gitDirHasFile(GitFileCherryPickHead) {
 		if g.gitDirHasFile(filepath.Join(GitDirSequencer, GitFileSequencerTodo)) {
-			return RepoStateCherryPickSequence
+			state = RepoStateCherryPickSequence
+		} else {
+			state = RepoStateCherryPick
 		}
-		return RepoStateCherryPick
-	}
-	if g.gitDirHasFile(GitFileBisectLog) {
-		return RepoStateBisect
+	} else if g.gitDirHasFile(GitFileBisectLog) {
+		state = RepoStateBisect
 	}
 
-	return RepoStateNone
+	g.Repo.State = state
+
+	return state
 }
 
 func (g *Git) gitDirHasFile(file string) bool {

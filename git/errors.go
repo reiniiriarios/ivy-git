@@ -443,9 +443,9 @@ func getGitErrorMessage(code ErrorCode) string {
 	case HostDown:
 		return "The host is down. Check your Internet connection and try again."
 	case RebaseConflicts:
-		return "We found some conflicts while trying to rebase. Please resolve the conflicts before continuing."
+		return "There were conflicts while trying to rebase. Please resolve the conflicts before continuing."
 	case MergeConflicts:
-		return "We found some conflicts while trying to merge. Please resolve the conflicts and commit the changes."
+		return "There were conflicts while trying to merge. Please resolve the conflicts and commit the changes."
 	case HTTPSRepositoryNotFound:
 	case SSHRepositoryNotFound:
 		return "The repository does not seem to exist anymore. You may not have access, or it may have been deleted or renamed."
