@@ -22,7 +22,7 @@ func (g *Git) getStashes() []Commit {
 	data := []string{"%H", "%P", "%gd", "%an", "%ae", "%at", "%s"}
 	format := strings.Join(data, GIT_LOG_SEP)
 	// todo: consider replacing with `git stash list` to prevent "bad revision" errors
-	s, err := g.RunCwd("reflog", "--format="+format, "refs/stash", "--")
+	s, err := g.run("reflog", "--format="+format, "refs/stash", "--")
 	if err != nil {
 		// if no stashes:
 		// fatal: bad revision 'refs/stash'
@@ -85,7 +85,7 @@ func (g *Git) MakeStash(subject string) error {
 		}
 	}
 
-	_, err := g.RunCwd("stash", "push", "--staged", "--message", subject)
+	_, err := g.run("stash", "push", "--staged", "--message", subject)
 
 	return err
 }
@@ -98,7 +98,7 @@ func (g *Git) PopStash(stash string, index bool) error {
 		cmd = append(cmd, "--index")
 	}
 	cmd = append(cmd, stash)
-	_, err := g.RunCwd(cmd...)
+	_, err := g.run(cmd...)
 	return err
 }
 
@@ -110,20 +110,20 @@ func (g *Git) ApplyStash(stash string, index bool) error {
 		cmd = append(cmd, "--index")
 	}
 	cmd = append(cmd, stash)
-	_, err := g.RunCwd(cmd...)
+	_, err := g.run(cmd...)
 	return err
 }
 
 // Drop a stash.
 // Stash should be a ref in the form of `stash@{<revision>}`.
 func (g *Git) DropStash(stash string) error {
-	_, err := g.RunCwd("stash", "drop", stash)
+	_, err := g.run("stash", "drop", stash)
 	return err
 }
 
 // Create a branch from a stash.
 // Stash should be a ref in the form of `stash@{<revision>}`.
 func (g *Git) CreateBranchFromStash(stash string, branch_name string) error {
-	_, err := g.RunCwd("stash", "branch", branch_name, stash)
+	_, err := g.run("stash", "branch", branch_name, stash)
 	return err
 }

@@ -14,72 +14,29 @@ type Git struct {
 	Repo
 }
 
-// Run a git command in a specific directory.
-func (g *Git) Run(directory string, command ...string) (string, error) {
-	return g.runCmd(directory, command, false, false)
+type gitRunOpts struct {
+	directory            string
+	stdin                string
+	ignore_errors        bool
+	always_return_stderr bool
 }
 
-// Run a git command in the directory of the currently selected repo.
-func (g *Git) RunCwd(command ...string) (string, error) {
-	if g.Repo == (Repo{}) {
-		return "", errors.New("no current git directory available")
+// Run a git command in the directory of the currently selected repo with the default options.
+func (g *Git) run(command ...string) (string, error) {
+	return g.runWithOpts(command, gitRunOpts{})
+}
+
+// Run a git command with the specified options.
+func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
+	if opts.directory == "" {
+		if g.Repo == (Repo{}) || g.Repo.Directory == "" {
+			return "", errors.New("no current git directory available")
+		}
+		opts.directory = g.Repo.Directory
 	}
-	return g.runCmd(g.Repo.Directory, command, false, false)
-}
 
-// Run a git command in the current directory and pipe stdin to it.
-func (g *Git) RunCwdStdin(command []string, input string) (string, error) {
-	if g.Repo == (Repo{}) {
-		return "", errors.New("no current git directory available")
-	}
-	return g.runCmdStdin(g.Repo.Directory, command, input)
-}
-
-// Run a git command in the directory of the currently selected repo. Ignore errors.
-func (g *Git) RunCwdNoError(command ...string) (string, error) {
-	if g.Repo == (Repo{}) {
-		return "", errors.New("no current git directory available")
-	}
-	return g.runCmd(g.Repo.Directory, command, true, false)
-}
-
-// Run a git command in the directory of the currently selected repo. Always return stderr.
-func (g *Git) RunCwdWithStderr(command ...string) (string, error) {
-	if g.Repo == (Repo{}) {
-		return "", errors.New("no current git directory available")
-	}
-	return g.runCmd(g.Repo.Directory, command, false, true)
-}
-
-// Run a git command.
-func (g *Git) runCmd(directory string, command []string, ignore_error bool, always_stderr bool) (string, error) {
 	// Run command in a specific directory.
-	command = append([]string{"-C", directory}, command...)
-	cmd := exec.Command("git", command[0:]...)
-
-	var outb, errb bytes.Buffer
-	cmd.Stdout = &outb
-	cmd.Stderr = &errb
-
-	err := cmd.Run()
-	// Git outputs much to stderr that isn't error.
-	// e.g.  git switch test
-	//       STDERR Switched to branch 'test'
-	//       STDOUT Your branch is up to date with 'origin/main'.
-	// Sometimes STDERR contains useful info we should return.
-	// The error may be 'exit status 1', but if there is an
-	// error, errb should contain the relevant information.
-	if (always_stderr && strings.TrimSpace(errb.String()) != "") || (!ignore_error && err != nil) {
-		return outb.String(), g.ParseGitError(errb.String(), err)
-	}
-
-	return outb.String(), nil
-}
-
-// Run a git command and pipe stdin to it.
-func (g *Git) runCmdStdin(directory string, command []string, input string) (string, error) {
-	// Run command in a specific directory.
-	command = append([]string{"-C", directory}, command...)
+	command = append([]string{"-C", opts.directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
 
 	stdin, err := cmd.StdinPipe()
@@ -91,22 +48,37 @@ func (g *Git) runCmdStdin(directory string, command []string, input string) (str
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 
-	err = cmd.Start()
-	if err != nil {
-		return "", g.ParseGitError(errb.String(), err)
+	if opts.stdin != "" {
+		err = cmd.Start()
+		if err != nil {
+			return "", g.ParseGitError(errb.String(), err)
+		}
+
+		// Because git does not continue before stdin is closed, this must be wrapped as so.
+		// https://pkg.go.dev/os/exec#Cmd.StdinPipe
+		go func() {
+			defer stdin.Close()
+			io.WriteString(stdin, opts.stdin)
+		}()
+
+		err = cmd.Wait()
+
+		if err != nil {
+			return "", g.ParseGitError(errb.String(), err)
+		}
+	} else {
+		err = cmd.Run()
 	}
 
-	// Because git does not continue before stdin is closed, this must be wrapped as so.
-	// https://pkg.go.dev/os/exec#Cmd.StdinPipe
-	go func() {
-		defer stdin.Close()
-		io.WriteString(stdin, input)
-	}()
-
-	err = cmd.Wait()
-
-	if err != nil {
-		return "", g.ParseGitError(errb.String(), err)
+	// Git outputs much to stderr that isn't error.
+	// e.g.  git switch test
+	//       STDERR Switched to branch 'test'
+	//       STDOUT Your branch is up to date with 'origin/main'.
+	// Sometimes STDERR contains useful info we should return.
+	// The error may be 'exit status 1', but if there is an
+	// error, errb should contain the relevant information.
+	if (opts.always_return_stderr && strings.TrimSpace(errb.String()) != "") || (!opts.ignore_errors && err != nil) {
+		return outb.String(), g.ParseGitError(errb.String(), err)
 	}
 
 	return outb.String(), nil
@@ -114,7 +86,6 @@ func (g *Git) runCmdStdin(directory string, command []string, input string) (str
 
 // Initialize git in a specific directory.
 func (g *Git) GitInit(directory string) error {
-	cmd := []string{"-C", directory, "init"}
-	_, err := g.runCmd(g.Repo.Directory, cmd, false, false)
+	_, err := g.runWithOpts([]string{"init"}, gitRunOpts{directory: directory})
 	return err
 }

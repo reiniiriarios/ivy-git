@@ -22,7 +22,7 @@ type Remote struct {
 }
 
 func (g *Git) getRemoteNames() ([]string, error) {
-	r, err := g.RunCwd("remote")
+	r, err := g.run("remote")
 	if err != nil {
 		return []string{}, err
 	}
@@ -57,7 +57,7 @@ func (g *Git) getRemoteForBranch(branch string) (string, error) {
 		return "", errors.New("no branch name specified")
 	}
 
-	r, err := g.RunCwd("config", "branch."+branch+".remote")
+	r, err := g.run("config", "branch."+branch+".remote")
 	r = parseOneLine(r)
 	// If not found configured, get first remote. This won't ordinarily happen?
 	if err != nil || r == "" {
@@ -79,7 +79,7 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 	remotes := []Remote{}
 	rmap := make(map[string]int)
 
-	rs, err := g.RunCwd("remote", "-v")
+	rs, err := g.run("remote", "-v")
 	if err != nil {
 		return remotes, err
 	}
@@ -162,7 +162,7 @@ func (g *Git) getMainBranchForRemote(remote string) string {
 		return ""
 	}
 
-	ls, err := g.RunCwd("ls-remote", remote)
+	ls, err := g.run("ls-remote", remote)
 	if err != nil {
 		println(err.Error())
 		return ""
@@ -204,7 +204,7 @@ func (g *Git) FetchRemote(remote string) error {
 	if remote == "" {
 		return errors.New("no remote name specified")
 	}
-	_, err := g.RunCwd("fetch", remote, "--prune")
+	_, err := g.run("fetch", remote, "--prune")
 	return err
 }
 
@@ -216,13 +216,13 @@ func (g *Git) AddRemote(name string, fetch_url string, push_url string) error {
 		return errors.New("no fetch url specified")
 	}
 
-	_, err := g.RunCwd("remote", "add", name, fetch_url)
+	_, err := g.run("remote", "add", name, fetch_url)
 	if err != nil {
 		return err
 	}
 
 	if push_url != "" {
-		_, err = g.RunCwd("remote", "set-url", name, "--push", push_url)
+		_, err = g.run("remote", "set-url", name, "--push", push_url)
 		if err != nil {
 			return err
 		}
@@ -235,6 +235,6 @@ func (g *Git) RemoveRemote(name string) error {
 	if name == "" {
 		return errors.New("no remote name specified")
 	}
-	_, err := g.RunCwd("remote", "rm", name)
+	_, err := g.run("remote", "rm", name)
 	return err
 }

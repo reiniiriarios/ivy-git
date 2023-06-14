@@ -3,7 +3,7 @@ package git
 import "strings"
 
 func (g *Git) CheckoutCommit(hash string) error {
-	_, err := g.RunCwd("checkout", hash)
+	_, err := g.run("checkout", hash)
 	return err
 }
 
@@ -21,7 +21,7 @@ func (g *Git) checkoutIndex(paths []string) error {
 	}
 	paths_joined := strings.Join(paths, "\x00")
 
-	_, err := g.RunCwdStdin([]string{"checkout-index", "-f", "-u", "-q", "--stdin", "-z"}, paths_joined)
+	_, err := g.runWithOpts([]string{"checkout-index", "-f", "-u", "-q", "--stdin", "-z"}, gitRunOpts{stdin: paths_joined})
 
 	if err != nil && errorCode(err) != ExitStatus1 {
 		return err

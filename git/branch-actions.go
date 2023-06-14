@@ -11,15 +11,15 @@ func (g *Git) SwitchBranch(branch string, remote string) error {
 	}
 	var err error
 	if remote == "" {
-		_, err = g.RunCwd("checkout", branch)
+		_, err = g.run("checkout", branch)
 	} else if g.BranchExists(branch) {
 		err = g.PullBranch(branch, true)
 		if err != nil {
 			return err
 		}
-		_, err = g.RunCwd("checkout branch")
+		_, err = g.run("checkout branch")
 	} else {
-		_, err = g.RunCwd("checkout", "-b", branch, remote+"/"+branch)
+		_, err = g.run("checkout", "-b", branch, remote+"/"+branch)
 	}
 	return err
 }
@@ -53,12 +53,12 @@ func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool, 
 	var err error
 	if set_upstream {
 		// No setting upstream and forcing at the same time, doesn't make sense.
-		_, err = g.RunCwd("push", "--set-upstream", remote, branch)
+		_, err = g.run("push", "--set-upstream", remote, branch)
 	} else {
 		if force {
-			_, err = g.RunCwd("push", "--force-with-lease", remote, branch+":"+branch)
+			_, err = g.run("push", "--force-with-lease", remote, branch+":"+branch)
 		} else {
-			_, err = g.RunCwd("push", remote, branch+":"+branch)
+			_, err = g.run("push", remote, branch+":"+branch)
 		}
 	}
 	return err
@@ -87,9 +87,9 @@ func (g *Git) PullRemoteBranch(remote string, branch string, rebase bool) error 
 
 	var err error
 	if rebase {
-		_, err = g.RunCwd("pull", remote, branch+":"+branch, "--rebase")
+		_, err = g.run("pull", remote, branch+":"+branch, "--rebase")
 	} else {
-		_, err = g.RunCwd("pull", remote, branch+":"+branch)
+		_, err = g.run("pull", remote, branch+":"+branch)
 	}
 	return err
 }
@@ -117,7 +117,7 @@ func (g *Git) ResetBranchToRemote(branch string) error {
 		return err
 	}
 
-	_, err = g.RunCwd("reset", "--hard", remote+"/"+branch)
+	_, err = g.run("reset", "--hard", remote+"/"+branch)
 
 	g.SwitchBranch(current_branch, "")
 
@@ -135,7 +135,7 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) (b
 		delete = "-D"
 	}
 
-	_, err := g.RunCwd("branch", delete, branch)
+	_, err := g.run("branch", delete, branch)
 	if err != nil {
 		if errorCode(err) == MustForceDeleteBranch {
 			return true, err
@@ -150,7 +150,7 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) (b
 		}
 		for _, remote := range remotes {
 			if g.branchExistsOnRemote(branch, remote) {
-				_, err := g.RunCwd("push", delete, remote, branch)
+				_, err := g.run("push", delete, remote, branch)
 				if err != nil {
 					if errorCode(err) == MustForceDeleteBranch {
 						return true, err
@@ -177,7 +177,7 @@ func (g *Git) DeleteRemoteBranch(branch string, remote string, force bool) error
 	if force {
 		delete = "-D"
 	}
-	_, err := g.RunCwd("push", delete, remote, branch)
+	_, err := g.run("push", delete, remote, branch)
 	return err
 }
 
@@ -190,7 +190,7 @@ func (g *Git) RenameBranch(branch string, new_name string) error {
 		return errors.New("no new branch name specified")
 	}
 
-	_, err := g.RunCwd("branch", "-m", branch, new_name)
+	_, err := g.run("branch", "-m", branch, new_name)
 	if err != nil {
 		return err
 	}
@@ -201,11 +201,11 @@ func (g *Git) RenameBranch(branch string, new_name string) error {
 	}
 	for _, remote := range remotes {
 		if g.branchExistsOnRemote(branch, remote) {
-			_, err := g.RunCwd("push", remote, ":"+branch, new_name)
+			_, err := g.run("push", remote, ":"+branch, new_name)
 			if err != nil {
 				return err
 			}
-			_, err = g.RunCwd("push", "--set-upstream", remote, new_name)
+			_, err = g.run("push", "--set-upstream", remote, new_name)
 			if err != nil {
 				return err
 			}
@@ -219,7 +219,7 @@ func (g *Git) RebaseOnBranch(branch string) error {
 	if branch == "" {
 		return errors.New("no branch name specified")
 	}
-	_, err := g.RunCwd("rebase", branch)
+	_, err := g.run("rebase", branch)
 	return err
 }
 
@@ -238,7 +238,7 @@ func (g *Git) CreateBranch(name string, at_hash string, checkout bool) error {
 	if at_hash != "" {
 		cmd = append(cmd, at_hash)
 	}
-	_, err := g.RunCwd(cmd...)
+	_, err := g.run(cmd...)
 
 	return err
 }

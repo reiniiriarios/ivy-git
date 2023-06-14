@@ -20,7 +20,7 @@ type CommitAddl struct {
 }
 
 func (g *Git) GetLastCommitHash() (string, error) {
-	h, err := g.RunCwd("--no-pager", "log", "--format=%H", "--max-count=1")
+	h, err := g.run("--no-pager", "log", "--format=%H", "--max-count=1")
 	if err != nil {
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath || errorCode(err) == ExitStatus1 {
 			return "", nil
@@ -33,7 +33,7 @@ func (g *Git) GetLastCommitHash() (string, error) {
 
 // Get subject and body of most recent commit message.
 func (g *Git) GetLastCommitMessage() (CommitMessage, error) {
-	m, err := g.RunCwd("--no-pager", "log", "--format=%s"+GIT_LOG_SEP+"%b", "--max-count=1")
+	m, err := g.run("--no-pager", "log", "--format=%s"+GIT_LOG_SEP+"%b", "--max-count=1")
 	if err != nil {
 		return CommitMessage{}, err
 	}
@@ -58,7 +58,7 @@ func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 	// https://git-scm.com/docs/pretty-formats
 	data := []string{"%cn", "%ce", "%ct", "%b"}
 	format := strings.Join(data, GIT_LOG_SEP)
-	c, err := g.RunCwd("--no-pager", "log", hash, "--format="+format, "--max-count=1")
+	c, err := g.run("--no-pager", "log", hash, "--format="+format, "--max-count=1")
 	if err != nil {
 		return CommitAddl{}, err
 	}
@@ -130,9 +130,9 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 		if err != nil {
 			return FileStatDir{}, err
 		}
-		numstat, err = g.RunCwd("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash, merge_base)
+		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash, merge_base)
 	} else {
-		numstat, err = g.RunCwd("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash)
+		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash)
 	}
 	if err != nil {
 		return FileStatDir{}, err
@@ -205,9 +205,9 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	// Get the status of each file in the commit.
 	var name_status string
 	if len(parents) > 1 {
-		name_status, err = g.RunCwd("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash, merge_base)
+		name_status, err = g.run("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash, merge_base)
 	} else {
-		name_status, err = g.RunCwd("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash)
+		name_status, err = g.run("diff-tree", "--name-status", "-r", "--root", "--find-renames", "-z", hash)
 	}
 	if err != nil {
 		return FileStatDir{}, err
@@ -279,7 +279,7 @@ func (g *Git) getCommitParents(hash string) ([]string, error) {
 		return []string{}, errors.New("no commit hash specified")
 	}
 
-	c, err := g.RunCwd("--no-pager", "log", "--format=%P", "--max-count=1", hash)
+	c, err := g.run("--no-pager", "log", "--format=%P", "--max-count=1", hash)
 	if err != nil {
 		return []string{}, err
 	}
@@ -337,7 +337,7 @@ func (g *Git) GetCommitSignature(hash string) (CommitSignature, error) {
 	// https://git-scm.com/docs/pretty-formats
 	data := []string{"%G?", "%GS", "%GK"}
 	format := strings.Join(data, GIT_LOG_SEP)
-	c, err := g.RunCwd("--no-pager", "log", hash, "--format="+format, "--max-count=1")
+	c, err := g.run("--no-pager", "log", hash, "--format="+format, "--max-count=1")
 	if err != nil {
 		return CommitSignature{}, err
 	}

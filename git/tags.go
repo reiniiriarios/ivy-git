@@ -6,7 +6,7 @@ import (
 )
 
 func (g *Git) NumTags() uint64 {
-	b, err := g.RunCwd("tag")
+	b, err := g.run("tag")
 	if err != nil {
 		return 0
 	}
@@ -23,7 +23,7 @@ func (g *Git) PushTag(name string) error {
 	if err != nil {
 		return err
 	}
-	_, err = g.RunCwd("push", remote, name)
+	_, err = g.run("push", remote, name)
 	return err
 }
 
@@ -36,11 +36,11 @@ func (g *Git) DeleteTag(name string) error {
 	if err != nil {
 		return err
 	}
-	_, err = g.RunCwd("tag", "-d", name)
+	_, err = g.run("tag", "-d", name)
 	if err != nil {
 		return err
 	}
-	_, err = g.RunCwd("push", remote, ":refs/tags/"+name)
+	_, err = g.run("push", remote, ":refs/tags/"+name)
 	return err
 }
 
@@ -54,9 +54,9 @@ func (g *Git) AddTag(hash string, name string, message string, push bool) error 
 
 	var err error
 	if message != "" {
-		_, err = g.RunCwd("tag", "-a", name, hash, "-m", message)
+		_, err = g.run("tag", "-a", name, hash, "-m", message)
 	} else {
-		_, err = g.RunCwd("tag", name, hash)
+		_, err = g.run("tag", name, hash)
 	}
 	if err != nil {
 		return err
@@ -76,7 +76,7 @@ func (g *Git) getRemoteTags(remote string) ([]string, error) {
 	}
 
 	tags := []string{}
-	t, err := g.RunCwd("ls-remote", "--tags", remote)
+	t, err := g.run("ls-remote", "--tags", remote)
 	if err != nil {
 		return tags, err
 	}

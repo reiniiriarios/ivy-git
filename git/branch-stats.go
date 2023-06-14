@@ -15,7 +15,7 @@ type Branch struct {
 }
 
 func (g *Git) NumBranches() uint64 {
-	b, err := g.RunCwd("branch")
+	b, err := g.run("branch")
 	if err != nil {
 		return 0
 	}
@@ -72,7 +72,7 @@ func (g *Git) getCurrentBranchFromSymbolicRef() (string, error) {
 	// Git 1.8+   `git symbolic-ref --short HEAD`
 	// Git 1.7+   `git rev-parse --abbrev-ref HEAD` -- fails when no commits
 	// earlier    `git symbolic-ref HEAD` -- works, but returns full ref
-	ref, err := g.RunCwd("symbolic-ref", "HEAD")
+	ref, err := g.run("symbolic-ref", "HEAD")
 	if err != nil {
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath || errorCode(err) == ExitStatus1 {
 			return "", nil
@@ -91,7 +91,7 @@ func (g *Git) getCurrentBranchFromSymbolicRef() (string, error) {
 func (g *Git) GetBranches() ([]Branch, error) {
 	branch_list := []Branch{}
 
-	branches, err := g.RunCwd("for-each-ref", "--format", "%(refname:lstrip=2)"+GIT_LOG_SEP+"%(upstream:short)", "refs/heads/**")
+	branches, err := g.run("for-each-ref", "--format", "%(refname:lstrip=2)"+GIT_LOG_SEP+"%(upstream:short)", "refs/heads/**")
 	if err != nil {
 		return branch_list, err
 	}
@@ -115,7 +115,7 @@ func (g *Git) GetBranchUpstream(branch string) (string, error) {
 		return "", errors.New("no branch name specified")
 	}
 
-	b, err := g.RunCwd("for-each-ref", "--format", "%(upstream:short)", branch)
+	b, err := g.run("for-each-ref", "--format", "%(upstream:short)", branch)
 	if err != nil {
 		return "", err
 	}
@@ -128,7 +128,7 @@ func (g *Git) BranchExists(name string) bool {
 	if name == "" {
 		return false
 	}
-	_, err := g.RunCwd("rev-parse", "--verify", name)
+	_, err := g.run("rev-parse", "--verify", name)
 	return err == nil
 }
 
@@ -141,7 +141,7 @@ func (g *Git) getAheadBehind(branch string, remote string) (uint32, uint32, erro
 		return 0, 0, errors.New("no remote name specified")
 	}
 
-	rl, err := g.RunCwd("rev-list", "--left-right", "--count", branch+"..."+remote+"/"+branch)
+	rl, err := g.run("rev-list", "--left-right", "--count", branch+"..."+remote+"/"+branch)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -168,7 +168,7 @@ func (g *Git) NumCommitsOnBranch(branch string) (uint64, error) {
 		return 0, errors.New("no branch name specified")
 	}
 
-	n, err := g.RunCwd("rev-list", "--count", branch)
+	n, err := g.run("rev-list", "--count", branch)
 	if err != nil {
 		// Ignore errors here, there may not be a branch selected.
 		return 0, nil
@@ -183,7 +183,7 @@ func (g *Git) getBranchRemote(branch string, fallback bool) (string, error) {
 		return "", errors.New("no branch name specified")
 	}
 
-	r, err := g.RunCwd("config", "branch."+branch+".remote")
+	r, err := g.run("config", "branch."+branch+".remote")
 	if err != nil && errorCode(err) != ExitStatus1 {
 		return "", err
 	}
@@ -241,7 +241,7 @@ func (g *Git) fetchBranchRemote(branch string, remote string) error {
 		return errors.New("no remote name specified")
 	}
 
-	_, err := g.RunCwd("fetch", remote, branch)
+	_, err := g.run("fetch", remote, branch)
 	return err
 }
 
@@ -251,7 +251,7 @@ func (g *Git) branchExistsOnRemote(branch string, remote string) bool {
 		return false
 	}
 
-	ls, _ := g.RunCwd("ls-remote", "--heads", remote, branch)
+	ls, _ := g.run("ls-remote", "--heads", remote, branch)
 	ls = parseOneLine(ls)
 	return ls != ""
 }

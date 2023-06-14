@@ -23,7 +23,7 @@ func (g *Git) MakeCommit(subject string, body string, amend bool) error {
 		// https://git-scm.com/docs/git-commit#Documentation/git-commit.txt--mltmsggt
 		cmd = append(cmd, "--message", body)
 	}
-	_, err := g.RunCwd(cmd...)
+	_, err := g.run(cmd...)
 
 	return err
 }
@@ -32,7 +32,7 @@ func (g *Git) RevertCommit(hash string) error {
 	if hash == "" {
 		return errors.New("no commit hash specified")
 	}
-	_, err := g.RunCwd("revert", hash)
+	_, err := g.run("revert", hash)
 	return err
 }
 
@@ -46,6 +46,6 @@ func (g *Git) CherryPick(hash string, record bool, no_commit bool) error {
 	}
 	cmd = append(cmd, hash)
 
-	_, err := g.RunCwd(cmd...)
+	_, err := g.run(cmd...)
 	return err
 }

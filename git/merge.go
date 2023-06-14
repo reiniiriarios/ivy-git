@@ -18,7 +18,7 @@ func (g *Git) MergeCommit(target_branch string, no_commit bool, no_ff bool) erro
 		cmd = append(cmd, "--no-ff")
 	}
 	cmd = append(cmd, target_branch)
-	res, err := g.RunCwd(cmd...)
+	res, err := g.run(cmd...)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func (g *Git) MergeSquash(target_branch string) error {
 		return errors.New("no branch name specified")
 	}
 
-	_, err := g.RunCwd("merge", "--squash", target_branch)
+	_, err := g.run("merge", "--squash", target_branch)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (g *Git) MergeRebase(target_branch string) error {
 		return errors.New("no branch name specified")
 	}
 
-	_, err := g.RunCwd("rebase", "--merge", target_branch)
+	_, err := g.run("rebase", "--merge", target_branch)
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func (g *Git) MergeFastForward(target_branch string) error {
 		return errors.New("no branch name specified")
 	}
 
-	_, err := g.RunCwd("merge", "--ff-only", target_branch)
+	_, err := g.run("merge", "--ff-only", target_branch)
 	if err != nil {
 		return err
 	}

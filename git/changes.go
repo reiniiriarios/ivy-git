@@ -33,7 +33,7 @@ func (g *Git) GitListChanges() (map[string]*Change, map[string]*Change, map[stri
 	var changesY []Change
 	var changesC []Change
 
-	c, err := g.RunCwd("status", "--untracked-files", "--porcelain", "-z")
+	c, err := g.run("status", "--untracked-files", "--porcelain", "-z")
 	if err != nil {
 		return nil, nil, nil, err
 	}

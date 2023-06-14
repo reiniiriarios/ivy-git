@@ -5,7 +5,7 @@ import (
 )
 
 func (g *Git) isStagedEmpty() bool {
-	d, err := g.RunCwd("diff", "--name-only", "--cached")
+	d, err := g.run("diff", "--name-only", "--cached")
 	if err != nil {
 		return true
 	}
@@ -15,7 +15,7 @@ func (g *Git) isStagedEmpty() bool {
 
 func (g *Git) StageFiles(file ...string) error {
 	cmd := append([]string{"add"}, file...)
-	_, err := g.RunCwd(cmd...)
+	_, err := g.run(cmd...)
 	return err
 }
 
@@ -23,17 +23,17 @@ func (g *Git) UnstageFile(file string) error {
 	if file == "" {
 		return errors.New("no file specified")
 	}
-	_, err := g.RunCwd("reset", "--", file)
+	_, err := g.run("reset", "--", file)
 	return err
 }
 
 func (g *Git) StageAll() error {
-	_, err := g.RunCwd("add", "--all")
+	_, err := g.run("add", "--all")
 	return err
 }
 
 func (g *Git) UnstageAll() error {
-	_, err := g.RunCwd("reset")
+	_, err := g.run("reset")
 	return err
 }
 
@@ -49,7 +49,7 @@ func (g *Git) StagePartial(diff Diff, filename string, status string) error {
 	if patch == "" {
 		return nil
 	}
-	_, err := g.RunCwdStdin([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
+	_, err := g.runWithOpts([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, gitRunOpts{stdin: patch})
 	return err
 }
 
@@ -58,6 +58,6 @@ func (g *Git) UnstagePartial(diff Diff, filename string, status string) error {
 	if patch == "" {
 		return nil
 	}
-	_, err := g.RunCwdStdin([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, patch)
+	_, err := g.runWithOpts([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, gitRunOpts{stdin: patch})
 	return err
 }

@@ -27,7 +27,7 @@ type Refs struct {
 
 // Get the symbolic ref for the HEAD or an empty string if it isn't symbolic.
 func (g *Git) symbolicRefHead() string {
-	h, err := g.RunCwd("symbolic-ref", "HEAD", "--")
+	h, err := g.run("symbolic-ref", "HEAD", "--")
 	// e.g.
 	//   refs/heads/main
 	// or
@@ -58,7 +58,7 @@ func (g *Git) headRef() Ref {
 func (g *Git) getRefs() (Refs, error) {
 	var refs Refs
 
-	show_refs, err := g.RunCwd("show-ref", "--dereference", "--head")
+	show_refs, err := g.run("show-ref", "--dereference", "--head")
 	// e.g.
 	// a67ea1dbf2b31ebd354604cdc60574950c7fe905 HEAD
 	// a67ea1dbf2b31ebd354604cdc60574950c7fe905 refs/heads/main
@@ -227,7 +227,7 @@ func parseRefRemote(hash string, name string) Ref {
 }
 
 func (g *Git) ShowRefAll() (string, error) {
-	refs, err := g.RunCwd("show-ref", "--dereference", "--head")
+	refs, err := g.run("show-ref", "--dereference", "--head")
 	if err != nil {
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath || errorCode(err) == ExitStatus1 {
 			return "", nil
@@ -240,7 +240,7 @@ func (g *Git) ShowRefAll() (string, error) {
 func (g *Git) getUpstreamsForRefs() (map[string]string, error) {
 	upstream := make(map[string]string)
 
-	refs, err := g.RunCwd("for-each-ref", "--format=%(refname)"+GIT_LOG_SEP+"%(upstream:short)")
+	refs, err := g.run("for-each-ref", "--format=%(refname)"+GIT_LOG_SEP+"%(upstream:short)")
 	if err != nil {
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath {
 			return upstream, nil
@@ -297,7 +297,7 @@ func (g *Git) getUpstreamsForRefs() (map[string]string, error) {
 // In the case when a branch isn't tracking a remote, search for one that
 // matches its name and make the assumption that the two are related.
 func (g *Git) findRemoteBranch(branch string) (string, error) {
-	r, err := g.RunCwd("rev-parse", "--abbrev-ref", "--remotes", "*/"+branch)
+	r, err := g.run("rev-parse", "--abbrev-ref", "--remotes", "*/"+branch)
 	if err != nil {
 		return "", err
 	}

@@ -29,7 +29,7 @@ func (g *Git) getParsedConfig(list string) (GitConfig, error) {
 }
 
 func (g *Git) getConfig(list string) (map[string]string, error) {
-	c, err := g.RunCwd("--no-pager", "config", "--list", "--"+list, "-z")
+	c, err := g.run("--no-pager", "config", "--list", "--"+list, "-z")
 	if err != nil {
 		return nil, err
 	}
@@ -94,11 +94,11 @@ func (g *Git) updateConfig(list string, key string, value string) error {
 	if value == "" {
 		return g.clearConfig(list, key)
 	}
-	_, err := g.RunCwd("config", "--"+list, key, value)
+	_, err := g.run("config", "--"+list, key, value)
 	return err
 }
 
 func (g *Git) clearConfig(list string, key string) error {
-	_, err := g.RunCwd("config", "--"+list, "--unset-all", key)
+	_, err := g.run("config", "--"+list, "--unset-all", key)
 	return err
 }

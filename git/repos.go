@@ -24,7 +24,7 @@ func (g *Git) IsGitRepo(directory string) bool {
 	if !g.IsDir(directory) {
 		return false
 	}
-	r, err := g.Run(directory, "rev-parse")
+	r, err := g.runWithOpts([]string{"rev-parse"}, gitRunOpts{directory: directory})
 	if err != nil {
 		return false
 	}
@@ -34,12 +34,12 @@ func (g *Git) IsGitRepo(directory string) bool {
 
 func (g *Git) CloneRepo(url string, name string, directory string) error {
 	// Directory error checking happens before this method is called.
-	_, err := g.Run(directory, "clone", url, name)
+	_, err := g.runWithOpts([]string{"clone", url, name}, gitRunOpts{directory: directory})
 	return err
 }
 
 func (g *Git) HasCommits(directory string) bool {
-	_, err := g.Run(directory, "rev-list", "--count", "HEAD", "--")
+	_, err := g.runWithOpts([]string{"rev-list", "--count", "HEAD", "--"}, gitRunOpts{directory: directory})
 	if err == nil {
 		return true
 	}
@@ -51,7 +51,7 @@ func (g *Git) HasCommits(directory string) bool {
 
 // Check common names for main branch.
 func (g *Git) NameOfMainBranchForRepo(repo_dir string) string {
-	r, err := g.Run("-C", repo_dir, "for-each-ref", "--format=%(refname:short)", "refs/heads/main", "refs/heads/master", "refs/heads/trunk")
+	r, err := g.runWithOpts([]string{"for-each-ref", "--format=%(refname:short)", "refs/heads/main", "refs/heads/master", "refs/heads/trunk"}, gitRunOpts{directory: repo_dir})
 	if err != nil {
 		// Screw it, return something.
 		return "main"
@@ -77,7 +77,7 @@ func (g *Git) NameOfMainBranch() string {
 }
 
 func (g *Git) LsFiles() ([]string, error) {
-	f, err := g.RunCwd("ls-files")
+	f, err := g.run("ls-files")
 	if err != nil {
 		return []string{}, err
 	}

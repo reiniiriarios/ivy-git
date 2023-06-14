@@ -6,7 +6,7 @@ import (
 
 // Get a simple list of untracked files, no other data.
 func (g *Git) GetUntrackedFiles() (string, error) {
-	l, err := g.RunCwd("ls-files", "--others", "--exclude-standard")
+	l, err := g.run("ls-files", "--others", "--exclude-standard")
 	if err != nil {
 		return "", err
 	}
@@ -14,7 +14,7 @@ func (g *Git) GetUntrackedFiles() (string, error) {
 }
 
 func (g *Git) GetUncommittedDiff() (string, error) {
-	diff, err := g.RunCwd("--no-pager", "diff", "HEAD^", "--")
+	diff, err := g.run("--no-pager", "diff", "HEAD^", "--")
 	if err != nil {
 		if errorCode(err) == BadRevision {
 			return "", nil
@@ -54,7 +54,7 @@ func (g *Git) GetDiffRemote(remote string, branch string) (string, error) {
 		return "", errors.New("no remote name specified")
 	}
 
-	diff, err := g.RunCwd("--no-pager", "diff", remote+"/"+branch)
+	diff, err := g.run("--no-pager", "diff", remote+"/"+branch)
 	if err != nil {
 		return "", err
 	}
@@ -62,7 +62,7 @@ func (g *Git) GetDiffRemote(remote string, branch string) (string, error) {
 }
 
 func (g *Git) GetDiffStaged() (string, error) {
-	diff, err := g.RunCwd("--no-pager", "diff", "--staged")
+	diff, err := g.run("--no-pager", "diff", "--staged")
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +74,7 @@ func (g *Git) findMergeBase(hash1 string, hash2 string) (string, error) {
 		return "", errors.New("no commit hash specified")
 	}
 
-	b, err := g.RunCwd("merge-base", hash1, hash2)
+	b, err := g.run("merge-base", hash1, hash2)
 	if err != nil {
 		return "", err
 	}
@@ -108,7 +108,7 @@ func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (strin
 	// UNTRACKED FILES
 	if status == FileUntracked {
 		cmd = append(cmd, "--no-index", "--", "/dev/null", file)
-		d, err = g.RunCwdWithStderr(cmd...)
+		d, err = g.runWithOpts(cmd, gitRunOpts{always_return_stderr: true})
 		if errorCode(err) == ReplaceLineEndings {
 			flags = append(flags, "replace-line-endings")
 		}
@@ -125,7 +125,7 @@ func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (strin
 			// UNSTAGED TRACKED FILES
 			cmd = append(cmd, "--", file)
 		}
-		d, err = g.RunCwdWithStderr(cmd...)
+		d, err = g.runWithOpts(cmd, gitRunOpts{always_return_stderr: true})
 		if errorCode(err) == ReplaceLineEndings {
 			flags = append(flags, "replace-line-endings")
 		} else if err != nil {
@@ -152,7 +152,7 @@ func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
 }
 
 func (g *Git) getDiffBase(file string) (string, error) {
-	d, err := g.RunCwd("diff", "--base", "--", file)
+	d, err := g.run("diff", "--base", "--", file)
 	if err != nil {
 		return "", err
 	}
@@ -179,7 +179,7 @@ func (g *Git) getCommitFileDiff(hash string, file string, oldfile string) (strin
 	if oldfile != "" {
 		cmd = append(cmd, oldfile)
 	}
-	d, err := g.RunCwd(cmd...)
+	d, err := g.run(cmd...)
 	if err != nil {
 		return "", err
 	}
