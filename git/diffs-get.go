@@ -137,12 +137,25 @@ func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (strin
 }
 
 func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
-	base, err := g.getDiffBase(file)
+	x, y, err := g.getFileStatus(file)
 	if err != nil {
 		return Diff{}, err
 	}
+	println(x, y)
+
+	var raw string
+	if (x == FileAdded || x == FileUntracked) && (y == FileAdded || y == FileUntracked) {
+		// If both sides are new, the conflict should be in both Ours and Theirs diffs.
+		raw, err = g.getDiffOurs(file)
+	} else {
+		raw, err = g.getDiffBase(file)
+	}
+	if err != nil {
+		return Diff{}, err
+	}
+
 	diff := Diff{
-		raw: base,
+		raw: raw,
 	}
 	err = diff.parseConflicts()
 	if err != nil {
@@ -153,6 +166,14 @@ func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
 
 func (g *Git) getDiffBase(file string) (string, error) {
 	d, err := g.run("diff", "--base", "--", file)
+	if err != nil {
+		return "", err
+	}
+	return d, nil
+}
+
+func (g *Git) getDiffOurs(file string) (string, error) {
+	d, err := g.run("diff", "--ours", "--", file)
 	if err != nil {
 		return "", err
 	}

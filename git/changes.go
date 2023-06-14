@@ -1,6 +1,7 @@
 package git
 
 import (
+	"errors"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -111,6 +112,19 @@ func sortChanges(changes []Change) map[string]*Change {
 		changesmap[changes[i].File] = &changes[i]
 	}
 	return changesmap
+}
+
+func (g *Git) getFileStatus(file string) (string, string, error) {
+	s, err := g.run("status", "--untracked-files", "--porcelain", "-z", "--", file)
+	if err != nil {
+		return "", "", err
+	}
+	// XY filename
+	s = parseOneLine(s)
+	if len(strings.TrimSpace(s)) < 4 {
+		return "", "", errors.New("cannot determine file status, file not found")
+	}
+	return s[0:1], s[1:2], nil
 }
 
 // `git status --porcelain`

@@ -1,6 +1,8 @@
 package files
 
 import (
+	"bufio"
+	"io"
 	"os"
 )
 
@@ -37,4 +39,29 @@ func getFileSize(file string) (int64, error) {
 		return -1, err
 	}
 	return fi.Size(), nil
+}
+
+func GetContents(file string) (string, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	contents := ""
+	reader := bufio.NewReader(f)
+	for {
+		line, err := reader.ReadString('\n')
+		if err == nil || err == io.EOF {
+			contents += line
+		}
+		if err != nil {
+			if err != io.EOF {
+				println("Error reading file:", err)
+			}
+			break
+		}
+	}
+
+	return contents, nil
 }
