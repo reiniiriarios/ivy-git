@@ -54,7 +54,7 @@
         {@html octicons['file-added'].toSVG({width: 14})}
       </button>
     {/if}
-  {:else if $currentDiff.Conflicts?.length}
+  {:else if $currentDiff.Conflicts && Object.keys($currentDiff.Conflicts).length}
     <button
       class="btn btn--apply"
       disabled={!$currentDiffResolved}
