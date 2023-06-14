@@ -12,7 +12,7 @@ const conventionalLabels = [
 ];
 
 export function highlightConventionalCommits(subject: string): string {
-  let r = /^(([a-z]+)(?:\(.+\))?:)(.*)$/i
+  let r = /^(([a-z]+)(?:\(.+\))?!?:)(.*)$/i
   let matches = subject.match(r);
   if (matches?.length === 4 && conventionalLabels.includes(matches[2].toLowerCase())) {
     let label = matches[2].toLowerCase();
