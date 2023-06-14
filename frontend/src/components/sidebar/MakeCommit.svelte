@@ -3,7 +3,8 @@
   import { isDarwin } from "scripts/env";
   import { parseResponse } from "scripts/parse-response";
   import { currentBranch, detachedHead } from "stores/branches";
-  import { changesNumConflicts, changesNumStaged, changesNumUnstaged, mergeConflicts, mergeConflictsResolved } from "stores/changes";
+  import { changes, changesNumConflicts, changesNumStaged, changesNumUnstaged, mergeConflicts, mergeConflictsResolved } from "stores/changes";
+  import { commitData } from "stores/commits";
   import { repoState } from "stores/repo-state";
   import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody, commitMessage } from "stores/ui";
   import { MakeCommit, MakeStash } from "wailsjs/go/main/App";
@@ -40,6 +41,8 @@
         MakeCommit($commitMessageSubject, $commitMessageBody, state === 'amend').then(result => {
           parseResponse(result, () => {
             commitMessage.clear();
+            changes.refresh();
+            commitData.refresh();
             state = 'commit';
           });
           running = false;
@@ -49,6 +52,8 @@
         MakeStash($commitMessageSubject).then(result => {
           parseResponse(result, () => {
             commitMessage.clear();
+            changes.refresh();
+            commitData.refresh();
             state = 'commit';
           });
           running = false;
