@@ -150,7 +150,7 @@
                   bind:this={columns[i].el}
                   data-index={i}
                   data-id="{col.id}"
-                  style="min-width: {COL_MIN_WIDTH}px">
+                  style="min-width: {col.min ?? 0}px">
                   {col.name}
                   {#if i < columns.length - 1}
                     <div on:mousedown={resizeDown} data-index={i} class="resize-handle" style:height="24px"></div>
