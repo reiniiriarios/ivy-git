@@ -1,6 +1,12 @@
 import { derived, get, writable } from "svelte/store";
 import { changes } from "./changes";
-import { GetCommitFileParsedDiff, GetHighlightedFileRange, ResolveDiffConflicts } from "wailsjs/go/main/App";
+import {
+  GetCommitFileParsedDiff,
+  GetHighlightedFileRange,
+  ResolveDiffConflicts,
+  StageFile,
+  RemoveFile,
+} from "wailsjs/go/main/App";
 import { parseResponse } from "scripts/parse-response";
 
 type OursTheirs = number;
@@ -147,6 +153,22 @@ function createCurrentDiff() {
       ResolveDiffConflicts(get(currentDiff)).then(result => {
         parseResponse(result, () => {
           changes.setResolved(get(currentDiff).File, true);
+        });
+      });
+    },
+    // Delete file relating to this diff.
+    delete: async () => {
+      RemoveFile(get(currentDiff).File).then(result => {
+        parseResponse(result, () => {
+          changes.refresh();
+        });
+      });
+    },
+    // Stage a conflicted file to keep it.
+    keep: async () => {
+      StageFile(get(currentDiff).File).then(result => {
+        parseResponse(result, () => {
+          changes.refresh();
         });
       });
     },

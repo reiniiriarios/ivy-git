@@ -279,6 +279,11 @@ func (a *App) UnstageFile(file string) DataResponse {
 	return dataResponse(err, true)
 }
 
+func (a *App) RemoveFile(file string) DataResponse {
+	err := a.Git.RemoveFile(file)
+	return dataResponse(err, true)
+}
+
 func (a *App) StageAll() DataResponse {
 	err := a.Git.StageAll()
 	return dataResponse(err, true)

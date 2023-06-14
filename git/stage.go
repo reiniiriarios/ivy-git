@@ -27,6 +27,14 @@ func (g *Git) UnstageFile(file string) error {
 	return err
 }
 
+func (g *Git) RemoveFile(file string) error {
+	if file == "" {
+		return errors.New("no file specified")
+	}
+	_, err := g.run("rm", "--", file)
+	return err
+}
+
 func (g *Git) StageAll() error {
 	_, err := g.run("add", "--all")
 	return err
