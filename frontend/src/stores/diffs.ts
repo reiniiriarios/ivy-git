@@ -152,7 +152,7 @@ function createCurrentDiff() {
       // call backend
       ResolveDiffConflicts(get(currentDiff)).then(result => {
         parseResponse(result, () => {
-          changes.setResolved(get(currentDiff).File, true);
+          changes.refresh();
         });
       });
     },
