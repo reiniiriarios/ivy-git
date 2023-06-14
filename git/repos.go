@@ -38,6 +38,12 @@ func (g *Git) CloneRepo(url string, name string, directory string) error {
 	return err
 }
 
+// Initialize git in a specific directory.
+func (g *Git) GitInit(directory string) error {
+	_, err := g.runWithOpts([]string{"init"}, gitRunOpts{directory: directory})
+	return err
+}
+
 func (g *Git) HasCommits(directory string) bool {
 	_, err := g.runWithOpts([]string{"rev-list", "--count", "HEAD", "--"}, gitRunOpts{directory: directory})
 	if err == nil {

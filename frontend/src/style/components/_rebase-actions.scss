@@ -1,0 +1,25 @@
+.rebase-actions {
+  border-top: 1px solid var(--color-sidebar-border);
+  background-color: var(--color-sidebar-bg);
+  padding-top: 0.75rem;
+
+  &__name {
+    padding: 0 1rem;
+    color: var(--color-text-muted);
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  &__action {
+    flex: 1;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

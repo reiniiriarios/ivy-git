@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -19,6 +20,13 @@ type gitRunOpts struct {
 	stdin                string
 	ignore_errors        bool
 	always_return_stderr bool
+	env                  []env
+}
+
+type env struct {
+	key   string
+	value string
+	empty bool
 }
 
 // Run a git command in the directory of the currently selected repo with the default options.
@@ -33,6 +41,16 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 			return "", errors.New("no current git directory available")
 		}
 		opts.directory = g.Repo.Directory
+	}
+
+	// Set environment variables, if any.
+	if len(opts.env) > 0 {
+		env_save, err := setEnvVariables(opts.env)
+		if err != nil {
+			return "", err
+		}
+		// Environment variables will be reset at end.
+		defer resetEnvVariables(env_save)
 	}
 
 	// Run command in a specific directory.
@@ -84,8 +102,43 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 	return outb.String(), nil
 }
 
-// Initialize git in a specific directory.
-func (g *Git) GitInit(directory string) error {
-	_, err := g.runWithOpts([]string{"init"}, gitRunOpts{directory: directory})
-	return err
+// Set environment variables, returning their current values.
+func setEnvVariables(envs []env) ([]env, error) {
+	// If we're setting environment variables, first save the current values.
+	env_save := []env{}
+	if len(envs) > 0 {
+		for _, e := range envs {
+			value, exists := os.LookupEnv(e.key)
+			env_save = append(env_save, env{
+				key:   e.key,
+				value: value,
+				empty: !exists,
+			})
+			err := os.Setenv(e.key, e.value)
+			if err != nil {
+				// In case some were set, reset them. Ignore errors here.
+				resetEnvVariables(env_save)
+				return nil, err
+			}
+		}
+	}
+	return env_save, nil
+}
+
+// Reset (or unset) environment variables to the given values
+func resetEnvVariables(envs []env) error {
+	if len(envs) > 0 {
+		var err error
+		for _, e := range envs {
+			if e.empty {
+				err = os.Unsetenv(e.key)
+			} else {
+				err = os.Setenv(e.key, e.value)
+			}
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

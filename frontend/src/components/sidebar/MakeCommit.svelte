@@ -6,7 +6,7 @@
   import { changesNumConflicts, changesNumStaged, changesNumUnstaged, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
   import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody, commitMessage } from "stores/ui";
-  import { GetLastCommitMessage, MakeCommit, MakeStash } from "wailsjs/go/main/App";
+  import { MakeCommit, MakeStash } from "wailsjs/go/main/App";
 
   let running: boolean = false;
   let dropdownOpen: boolean = false;

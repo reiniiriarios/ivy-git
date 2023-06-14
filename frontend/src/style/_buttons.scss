@@ -64,6 +64,21 @@
       background-color: var(--color-btn-bg-green-hover);
     }
   }
+
+  // An !important override for buttons that would otherwise become a different color based on state.
+  &--green {
+    background-color: var(--color-btn-bg-green) !important;
+
+    &:disabled {
+      color: var(--color-text-muted);
+      fill: var(--color-text-muted);
+      background-color: var(--color-btn-bg-disabled) !important;
+    }
+  
+    &:hover:not(:disabled) {
+      background-color: var(--color-btn-bg-green-hover) !important;
+    }
+  }
 }
 
 .btn-arrow {

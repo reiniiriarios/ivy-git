@@ -513,3 +513,19 @@ func (a *App) UpdateGitConfigUserSigningKey(list string, value string) DataRespo
 	err := a.Git.UpdateUserSigningKey(list, value)
 	return dataResponse(err, true)
 }
+
+func (a *App) RebaseContinue() DataResponse {
+	println("um")
+	err := a.Git.RebaseContinue()
+	return dataResponse(err, true)
+}
+
+func (a *App) RebaseAbort() DataResponse {
+	err := a.Git.RebaseAbort()
+	return dataResponse(err, true)
+}
+
+func (a *App) RebaseSkip() DataResponse {
+	err := a.Git.RebaseSkip()
+	return dataResponse(err, true)
+}

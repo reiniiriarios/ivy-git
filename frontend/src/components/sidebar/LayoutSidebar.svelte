@@ -9,8 +9,8 @@
   import RepoStateBanner from "components/sidebar/RepoStateBanner.svelte";
   import SelectBranch from "components/sidebar/SelectBranch.svelte";
   import SelectRepo from "components/sidebar/SelectRepo.svelte";
-
-
+  import { RepoState, repoState } from "stores/repo-state";
+  import RebaseActions from "./RebaseActions.svelte";
 </script>
 
 <div class="sidebar">
@@ -21,7 +21,9 @@
   <RepoStateBanner />
   <Changes />
   {#if $currentRepo}
-    {#if $currentRemote?.Name}
+    {#if [RepoState.RebaseMerge, RepoState.ApplyOrRebase, RepoState.Interactive].includes($repoState)}
+      <RebaseActions />
+    {:else if $currentRemote?.Name}
       <RemoteActions />
     {/if}
     {#if !$noBranchSelected}
