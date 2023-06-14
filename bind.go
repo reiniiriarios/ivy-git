@@ -520,7 +520,6 @@ func (a *App) UpdateGitConfigUserSigningKey(list string, value string) DataRespo
 }
 
 func (a *App) RebaseContinue() DataResponse {
-	println("um")
 	err := a.Git.RebaseContinue()
 	return dataResponse(err, true)
 }
@@ -532,5 +531,20 @@ func (a *App) RebaseAbort() DataResponse {
 
 func (a *App) RebaseSkip() DataResponse {
 	err := a.Git.RebaseSkip()
+	return dataResponse(err, true)
+}
+
+func (a *App) CherryPickContinue() DataResponse {
+	err := a.Git.CherryPickContinue()
+	return dataResponse(err, true)
+}
+
+func (a *App) CherryPickAbort() DataResponse {
+	err := a.Git.CherryPickAbort()
+	return dataResponse(err, true)
+}
+
+func (a *App) CherryPickSkip() DataResponse {
+	err := a.Git.CherryPickSkip()
 	return dataResponse(err, true)
 }

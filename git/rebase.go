@@ -1,14 +1,12 @@
 package git
 
 func (g *Git) RebaseContinue() error {
-	println("uh")
-	d, err := g.runWithOpts([]string{"rebase", "--continue"}, gitRunOpts{
+	_, err := g.runWithOpts([]string{"rebase", "--continue"}, gitRunOpts{
 		env: []env{{
 			key:   "GIT_EDITOR",
 			value: "true",
 		}},
 	})
-	println("hmm", d)
 	return err
 }
 
