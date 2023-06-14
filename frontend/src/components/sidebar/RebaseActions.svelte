@@ -1,6 +1,6 @@
 <script lang="ts">
   import { parseResponse } from "scripts/parse-response";
-  import { mergeConflicts, mergeConflictsResolved } from "stores/changes";
+  import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
   import { RebaseAbort, RebaseContinue, RebaseSkip } from "wailsjs/go/main/App";
 
@@ -10,7 +10,10 @@
     if (!running) {
       running = true;
       RebaseContinue().then(result => {
-        parseResponse(result);
+        parseResponse(result, () => {
+          changes.refresh();
+          repoState.refresh();
+        });
         running = false;
       });
     }
@@ -20,7 +23,10 @@
     if (!running) {
       running = true;
       RebaseAbort().then(result => {
-        parseResponse(result);
+        parseResponse(result, () => {
+          changes.refresh();
+          repoState.refresh();
+        });
         running = false;
       });
     }
@@ -30,7 +36,10 @@
     if (!running) {
       running = true;
       RebaseSkip().then(result => {
-        parseResponse(result);
+        parseResponse(result, () => {
+          changes.refresh();
+          repoState.refresh();
+        });
         running = false;
       });
     }
