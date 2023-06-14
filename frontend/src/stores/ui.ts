@@ -26,15 +26,9 @@ function createInProgMsg() {
     fetch: async () => {
       switch (get(repoState)) {
         case RepoState.Merge:
-        case RepoState.Rebase:
         case RepoState.RebaseMerge:
-        case RepoState.Apply:
-        case RepoState.ApplyOrRebase:
         case RepoState.Interactive:
-        case RepoState.Revert:
         case RepoState.RevertSequence:
-        case RepoState.CherryPick:
-        case RepoState.CherryPickSequence:
           commitMessage.fetchMerge();
       }
     },
