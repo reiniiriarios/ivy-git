@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 import { GetCommitDetails, GetCommitDiffSummary, GetCommitSignature } from "wailsjs/go/main/App";
-import type { Commit } from "stores/commit-data";
+import type { Commit } from "stores/commits";
 import { parseResponse } from "scripts/parse-response";
 
 interface CommitDetails {

@@ -1,6 +1,6 @@
 import { checkRef } from "scripts/check-ref";
 import { parseResponse } from "scripts/parse-response";
-import { commitData, commitSignData } from "stores/commit-data";
+import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { RenameBranch } from "wailsjs/go/main/App";
 

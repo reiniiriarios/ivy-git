@@ -1,7 +1,7 @@
 import { checkRef } from "scripts/check-ref";
 import { parseResponse } from "scripts/parse-response";
 import { currentBranch, type Branch } from "stores/branches";
-import { commitData, commitSignData } from "stores/commit-data";
+import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { branchSelect } from "stores/ui";
 import { CreateBranch } from "wailsjs/go/main/App";

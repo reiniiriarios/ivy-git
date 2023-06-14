@@ -1,4 +1,4 @@
-import { commitData, commitSignData } from "stores/commit-data";
+import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { ResetBranchToRemote } from "wailsjs/go/main/App";
 

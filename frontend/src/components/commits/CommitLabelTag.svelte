@@ -1,6 +1,6 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import type { Ref } from "stores/commit-data";
+  import type { Ref } from "stores/commits";
 
   export let tag: Ref;
 </script>

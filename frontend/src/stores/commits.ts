@@ -27,8 +27,6 @@ export interface Commit {
   Merge: boolean;
 }
 
-type Commits = {[hash: string]: Commit}[];
-
 export interface Ref {
   Hash: string;
   Name: string;

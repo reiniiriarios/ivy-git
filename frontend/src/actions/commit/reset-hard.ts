@@ -1,5 +1,5 @@
 import { parseResponse } from "scripts/parse-response";
-import { commitData, commitSignData } from "stores/commit-data";
+import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { HardReset } from "wailsjs/go/main/App";
 

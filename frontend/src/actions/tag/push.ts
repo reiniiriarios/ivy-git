@@ -1,5 +1,5 @@
 import { parseResponse } from "scripts/parse-response";
-import { commitData, commitSignData } from "stores/commit-data";
+import { commitData, commitSignData } from "stores/commits";
 import { PushTag } from "wailsjs/go/main/App";
 
 function pushTag(tag: string) {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getLabelDist } from 'scripts/graph';
-  import { HEAD, type Commit } from 'stores/commit-data';
+  import { HEAD, type Commit } from 'stores/commits';
   import CommitLabelBranch from './CommitLabelBranch.svelte';
   import CommitLabelRemoteBranch from './CommitLabelRemoteBranch.svelte';
   import CommitLabelTag from './CommitLabelTag.svelte';

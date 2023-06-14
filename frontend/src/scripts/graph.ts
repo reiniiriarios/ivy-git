@@ -1,5 +1,5 @@
 import { vertexOut, vertexOver } from 'scripts/vertex';
-import { type Graph, type Limb, type Vertex, tree } from 'stores/commit-data';
+import { type Graph, type Limb, type Vertex, tree } from 'stores/commits';
 
 // Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";

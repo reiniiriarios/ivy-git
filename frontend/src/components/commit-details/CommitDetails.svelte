@@ -4,7 +4,7 @@
   import CommitFileChanges from 'components/commit-details/CommitFileChanges.svelte';
   import { resetDirs } from 'scripts/commit-details-collapse';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
-  import { type Commit } from 'stores/commit-data';
+  import { type Commit } from 'stores/commits';
   import { currentCommit, commitDetails, commitDiffSummary, commitSignature } from 'stores/commit-details';
   import { commitDetailsWindow } from 'stores/ui';
   import SignatureDetails from './SignatureDetails.svelte';

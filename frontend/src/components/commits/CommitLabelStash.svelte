@@ -1,6 +1,6 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { type Commit } from "stores/commit-data";
+  import { type Commit } from "stores/commits";
 
   export let commit: Commit;
 </script>

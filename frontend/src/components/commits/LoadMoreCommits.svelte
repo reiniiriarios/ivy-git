@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { commitData, commitsPage } from "stores/commit-data";
+  import { commitData, commitsPage } from "stores/commits";
 
   function loadMoreCommits() {
     commitData.refresh($commitsPage + 1);

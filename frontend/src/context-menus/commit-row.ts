@@ -4,7 +4,7 @@ import { get } from 'svelte/store';
 
 import type { Menu, MenuItem } from "context-menus/_all";
 
-import { HEAD } from "stores/commit-data";
+import { HEAD } from "stores/commits";
 import createBranch from "actions/branch/create";
 import addTag from "actions/tag/add";
 import checkoutCommit from "actions/commit/checkout";

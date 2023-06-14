@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { commitsMap, commits } from "stores/commit-data";
+  import { commitsMap, commits } from "stores/commits";
   import { currentCommit } from "stores/commit-details";
   import { currentTab } from "stores/ui";
   import { get } from "svelte/store";

@@ -6,7 +6,7 @@
 
   import { NUM_COLORS, UNCOMMITED_HASH } from 'scripts/graph';
 
-  import { HEAD, type Commit } from 'stores/commit-data';
+  import { HEAD, type Commit } from 'stores/commits';
   import { currentCommit } from 'stores/commit-details';
   import { RepoState, repoState } from 'stores/repo-state';
   import { settings } from 'stores/settings';
@@ -32,7 +32,7 @@
     if ([' ', '\n', 'Enter'].includes(e.key)) {
       currentCommit.toggle(commit);
     } else if ($currentCommit.Hash) {
-      currentCommit.unset();
+      currentCommit.clear();
     }
   }
 

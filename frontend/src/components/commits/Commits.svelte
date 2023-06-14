@@ -7,7 +7,7 @@
 
   import { setCommitsContainer } from 'scripts/commit-details-resize';
 
-  import { commitData, commits, tree, commitSignData } from 'stores/commit-data';
+  import { commitData, commits, tree, commitSignData } from 'stores/commits';
   import { setFade } from 'scripts/graph';
   import { settings } from 'stores/settings';
 

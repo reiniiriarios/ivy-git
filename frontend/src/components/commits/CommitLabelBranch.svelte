@@ -1,7 +1,7 @@
 <script lang="ts">
   import octicons from '@primer/octicons';
   import { currentBranch } from 'stores/branches';
-  import { type Ref } from 'stores/commit-data';
+  import { type Ref } from 'stores/commits';
 
   export let branch: Ref;
   export let remotes: Ref[];

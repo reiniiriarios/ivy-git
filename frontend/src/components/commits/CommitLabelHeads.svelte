@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Ref } from "stores/commit-data";
+  import type { Ref } from "stores/commits";
 
   export let isHEAD: boolean;
   export let heads: Ref[];

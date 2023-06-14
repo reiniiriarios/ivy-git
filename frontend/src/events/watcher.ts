@@ -1,6 +1,6 @@
 import { branches } from 'stores/branches';
 import { changes } from 'stores/changes';
-import { commitData, commitSignData } from 'stores/commit-data';
+import { commitData, commitSignData } from 'stores/commits';
 import { currentDiff } from 'stores/diffs';
 import { remoteData } from 'stores/remotes';
 import { repoState } from 'stores/repo-state';
