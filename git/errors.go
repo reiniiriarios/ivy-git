@@ -152,6 +152,8 @@ const (
 	UnableToAccessUrl
 	MustForceDeleteBranch
 	ReplaceLineEndings
+	CherryPickConflict
+	CouldNotApply
 )
 
 type GitErrorRegex struct {
@@ -431,6 +433,14 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Code:  ReplaceLineEndings,
 			Regex: "warning: ([A-Z]+) will be replaced by ([A-Z]+) in (.+).",
 		},
+		{
+			Code:  CherryPickConflict,
+			Regex: "(?m)error: could not apply(?:.+)cherry-pick",
+		},
+		{
+			Code:  CouldNotApply,
+			Regex: "(?m)error: could not apply",
+		},
 	}
 }
 
@@ -541,6 +551,10 @@ func getGitErrorMessage(code ErrorCode) string {
 		return "Unable to delete branch '%s', as it is not fully merged. Branch must be force-deleted."
 	case ReplaceLineEndings:
 		return "%s will be replaced by %s."
+	case CherryPickConflict:
+		return "There were conflicts while trying to cherry pick. Please resolve the conflicts before continuing."
+	case CouldNotApply:
+		return "Please resolve the conflicts before continuing."
 	case MergeWithLocalChanges:
 	case RebaseWithLocalChanges:
 	case GPGFailedToSignData:
