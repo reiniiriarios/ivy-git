@@ -35,8 +35,6 @@ jobs:
 
       - name: Install Wails
         run: go get github.com/wailsapp/wails/cmd/wails@v1.16.3
-
-      - name: Build
         
       # darwin
       - name: Build for darwin
