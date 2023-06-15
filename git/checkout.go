@@ -1,6 +1,10 @@
 package git
 
-import "strings"
+import (
+	"os"
+	"path/filepath"
+	"strings"
+)
 
 func (g *Git) CheckoutCommit(hash string) error {
 	_, err := g.run("checkout", hash)
@@ -8,14 +12,31 @@ func (g *Git) CheckoutCommit(hash string) error {
 }
 
 func (g *Git) DiscardChanges(files ...string) error {
-	return g.checkoutIndex(files)
+	for _, file := range files {
+		_, y, err := g.getFileStatus(file)
+		if err != nil {
+			return err
+		}
+		if y == FileUntracked {
+			err := os.Remove(filepath.Join(g.Repo.Directory, file))
+			if err != nil {
+				return err
+			}
+		} else {
+			err := g.checkoutIndex(file)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // Forcefully update the working dir with info from the index for a set of files.
 //
 // Equivalent to `git checkout -- files`, but passes paths via stdin to avoid too long arguments.
 // Will not yield errors for paths that don't exist in the index.
-func (g *Git) checkoutIndex(paths []string) error {
+func (g *Git) checkoutIndex(paths ...string) error {
 	if len(paths) == 0 {
 		return nil
 	}
