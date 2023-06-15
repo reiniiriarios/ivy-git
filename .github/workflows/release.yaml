@@ -16,26 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get version tag (unix)
-        if: matrix.platform != 'windows-latest'
+      - name: Get version tag
+        uses: little-core-labs/get-git-tag@v3.0.1
         id: version
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
-
-      - name: Get version tag (windows)
-        if: matrix.platform == 'windows-latest'
-        id: versionw
-        run: |
-          $tag = $env:GITHUB_REF -replace "refs/tags/", ""
-          echo "::set-output name=tag::$(echo $tag)"
 
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.20
+          go-version: '1.20'
 
       - name: Install Wails
-        run: go get github.com/wailsapp/wails/cmd/wails@v1.16.3
-        
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.5.1
+
       # darwin
       - name: Build for darwin
         if: matrix.platform == 'macos-latest'
@@ -79,14 +71,14 @@ jobs:
         if: matrix.platform == 'windows-latest'
         run: |
           wails build -f
-          Compress-Archive -Path "$PWD\build\bin\ivy-git.exe" -DestinationPath "$PWD\IvyGit_${{ steps.versionw.outputs.tag }}_Windows_x86_64.zip"
+          Compress-Archive -Path "$PWD\build\bin\ivy-git.exe" -DestinationPath "$PWD\IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip"
 
       - name: Upload windows zip
         if: matrix.platform == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: IvyGit_${{ steps.versionw.outputs.tag }}_Windows_x86_64.zip
-          path: IvyGit_${{ steps.versionw.outputs.tag }}_Windows_x86_64.zip
+          name: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
+          path: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
 
   release:
     runs-on: ubuntu-latest
@@ -95,48 +87,21 @@ jobs:
     steps:
       - name: Get version tag
         id: version
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+        run: echo "tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Download all release pacakges
+        uses: actions/download-artifact@v3
 
       - name: Create release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          release_name: ${{ steps.version.outputs.tag }}
           draft: true
           prerelease: false
-
-      - name: Download all release pacakges
-        uses: actions/download-artifact@v2
-
-      - name: Attach darwin disk image
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg/IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
-          asset_name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
-          asset_content_type: application/octet-stream
-
-      - name: Attach darwin arm disk image
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg/IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
-          asset_name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
-          asset_content_type: application/octet-stream
-
-      - name: Attach windows zip
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip/IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
-          asset_name: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
-          asset_content_type: application/octet-stream
+          files: |
+            IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
+            IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+            IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
