@@ -107,6 +107,22 @@ func (g *Git) GetBranches() ([]Branch, error) {
 		}
 	}
 
+	// If there are no branches, we're probably in a new repo. Get the default branch.
+	if len(branch_list) == 0 {
+		ref, err := g.run("symbolic-ref", "HEAD")
+		// Ignore errors.
+		if err == nil {
+			// refs/heads/main => main
+			ref = parseOneLine(ref)
+			if len(ref) > 1 {
+				parts := strings.Split(ref, "/")
+				branch_list = append(branch_list, Branch{
+					Name: parts[len(parts)-1],
+				})
+			}
+		}
+	}
+
 	return branch_list, nil
 }
 

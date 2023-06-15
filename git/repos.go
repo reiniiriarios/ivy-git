@@ -57,21 +57,72 @@ func (g *Git) HasCommits(directory string) bool {
 
 // Check common names for main branch.
 func (g *Git) NameOfMainBranchForRepo(repo_dir string) string {
-	r, err := g.runWithOpts([]string{"for-each-ref", "--format=%(refname:short)", "refs/heads/main", "refs/heads/master", "refs/heads/trunk"}, gitRunOpts{directory: repo_dir})
+	r, err := g.runWithOpts([]string{
+		"for-each-ref",
+		"--format=%(refname:short)",
+		"refs/heads/main",
+		"refs/heads/master",
+		"refs/heads/trunk",
+		"refs/heads/develop",
+	}, gitRunOpts{directory: repo_dir})
 	if err != nil {
-		// Screw it, return something.
+		// If the previous is failing, just return something.
 		return "main"
 	}
 	r = parseOneLine(r)
+
+	// If we get no results, see if there are any heads. Maybe the repo is new.
+	if strings.TrimSpace(r) == "" {
+		all_refs, err := g.runWithOpts([]string{"for-each-ref", "--format=%(refname:short)", "refs/heads"}, gitRunOpts{directory: repo_dir})
+		// If there are no heads at all, get the current branch from the HEAD symbolic-ref.
+		// Ignore errors.
+		if err == nil && strings.TrimSpace(all_refs) == "" {
+			ref, err := g.runWithOpts([]string{"symbolic-ref", "HEAD"}, gitRunOpts{directory: repo_dir})
+			// Ignore errors.
+			if err == nil {
+				// refs/heads/main => main
+				ref = parseOneLine(ref)
+				if len(ref) > 1 {
+					parts := strings.Split(ref, "/")
+					return parts[len(parts)-1]
+				}
+			}
+		}
+	}
+
+	// If no newlines, there was only one result. Return it.
 	if !strings.Contains(r, "\n") {
+		println("well", r)
 		return r
 	}
-	// More than one result.
-	if strings.Contains(r, "master") {
+
+	// Check the following in order.
+	lines := parseLines(r)
+	if stringInSlice("master", lines) {
 		return "master"
 	}
+	if stringInSlice("main", lines) {
+		return "main"
+	}
+	if stringInSlice("trunk", lines) {
+		return "trunk"
+	}
+	if stringInSlice("develop", lines) {
+		return "develop"
+	}
+
 	// Default to main.
 	return "main"
+}
+
+// Go really just needs this on its own.
+func stringInSlice(needle string, haystack []string) bool {
+	for _, search := range haystack {
+		if search == needle {
+			return true
+		}
+	}
+	return false
 }
 
 // Name of main branch for current repo.

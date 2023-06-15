@@ -45,9 +45,21 @@ func (a *App) UpdateSelectedRepo(repo string) DataResponse {
 	if !a.Git.IsGitRepo(a.RepoSaveData.Repos[repo].Directory) {
 		return dataResponse(errors.New("directory not found, or not identifiable as git repo"), false)
 	}
+
 	a.RepoSaveData.CurrentRepo = repo
-	a.saveRepoData()
 	a.Git.Repo = a.RepoSaveData.Repos[repo]
+
+	// If main branch not found, check again.
+	if a.Git.Repo.Main == "" || !a.Git.BranchExists(a.Git.Repo.Main) {
+		a.Git.Repo.Main = a.Git.NameOfMainBranch()
+		r := a.RepoSaveData.Repos[repo]
+		r.Main = a.Git.Repo.Main
+		a.RepoSaveData.Repos[repo] = r
+	}
+
+	// Save!
+	a.saveRepoData()
+
 	return dataResponse(nil, false)
 }
 
