@@ -1,0 +1,144 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+name: Create Release
+
+jobs:
+  build:
+    name: Build
+    strategy:
+      matrix:
+        platform: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get version tag (unix)
+        if: matrix.platform != 'windows-latest'
+        id: version
+        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+
+      - name: Get version tag (windows)
+        if: matrix.platform == 'windows-latest'
+        id: versionw
+        run: |
+          $tag = $env:GITHUB_REF -replace "refs/tags/", ""
+          echo "::set-output name=tag::$(echo $tag)"
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20
+
+      - name: Install Wails
+        run: go get github.com/wailsapp/wails/cmd/wails@v1.16.3
+
+      - name: Build
+        
+      # darwin
+      - name: Build for darwin
+        if: matrix.platform == 'macos-latest'
+        run: |
+          wails build -f
+
+      - name: Create darwin disk image
+        if: matrix.platform == 'macos-latest'
+        run: |
+          brew install create-dmg
+          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.png" --window-size 512 360 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg" "build/bin"
+
+      - name: Upload darwin disk image
+        if: matrix.platform == 'macos-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
+          path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
+
+      # darwin arm
+      - name: Build for darwin
+        if: matrix.platform == 'macos-latest'
+        run: |
+          wails build -f -platform darwin/arm64
+
+      - name: Create darwin disk image
+        if: matrix.platform == 'macos-latest'
+        run: |
+          brew install create-dmg
+          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.png" --window-size 512 360 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg" "build/bin"
+
+      - name: Upload darwin disk image
+        if: matrix.platform == 'macos-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+          path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+
+      # windows
+      - name: Build for windows
+        if: matrix.platform == 'windows-latest'
+        run: |
+          wails build -f
+          Compress-Archive -Path "$PWD\build\bin\ivy-git.exe" -DestinationPath "$PWD\IvyGit_${{ steps.versionw.outputs.tag }}_Windows_x86_64.zip"
+
+      - name: Upload windows zip
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: IvyGit_${{ steps.versionw.outputs.tag }}_Windows_x86_64.zip
+          path: IvyGit_${{ steps.versionw.outputs.tag }}_Windows_x86_64.zip
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Release
+    steps:
+      - name: Get version tag
+        id: version
+        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          release_name: ${{ steps.version.outputs.tag }}
+          draft: true
+          prerelease: false
+
+      - name: Download all release pacakges
+        uses: actions/download-artifact@v2
+
+      - name: Attach darwin disk image
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg/IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
+          asset_name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Attach darwin arm disk image
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg/IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+          asset_name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Attach windows zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip/IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
+          asset_name: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
+          asset_content_type: application/octet-stream
