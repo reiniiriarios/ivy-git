@@ -17,6 +17,11 @@
         <string>{{.Info.ProductVersion}}</string>
         <key>CFBundleIconFile</key>
         <string>iconfile</string>
+        <key>LSEnvironment</key>
+        <dict>
+          <key>PATH</key>
+          <string>/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:</string>
+        </dict>
         <key>LSMinimumSystemVersion</key>
         <string>10.13.0</string>
         <key>NSHighResolutionCapable</key>
