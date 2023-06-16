@@ -38,7 +38,7 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: |
           brew install create-dmg
-          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.png" --window-size 512 360 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg" "build/bin"
+          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.tiff" --window-size 512 320 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg" "build/bin"
 
       - name: Upload darwin disk image
         if: matrix.platform == 'macos-latest'
@@ -57,7 +57,7 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: |
           brew install create-dmg
-          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.png" --window-size 512 360 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg" "build/bin"
+          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.tiff" --window-size 512 320 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg" "build/bin"
 
       - name: Upload darwin disk image
         if: matrix.platform == 'macos-latest'
@@ -91,6 +91,7 @@ jobs:
 
       - name: Download all release pacakges
         uses: actions/download-artifact@v3
+        id: artifact
 
       - name: Create release
         id: create_release
@@ -102,6 +103,6 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
-            IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
-            IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
+            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
+            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
