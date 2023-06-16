@@ -16,10 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get version tag
-        uses: little-core-labs/get-git-tag@v3.0.1
-        id: version
-
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
@@ -37,14 +33,14 @@ jobs:
       - name: Create darwin package
         if: matrix.platform == 'macos-latest'
         run: |
-          productbuild --component "build/bin/Ivy Git.app" "Ivy Git_${{ steps.version.outputs.tag }}_Darwin_Universal.pkg"
+          productbuild --component "build/bin/Ivy Git.app" "IvyGit_${{ github.ref_name }}_Darwin_Universal.pkg"
 
       - name: Upload darwin package
         if: matrix.platform == 'macos-latest'
         uses: actions/upload-artifact@v2
         with:
           name: release-darwin
-          path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_*
+          path: IvyGit_${{ github.ref_name }}_Darwin_*
           retention-days: 2
 
       # windows
@@ -52,15 +48,15 @@ jobs:
         if: matrix.platform == 'windows-latest'
         run: |
           wails build -platform windows/amd64 -nsis
-          Compress-Archive -Path "$PWD\build\bin\Ivy Git.exe" -DestinationPath "$PWD\IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip"
-          Rename-Item -Path "$PWD\build\bin\Ivy Git-amd64-installer.exe" -NewName "$PWD\IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64_installer.exe"
+          Compress-Archive -Path "$PWD\build\bin\Ivy Git.exe" -DestinationPath "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64.zip"
+          Move-Item -Path "$PWD\build\bin\Ivy Git-amd64-installer.exe" -Destination "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64_installer.exe"
 
       - name: Upload windows zip and installer
         if: matrix.platform == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: release-windows
-          path: IvyGit_${{ steps.version.outputs.tag }}_Windows_*
+          path: IvyGit_${{ github.ref_name }}_Windows_*
           retention-days: 2
 
   release:
@@ -68,10 +64,6 @@ jobs:
     needs: build
     name: Release
     steps:
-      - name: Get version tag
-        id: version
-        run: echo "tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
-
       - name: Download all release pacakges
         uses: actions/download-artifact@v3
         id: artifact
@@ -84,10 +76,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
+          tag_name: ${{ github.ref_name }}
           draft: true
           prerelease: false
           files: |
-            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Darwin_Universal.pkg
-            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
-            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64_installer.zip
+            ${{steps.artifact.outputs.download-path}}/release-darwin/IvyGit_${{ github.ref_name }}_Darwin_Universal.pkg
+            ${{steps.artifact.outputs.download-path}}/release-windows/IvyGit_${{ github.ref_name }}_Windows_amd64.zip
+            ${{steps.artifact.outputs.download-path}}/release-windows/IvyGit_${{ github.ref_name }}_Windows_amd64_installer.zip
