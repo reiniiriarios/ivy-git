@@ -5,6 +5,8 @@ Thumbs.db
 # build
 /build/bin
 /*res.syso
+/build/windows/installer/tmp
+/build/windows/installer/wails_tools.nsh
 
 # vendor
 /vendor

@@ -32,53 +32,36 @@ jobs:
       - name: Build for darwin
         if: matrix.platform == 'macos-latest'
         run: |
-          wails build -f
+          wails build -platform darwin/universal
 
-      - name: Create darwin disk image
+      - name: Create darwin package
         if: matrix.platform == 'macos-latest'
         run: |
-          brew install create-dmg
-          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.tiff" --window-size 512 320 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg" "build/bin"
+          productbuild --component "build/bin/Ivy Git.app" "Ivy Git_${{ steps.version.outputs.tag }}_Darwin_Universal.pkg"
 
-      - name: Upload darwin disk image
+      - name: Upload darwin package
         if: matrix.platform == 'macos-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
-          path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
-
-      # darwin arm
-      - name: Build for darwin
-        if: matrix.platform == 'macos-latest'
-        run: |
-          wails build -f -platform darwin/arm64
-
-      - name: Create darwin disk image
-        if: matrix.platform == 'macos-latest'
-        run: |
-          brew install create-dmg
-          create-dmg --volname "Ivy Git" --volicon "build/darwin/dmg_icon.icns" --background "build/darwin/dmg_bg.tiff" --window-size 512 320 --icon-size 100 --icon "Ivy Git.app" 100 185 --hide-extension "Ivy Git.app" --app-drop-link 388 185 "IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg" "build/bin"
-
-      - name: Upload darwin disk image
-        if: matrix.platform == 'macos-latest'
-        uses: actions/upload-artifact@v2
-        with:
-          name: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
-          path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+          name: release-darwin
+          path: IvyGit_${{ steps.version.outputs.tag }}_Darwin_*
+          retention-days: 2
 
       # windows
       - name: Build for windows
         if: matrix.platform == 'windows-latest'
         run: |
-          wails build -f
-          Compress-Archive -Path "$PWD\build\bin\ivy-git.exe" -DestinationPath "$PWD\IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip"
+          wails build -platform windows/amd64 -nsis
+          Compress-Archive -Path "$PWD\build\bin\Ivy Git.exe" -DestinationPath "$PWD\IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip"
+          Rename-Item -Path "$PWD\build\bin\Ivy Git-amd64-installer.exe" -NewName "$PWD\IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64_installer.exe"
 
-      - name: Upload windows zip
+      - name: Upload windows zip and installer
         if: matrix.platform == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
-          path: IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
+          name: release-windows
+          path: IvyGit_${{ steps.version.outputs.tag }}_Windows_*
+          retention-days: 2
 
   release:
     runs-on: ubuntu-latest
@@ -92,6 +75,8 @@ jobs:
       - name: Download all release pacakges
         uses: actions/download-artifact@v3
         id: artifact
+        with:
+          path: releases
 
       - name: Create release
         id: create_release
@@ -103,6 +88,6 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Darwin_x86_64.dmg
-            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Darwin_arm64.dmg
+            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Darwin_Universal.pkg
             ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64.zip
+            ${{steps.artifact.outputs.download-path}}/IvyGit_${{ steps.version.outputs.tag }}_Windows_x86_64_installer.zip
