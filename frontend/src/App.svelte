@@ -22,25 +22,20 @@
   import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
 
   // Load initial ui state.
-  function init() {
-    appData.fetch();
-    currentRepo.load();
-    repos.refresh();
-    settings.refresh();
-    remoteData.refresh();
-    envInit().then(env => {
-      switch (env.platform) {
-        case "darwin":
-          document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
-          break;
-        case "windows":
-          document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--windows)");
-          break;
-      }
-    });
-  }
-  document.addEventListener('DOMContentLoaded', () => {
-    init();
+  appData.fetch();
+  currentRepo.load();
+  repos.refresh();
+  settings.refresh();
+  remoteData.refresh();
+  envInit().then(env => {
+    switch (env.platform) {
+      case "darwin":
+        document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
+        break;
+      case "windows":
+        document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--windows)");
+        break;
+    }
   });
 
   // Frontend Listeners
