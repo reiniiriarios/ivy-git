@@ -37,7 +37,7 @@ jobs:
 
       - name: Upload darwin package
         if: matrix.platform == 'macos-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-darwin
           path: IvyGit_${{ github.ref_name }}_Darwin_*
@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload windows zip and installer
         if: matrix.platform == 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-windows
           path: IvyGit_${{ github.ref_name }}_Windows_*
@@ -82,4 +82,4 @@ jobs:
           files: |
             ${{steps.artifact.outputs.download-path}}/release-darwin/IvyGit_${{ github.ref_name }}_Darwin_Universal.pkg
             ${{steps.artifact.outputs.download-path}}/release-windows/IvyGit_${{ github.ref_name }}_Windows_amd64.zip
-            ${{steps.artifact.outputs.download-path}}/release-windows/IvyGit_${{ github.ref_name }}_Windows_amd64_installer.zip
+            ${{steps.artifact.outputs.download-path}}/release-windows/IvyGit_${{ github.ref_name }}_Windows_amd64_installer.exe
