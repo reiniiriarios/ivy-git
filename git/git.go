@@ -57,6 +57,9 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 	command = append([]string{"-C", opts.directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
 
+	// On windows, we need to hide the command prompt.
+	hideCmdPrompt(cmd)
+
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return "", err
