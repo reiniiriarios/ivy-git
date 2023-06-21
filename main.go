@@ -14,6 +14,9 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+//go:embed build/appicon.png
+var appIcon []byte
+
 func main() {
 	// CPU profiling
 	// "github.com/pkg/profile"
@@ -48,6 +51,7 @@ func main() {
 			WebviewIsTransparent: true,
 		},
 		Linux: &linux.Options{
+			Icon:                appIcon,
 			WindowIsTranslucent: false,
 		},
 		Debug: options.Debug{
