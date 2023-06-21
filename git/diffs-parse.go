@@ -145,7 +145,7 @@ func (d *Diff) parse() error {
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
 				Type:      DiffAddLine,
-				RawLineNo: int64(ln),
+				RawLineNo: int64(ln) + 1,
 				OldLineNo: -1,
 				NewLineNo: after,
 				CurLineNo: after,
@@ -160,7 +160,7 @@ func (d *Diff) parse() error {
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
 				Type:      DiffDeleteLine,
-				RawLineNo: int64(ln),
+				RawLineNo: int64(ln) + 1,
 				OldLineNo: before,
 				NewLineNo: -1,
 				CurLineNo: -1,
@@ -177,7 +177,7 @@ func (d *Diff) parse() error {
 			d.Hunks[current_hunk].Lines = append(d.Hunks[current_hunk].Lines, DiffLine{
 				Line:      lines[ln][1:],
 				Type:      DiffContextLine,
-				RawLineNo: int64(ln),
+				RawLineNo: int64(ln) + 1,
 				OldLineNo: before,
 				NewLineNo: after,
 				CurLineNo: after,
@@ -261,7 +261,7 @@ func (d *Diff) parseConflicts() error {
 			new_line = DiffLine{
 				Line:       lines[ln][1:],
 				Type:       DiffChangeStartLine,
-				RawLineNo:  int64(ln),
+				RawLineNo:  int64(ln) + 1,
 				OldLineNo:  -1,
 				NewLineNo:  -1,
 				CurLineNo:  cur,
@@ -280,7 +280,7 @@ func (d *Diff) parseConflicts() error {
 			new_line = DiffLine{
 				Line:       lines[ln][1:],
 				Type:       DiffChangeFlipLine,
-				RawLineNo:  int64(ln),
+				RawLineNo:  int64(ln) + 1,
 				OldLineNo:  -1,
 				NewLineNo:  -1,
 				CurLineNo:  cur,
@@ -305,7 +305,7 @@ func (d *Diff) parseConflicts() error {
 			new_line = DiffLine{
 				Line:       lines[ln][1:],
 				Type:       DiffChangeEndLine,
-				RawLineNo:  int64(ln),
+				RawLineNo:  int64(ln) + 1,
 				OldLineNo:  -1,
 				NewLineNo:  -1,
 				CurLineNo:  cur,
@@ -342,7 +342,7 @@ func (d *Diff) parseConflicts() error {
 				new_line = DiffLine{
 					Line:       lines[ln][1:],
 					Type:       DiffAddLine,
-					RawLineNo:  int64(ln),
+					RawLineNo:  int64(ln) + 1,
 					OldLineNo:  -1,
 					NewLineNo:  after,
 					CurLineNo:  cur,
@@ -360,7 +360,7 @@ func (d *Diff) parseConflicts() error {
 				new_line = DiffLine{
 					Line:       lines[ln][1:],
 					Type:       DiffDeleteLine,
-					RawLineNo:  int64(ln),
+					RawLineNo:  int64(ln) + 1,
 					OldLineNo:  before,
 					NewLineNo:  -1,
 					CurLineNo:  -1,
@@ -377,7 +377,7 @@ func (d *Diff) parseConflicts() error {
 				new_line = DiffLine{
 					Line:       lines[ln][1:],
 					Type:       DiffContextLine,
-					RawLineNo:  int64(ln),
+					RawLineNo:  int64(ln) + 1,
 					OldLineNo:  before,
 					NewLineNo:  after,
 					CurLineNo:  cur,
