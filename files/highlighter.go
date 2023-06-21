@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"
@@ -14,6 +15,43 @@ const HIGHLIGHT_STYLE = "vs"
 
 func HighlightFile(path string) (File, error) {
 	return HighlightFileSelection(path, highlightRanges{})
+}
+
+func HighlightDiff(path string, diff string) (File, error) {
+	diff = cleanDiffToCode(diff)
+
+	f := File{
+		Filename: filepath.Base(path),
+		Filepath: path,
+		Diff:     true,
+		raw:      diff,
+	}
+
+	err := f.highlight()
+	if err != nil {
+		return f, err
+	}
+
+	return f, nil
+}
+
+// Strip hunk headers and line prefixes from diff.
+func cleanDiffToCode(diff string) string {
+	clean := ""
+	lines := strings.Split(diff, "\n")
+	for _, l := range lines {
+		if len(l) > 0 &&
+			!strings.HasPrefix(l, "@@") &&
+			!strings.HasPrefix(l, ">>>>>>>") &&
+			!strings.HasPrefix(l, "<<<<<<<") &&
+			!strings.HasPrefix(l, "=======") {
+			clean += l[1:] + "\n"
+		} else {
+			// Add blank lines for the diff markup so the line numbering is correct.
+			clean += "\n"
+		}
+	}
+	return clean
 }
 
 func HighlightFileSelection(path string, ranges highlightRanges) (File, error) {

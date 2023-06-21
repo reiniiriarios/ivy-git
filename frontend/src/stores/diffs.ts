@@ -39,6 +39,7 @@ export interface Diff {
   Hash: string;
   Resolved: boolean;
   // Separate fetch
+  Lang: string;
   Highlight: HighlightedLines;
 }
 
@@ -105,32 +106,8 @@ function createCurrentDiff() {
           diff.Hash = hash;
           diff.File = oldfile ? `${file} -> ${oldfile}` : file; // ???
           set(diff);
-          currentDiff.fetchHighlight();
         });
       });
-    },
-    // Fetch syntax highlighting for file.
-    fetchHighlight: async () => {
-      let diff = get(currentDiff);
-      if (!diff || diff.TooLarge || diff.Binary) {
-        return;
-      }
-      // Get lines to highlight from diff hunks.
-      let ranges: number[][] = [];
-      if (diff.Hunks?.length) {
-        diff.Hunks.map(h => ranges.push([h.StartCur, h.EndCur]));
-      }
-      GetHighlightedFileRange(diff.File, ranges).then(result => {
-        parseResponse(result, () => {
-          let f = result.Data as HighlightedFile;
-          if (!f.TooLarge && f.Lang) {
-            update(diff => {
-              diff.Highlight = f.Highlight;
-              return diff;
-            });
-          }
-        });
-      })
     },
     // Refetch the current diff.
     refresh: () => {

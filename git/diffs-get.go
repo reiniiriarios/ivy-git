@@ -2,6 +2,7 @@ package git
 
 import (
 	"errors"
+	"ivy-git/files"
 )
 
 // Get a simple list of untracked files, no other data.
@@ -88,10 +89,15 @@ func (g *Git) GetWorkingFileParsedDiff(file string, status string, staged bool) 
 		return Diff{}, err
 	}
 	diff := Diff{
+		File:  file,
 		raw:   raw,
 		Flags: flags,
 	}
 	err = diff.parse()
+	if err != nil {
+		return Diff{}, err
+	}
+	err = g.highlightDiff(&diff)
 	if err != nil {
 		return Diff{}, err
 	}
@@ -141,7 +147,6 @@ func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
 	if err != nil {
 		return Diff{}, err
 	}
-	println(x, y)
 
 	var raw string
 	if (x == FileAdded || x == FileUntracked) && (y == FileAdded || y == FileUntracked) {
@@ -155,9 +160,14 @@ func (g *Git) GetConflictParsedDiff(file string) (Diff, error) {
 	}
 
 	diff := Diff{
-		raw: raw,
+		File: file,
+		raw:  raw,
 	}
 	err = diff.parseConflicts()
+	if err != nil {
+		return Diff{}, err
+	}
+	err = g.highlightDiff(&diff)
 	if err != nil {
 		return Diff{}, err
 	}
@@ -186,9 +196,14 @@ func (g *Git) GetCommitFileParsedDiff(hash string, file string, oldfile string) 
 		return Diff{}, err
 	}
 	diff := Diff{
-		raw: raw,
+		File: file,
+		raw:  raw,
 	}
 	err = diff.parse()
+	if err != nil {
+		return Diff{}, err
+	}
+	err = g.highlightDiff(&diff)
 	if err != nil {
 		return Diff{}, err
 	}
@@ -205,4 +220,15 @@ func (g *Git) getCommitFileDiff(hash string, file string, oldfile string) (strin
 		return "", err
 	}
 	return d, nil
+}
+
+func (g *Git) highlightDiff(diff *Diff) error {
+	highlight, err := files.HighlightDiff(diff.File, diff.raw)
+	if err != nil {
+		return err
+	}
+	diff.Lang = highlight.Lang
+	diff.Highlight = highlight.Highlight
+
+	return nil
 }

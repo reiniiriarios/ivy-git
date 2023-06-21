@@ -92,7 +92,6 @@ func (g *Git) NameOfMainBranchForRepo(repo_dir string) string {
 
 	// If no newlines, there was only one result. Return it.
 	if !strings.Contains(r, "\n") {
-		println("well", r)
 		return r
 	}
 

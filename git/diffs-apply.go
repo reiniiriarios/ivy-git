@@ -35,7 +35,6 @@ func (d *Diff) parseConflictResolutions() ([]int64, map[int64]int64) {
 				// Loop from the first line number to the last. This ensures
 				// lines outside of displayed hunks are included.
 				for j := d.Conflicts[i].Ours[0].CurLineNo; j <= d.Conflicts[i].Ours[len(d.Conflicts[i].Ours)-1].CurLineNo; j++ {
-					println(j)
 					delete_lines = append(delete_lines, j)
 				}
 			}

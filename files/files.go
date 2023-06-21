@@ -9,6 +9,7 @@ import (
 type File struct {
 	Filename  string
 	Filepath  string
+	Diff      bool
 	Size      int64
 	TooLarge  bool
 	NotFound  bool

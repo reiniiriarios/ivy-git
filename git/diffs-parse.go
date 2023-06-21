@@ -35,6 +35,8 @@ type Diff struct {
 	SelectedLines   uint64
 	NumConflicts    uint16
 	Conflicts       map[int64]DiffConflict // map[MiniHunk_id]DiffConflict
+	Lang            string
+	Highlight       map[int]string
 }
 
 type DiffHunk struct {

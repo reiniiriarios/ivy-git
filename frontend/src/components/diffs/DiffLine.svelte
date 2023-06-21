@@ -31,8 +31,8 @@
   <div class="diff__line-type"></div>
   <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
     <span class="diff__line-code-contents highlight">
-      {#if $currentDiff.Highlight && $currentDiff.Highlight[line.CurLineNo]}
-        {@html $currentDiff.Highlight[line.CurLineNo]}
+      {#if $currentDiff.Highlight && $currentDiff.Highlight[line.RawLineNo]}
+        {@html $currentDiff.Highlight[line.RawLineNo]}
       {:else if $currentDiff.Highlight}
         <span class="mute">{line.Line}</span>
       {:else}
