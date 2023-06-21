@@ -21,6 +21,8 @@
   import { enableWatcher } from "events/watcher";
   import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
 
+  let goos: string = "";
+
   // Load initial ui state.
   appData.fetch();
   currentRepo.load();
@@ -28,6 +30,7 @@
   settings.refresh();
   remoteData.refresh();
   envInit().then(env => {
+    goos = env.platform;
     switch (env.platform) {
       case "darwin":
         document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
@@ -57,20 +60,22 @@
   enableWatcher();
 </script>
 
-<TitleBar />
-<div id="container">
-  <LayoutSidebar />
-  <main>
-    {#if $currentRepo}
-      {#if $noBranchSelected}
-        <GetStarted state="no-branch" />
+<div class="app app--{goos}">
+  <TitleBar />
+  <div id="container">
+    <LayoutSidebar />
+    <main>
+      {#if $currentRepo}
+        {#if $noBranchSelected}
+          <GetStarted state="no-branch" />
+        {:else}
+          <MainTabs />
+        {/if}
       {:else}
-        <MainTabs />
+        <GetStarted />
       {/if}
-    {:else}
-      <GetStarted />
-    {/if}
-  </main>
-  <Message />
+    </main>
+    <Message />
+  </div>
+  <ContextMenu />
 </div>
-<ContextMenu />

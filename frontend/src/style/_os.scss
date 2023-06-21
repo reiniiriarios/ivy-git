@@ -1,0 +1,13 @@
+.app {
+  &--linux {
+    .btn {
+      padding-top: 0.35rem;
+      padding-bottom: 0.15rem;
+
+      .octicon {
+        position: relative;
+        bottom: 0.125rem;
+      }
+    }
+  }
+}
