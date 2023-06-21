@@ -7,6 +7,11 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+const NAME = "Ivy Git"
+const SHORT_NAME = "ivy-git"
+const BUNDLE = "me.reinii.ivy-git"
+const VERSION = "0.3.2"
+
 // App struct
 type App struct {
 	ctx                  context.Context

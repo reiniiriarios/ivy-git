@@ -11,11 +11,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const NAME = "Ivy Git"
-const SHORT_NAME = "ivy-git"
-const BUNDLE = "me.reinii.ivy-git"
-const VERSION = "0.0.1"
-
 type RepoSaveData struct {
 	CurrentRepo string
 	Repos       map[string]git.Repo
