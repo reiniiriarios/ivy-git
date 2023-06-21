@@ -8,6 +8,8 @@
   import { currentCommit, commitDetails, commitDiffSummary, commitSignature } from 'stores/commit-details';
   import { commitDetailsWindow } from 'stores/ui';
   import SignatureDetails from './SignatureDetails.svelte';
+  import type { ComponentConstructorOptions } from 'svelte';
+  import CommitMessage from './CommitMessage.svelte';
 
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
@@ -85,9 +87,8 @@
         </tr>
         <tr>
           <th>Message</th>
-          <td class="message">
-            <div class="message__subject">{@html codify(commit.Subject)}</div>
-            <div class="message__body">{@html $commitDetails?.BodyHtml}</div>
+          <td class="commit-details__message">
+            <CommitMessage subject={commit.Subject} body={$commitDetails?.BodyHtml} />
           </td>
         </tr>
       </table>

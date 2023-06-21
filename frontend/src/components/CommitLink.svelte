@@ -3,7 +3,6 @@
   import { currentCommit } from "stores/commit-details";
   import { currentTab } from "stores/ui";
   import { get } from "svelte/store";
-  import { onMount } from "svelte";
 
   export let hash: string;
   let commit_id: number;
