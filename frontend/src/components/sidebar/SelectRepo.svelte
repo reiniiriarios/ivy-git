@@ -49,7 +49,7 @@
 
 <button class="btn btn-drop sidebar-big-button" id="current-repo" on:click={toggleList} class:active={$repoSelect}>
   <div class="sidebar-big-button__label">Current Repo:</div>
-  <div class="sidebar-big-button__value">{$repos[$currentRepo]?.Name ?? 'none selected'}</div>
+  <div class="sidebar-big-button__value">{$repos[$currentRepo]?.Name ? $repos[$currentRepo]?.Name : 'none selected'}</div>
 </button>
 
 <div id="all-repos" class="sidebar-dropdown" style:display={$repoSelect ? 'block' : 'none'}>
@@ -62,10 +62,12 @@
       </div>
       <ul class="sidebar-dropdown__list">
         {#each Object.entries($repos) as [id, repo]}
-          <li class="sidebar-dropdown__item" class:sidebar-dropdown__item--selected={id === $currentRepo}>
-            <button class="list-btn name" on:click={() => selectRepo(id)}>{repo.Name}</button>
-            <button class="list-btn x" on:click={() => repos.delete(id)}>&times;</button>
-          </li>
+          {#if repo?.Name}
+            <li class="sidebar-dropdown__item" class:sidebar-dropdown__item--selected={id === $currentRepo}>
+              <button class="list-btn name" on:click={() => selectRepo(id)}>{repo.Name}</button>
+              <button class="list-btn x" on:click={() => repos.delete(id)}>&times;</button>
+            </li>
+          {/if}
         {/each}
       </ul>
     </div>
