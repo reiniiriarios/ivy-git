@@ -52,6 +52,9 @@ func (a *App) loadConfig() {
 		// If the current repo isn't found or is no longer a git repo.
 		repos.CurrentRepo = ""
 	}
+	if repos.Repos == nil {
+		repos.Repos = make(map[string]git.Repo)
+	}
 	a.RepoSaveData = repos
 
 	// Get settings.
