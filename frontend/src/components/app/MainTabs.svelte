@@ -20,7 +20,7 @@
       c: LayoutDetails,
     },
     settings: {
-      n: '<span aria-label="Settings">' + octicons.gear.toSVG({width: 18}) + '</span>',
+      n: '<span class="tabs__icon" aria-label="Settings">' + octicons.gear.toSVG({width: 18}) + '</span>',
       c: LayoutSettings,
     }
   };

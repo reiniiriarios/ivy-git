@@ -25,9 +25,11 @@
   <div class="remotes__header">
     <h2>Remotes</h2>
     <div>
-      <button class="btn btn-sm" on:click={newRemote}>
+      <button class="btn btn--icon btn-sm" on:click={newRemote}>
         Add
-        {@html octicons.plus.toSVG({width: 14})}
+        <span class="icon">
+          {@html octicons.plus.toSVG({width: 14})}
+        </span>
       </button>
     </div>
   </div>
@@ -73,15 +75,15 @@
               </div>
             </td>
             <td class="remote__actions">
-              <button class="btn" on:click={e => fetch(e, remote.Name)}>
+              <button class="btn btn--icon" on:click={e => fetch(e, remote.Name)}>
                 <span class="icon">{@html octicons['arrow-down-left'].toSVG({ "width": 16 })}</span>
                 Fetch
               </button>
-              <button class="btn" on:click={e => push(e, remote.Name)} disabled={remote.Ahead == 0 || !remote.Push}>
+              <button class="btn btn--icon" on:click={e => push(e, remote.Name)} disabled={remote.Ahead == 0 || !remote.Push}>
                 <span class="icon">{@html octicons['arrow-up'].toSVG({ "width": 16 })}</span>
                 Push
               </button>
-              <button class="btn" on:click={e => pull(e, remote.Name)} disabled={remote.Behind == 0 || !remote.Fetch}>
+              <button class="btn btn--icon" on:click={e => pull(e, remote.Name)} disabled={remote.Behind == 0 || !remote.Fetch}>
                 <span class="icon">{@html octicons['arrow-down'].toSVG({ "width": 16 })}</span>
                 Pull
               </button>
