@@ -7,6 +7,10 @@
     color: var(--color-scale-o-1-100);
   }
 
+  &--perf {
+    color: var(--color-scale-o-1-100);
+  }
+
   &--chore {
     color: var(--color-scale-t-1-100);
   }
@@ -23,12 +27,20 @@
     color: var(--color-scale-y-1-100);
   }
 
+  &--ci {
+    color: var(--color-scale-y-1-100);
+  }
+
   &--style {
     color: var(--color-scale-n-1-100);
   }
 
   &--revert {
     color: var(--color-scale-o2-2-100);
+  }
+
+  &--release {
+    color: var(--color-scale-l-1-100);
   }
 
   &--wip {

@@ -1,12 +1,15 @@
 const conventionalLabels = [
   'feat',
   'fix',
+  'perf',
   'refactor',
   'chore',
   'docs',
   'style',
   'test',
+  'ci',
   'revert',
+  'release',
   'drop',
   'wip',
 ];
