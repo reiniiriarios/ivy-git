@@ -1,5 +1,5 @@
-import { stageFile } from "actions/stage/stage";
-import { unstageFile } from "actions/stage/unstage";
+import { stageFile } from "actions/stage/stage-file";
+import { unstageFile } from "actions/stage/unstage-file";
 import type { Menu, MenuItem } from "context-menus/_all";
 import { changes, type Change } from "stores/changes";
 import { get } from "svelte/store";

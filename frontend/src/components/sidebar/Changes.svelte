@@ -1,12 +1,12 @@
 <script lang="ts">
-  import octicons from '@primer/octicons';
-  import { stageFile } from 'actions/stage/stage';
-  import { unstageFile } from 'actions/stage/unstage';
-  import { parseResponse } from 'scripts/parse-response';
+  import octicons, { x } from '@primer/octicons';
+  import { stageAll } from 'actions/stage/stage-all';
+  import { stageFile } from 'actions/stage/stage-file';
+  import { unstageAll } from 'actions/stage/unstage-all';
+  import { unstageFile } from 'actions/stage/unstage-file';
   import { changes, mergeConflicts, type Change } from 'stores/changes';
   import { currentDiff } from 'stores/diffs';
   import { currentTab, branchSelect, repoSelect } from 'stores/ui';
-  import { StageAll, UnstageAll } from 'wailsjs/go/main/App'
 
   function stage(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     let file: Change = $changes.y[e.currentTarget?.dataset?.file];
@@ -24,43 +24,13 @@
     }
   }
 
-  function stageAll() {
-    StageAll().then(result => {
-      parseResponse(result, () => {
-        changes.refresh();
-        if ($currentTab === 'changes') {
-          if ($currentDiff.Staged) {
-            currentDiff.refresh();
-          } else {
-            currentDiff.clear();
-          }
-        }
-      });
-    });
-  }
-
-  function unstageAll() {
-    UnstageAll().then(result => {
-      parseResponse(result, () => {
-        changes.refresh();
-        if ($currentTab === 'changes') {
-          if ($currentDiff.Staged) {
-            currentDiff.clear();
-          } else {
-            currentDiff.refresh();
-          }
-        }
-      });
-    });
-  }
-
   function selectFile(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLElement }) {
     currentTab.set('changes');
     changes.fetchDiff(e.currentTarget.dataset.list, e.currentTarget.dataset.file);
   }
 </script>
 
-<div class="changes" style:display={$repoSelect || $branchSelect ? 'none' : 'block'}>
+<div class="changes" style:display={$repoSelect || $branchSelect ? 'none' : 'flex'}>
   {#if $mergeConflicts}
     <div class="changes__header">
       <div class="changes__header-section">Conflicts</div>
@@ -180,4 +150,9 @@
       {/each}
     </ul>
   {/if}
+  <div class="changes__remaining-space"
+    data-menu="changes"
+    data-unstaged={$changes?.y ? !!Object.keys($changes.y).length : false}
+    data-staged={$changes?.x ? !!Object.keys($changes.x).length : false}
+    data-conflicts={$changes?.c ? !!Object.keys($changes.c).length : false}></div>
 </div>
