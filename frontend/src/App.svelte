@@ -6,7 +6,7 @@
   import ContextMenu from "components/ContextMenu.svelte";
   import GetStarted from "components/GetStarted.svelte";
 
-  import { ResizeWindow } from "wailsjs/go/main/App";
+  import { GitIsInstalled, ResizeWindow } from "wailsjs/go/main/App";
 
   import { addInputListener, keyboardNavListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";
@@ -20,6 +20,9 @@
 
   import { enableWatcher } from "events/watcher";
   import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
+
+  let gitInstalled: boolean = false;
+  GitIsInstalled().then(r => gitInstalled = r);
 
   let goos: string = "";
 
@@ -63,18 +66,22 @@
 <div class="app app--{goos}">
   <TitleBar />
   <div id="container">
-    <LayoutSidebar />
-    <main>
-      {#if $currentRepo}
-        {#if $noBranchSelected}
-          <GetStarted state="no-branch" />
-        {:else}
-          <MainTabs />
-        {/if}
-      {:else}
-        <GetStarted />
-      {/if}
-    </main>
+    {#if !gitInstalled}
+      <GetStarted state="no-git" />
+    {:else}
+      <LayoutSidebar />
+      <main>
+          {#if $currentRepo}
+            {#if $noBranchSelected}
+              <GetStarted state="no-branch" />
+            {:else}
+              <MainTabs />
+            {/if}
+          {:else}
+            <GetStarted />
+          {/if}
+      </main>
+    {/if}
     <Message />
   </div>
   <ContextMenu />

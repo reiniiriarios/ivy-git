@@ -44,6 +44,10 @@ func (a *App) fileTooLarge(file string) bool {
 	return files.FileTooLarge(f)
 }
 
+func (a *App) GitIsInstalled() bool {
+	return a.Git.GitIsInstalled()
+}
+
 // Get current branch for currently selected repo.
 func (a *App) GetCurrentBranch() DataResponse {
 	branch, err := a.Git.GetCurrentBranch()
