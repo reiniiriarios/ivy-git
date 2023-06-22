@@ -56,7 +56,14 @@
       <ul class="sidebar-dropdown__list">
         {#if $branches?.length}
           {#each Object.entries($branches) as [_, branch]}
-            <li class="sidebar-dropdown__item" class:sidebar-dropdown__item--selected={branch?.Name === $currentBranch.Name}>
+            <li
+              class="sidebar-dropdown__item"
+              class:sidebar-dropdown__item--selected={branch?.Name === $currentBranch.Name}
+              data-menu="branchInList"
+              data-name="{branch.Name}"
+              data-upstream="{branch.Upstream}"
+              data-current="{$currentBranch.Name === branch.Name}"
+            >
               <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>{branch?.Name}</button>
               {#if branch?.Name && branch.Name !== $currentBranch.Name && branch.Name !== $repos[$currentRepo].Main }
                 <button class="list-btn x" on:click={() => deleteBranch(branch.Name, !!branch.Upstream)}>&times;</button>
@@ -65,6 +72,7 @@
           {/each}
         {/if}
       </ul>
+      <div class="sidebar-dropdown__remaining-space" data-menu="branchList"></div>
     </div>
   </div>
 </div>

@@ -65,6 +65,8 @@
     left: 0;
     height: 100%;
     width: var(--sidebar-width);
+    display: flex;
+    flex-direction: column;
   }
 
   &__add {
@@ -90,6 +92,10 @@
     &--selected {
       background-color: var(--color-scale-a-5-25);
     }
+  }
+
+  &__remaining-space {
+    flex: 1;
   }
 }
 

@@ -9,6 +9,7 @@ import { menuRemote } from './remote';
 import { menuChangesFile } from './changes-file';
 import { menuChangesList } from './changes-list';
 import { menuBranchesList } from './branches-list';
+import { menuBranch } from './branch-in-list';
 
 interface Menus { [name: string]: Menu }
 
@@ -33,4 +34,5 @@ export const menus: Menus = {
   change: menuChangesFile,
   changes: menuChangesList,
   branchList: menuBranchesList,
+  branchInList: menuBranch,
 };
