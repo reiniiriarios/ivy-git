@@ -8,7 +8,10 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
+
+const GIT_CMD_TIMEOUT = 10 * time.Second
 
 type Git struct {
 	AppCtx context.Context
@@ -60,16 +63,22 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 	// On windows, we need to hide the command prompt.
 	hideCmdPrompt(cmd)
 
-	stdin, err := cmd.StdinPipe()
-	if err != nil {
-		return "", err
-	}
-
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
+	var err error
+
+	// Timeout git calls after GIT_CMD_TIMEOUT to keep from locking program in case of halts.
+	defer time.AfterFunc(GIT_CMD_TIMEOUT, func() {
+		cmd.Process.Kill()
+	}).Stop()
 
 	if opts.stdin != "" {
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			return "", err
+		}
+
 		err = cmd.Start()
 		if err != nil {
 			return "", g.ParseGitError(errb.String(), err)
