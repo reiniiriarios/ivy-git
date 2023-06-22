@@ -8,6 +8,7 @@ import { menuCommitRow } from 'context-menus/commit-row';
 import { menuRemote } from './remote';
 import { menuChangesFile } from './changes-file';
 import { menuChangesList } from './changes-list';
+import { menuBranchesList } from './branches-list';
 
 interface Menus { [name: string]: Menu }
 
@@ -31,4 +32,5 @@ export const menus: Menus = {
   remote: menuRemote,
   change: menuChangesFile,
   changes: menuChangesList,
+  branchList: menuBranchesList,
 };

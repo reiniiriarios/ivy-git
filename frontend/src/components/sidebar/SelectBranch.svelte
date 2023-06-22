@@ -1,25 +1,13 @@
 <script lang="ts">
-  import { branches, currentBranch, type Branch, detachedHead } from 'stores/branches';
+  import { branches, currentBranch, detachedHead } from 'stores/branches';
   import { branchSelect, repoSelect } from 'stores/ui';
   import createBranch from 'actions/branch/create';
   import { mergeConflicts } from 'stores/changes';
-  import { RepoState, repoState } from 'stores/repo-state';
-  import { messageDialog } from 'stores/message-dialog';
   import deleteBranch from 'actions/branch/delete';
+  import switchBranch from 'actions/branch/switch';
   import { currentRepo, repos } from 'stores/repos';
 
   const newBranch = () => createBranch();
-
-  function switchBranch(b: string) {
-    if (![RepoState.Nil, RepoState.None].includes($repoState)) {
-      messageDialog.error({
-        message: "The repo is currently in a state that you cannot (or should not) switch branches."
-      });
-    } else {
-      currentBranch.switch(b);
-      branchSelect.set(false);
-    }
-  }
 
   function toggleList(e?: MouseEvent | KeyboardEvent) {
     if (e instanceof KeyboardEvent && ![' ', '\n', 'Enter'].includes(e.key)) {
@@ -42,6 +30,7 @@
   class:active={$branchSelect}
   class:detached={$detachedHead}
   style:display={$repoSelect ? 'none' : 'flex'}
+  data-menu="branchList"
   on:click={toggleList}
 >
   <div class="sidebar-big-button__label">Current Branch:</div>
