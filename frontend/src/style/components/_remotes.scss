@@ -67,13 +67,13 @@
   }
 
   &__ahead {
-    color: var(--color-scale-g-3-100);
-    fill: var(--color-scale-g-3-100);
+    color: var(--color-ahead);
+    fill: var(--color-ahead);
   }
 
   &__behind {
-    color: var(--color-scale-r-4-100);
-    fill: var(--color-scale-r-4-100);
+    color: var(--color-behind);
+    fill: var(--color-behind);
   }
 
   &__actions {

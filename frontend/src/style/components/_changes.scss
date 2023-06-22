@@ -10,7 +10,7 @@
 
   &__header {
     font-size: 0.9rem;
-    color: var(--color-scale-a-3-100);
+    color: var(--color-text-label);
     border-bottom: 1px solid var(--color-changes-border);
     display: flex;
     justify-content: space-between;
@@ -24,27 +24,27 @@
     &-stage-all {
       .textbtn {
         font-size: 0.9rem;
-        color: var(--color-scale-a-3-100);
+        color: var(--color-text-label);
 
         svg {
           margin-top: -0.125rem;
-          fill: var(--color-scale-a-3-100);
+          fill: var(--color-text-label);
         }
       }
 
       &--stage .textbtn:hover {
-        color: var(--color-scale-g-3-100);
+        color: var(--color-stage-hover);
 
         svg {
-          fill: var(--color-scale-g-3-100);
+          fill: var(--color-stage-hover);
         }
       }
 
       &--unstage .textbtn:hover {
-        color: var(--color-scale-r-3-100);
+        color: var(--color-unstage-hover);
 
         svg {
-          fill: var(--color-scale-r-3-100);
+          fill: var(--color-unstage-hover);
         }
       }
     }
@@ -82,23 +82,23 @@
     svg {
       margin-bottom: 0.125rem;
       vertical-align: middle;
-      fill: var(--color-scale-a-3-100);
+      fill: var(--color-stage);
 
       .change--partial & {
-        fill: var(--color-scale-p-5-100);
+        fill: var(--color-stage-partial);
       }
 
       .change--none & {
-        fill: var(--color-scale-a-6-100);
+        fill: var(--color-stage-none);
       }
     }
 
     &:hover svg {
-      fill: var(--color-scale-g-3-100);
+      fill: var(--color-stage-hover);
     }
 
     &--unstage:hover svg {
-      fill: var(--color-scale-r-3-100);
+      fill: var(--color-unstage-hover);
     }
 
     .change--none & {
@@ -120,12 +120,12 @@
   }
 
   &__dir {
-    color: var(--color-scale-a-3-100);
+    color: var(--color-text-label);
     font-size: 0.85rem;
   }
 
   &__oldfile {
-    color: var(--color-scale-a-3-100);
+    color: var(--color-text-label);
     font-size: 0.85rem;
   }
 
@@ -146,97 +146,97 @@
     &--added {
       &::after {
         content: 'A';
-        color: var(--color-scale-g-3-100);
+        color: var(--color-status-added);
       }
     }
 
     &--copied {
       &::after {
         content: 'C';
-        color: var(--color-scale-y-7-100);
+        color: var(--color-status-copied);
       }
     }
 
     &--deleted {
       &::after {
         content: 'D';
-        color: var(--color-scale-r-3-100);
+        color: var(--color-status-deleted);
       }
     }
 
     &--modified {
       &::after {
         content: 'M';
-        color: var(--color-scale-o-3-100);
+        color: var(--color-status-modified);
       }
     }
 
     &--renamed {
       &::after {
         content: 'R';
-        color: var(--color-scale-b-5-100);
+        color: var(--color-status-renamed);
       }
     }
 
     &--type-changed {
       &::after {
         content: 'T';
-        color: var(--color-scale-p-4-100);
+        color: var(--color-status-type-changed);
       }
     }
 
     &--untracked {
       &::after {
         content: 'U';
-        color: var(--color-scale-g-3-100);
+        color: var(--color-status-untracked);
       }
     }
 
     &--ignored {
       &::after {
         content: '!';
-        color: var(--color-scale-o2-6-100);
+        color: var(--color-status-ignored);
       }
     }
 
     &--not-updated {
       &::after {
         content: '-';
-        color: var(--color-scale-a-6-100);
+        color: var(--color-status-not-updated);
       }
     }
 
     &--unmerged {
       &::after {
         content: 'U';
-        color: var(--color-scale-n-4-100);
+        color: var(--color-status-unmerged);
       }
 
       &-deleted::after {
         content: 'D';
-        color: var(--color-scale-r-3-100);
+        color: var(--color-status-delted);
       }
 
       &-added::after {
         content: 'A';
-        color: var(--color-scale-g-3-100);
+        color: var(--color-status-added);
       }
 
       &-deleted-us::after,
       &-deleted-them::after {
         content: 'D';
-        color: var(--color-scale-r-3-100);
+        color: var(--color-status-deleted);
       }
 
       &-added-us::after,
       &-added-them::after {
         content: 'A';
-        color: var(--color-scale-g-3-100);
+        color: var(--color-status-added);
       }
 
       &-modified::after {
         content: 'M';
-        color: var(--color-scale-o-3-100);
+        color: var(--color-status-modified);
       }
     }
 
@@ -251,10 +251,10 @@
   }
 
   &--unresolved {
-    background-color: var(--color-scale-n-7-50);
+    background-color: var(--color-status-bg-unresolved);
 
     &.change--active {
-      background-color: var(--color-scale-n-6-50);
+      background-color: var(--color-status-bg-unresolved-active);
     }
   }
 }

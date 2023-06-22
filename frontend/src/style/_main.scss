@@ -82,7 +82,7 @@ pre {
 }
 
 code {
-  color: var(--color-scale-l-1-100);
+  color: var(--color-code);
 }
 
 .overlay {
@@ -145,7 +145,7 @@ code {
   bottom: 0;
   right: 0;
   z-index: 1000;
-  background-color: var(--color-scale-a-9-50);
+  background-color: var(--color-window-resize);
 
   &--right {
     width: var(--resize-bar-width);
@@ -161,7 +161,7 @@ code {
 .text-sep {
   &::before {
     content: '|';
-    color: var(--color-scale-a-3-50);
+    color: var(--color-text-sep);
     padding: 0 0.25rem;
   }
 }

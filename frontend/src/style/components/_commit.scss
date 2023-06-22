@@ -39,20 +39,20 @@
 
     &:not(:first-child) {
       .uncommitted & {
-        color: var(--color-scale-a-3-100);
+        color: var(--color-commitlistitem-uncommitted);
       }
 
       .merge & {
-        color: var(--color-scale-a-3-100);
+        color: var(--color-commitlistitem-merge);
       }
 
       .stash & {
-        color: var(--color-scale-a-2-100);
+        color: var(--color-commitlistitem-stash);
         font-style: italic;
       }
 
       .head & {
-        color: var(--color-scale-g-2-100);
+        color: var(--color-commitlistitem-head);
       }
     }
   }

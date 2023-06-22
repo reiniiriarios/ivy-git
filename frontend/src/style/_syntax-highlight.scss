@@ -41,3 +41,42 @@
   .gs { font-weight: bold; } // GenericStrong
   .gu { font-weight: bold; } // GenericSubheading
 }
+
+[data-theme="light"] .highlight {
+  .mute { color: var(--color-scale-a-8-100) } // dim text to match surrounding (e.g. deleted lines)
+  .err { color: var(--color-scale-r-5-100) } // Error
+  .k  { color: var(--color-scale-b-7-100) } // Keyword
+  .kt { color: var(--color-scale-o-7-100) } // KeywordType
+  .kd { color: var(--color-scale-n-7-100) } // KeywordDeclaration
+  .kc { color: var(--color-scale-o-7-100) } // KeywordConstant
+  .kn { color: var(--color-scale-n-7-100) } // KeywordNamespace
+  .kr { color: var(--color-scale-b-7-100) } // KeywordReserved
+  .n  { color: var(--color-scale-g-8-100) } // Name
+  .nc { color: var(--color-scale-o-8-100) } // NameClass
+  .nd { color: var(--color-scale-l-8-100) } // NameDecorator
+  .nf { color: var(--color-scale-o-8-100) } // NameFunction
+  .nx { color: var(--color-scale-a-8-100) } // NameOther
+  .nb { color: var(--color-scale-l-8-100) } // NameBuiltin
+  .nt { color: var(--color-scale-g-8-100) } // NameTag
+  .na { color: var(--color-scale-b-8-100) } // NameAttribute
+  .ni { color: var(--color-scale-t-8-100) } // NameEntity
+  .nn { color: var(--color-scale-g-8-100) } // NameNamespace
+  .s  { color: var(--color-scale-p-8-100) } // String / LiteralString
+  .s1 { color: var(--color-scale-p-8-100) } // StringSingle
+  .s2 { color: var(--color-scale-p-8-100) } // StringDouble
+  .sb { color: var(--color-scale-p-8-100) } // StringBacktick
+  .si { color: var(--color-scale-t-8-100) } // StringInterpol
+  .o  { color: var(--color-scale-b-8-100) } // Operator
+  .ow { color: var(--color-scale-o-8-100) } // OperatorWord
+  .c  { color: var(--color-scale-a-5-100) } // Comment
+  .c1 { color: var(--color-scale-a-5-100) } // CommentSingle
+  .cp { color: var(--color-scale-a-5-100) } // CommentPreproc
+  .p  { color: var(--color-scale-a-8-100) } // Punctuation
+  .m  { color: var(--color-scale-o2-5-100) } // Number
+  .mb { color: var(--color-scale-o2-5-100) } // NumberBin
+  .mf { color: var(--color-scale-o2-5-100) } // NumberFloat
+  .mh { color: var(--color-scale-o2-5-100) } // NumberHex
+  .mi { color: var(--color-scale-o2-5-100) } // NumberInteger
+  .il { color: var(--color-scale-o2-5-100) } // NumberIntegerLong
+  .mo { color: var(--color-scale-o2-5-100) } // NumberOct
+}

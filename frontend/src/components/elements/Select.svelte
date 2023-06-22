@@ -3,31 +3,36 @@
 	const dispatch = createEventDispatcher();
 
   export let values: string[] | number[] = [];
-  export let options: { [value: string|number]: string }[] = [];
+  export let options: { [value: string|number]: string } = {};
   export let selected: string|number;
 
   let select: HTMLDivElement;
 
   let currentValue: string;
-  let currentDisplay: string;
+  let currentDisplay: string = "—";
   $: currentValue = selected.toString();
 
   let opts: { value: string|number, display: string }[] = [];
-  $: opts = !options.length && values.length
-    ? values.map((v: string|number) => {
-      if (v === selected) currentDisplay = v.toString();
-      return {
-        value: v,
-        display: v.toString(),
-      };
-    })
-    : options.map(({v, d}) => {
-      if (v === selected) currentDisplay = d;
-      return {
-        value: v,
-        display: d,
-      };
-    });
+  $: {
+    if (!options.length && values.length) {
+      opts = values.map((v: string|number) => {
+        if (v === selected) currentDisplay = v.toString();
+        return {
+          value: v,
+          display: v.toString(),
+        };
+      });
+    } else {
+      opts = [];
+      Object.keys(options).forEach(v => {
+        if (v === selected) currentDisplay = options[v];
+        opts.push({
+          value: v,
+          display: options[v],
+        });
+      });
+    }
+  }
 
   function toggleOpen() {
     select.classList.toggle('open');

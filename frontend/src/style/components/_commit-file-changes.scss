@@ -57,23 +57,23 @@
     }
 
     &--M {
-      color: var(--color-scale-o-1-100);
+      color: var(--color-file-modified);
     }
 
     &--A {
-      color: var(--color-scale-g-1-100);
+      color: var(--color-file-added);
     }
 
     &--D {
-      color: var(--color-scale-r-3-100);
+      color: var(--color-file-deleted);
     }
 
     &--R {
-      color: var(--color-scale-b-2-100);
+      color: var(--color-file-renamed);
     }
 
     &-old {
-      color: var(--color-text-muted);
+      color: var(--color-file-oldname);
     }
   }
 
@@ -81,11 +81,11 @@
     color: var(--color-text-muted);
 
     .added {
-      color: var(--color-scale-g-3-100);
+      color: var(--color-file-diff-added);
     }
 
     .deleted {
-      color: var(--color-scale-r-4-100);
+      color: var(--color-file-diff-deleted);
     }
   }
 }

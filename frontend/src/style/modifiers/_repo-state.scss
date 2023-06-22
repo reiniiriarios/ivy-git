@@ -105,3 +105,106 @@
     }
   }
 }
+
+[data-theme="light"] .repo-state {
+  --repo-state-banner-bg: var(--color-scale-r-2-100);
+
+  &__banner {
+    padding: 0.75rem;
+    @include no-select;
+    background-color: var(--repo-state-banner-bg);
+  }
+
+  // &--RepoStateNone {}
+
+  &--RepoStateRebase,
+  &--RepoStateRebaseInteractive {
+    --color-btn-bg: var(--color-scale-p-2-100);
+    --color-btn-bg-hover: var(--color-scale-p-1-100);
+    --color-btn-bg-disabled: var(--color-scale-p-2-75);
+    --repo-state-banner-bg: var(--color-scale-p-2-100);
+
+    &.text-input:focus {
+      border-color: var(--color-scale-p-4-100);
+    }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-p-6-100);
+    }
+  }
+
+  &--RepoStateMerge,
+  &--RepoStateRebaseMerge {
+    --color-btn-bg: var(--color-scale-n-2-100);
+    --color-btn-bg-hover: var(--color-scale-n-1-100);
+    --color-btn-bg-disabled: var(--color-scale-n-2-75);
+    --repo-state-banner-bg: var(--color-scale-n-2-100);
+
+    &.text-input:focus {
+      border-color: var(--color-scale-n-4-100);
+    }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-n-6-100);
+    }
+  }
+
+  &--RepoStateApply,
+  &--RepoStateApplyOrRebase {
+    --color-btn-bg: var(--color-scale-p-2-100);
+    --color-btn-bg-hover: var(--color-scale-p-1-100);
+    --color-btn-bg-disabled: var(--color-scale-p-2-75);
+    --repo-state-banner-bg: var(--color-scale-p-2-100);
+
+    &.text-input:focus {
+      border-color: var(--color-scale-p-4-100);
+    }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-p-6-100);
+    }
+  }
+
+  &--RepoStateRevert,
+  &--RepoStateRevertSequence {
+    --color-btn-bg: var(--color-scale-p-2-100);
+    --color-btn-bg-hover: var(--color-scale-p-1-100);
+    --color-btn-bg-disabled: var(--color-scale-p-2-75);
+    --repo-state-banner-bg: var(--color-scale-p-2-100);
+
+    &.text-input:focus {
+      border-color: var(--color-scale-p-4-100);
+    }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-p-6-100);
+    }
+  }
+
+  &--RepoStateCherryPick,
+  &--RepoStateCherryPickSequence {
+    --color-btn-bg: var(--color-scale-n-2-100);
+    --color-btn-bg-hover: var(--color-scale-n-1-100);
+    --color-btn-bg-disabled: var(--color-scale-n-2-75);
+    --repo-state-banner-bg: var(--color-scale-n-2-100);
+
+    &.text-input:focus {
+      border-color: var(--color-scale-n-4-100);
+    }
+
+    &.commit.uncommitted .commit__td:not(:first-child) {
+      color: var(--color-scale-n-6-100);
+    }
+  }
+
+  &--RepoStateBisect {
+    --color-btn-bg: var(--color-scale-o-2-100);
+    --color-btn-bg-hover: var(--color-scale-o-1-100);
+    --color-btn-bg-disabled: var(--color-scale-o-2-75);
+    --repo-state-banner-bg: var(--color-scale-o-2-100);
+
+    &.text-input:focus {
+      border-color: var(--color-scale-o-4-100);
+    }
+  }
+}

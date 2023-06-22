@@ -1,5 +1,5 @@
 import { parseResponse } from 'scripts/parse-response';
-import { writable, get } from 'svelte/store';
+import { writable, get, derived } from 'svelte/store';
 import { GetSettings, SaveSettingsGui } from 'wailsjs/go/main/App'
 
 interface Settings {
@@ -7,6 +7,7 @@ interface Settings {
 	DisplayCommitSignatureInList: boolean;
   Workflow: string;
   HighlightConventionalCommits: boolean;
+  Theme: string;
 }
 
 // These stores reflec the current ui state and can be used
@@ -32,6 +33,13 @@ function createSettings() {
       });
       settings.save();
     },
+    updateTheme: (theme: string) => {
+      update(s => {
+        s.Theme = theme;
+        return s;
+      });
+      settings.save();
+    },
     toggleHighlightConventionalCommits: () => {
       update(s => {
         s.HighlightConventionalCommits = !s.HighlightConventionalCommits;
@@ -47,3 +55,15 @@ function createSettings() {
   };
 }
 export const settings = createSettings();
+export const theme = derived(settings, $settings => {
+  if (!$settings.Theme) {
+    // If no theme is set, see if user prefers light mode.
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      // Do not set Theme, it should remain unset.
+      return "light";
+    }
+    // Default to dark.
+    return "dark";
+  }
+  return $settings.Theme;
+});

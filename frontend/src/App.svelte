@@ -15,7 +15,7 @@
   import { appData } from "stores/app-data";
   import { currentRepo, repos } from "stores/repos";
   import { remoteData } from "stores/remotes";
-  import { settings } from "stores/settings";
+  import { settings, theme } from "stores/settings";
   import { noBranchSelected } from "stores/branches";
 
   import { enableWatcher } from "events/watcher";
@@ -42,6 +42,11 @@
         document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--windows)");
         break;
     }
+  });
+
+  // Keep theme updated in <html data-theme="theme">
+  theme.subscribe(t => {
+    document.documentElement.dataset.theme = t;
   });
 
   // Frontend Listeners

@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import SetWorkflow from "components/settings/SetWorkflow.svelte";
   import SetConventionalCommits from "components/settings/SetConventionalCommits.svelte";
   import SetMainBranch from "components/settings/SetMainBranch.svelte";
   import AppInfo from "components/settings/AppInfo.svelte";
-  import SetGitConfig from "./SetGitConfig.svelte";
-  import { onMount } from "svelte";
+  import SetGitConfig from "components/settings/SetGitConfig.svelte";
+  import SetTheme from "components/settings/SetTheme.svelte";
+
   import { gitConfig } from "stores/git-config";
 
   onMount(() => {
@@ -16,6 +19,7 @@
   <h2>Settings</h2>
 
   <h3>App</h3>
+  <SetTheme />
   <SetWorkflow />
   <SetConventionalCommits />
 

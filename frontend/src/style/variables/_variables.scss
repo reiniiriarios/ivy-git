@@ -2,6 +2,21 @@
   --font-main: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-code: FiraCode, monospace;
 
+  --title-bar-height: 2.25rem;
+  --sidebar-width: 25rem;
+  --repo-button-height: 4rem;
+  --tabs-height: 2.5rem;
+  --resize-bar-width: 0.33rem;
+  --commit-details-height: 25vh;
+  --commit-details-height-default: var(--commit-details-height);
+
+  // In Pixels!
+  --commit-row-height: 24px;
+
+  // COLORS
+
+  //----------- DARK THEME -------------
+
   --color-branch-u-bg: var(--color-scale-a-5-100);
   --color-branch-u-bg2: var(--color-scale-a-8-100);
   --color-branch-u-bg--translucent: var(--color-scale-a-5-50);
@@ -38,8 +53,11 @@
 
   --color-links: var(--color-scale-g-3-100);
 
+  --color-code: var(--color-scale-l-1-100);
+
   --color-app-bg--windows: #0d1117cc;
   --color-app-bg--darwin: #0d111766;
+  --color-app-bg--linux: #0d1117;
   --color-app-bg: var(--color-app-bg--windows);
 
   --color-sidebar-bg: var(--color-scale-a-8-100);
@@ -55,12 +73,17 @@
   --color-text: var(--color-scale-white);
   --color-text-muted: var(--color-scale-a-2-100);
   --color-text-label: var(--color-scale-a-4-100);
+  --color-text-success: var(--color-scale-g-4-100);
+  --color-text-sep: var(--color-scale-a-3-50);
 
   --color-btn-bg: var(--color-scale-a-7-100);
   --color-btn-border: var(--color-scale-a-8-100);
   --color-btn-bg-hover: var(--color-scale-a-6-100);
+  --color-btn-border-hover: var(--color-scale-a-7-100);
   --color-btn-bg-active: var(--color-scale-a-6-100);
+  --color-btn-border-active: var(--color-scale-a-7-100);
   --color-btn-bg-disabled: var(--color-scale-a-7-50);
+  --color-btn-text-disabled: var(--color-scale-a-2-100);
 
   --color-btn-bg-green: var(--color-scale-g-6-100);
   --color-btn-bg-green-disabled: var(--color-scale-g-7-50);
@@ -84,8 +107,14 @@
   --color-scrollbar-bg: var(--color-scale-a-8-100);
   --color-scrollbar-fg: var(--color-scale-a-6-100);
 
+  --color-commitlisthead-bg: var(--color-scale-a-7-100);
+  --color-commitlisthead-border: var(--color-scale-a-8-100);
   --color-commitlistitem-bg-hover: var(--color-scale-a-6-50);
   --color-commitlistitem-bg-active: var(--color-scale-a-6-75);
+  --color-commitlistitem-uncommitted: var(--color-scale-a-3-100);
+  --color-commitlistitem-merge: var(--color-scale-a-3-100);
+  --color-commitlistitem-stash: var(--color-scale-a-2-100);
+  --color-commitlistitem-head: var(--color-scale-g-2-75);
 
   --color-commitdetails-border: var(--color-scale-a-7-100);
 
@@ -108,14 +137,226 @@
   --color-diff-toggle-bg2: var(--color-scale-p-7-75);
   --color-diff-toggle-bg-off: var(--color-scale-a-6-25);
 
-  --title-bar-height: 2.25rem;
-  --sidebar-width: 25rem;
-  --repo-button-height: 4rem;
-  --tabs-height: 2.5rem;
-  --resize-bar-width: 0.33rem;
-  --commit-details-height: 25vh;
-  --commit-details-height-default: var(--commit-details-height);
+  --color-checkbox-bg: var(--color-scale-a-5-75);
+  --color-checkbox-hover: var(--color-scale-a-4-75);
 
-  // In Pixels!
-  --commit-row-height: 24px;
+  --color-text-input-bg: var(--color-scale-a-6-75);
+  --color-text-input-border: var(--color-scale-a-5-100);
+  --color-text-input-border-focus: var(--color-scale-g-5-100);
+  --color-text-input-border-invalid: var(--color-scale-r-5-100);
+
+  --color-window-resize: var(--color-scale-a-9-50);
+
+  --color-stage: var(--color-scale-a-3-100);
+  --color-stage-hover: var(--color-scale-g-3-100);
+  --color-stage-partial: var(--color-scale-p-5-100);
+  --color-stage-none: var(--color-scale-a-6-100);
+  --color-unstage-hover: var(--color-scale-r-3-100);
+
+  --color-status-added: var(--color-scale-g-3-100);
+  --color-status-copied: var(--color-scale-y-5-100);
+  --color-status-deleted: var(--color-scale-r-3-100);
+  --color-status-modified: var(--color-scale-o-3-100);
+  --color-status-renamed: var(--color-scale-b-5-100);
+  --color-status-type-changed: var(--color-scale-p-4-100);
+  --color-status-untracked: var(--color-scale-g-3-100);
+  --color-status-ignored: var(--color-scale-o2-6-100);
+  --color-status-not-updated: var(--color-scale-a-6-100);
+  --color-status-unmerged: var(--color-scale-n-4-100);
+  --color-status-unresolved: var(--color-scale-n-7-100);
+  --color-status-unresolved-active: var(--color-scale-n-6-100);
+
+  --color-file-added: var(--color-scale-g-1-100);
+  --color-file-deleted: var(--color-scale-r-1-100);
+  --color-file-modified: var(--color-scale-o-1-100);
+  --color-file-renamed: var(--color-scale-b-2-100);
+  --color-file-oldname: var(--color-text-muted);
+
+  --color-file-diff-added: var(--color-scale-g-3-100);
+  --color-file-diff-deleted: var(--color-scale-r-4-100);
+
+  --color-ahead: var(--color-scale-g-3-100);
+  --color-behind: var(--color-scale-r-4-100);
+
+  --color-make-commit-text: var(--color-scale-a-2-100);
+  --color-make-commit-bg: var(--color-scale-g-6-100);
+  --color-make-commit-bg-hover: var(--color-scale-g-5-100);
+  --color-make-commit-bg-disabled: var(--color-scale-g-8-100);
+  --color-make-commit-detached-bg: var(--color-scale-r-8-100);
+  --color-make-commit-detached-bg-hover: var(--color-scale-r-4-100);
+  --color-make-commit-detached-bg-disabled: var(--color-scale-r-8-75);
+}
+
+//----------- LIGHT THEME -------------
+
+[data-theme="light"] {
+  --color-branch-u-bg: var(--color-scale-a-4-100);
+  --color-branch-u-bg2: var(--color-scale-a-6-100);
+  --color-branch-u-bg--translucent: var(--color-scale-a-4-50);
+  --color-branch-0-bg: var(--color-scale-g-4-100);
+  --color-branch-0-bg2: var(--color-scale-g-6-100);
+  --color-branch-0-bg--translucent: var(--color-scale-g-4-50);
+  --color-branch-1-bg: var(--color-scale-t-4-100);
+  --color-branch-1-bg2: var(--color-scale-t-6-100);
+  --color-branch-1-bg--translucent: var(--color-scale-t-4-50);
+  --color-branch-2-bg: var(--color-scale-b-4-100);
+  --color-branch-2-bg2: var(--color-scale-b-6-100);
+  --color-branch-2-bg--translucent: var(--color-scale-b-4-50);
+  --color-branch-3-bg: var(--color-scale-p-4-100);
+  --color-branch-3-bg2: var(--color-scale-p-6-100);
+  --color-branch-3-bg--translucent: var(--color-scale-p-4-50);
+  --color-branch-4-bg: var(--color-scale-n-4-100);
+  --color-branch-4-bg2: var(--color-scale-n-6-100);
+  --color-branch-4-bg--translucent: var(--color-scale-n-4-50);
+  --color-branch-5-bg: var(--color-scale-r-4-100);
+  --color-branch-5-bg2: var(--color-scale-r-6-100);
+  --color-branch-5-bg--translucent: var(--color-scale-r-4-50);
+  --color-branch-6-bg: var(--color-scale-o2-4-100);
+  --color-branch-6-bg2: var(--color-scale-o2-6-100);
+  --color-branch-6-bg--translucent: var(--color-scale-o2-4-50);
+  --color-branch-7-bg: var(--color-scale-o-4-100);
+  --color-branch-7-bg2: var(--color-scale-o-6-100);
+  --color-branch-7-bg--translucent: var(--color-scale-o-4-50);
+  --color-branch-8-bg: var(--color-scale-y-4-100);
+  --color-branch-8-bg2: var(--color-scale-y-6-100);
+  --color-branch-8-bg--translucent: var(--color-scale-y-4-50);
+  --color-branch-9-bg: var(--color-scale-l-4-100);
+  --color-branch-9-bg2: var(--color-scale-l-6-100);
+  --color-branch-9-bg--translucent: var(--color-scale-l-4-50);
+
+  --color-links: var(--color-scale-g-6-100);
+
+  --color-code: var(--color-scale-l-6-100);
+
+  --color-app-bg--windows: #f0f6fcbb;
+  --color-app-bg--darwin: #f0f6fcaa;
+  --color-app-bg--linux: #f0f6fc;
+  --color-app-bg: var(--color-app-bg--windows);
+
+  --color-sidebar-bg: var(--color-scale-a-1-100);
+  --color-sidebar-border: var(--color-scale-a-1-100);
+  --color-overlay-bg: var(--color-scale-a-1-75);
+
+  --color-changes-bg: var(--color-scale-a-1-100);
+  --color-changes-list-bg: var(--color-scale-a-2-100);
+  --color-changes-list-bg-hover: var(--color-scale-a-4-100);
+  --color-changes-border: var(--color-scale-a-1-75);
+  --color-changes-sep: var(--color-scale-a-1-100);
+
+  --color-text: var(--color-scale-black);
+  --color-text-muted: var(--color-scale-a-8-100);
+  --color-text-label: var(--color-scale-a-5-100);
+  --color-text-success: var(--color-scale-g-6-100);
+  --color-text-sep: var(--color-scale-a-6-50);
+
+  --color-btn-bg: var(--color-scale-a-3-100);
+  --color-btn-border: var(--color-scale-a-2-100);
+  --color-btn-bg-hover: var(--color-scale-a-2-100);
+  --color-btn-border-hover: var(--color-scale-a-1-100);
+  --color-btn-bg-active: var(--color-scale-a-2-100);
+  --color-btn-border-active: var(--color-scale-a-1-100);
+  --color-btn-bg-disabled: var(--color-scale-a-2-50);
+  --color-btn-text-disabled: var(--color-scale-a-5-100);
+
+  --color-btn-bg-green: var(--color-scale-g-6-100);
+  --color-btn-bg-green-disabled: var(--color-scale-g-7-50);
+  --color-btn-bg-green-hover: var(--color-scale-g-5-100);
+
+  --color-btn-bg-red: var(--color-scale-r-3-100);
+  --color-btn-bg-red-disabled: var(--color-scale-r-2-50);
+  --color-btn-bg-red-hover: var(--color-scale-r-4-100);
+
+  --color-context-bg: var(--color-scale-a-3-100);
+  --color-context-bg-hover: var(--color-scale-a-4-100);
+  --color-context-border: var(--color-scale-a-4-100);
+
+  --color-btn2-bg: var(--color-scale-a-4-100);
+  --color-btn2-border: var(--color-scale-a-3-100);
+  --color-btn2-bg-hover: var(--color-scale-a-5-100);
+
+  --color-modal-bg: var(--color-scale-a-3-100);
+  --color-modal-border: var(--color-scale-a-2-100);
+
+  --color-scrollbar-bg: var(--color-scale-a-2-100);
+  --color-scrollbar-fg: var(--color-scale-a-4-100);
+
+  --color-commitlisthead-bg: var(--color-scale-a-2-100);
+  --color-commitlisthead-border: var(--color-scale-a-3-100);
+  --color-commitlistitem-bg-hover: var(--color-scale-a-3-50);
+  --color-commitlistitem-bg-active: var(--color-scale-a-3-75);
+  --color-commitlistitem-uncommitted: var(--color-scale-a-6-100);
+  --color-commitlistitem-merge: var(--color-scale-a-6-100);
+  --color-commitlistitem-stash: var(--color-scale-a-5-100);
+  --color-commitlistitem-head: var(--color-scale-g-6-100);
+
+  --color-commitdetails-border: var(--color-scale-a-3-100);
+
+  --color-details-border: var(--color-scale-a-3-100);
+  --color-details-border-2: var(--color-scale-a-4-100);
+
+  --color-diff-line-bg-hunk-header: var(--color-scale-a-3-25);
+  --color-diff-line-bg-add: var(--color-scale-g-5-25);
+  --color-diff-line-bg-delete: var(--color-scale-r-5-25);
+  --color-diff-line-bg-context: var(--color-scale-a-5-25);
+  --color-diff-line-bg-change-start: var(--color-scale-n-5-50);
+  --color-diff-line-bg-change-flip: var(--color-scale-p-5-50);
+  --color-diff-line-bg-change-end: var(--color-scale-b-5-50);
+  --color-diff-line-add: var(--color-scale-g-7-100);
+  --color-diff-line-delete: var(--color-scale-r-7-100);
+  --color-diff-line-no: var(--color-scale-a-7-100);
+  --color-diff-hunk-details: var(--color-scale-a-9-100);
+  --color-diff-hunk-heading: var(--color-scale-a-7-100);
+  --color-diff-toggle-bg: var(--color-scale-p-4-75);
+  --color-diff-toggle-bg2: var(--color-scale-p-3-75);
+  --color-diff-toggle-bg-off: var(--color-scale-a-4-25);
+
+  --color-checkbox-bg: var(--color-scale-a-4-75);
+  --color-checkbox-hover: var(--color-scale-a-3-75);
+
+  --color-text-input-bg: var(--color-scale-a-1-75);
+  --color-text-input-border: var(--color-scale-a-3-100);
+  --color-text-input-border-focus: var(--color-scale-g-4-100);
+  --color-text-input-border-invalid: var(--color-scale-r-4-100);
+
+  --color-window-resize: var(--color-scale-a-1-50);
+
+  --color-stage: var(--color-scale-a-5-100);
+  --color-stage-hover: var(--color-scale-g-4-100);
+  --color-unstage-hover: var(--color-scale-r-4-100);
+  --color-stage-partial: var(--color-scale-p-4-100);
+  --color-stage-none: var(--color-scale-a-4-100);
+
+  --color-status-added: var(--color-scale-g-5-100);
+  --color-status-copied: var(--color-scale-y-7-100);
+  --color-status-deleted: var(--color-scale-r-5-100);
+  --color-status-modified: var(--color-scale-o-5-100);
+  --color-status-renamed: var(--color-scale-b-7-100);
+  --color-status-type-changed: var(--color-scale-p-6-100);
+  --color-status-untracked: var(--color-scale-g-5-100);
+  --color-status-ignored: var(--color-scale-o2-7-100);
+  --color-status-not-updated: var(--color-scale-a-7-100);
+  --color-status-unmerged: var(--color-scale-n-6-100);
+
+  --color-status-bg-unresolved: var(--color-scale-n-2-100);
+  --color-status-bg-unresolved-active: var(--color-scale-n-3-100);
+
+  --color-file-added: var(--color-scale-g-6-100);
+  --color-file-deleted: var(--color-scale-r-6-100);
+  --color-file-modified: var(--color-scale-o-7-100);
+  --color-file-renamed: var(--color-scale-b-6-100);
+  --color-file-oldname: var(--color-text-muted);
+
+  --color-file-diff-added: var(--color-scale-g-6-100);
+  --color-file-diff-deleted: var(--color-scale-r-7-100);
+
+  --color-ahead: var(--color-scale-g-5-100);
+  --color-behind: var(--color-scale-r-6-100);
+
+  --color-make-commit-text: var(--color-scale-a-2-100);
+  --color-make-commit-bg: var(--color-scale-g-3-100);
+  --color-make-commit-bg-hover: var(--color-scale-g-2-100);
+  --color-make-commit-bg-disabled: var(--color-scale-g-4-75);
+  --color-make-commit-detached-bg: var(--color-scale-r-5-100);
+  --color-make-commit-detached-bg-hover: var(--color-scale-r-4-100);
+  --color-make-commit-detached-bg-disabled: var(--color-scale-r-5-75);
 }

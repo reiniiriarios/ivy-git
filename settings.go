@@ -18,9 +18,10 @@ type RepoSaveData struct {
 
 type Settings struct {
 	Version                      string
-	DisplayCommitSignatureInList bool
 	Workflow                     string
+	Theme                        string
 	HighlightConventionalCommits bool
+	DisplayCommitSignatureInList bool
 }
 
 type AppData struct {

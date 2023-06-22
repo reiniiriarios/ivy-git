@@ -46,8 +46,8 @@
   }
 
   &:disabled {
-    color: var(--color-text-muted);
-    fill: var(--color-text-muted);
+    color: var(--color-btn-text-disabled);
+    fill: var(--color-btn-text-disabled);
     background-color: var(--color-btn-bg-disabled);
   }
 
@@ -171,6 +171,8 @@
       // Style to enable use when the main button is disabled, but
       // this button should still be usable, just needs to match style.
       &--faux-disabled {
+        --color-text: var(--color-btn-text-disabled);
+
         // Will override if not in :not.
         &:not(:hover) {
           --color-btn-bg: var(--color-btn-bg-disabled);
@@ -258,13 +260,13 @@
     padding-top: 0.4rem;
 
     &:hover {
-      background-color: var(--color-scale-r-6-100);
+      background-color: var(--color-btn-bg-red-hover);
     }
   }
 }
 
 .icon {
   &.success {
-    fill: var(--color-scale-g-4-100);
+    fill: var(--color-text-success);
   }
 }
