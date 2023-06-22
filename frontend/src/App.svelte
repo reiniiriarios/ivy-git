@@ -10,7 +10,7 @@
 
   import { addInputListener, keyboardNavListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";
-  import { envInit } from "scripts/env";
+  import { environment } from "stores/env";
 
   import { appData } from "stores/app-data";
   import { currentRepo, repos } from "stores/repos";
@@ -32,7 +32,7 @@
   repos.refresh();
   settings.refresh();
   remoteData.refresh();
-  envInit().then(env => {
+  environment.fetch().then(env => {
     goos = env.platform;
     switch (env.platform) {
       case "darwin":

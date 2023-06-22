@@ -1,4 +1,5 @@
-import { isDarwin } from "scripts/env";
+import { isDarwin } from "stores/env";
+import { get } from "svelte/store";
 
 export function keyboardNavListener() {
   window.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -33,7 +34,7 @@ export function keyboardNavListener() {
 export function addInputListener() {
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-      let cmd = (isDarwin() && e.metaKey) || (!isDarwin() && e.ctrlKey);
+      let cmd = (get(isDarwin) && e.metaKey) || (!get(isDarwin) && e.ctrlKey);
       if (cmd && (e.key === 'A' || e.key === 'a')) {
         e.target.select();
       }

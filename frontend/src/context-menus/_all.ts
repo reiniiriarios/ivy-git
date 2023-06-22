@@ -5,11 +5,12 @@ import { menuLabelHead } from 'context-menus/label-head';
 import { menuLabelRemoteHead } from 'context-menus/label-remote-head';
 import { menuLabelRemoteBranch } from 'context-menus/label-remote-branch';
 import { menuCommitRow } from 'context-menus/commit-row';
-import { menuRemote } from './remote';
-import { menuChangesFile } from './changes-file';
-import { menuChangesList } from './changes-list';
-import { menuBranchesList } from './branches-list';
-import { menuBranch } from './branch-in-list';
+import { menuRemote } from 'context-menus/remote';
+import { menuChangesFile } from 'context-menus/changes-file';
+import { menuChangesList } from 'context-menus/changes-list';
+import { menuBranchesList } from 'context-menus/branches-list';
+import { menuBranch } from 'context-menus/branch-in-list';
+import { menuRepo } from 'context-menus/repo';
 
 interface Menus { [name: string]: Menu }
 
@@ -35,4 +36,5 @@ export const menus: Menus = {
   changes: menuChangesList,
   branchList: menuBranchesList,
   branchInList: menuBranch,
+  repo: menuRepo,
 };

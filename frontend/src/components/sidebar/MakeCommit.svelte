@@ -1,6 +1,6 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { isDarwin } from "scripts/env";
+  import { isDarwin } from "stores/env";
   import { parseResponse } from "scripts/parse-response";
   import { currentBranch, detachedHead } from "stores/branches";
   import { changes, changesNumConflicts, changesNumStaged, changesNumUnstaged, mergeConflicts, mergeConflictsResolved } from "stores/changes";
@@ -66,7 +66,7 @@
   }
 
   function makeCommitKeypress(e: KeyboardEvent & { currentTarget: HTMLElement }) {
-    let cmd = (isDarwin() && e.metaKey) || (!isDarwin() && e.ctrlKey);
+    let cmd = ($isDarwin && e.metaKey) || (!$isDarwin && e.ctrlKey);
     if (cmd && (e.key === '\n' || e.key === 'Enter')) {
       make();
       e.currentTarget.blur();

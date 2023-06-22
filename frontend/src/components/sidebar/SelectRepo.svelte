@@ -47,7 +47,16 @@
   });
 </script>
 
-<button class="btn btn-drop sidebar-big-button" id="current-repo" on:click={toggleList} class:active={$repoSelect}>
+<button
+  class="btn btn-drop sidebar-big-button"
+  id="current-repo"
+  on:click={toggleList}
+  class:active={$repoSelect}
+  data-menu="{$repos[$currentRepo]?.Name ? 'repo' : ''}"
+  data-name="{$repos[$currentRepo]?.Name ?? ''}"
+  data-path="{$repos[$currentRepo]?.Directory ?? ''}"
+  data-id="{$currentRepo ?? ''}"
+>
   <div class="sidebar-big-button__label">Current Repo:</div>
   <div class="sidebar-big-button__value">{$repos[$currentRepo]?.Name ? $repos[$currentRepo]?.Name : 'none selected'}</div>
 </button>
@@ -63,7 +72,14 @@
       <ul class="sidebar-dropdown__list">
         {#each Object.entries($repos) as [id, repo]}
           {#if repo?.Name}
-            <li class="sidebar-dropdown__item" class:sidebar-dropdown__item--selected={id === $currentRepo}>
+            <li
+              class="sidebar-dropdown__item"
+              class:sidebar-dropdown__item--selected={id === $currentRepo}
+              data-menu="repo"
+              data-name="{repo.Name}"
+              data-path="{repo.Directory}"
+              data-id="{id}"
+            >
               <button class="list-btn name" on:click={() => selectRepo(id)}>{repo.Name}</button>
               <button class="list-btn x" on:click={() => repos.delete(id)}>&times;</button>
             </li>

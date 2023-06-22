@@ -231,3 +231,9 @@ func (a *App) FileExists(name string, dir string) bool {
 	_, err := os.Stat(filepath.Join(dir, name))
 	return !os.IsNotExist(err)
 }
+
+func (a *App) OpenRepoInFinder(id string) {
+	if a.RepoSaveData.Repos[id] != (git.Repo{}) && a.RepoSaveData.Repos[id].Directory != "" {
+		openDir(a.RepoSaveData.Repos[id].Directory)
+	}
+}
