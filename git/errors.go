@@ -213,7 +213,7 @@ func getGitErrorRegexes() []GitErrorRegex {
 		},
 		{
 			Code:  PushNotFastForward,
-			Regex: "\\((non-fast-forward|fetch first)\\)\nerror: failed to push some refs to '.*'",
+			Regex: "\\((?:non-fast-forward|fetch first)\\)\nerror: failed to push some refs to '.*'",
 		},
 		{
 			Code:  BranchDeletionFailed,
