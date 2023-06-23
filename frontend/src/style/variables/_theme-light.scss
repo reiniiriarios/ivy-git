@@ -141,7 +141,7 @@
   --color-checkbox-bg: var(--color-scale-a-4-75);
   --color-checkbox-hover: var(--color-scale-a-3-75);
 
-  --color-text-input-bg: var(--color-scale-a-1-75);
+  --color-text-input-bg: var(--color-scale-a-0-75);
   --color-text-input-border: var(--color-scale-a-3-100);
   --color-text-input-border-focus: var(--color-scale-g-4-100);
   --color-text-input-border-invalid: var(--color-scale-r-4-100);
@@ -190,4 +190,7 @@
 
   --color-ref-label-leaf-bg: rgba(255 255 255 / 25%);
   --color-ref-label-leaf-border: rgba(255 255 255 / 10%);
+
+  --color-help-bg: var(--color-scale-a-0-100);
+  --color-help-border: var(--color-scale-a-3-100);
 }

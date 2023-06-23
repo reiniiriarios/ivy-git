@@ -28,7 +28,7 @@
       <button class="btn btn--icon btn-sm" on:click={newRemote}>
         Add
         <span class="icon">
-          {@html octicons.plus.toSVG({width: 14})}
+          {@html octicons.plus.toSVG({width: 12})}
         </span>
       </button>
     </div>
