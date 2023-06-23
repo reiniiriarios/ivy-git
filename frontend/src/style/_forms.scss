@@ -42,6 +42,7 @@ textarea {
     width: 1.25rem;
     margin: 0 0.25rem 0.2rem 0;
     background-color: var(--color-checkbox-bg);
+    outline: var(--btn-border); // outline [sic]
     position: relative;
     border-radius: 0.25rem;
 
@@ -102,6 +103,7 @@ textarea {
       border-radius: 50%;
       margin: 0 0.25rem 0.2rem 0;
       background-color: var(--color-checkbox-bg);
+      outline: var(--btn-border); // outline [sic]
       position: relative;
 
       &::after {
