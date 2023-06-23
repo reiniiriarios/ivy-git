@@ -13,7 +13,7 @@ function createEnv() {
   }
 }
 export const environment = createEnv();
-export const isDarwin = derived(environment, $environment => $environment.platform);
+export const isDarwin = derived(environment, $environment => $environment.platform === 'darwin');
 export const finderWord = derived(environment, $environment => {
   switch ($environment.platform) {
     case 'darwin':
