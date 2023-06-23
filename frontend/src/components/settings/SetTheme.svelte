@@ -8,8 +8,8 @@
 
   // todo: define these elsewhere
   let themes = {
-    dark: 'dark',
-    light: 'light (wip)',
+    dark: 'Dark',
+    light: 'Light',
   };
 </script>
 

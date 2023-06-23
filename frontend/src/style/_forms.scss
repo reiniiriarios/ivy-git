@@ -171,6 +171,9 @@ textarea {
   }
 
   ul {
+    border-left: var(--btn-border);
+    border-right: var(--btn-border);
+    border-bottom: var(--btn-border);
     z-index: 10000;
     visibility: hidden;
     position: absolute;
@@ -181,9 +184,12 @@ textarea {
     margin: 0;
     min-width: 10rem;
     background-color: var(--color-btn-bg);
-    border-top: 1px solid var(--color-btn-border);
     border-bottom-left-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
+
+    [data-theme="dark"] & {
+      border-top: 1px solid var(--color-btn-border);
+    }
 
     li {
       padding: 0.5rem 0.5rem;
