@@ -166,7 +166,7 @@ func (g *Graph) buildNormalPath(v *Vertex, color uint16) {
 	null_parent := false
 	if v.hasNextParent() && v.getNextParent() != NULL_VERTEX {
 		p = &g.Vertices[v.getNextParent()]
-	} else if v.getNextParent() == NULL_VERTEX {
+	} else if v.hasNextParent() && v.getNextParent() == NULL_VERTEX {
 		null_parent = true
 	}
 
