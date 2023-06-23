@@ -1,7 +1,7 @@
 @use "mixins" as *;
 
 .btn {
-  border: none;
+  border: var(--btn-border);
   color: var(--color-text);
   fill: var(--color-text);
   background-color: var(--color-btn-bg);
@@ -217,6 +217,7 @@
 .btn-drop {
   position: relative;
   border-radius: 0;
+  border: none;
 
   &::after {
     content: "";

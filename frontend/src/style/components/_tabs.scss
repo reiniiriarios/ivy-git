@@ -8,22 +8,22 @@
     flex: 1;
     border: none;
     color: var(--color-text);
-    background-color: var(--color-btn-bg);
+    background-color: var(--color-tab-bg);
     font-size: 1rem;
     padding: 0.5rem 1rem;
     margin: 0;
     cursor: pointer;
 
     &:not(:last-child) {
-      border-right: 1px solid var(--color-btn-border);
+      border-right: 1px solid var(--color-tab-border);
     }
 
     &.active {
-      background-color: var(--color-btn-bg-active);
+      background-color: var(--color-tab-bg-active);
     }
 
     &:hover {
-      background-color: var(--color-btn-bg-hover);
+      background-color: var(--color-tab-bg-hover);
     }
 
     &--settings {

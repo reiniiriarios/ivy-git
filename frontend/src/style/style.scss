@@ -1,5 +1,7 @@
 @use "variables/colors";
 @use "variables/variables";
+@use "variables/theme-dark";
+@use "variables/theme-light";
 
 @use "main";
 @use "buttons";
@@ -16,6 +18,7 @@
 @use "components/commit-labels";
 @use "components/commit-details";
 @use "components/commit-file-changes";
+@use "components/context-menu";
 @use "components/gpg-status";
 @use "components/tree";
 @use "components/repo-info";

@@ -1,9 +1,12 @@
 @use "../mixins" as *;
 
 .modal {
-  --color-btn-bg: var(--color-scale-a-6-100);
-  --color-btn-border: var(--color-scale-a-7-100);
-  --color-btn-bg-hover: var(--color-scale-a-5-100);
+  [data-theme="dark"] & {
+    --color-btn-bg: var(--color-scale-a-6-100);
+    --color-btn-border: var(--color-scale-a-7-100);
+    --color-btn-bg-hover: var(--color-scale-a-5-100);
+    --color-btn-bg-disabled: var(--color-scale-a-6-50);
+  }
 
   display: block;
   z-index: 50;
@@ -61,10 +64,6 @@
     border-top: 1px solid var(--color-modal-border);
     padding: 1rem;
     @include no-select;
-
-    .btn:disabled {
-      background-color: var(--color-scale-a-6-50);
-    }
   }
 
   &__checkboxes {

@@ -5,7 +5,7 @@
   export let hunkId: number = -1;
 
   let selected: string;
-  $: selected = !$currentDiff.Committed && !$currentDiff.Conflict
+  $: selected = !$currentDiff.Committed && !$currentDiff.Conflict && line.Type !== 'DiffContextLine'
     ? (line.Selected ? 'diff__line--on' : 'diff__line--off')
     : '';
 </script>

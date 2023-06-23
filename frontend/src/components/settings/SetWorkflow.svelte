@@ -16,7 +16,7 @@
     </Info>
   </h4>
   <div class="big-option">
-    <button class="btn big-option__option"
+    <button class="big-option__option"
       class:big-option__option--active={$settings.Workflow === 'merge'}
       on:click={() => saveWorkflow('merge')}>
       <div class="big-option__icon">
@@ -29,7 +29,7 @@
         Avoid editing history.
       </div>
     </button>
-    <button class="btn big-option__option"
+    <button class="big-option__option"
       class:big-option__option--active={$settings.Workflow === 'squash'}
       on:click={() => saveWorkflow('squash')}>
       <div class="big-option__icon">
@@ -42,7 +42,7 @@
         Merge or rebase to update, squash to merge.
       </div>
     </button>
-    <button class="btn big-option__option"
+    <button class="big-option__option"
       class:big-option__option--active={$settings.Workflow === 'rebase'}
       on:click={() => saveWorkflow('rebase')}>
       <div class="big-option__icon">

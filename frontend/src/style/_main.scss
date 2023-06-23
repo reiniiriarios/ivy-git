@@ -116,8 +116,8 @@ code {
 }
 
 ::selection {
-  color: var(--color-scale-a-9-100);
-  background-color: var(--color-scale-a-1-100);
+  color: var(--color-selection);
+  background-color: var(--color-selection-bg);
 }
 
 .resizer {

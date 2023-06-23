@@ -84,19 +84,29 @@
 
   &__option {
     flex: 1;
-    border: 0.25rem solid var(--color-btn-border);
+    background-color: var(--color-btn-big-bg);
+    border: 0.25rem solid var(--color-btn-big-border);
     border-radius: 0;
+    padding: 0.5rem 1rem;
+    fill: var(--color-text);
+    @include no-select;
+  
+    &:not(:disabled) {
+      cursor: pointer;
+    }
 
     &:hover {
-      border-color: var(--color-btn-border-hover);
+      background-color: var(--color-btn-big-bg-hover);
+      border-color: var(--color-btn-big-border-hover);
     }
 
     &--active {
-      background-color: var(--color-btn-bg-active);
-      border-color: var(--color-btn-border-active);
+      background-color: var(--color-btn-big-bg-active);
+      border-color: var(--color-btn-big-border-active);
 
       &:hover {
-        border-color: var(--color-btn-border-hover);
+        background-color: var(--color-btn-big-bg-hover);
+        border-color: var(--color-btn-big-border-active);
       }
     }
   }
