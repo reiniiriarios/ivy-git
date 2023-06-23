@@ -71,6 +71,10 @@
   
       &:hover {
         background-color: var(--color-scale-a-6-100);
+
+        [data-theme="light"] & {
+          background-color: var(--color-scale-a-1-100);
+        }
       }
     }
   
