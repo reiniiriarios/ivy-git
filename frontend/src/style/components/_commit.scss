@@ -55,6 +55,16 @@
         color: var(--color-commitlistitem-head);
       }
     }
+
+    .avatar {
+      height: calc(var(--commit-row-height) - 4px);
+      width: calc(var(--commit-row-height) - 4px);
+      margin-right: 0.25rem;
+      // vertical-align:middle doesn't quite get it right here...
+      vertical-align: bottom;
+      position: relative;
+      top: 0.22rem;
+    }
   }
 
   &:hover td,

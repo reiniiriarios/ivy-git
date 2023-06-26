@@ -10,6 +10,7 @@
   import { currentCommit } from 'stores/commit-details';
   import { RepoState, repoState } from 'stores/repo-state';
   import { settings } from 'stores/settings';
+  import { avatars } from 'stores/avatars';
 
   export let commit: Commit;
   export let signStatus: string;
@@ -48,6 +49,15 @@
     s = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     return s.replaceAll(/`([^`]+?)`/g, '<code>$1</code>');
   }
+
+  let avatarUrl: string = '';
+  $: {
+    // Empty first, then wait on load.
+    avatarUrl = '';
+    if ($settings.DisplayAvatars && commit.AuthorEmail) {
+      avatars.fetch(commit.AuthorEmail).then(url => avatarUrl = url);
+    }
+  }
 </script>
 
 <tr class="commit c-{commit.Color % NUM_COLORS} {commit.Hash === UNCOMMITED_HASH ? `repo-state--${$repoState}` : ''}"
@@ -82,6 +92,11 @@
       {/if}
     </td>
   {/if}
-  <td class="commit__td commit__td--author">{commit.AuthorName ?? commit.AuthorEmail}</td>
+  <td class="commit__td commit__td--author">
+    {#if avatarUrl}
+      <span class="avatar"><img src="{avatarUrl}" alt="" /></span>
+    {/if}
+    {commit.AuthorName ?? commit.AuthorEmail}
+  </td>
   <td class="commit__td commit__td--authortime">{commit.AuthorDatetime}</td>
 </tr>

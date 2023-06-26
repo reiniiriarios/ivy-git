@@ -10,6 +10,7 @@
   import SetGitConfig from "components/settings/SetGitConfig.svelte";
   import SetTheme from "components/settings/SetTheme.svelte";
   import SetHighlightMain from "components/settings/SetHighlightMain.svelte";
+  import SetDisplayAvatars from "./SetDisplayAvatars.svelte";
 
   onMount(() => {
     gitConfig.fetch();
@@ -24,6 +25,7 @@
   <SetWorkflow />
   <SetHighlightMain />
   <SetConventionalCommits />
+  <SetDisplayAvatars />
 
   <h3>Repo</h3>
   <SetMainBranch />

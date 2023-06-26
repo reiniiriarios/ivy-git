@@ -238,3 +238,12 @@ func (g *Git) RemoveRemote(name string) error {
 	_, err := g.run("remote", "rm", name)
 	return err
 }
+
+func (g *Git) isOnGitHub() bool {
+	r, err := g.run("remote", "-v")
+	if err != nil {
+		// ignore errors
+		return false
+	}
+	return strings.Contains(strings.ToLower(r), "github")
+}

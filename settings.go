@@ -23,6 +23,7 @@ type Settings struct {
 	HighlightMainBranch          bool
 	HighlightConventionalCommits bool
 	DisplayCommitSignatureInList bool
+	DisplayAvatars               bool
 }
 
 type AppData struct {

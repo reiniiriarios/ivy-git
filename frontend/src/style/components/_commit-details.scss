@@ -46,6 +46,18 @@
       td {
         padding: 0.25rem 0.75rem 0.25rem 0.4rem;
       }
+
+      tr:not(:last-child) {
+        th {
+          vertical-align: middle;
+        }
+      }
+
+      tr:last-child {
+        th {
+          padding-top: 0.4rem;
+        }
+      }
     }
   }
 
@@ -101,5 +113,15 @@
   h5,
   h4 {
     font-size: 1.1rem;
+  }
+
+  .avatar {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.25rem;
+    // vertical-align:middle doesn't quite get it right here...
+    vertical-align: bottom;
+    position: relative;
+    top: 0.22rem;
   }
 }

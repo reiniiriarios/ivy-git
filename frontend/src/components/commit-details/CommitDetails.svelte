@@ -8,8 +8,9 @@
   import { currentCommit, commitDetails, commitDiffSummary, commitSignature } from 'stores/commit-details';
   import { commitDetailsWindow } from 'stores/ui';
   import SignatureDetails from './SignatureDetails.svelte';
-  import type { ComponentConstructorOptions } from 'svelte';
   import CommitMessage from './CommitMessage.svelte';
+  import { settings } from 'stores/settings';
+  import { avatars } from 'stores/avatars';
 
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
@@ -28,9 +29,20 @@
     }
   });
 
-  function codify(s: string): string {
-    s = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    return s.replaceAll(/`([^`]+?)`/g, '<code>$1</code>');
+  let avatarUrlAuthor: string = '';
+  let avatarUrlCommitter: string = '';
+  $: {
+    // Empty first, then wait on load.
+    avatarUrlAuthor = '';
+    avatarUrlCommitter = '';
+    if ($settings.DisplayAvatars) {
+      if (commit.AuthorEmail) {
+        avatars.fetch(commit.AuthorEmail).then(url => avatarUrlAuthor = url);
+      }
+      if ($commitDetails?.CommitterEmail) {
+        avatars.fetch($commitDetails.CommitterEmail).then(url => avatarUrlCommitter = url);
+      }
+    }
   }
 </script>
 
@@ -54,6 +66,9 @@
         <tr>
           <th>Author</th>
           <td>
+            {#if avatarUrlAuthor}
+              <span class="avatar"><img src="{avatarUrlAuthor}" alt="" /></span>
+            {/if}
             {commit.AuthorName}
             {#if commit.AuthorEmail}
               &lt;<a href="mailto:{commit.AuthorEmail}">{commit.AuthorEmail}</a>&gt;
@@ -67,6 +82,9 @@
         <tr>
           <th>Committer</th>
           <td>
+            {#if avatarUrlCommitter}
+              <span class="avatar"><img src="{avatarUrlCommitter}" alt="" /></span>
+            {/if}
             {$commitDetails?.CommitterName}
             {#if $commitDetails?.CommitterEmail}
               &lt;<a href="mailto:{$commitDetails.CommitterEmail}">{$commitDetails.CommitterEmail}</a>&gt;

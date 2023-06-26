@@ -9,6 +9,7 @@ interface Settings {
   HighlightMainBranch: boolean;
   HighlightConventionalCommits: boolean;
 	DisplayCommitSignatureInList: boolean;
+  DisplayAvatars: boolean;
 }
 
 function createSettings() {
@@ -48,6 +49,13 @@ function createSettings() {
     toggleHighlightMainBranch: () => {
       update(s => {
         s.HighlightMainBranch = !s.HighlightMainBranch;
+        return s;
+      });
+      settings.save();
+    },
+    toggleDisplayAvatars: () => {
+      update(s => {
+        s.DisplayAvatars = !s.DisplayAvatars;
         return s;
       });
       settings.save();

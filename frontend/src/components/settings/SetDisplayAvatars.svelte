@@ -6,14 +6,14 @@
 
 <div class="setting">
   <h4 class="setting__name">
-    Highlight Main Branch
+    Avatars / Profile Photos
     <Info>
-      Display a star next to the main branch in order to locate it easily.
+      Display avatars from Gravatar or GitHub for GitHub anon email addresses.
     </Info>
   </h4>
   <Checkbox
-    display="Highlight Main"
-    checked={$settings.HighlightMainBranch}
-    on:click={settings.toggleHighlightMainBranch}
+    display="Display"
+    checked={$settings.DisplayAvatars}
+    on:click={settings.toggleDisplayAvatars}
   />
 </div>
