@@ -1,4 +1,4 @@
-import { branches } from 'stores/branches';
+import { branches, currentBranch } from 'stores/branches';
 import { changes } from 'stores/changes';
 import { commitData, commitSignData } from 'stores/commits';
 import { currentDiff } from 'stores/diffs';
@@ -19,6 +19,7 @@ export function enableWatcher() {
   EventsOn('watcher', (e: WatcherEvent) => {
     console.log('Watcher updating...');
     repoState.refresh();
+    currentBranch.refresh();
     changes.refresh();
     commitData.refresh();
     currentDiff.refresh();
