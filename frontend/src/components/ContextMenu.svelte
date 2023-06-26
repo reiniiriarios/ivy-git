@@ -3,11 +3,12 @@
 
   const X_OFFSET = 3;
 
+  let menuElement: HTMLElement;
+
   let currentClickedElement: HTMLElement;
   let currentMenu: string;
 
   function displayMenu(e: MouseEvent) {
-    let menuElement = document.getElementById("context-menu");
     let x = e.pageX;
     let y = e.pageY;
     let w = getCurrentMenuWidth();
@@ -41,7 +42,7 @@
   }
 
   function hideMenu() {
-    document.getElementById("context-menu").style.display = 'none';
+    menuElement.style.display = 'none';
     if (currentClickedElement) {
       currentClickedElement.classList.remove('hover');
     }
@@ -96,8 +97,8 @@
   });
 </script>
 
-{#if $contextMenu.length}
-  <div class="context-menu" id="context-menu">
+<div class="context-menu" bind:this={menuElement}>
+  {#if $contextMenu.length}
     <ul class="context-menu__items">
         {#each $contextMenu as item}
           {#if item.text}
@@ -113,5 +114,5 @@
           {/if}
         {/each}
     </ul>
-  </div>
-{/if}
+  {/if}
+</div>
