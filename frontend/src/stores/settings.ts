@@ -4,18 +4,16 @@ import { GetSettings, SaveSettingsGui } from 'wailsjs/go/main/App'
 
 interface Settings {
 	Version: string;
-	DisplayCommitSignatureInList: boolean;
   Workflow: string;
-  HighlightConventionalCommits: boolean;
   Theme: string;
+  HighlightMainBranch: boolean;
+  HighlightConventionalCommits: boolean;
+	DisplayCommitSignatureInList: boolean;
 }
 
-// These stores reflec the current ui state and can be used
-// across the app to change the ui state from components
-// unrelated in hierarchy, but related in content.
 function createSettings() {
   const { subscribe, set, update } = writable({} as Settings);
-  
+
   return {
     subscribe,
     refresh: async () => {
@@ -47,6 +45,13 @@ function createSettings() {
       });
       settings.save();
     },
+    toggleHighlightMainBranch: () => {
+      update(s => {
+        s.HighlightMainBranch = !s.HighlightMainBranch;
+        return s;
+      });
+      settings.save();
+    },
     save: async () => {
       SaveSettingsGui(get(settings)).then(result => {
         parseResponse(result);
@@ -55,6 +60,7 @@ function createSettings() {
   };
 }
 export const settings = createSettings();
+
 export const theme = derived(settings, $settings => {
   if (!$settings.Theme) {
     // If no theme is set, see if user prefers light mode.

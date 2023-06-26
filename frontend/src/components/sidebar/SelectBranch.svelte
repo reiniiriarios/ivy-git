@@ -6,6 +6,8 @@
   import deleteBranch from 'actions/branch/delete';
   import switchBranch from 'actions/branch/switch';
   import { currentRepo, repos } from 'stores/repos';
+  import { settings } from 'stores/settings';
+  import octicons from '@primer/octicons';
 
   const newBranch = () => createBranch();
 
@@ -59,12 +61,18 @@
             <li
               class="sidebar-dropdown__item"
               class:sidebar-dropdown__item--selected={branch?.Name === $currentBranch.Name}
+              class:sidebar-dropdown__item--main={$settings.HighlightMainBranch && branch.Name === $repos[$currentRepo].Main}
               data-menu="branchInList"
               data-name="{branch.Name}"
               data-upstream="{branch.Upstream}"
               data-current="{$currentBranch.Name === branch.Name}"
             >
-              <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>{branch?.Name}</button>
+              <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>
+                {branch?.Name}
+                {#if $settings.HighlightMainBranch && branch.Name === $repos[$currentRepo].Main}
+                  <span class="icon" aria-label="(Main branch)">{@html octicons['star-fill'].toSVG({width: 12})}</span>
+                {/if}
+              </button>
               {#if branch?.Name && branch.Name !== $currentBranch.Name && branch.Name !== $repos[$currentRepo].Main }
                 <button class="list-btn x" on:click={() => deleteBranch(branch.Name, !!branch.Upstream)}>&times;</button>
               {/if}

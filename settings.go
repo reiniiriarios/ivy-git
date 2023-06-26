@@ -20,6 +20,7 @@ type Settings struct {
 	Version                      string
 	Workflow                     string
 	Theme                        string
+	HighlightMainBranch          bool
 	HighlightConventionalCommits bool
 	DisplayCommitSignatureInList bool
 }

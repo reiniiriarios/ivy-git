@@ -8,6 +8,7 @@
   <h4 class="setting__name">
     Conventional Commits
     <Info>
+      Display conventional commit tags in different colors in the commits list.
       See <a href="https://www.conventionalcommits.org/en/v1.0.0/" target="_blank">conventionalcommits.org</a> for more information.
     </Info>
   </h4>

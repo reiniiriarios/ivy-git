@@ -101,6 +101,13 @@
     &--selected {
       background-color: var(--color-sidebar-dropdown-selected);
     }
+
+    .icon {
+      fill: var(--color-main-branch-star);
+      margin: 0 0.125rem;
+      position: relative;
+      top: 0.125rem;
+    }
   }
 
   &__remaining-space {
