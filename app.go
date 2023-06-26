@@ -10,7 +10,7 @@ import (
 const NAME = "Ivy Git"
 const SHORT_NAME = "ivy-git"
 const BUNDLE = "me.reinii.ivy-git"
-const VERSION = "0.10.2"
+const VERSION = "0.12.2"
 
 // App struct
 type App struct {
