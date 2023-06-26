@@ -51,7 +51,7 @@
           <th>Author</th>
           <td>
             {#if $settings.DisplayAvatars && commit.AuthorEmail}
-              <Avatar email="{commit.AuthorEmail}" />
+              <Avatar email="{commit.AuthorEmail}" hover={true} />
             {/if}
             {commit.AuthorName}
             {#if commit.AuthorEmail}
@@ -67,7 +67,7 @@
           <th>Committer</th>
           <td>
             {#if $settings.DisplayAvatars && $commitDetails?.CommitterEmail}
-              <Avatar email="{$commitDetails.CommitterEmail}" />
+              <Avatar email="{$commitDetails.CommitterEmail}" hover={true} />
             {/if}
             {$commitDetails?.CommitterName}
             {#if $commitDetails?.CommitterEmail}
