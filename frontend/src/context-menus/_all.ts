@@ -11,6 +11,7 @@ import { menuChangesList } from 'context-menus/changes-list';
 import { menuBranchesList } from 'context-menus/branches-list';
 import { menuBranch } from 'context-menus/branch-in-list';
 import { menuRepo } from 'context-menus/repo';
+import { writable } from 'svelte/store';
 
 interface Menus { [name: string]: Menu }
 
@@ -23,7 +24,7 @@ export interface MenuItem {
   sep?: boolean;
 }
 
-export const menus: Menus = {
+const menus: Menus = {
   branch: menuLabelBranch,
   tag: menuLabelTag,
   stash: menuLabelStash,
@@ -38,3 +39,15 @@ export const menus: Menus = {
   branchInList: menuBranch,
   repo: menuRepo,
 };
+
+function createContextMenu() {
+  const { subscribe, set } = writable({} as MenuItem[]);
+
+  return {
+    subscribe,
+    set,
+    isMenu: (menu: string) => !!menus[menu],
+    setMenu: (menu: string, clickedElement: HTMLElement) => set(menus[menu](clickedElement) ?? [] as MenuItem[]),
+  };
+}
+export const contextMenu = createContextMenu();

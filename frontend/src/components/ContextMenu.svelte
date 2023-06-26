@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { menus, type MenuItem } from 'context-menus/_all';
+  import { contextMenu } from 'context-menus/_all';
 
   const X_OFFSET = 3;
 
   let currentClickedElement: HTMLElement;
   let currentMenu: string;
-  let menuItems: MenuItem[] = [];
 
   function displayMenu(e: MouseEvent) {
     let menuElement = document.getElementById("context-menu");
@@ -32,13 +31,13 @@
   function getCurrentMenuHeight() {
     // Easier than exact calculation, works just as well.
     let height = 18;
-    menuItems.forEach(i => i.sep ? height += 17 : height += 30);
+    $contextMenu.forEach(i => i.sep ? height += 17 : height += 30);
     return height;
   }
 
   function getCurrentMenuWidth() {
     // Easier than exact calculation, works nearly as well.
-    return menuItems.reduce((a, b) => a.text?.length > b.text?.length ? a : b).text.length * 7.6;
+    return $contextMenu.reduce((a, b) => a.text?.length > b.text?.length ? a : b).text.length * 7.6;
   }
 
   function hideMenu() {
@@ -59,14 +58,14 @@
       }
       // todo: e.preventDefault() for everywhere in production mode
 
-      if (typeof menus[e.target.dataset.menu] !== 'undefined') {
+      if (contextMenu.isMenu(e.target.dataset.menu)) {
         currentClickedElement = e.target;
         currentMenu = e.target.dataset.menu;
       }
       else {
         let n = e.target.parentNode;
         for (let j = 0; j < 4; j++, n = n.parentNode) {
-          if (n instanceof HTMLElement && typeof menus[n.dataset.menu] !== 'undefined') {
+          if (n instanceof HTMLElement && contextMenu.isMenu(n.dataset.menu)) {
             currentClickedElement = n;
             currentMenu = n.dataset.menu;
             break;
@@ -76,7 +75,7 @@
 
       if (currentMenu) {
         e.preventDefault();
-        menuItems = menus[currentMenu](currentClickedElement);
+        contextMenu.setMenu(currentMenu, currentClickedElement);
         currentClickedElement.classList.add('hover');
         displayMenu(e);
       }
@@ -97,20 +96,22 @@
   });
 </script>
 
-<div class="context-menu" id="context-menu">
-  <ul class="context-menu__items">
-    {#each menuItems as item}
-      {#if item.text}
-        <li class="context-menu__item">
-          <div class="context-menu__action"
-            on:click={(e) => item.callback(currentClickedElement)}
-            on:keyup={(e) => item.callback(currentClickedElement)}>
-            {item.text}
-          </div>
-        </li>
-      {:else if item.sep}
-        <li class="context-menu__sep"></li>
-      {/if}
-    {/each}
-  </ul>
-</div>
+{#if $contextMenu.length}
+  <div class="context-menu" id="context-menu">
+    <ul class="context-menu__items">
+        {#each $contextMenu as item}
+          {#if item.text}
+            <li class="context-menu__item">
+              <div class="context-menu__action"
+                on:click={(e) => item.callback(currentClickedElement)}
+                on:keyup={(e) => item.callback(currentClickedElement)}>
+                {item.text}
+              </div>
+            </li>
+          {:else if item.sep}
+            <li class="context-menu__sep"></li>
+          {/if}
+        {/each}
+    </ul>
+  </div>
+{/if}
