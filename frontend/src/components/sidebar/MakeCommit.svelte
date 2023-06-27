@@ -8,6 +8,7 @@
   import { repoState } from "stores/repo-state";
   import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody, commitMessage } from "stores/ui";
   import { MakeCommit, MakeStash } from "wailsjs/go/main/App";
+  import { remoteData } from "stores/remotes";
 
   let running: boolean = false;
   let dropdownOpen: boolean = false;
@@ -43,6 +44,8 @@
             commitMessage.clear();
             changes.refresh();
             commitData.refresh();
+            // refreshing remote data indirectly enables push buttons
+            remoteData.refresh();
             state = 'commit';
           });
           running = false;
