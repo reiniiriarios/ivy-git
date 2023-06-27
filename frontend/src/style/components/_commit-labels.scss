@@ -23,7 +23,8 @@
       width: 0.5rem;
       position: absolute;
       right: -0.5rem;
-      top: 50%;
+      // sic, 48% lines to center of vertex on windows
+      top: 48%;
       background-color: red;
     }
 
@@ -49,6 +50,8 @@
     position: absolute;
     width: 1rem;
     right: -1rem;
+    // sic, 48% lines to center of vertex on windows
+    top: 48%;
     background-color: red;
     z-index: 180;
     pointer-events: none;
