@@ -129,9 +129,12 @@ func (g *Git) getWorkingFileDiff(file string, status string, staged bool) (strin
 		if staged {
 			// STAGED TRACKED FILES
 			cmd = append(cmd, "--cached", "--", file)
+		} else if status == FileRenamed {
+			// UNSTAGED TRACKED, RENAMED FILES
+			cmd = append(cmd, "--", file)
 		} else {
 			// UNSTAGED TRACKED FILES
-			cmd = append(cmd, "--", file)
+			cmd = append(cmd, "HEAD", "--", file)
 		}
 		d, err = g.runWithOpts(cmd, gitRunOpts{always_return_stderr: true})
 		if errorCode(err) == ReplaceLineEndings {
