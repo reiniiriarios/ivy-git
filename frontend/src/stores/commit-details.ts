@@ -43,7 +43,7 @@ interface CommitSignature {
 }
 
 function createCurrentCommit() {
-  const { subscribe, update, set } = writable({} as Commit);
+  const { subscribe, set } = writable({} as Commit);
 
   return {
     subscribe,
@@ -59,7 +59,7 @@ function createCurrentCommit() {
       commitDetails.fetch(commit.Hash);
       // Clear first, wait for data to display.
       commitDiffSummary.set({} as FileStatDir);
-      commitDiffSummary.fetch(commit.Stash ? commit.Parents[1] : commit.Hash);
+      commitDiffSummary.fetch(commit.Hash);
       // Clear first, wait for data to display.
       commitSignature.set({} as CommitSignature);
       commitSignature.fetch(commit.Hash);

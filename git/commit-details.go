@@ -125,14 +125,17 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	// Get the number of lines added and deleted from each file.
 	var numstat string
 	var merge_base string
+	var ignore_first_line bool
 	if len(parents) > 1 {
 		merge_base, err = g.findMergeBase(parents...)
 		if err != nil {
 			return FileStatDir{}, err
 		}
 		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash, merge_base)
+		ignore_first_line = false
 	} else {
 		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash)
+		ignore_first_line = true
 	}
 	if err != nil {
 		return FileStatDir{}, err
@@ -141,8 +144,15 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	numstat = parseOneLine(numstat)
 	// The -z option splits lines by NUL.
 	nl := strings.Split(numstat, "\x00")
-	// The first line is the hash, skip.
-	for i := 1; i < len(nl); i++ {
+
+	// If a second hash is not supplied, the first line is the commit hash,
+	// and so we start counting at one, ignoring the first line of output.
+	i := 0
+	if ignore_first_line {
+		i = 1
+	}
+
+	for ; i < len(nl); i++ {
 		nf := strings.Fields(nl[i])
 		binary := false
 		var a int64 = 0
