@@ -216,6 +216,7 @@ var Exts = map[string]string{
 	"plan9sh":     "Plan9 Shell",
 	"pony":        "Pony",
 	"ps1":         "PowerShell",
+	"pwsh":        "PowerShell",
 	"text":        "Plain Text",
 	"txt":         "Plain Text",
 	"polly":       "Polly",
@@ -360,7 +361,7 @@ func getFileType(path string) (ext string, ok bool) {
 			return "", false
 		}
 		lang := enry.GetLanguage(path, content)
-		if lang != "" {
+		if lang == "" {
 			return "Motoko", true
 		}
 		return lang, true
