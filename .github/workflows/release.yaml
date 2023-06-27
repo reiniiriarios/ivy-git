@@ -33,7 +33,8 @@ jobs:
       - name: Create darwin package
         if: matrix.platform == 'macos-latest'
         run: |
-          productbuild --component "build/bin/Ivy Git.app" "IvyGit_${{ github.ref_name }}_Darwin_Universal.pkg"
+          pkgbuild --root build/bin --component-plist build/darwin/components.plist --identifier "me.reinii.ivy-git.pkg" --install-location /Applications ivy-git.pkg
+          productbuild --package ivy-git.pkg "IvyGit_${{ github.ref_name }}_Darwin_Universal.pkg"
 
       - name: Upload darwin package
         if: matrix.platform == 'macos-latest'
