@@ -488,7 +488,7 @@ func getGitErrorMessage(code ErrorCode) string {
 	case NonFastForwardMergeIntoEmptyHead:
 		return "The merge you attempted is not a fast-forward, so it cannot be performed on an empty branch."
 	case PatchDoesNotApply:
-		return "The requested changes conflict with one or more files in the repository."
+		return "The requested changes to '%s' conflict with one or more files in the repository (%s)."
 	case BranchAlreadyExists:
 		return "A branch with that name already exists."
 	case BadRevision:
