@@ -9,9 +9,6 @@ import (
 // Match to graph.ts.
 const UNCOMMITED_HASH = "#"
 
-// Displayed in commit list.
-const DATE_FORMAT = "Jan 2, 2006, 03:04:05 pm"
-
 const GIT_LOG_SEP = "-act45j3o9y78__jyo9ct-a4ojy9actyo_ct4oy9j-"
 
 const REF_MAX_NAME_LENGTH = 50
@@ -38,7 +35,7 @@ type Commit struct {
 }
 
 // Get commit details from `git log`.
-func (g *Git) getLog(limit uint64, offset uint64) ([]Commit, map[string]uint64, error) {
+func (g *Git) getLog(limit uint64, offset uint64, date_format string) ([]Commit, map[string]uint64, error) {
 	var commits []Commit
 	lookup := make(map[string]uint64)
 
@@ -84,7 +81,7 @@ func (g *Git) getLog(limit uint64, offset uint64) ([]Commit, map[string]uint64, 
 			ts, err := strconv.ParseInt(parts[4], 10, 64)
 			dt := ""
 			if err == nil {
-				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
+				dt = time.Unix(ts, 0).Format(date_format)
 			}
 
 			// Index by SHA
@@ -158,8 +155,8 @@ func (g *Git) getNumUncommitedChanges() int {
 }
 
 // Compile commits and refs for tree view.
-func (g *Git) getCommits(limit uint64, offset uint64) ([]Commit, map[string]uint64, Ref, error) {
-	commits, lookup, err := g.getLog(limit, offset)
+func (g *Git) getCommits(limit uint64, offset uint64, date_format string) ([]Commit, map[string]uint64, Ref, error) {
+	commits, lookup, err := g.getLog(limit, offset, date_format)
 	if err != nil {
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision {
 			return commits, lookup, Ref{}, nil
@@ -204,14 +201,14 @@ func (g *Git) getCommits(limit uint64, offset uint64) ([]Commit, map[string]uint
 
 // Get list of commits and all associated details for display.
 // Returns HEAD, []Commit
-func (g *Git) getCommitList(limit uint64, offset uint64) (Ref, []Commit, error) {
-	commits, lookup, HEAD, err := g.getCommits(limit, offset)
+func (g *Git) getCommitList(limit uint64, offset uint64, date_format string) (Ref, []Commit, error) {
+	commits, lookup, HEAD, err := g.getCommits(limit, offset, date_format)
 	if err != nil {
 		return Ref{}, nil, err
 	}
 
 	// Add stashes.
-	stashes := g.getStashes()
+	stashes := g.getStashes(date_format)
 	for _, s := range stashes {
 		// Confirm the stash hash doesn't match a commit.
 		if _, exists := lookup[s.Hash]; !exists {
@@ -249,8 +246,8 @@ func (g *Git) getCommitList(limit uint64, offset uint64) (Ref, []Commit, error) 
 }
 
 // Get HEAD, Commits List, and Graph
-func (g *Git) GetCommitsAndGraph(limit uint64, offset uint64) (Ref, []Commit, Graph, error) {
-	HEAD, commits, err := g.getCommitList(limit, offset)
+func (g *Git) GetCommitsAndGraph(limit uint64, offset uint64, date_format string) (Ref, []Commit, Graph, error) {
+	HEAD, commits, err := g.getCommitList(limit, offset, date_format)
 	if err != nil {
 		return HEAD, commits, Graph{}, err
 	}

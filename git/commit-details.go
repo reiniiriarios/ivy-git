@@ -45,7 +45,7 @@ func (g *Git) GetLastCommitMessage() (CommitMessage, error) {
 }
 
 // Get additional commit details not listed in the table.
-func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
+func (g *Git) GetCommitDetails(hash string, date_format string) (CommitAddl, error) {
 	if hash == "" {
 		return CommitAddl{}, errors.New("no commit hash specified")
 	}
@@ -73,7 +73,7 @@ func (g *Git) GetCommitDetails(hash string) (CommitAddl, error) {
 	ts, err := strconv.ParseInt(parts[2], 10, 64)
 	dt := ""
 	if err == nil {
-		dt = time.Unix(ts, 0).Format(DATE_FORMAT)
+		dt = time.Unix(ts, 0).Format(date_format)
 	}
 
 	return CommitAddl{

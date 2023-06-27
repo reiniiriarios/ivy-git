@@ -2,10 +2,12 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"ivy-git/git"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"gopkg.in/yaml.v3"
@@ -20,6 +22,7 @@ type Settings struct {
 	Version                      string
 	Workflow                     string
 	Theme                        string
+	DateFormat                   uint8
 	HighlightMainBranch          bool
 	HighlightConventionalCommits bool
 	DisplayCommitSignatureInList bool
@@ -248,4 +251,56 @@ func (a *App) saveRecentRepoDir(dir string) bool {
 	a.saveData()
 	a.emitData()
 	return true
+}
+
+type DateFormat struct {
+	Id      uint8
+	Display string
+	format  string
+}
+
+// Date format options.
+// Do not change IDs.
+func getDateFormatData() map[uint8]DateFormat {
+	formats := make(map[uint8]DateFormat)
+	formats[0] = DateFormat{
+		Display: "12hr",
+		format:  "Jan 2, 2006, 03:04:05 pm",
+	}
+	formats[1] = DateFormat{
+		Display: "24hr",
+		format:  "Jan 2, 2006, 15:04:05 pm",
+	}
+	formats[2] = DateFormat{
+		Display: "12hr",
+		format:  "2006-01-02, 03:04:05 pm",
+	}
+	formats[3] = DateFormat{
+		Display: "24hr",
+		format:  "2006-01-02, 15:04:05 pm",
+	}
+	formats[4] = DateFormat{
+		Display: "12hr",
+		format:  "02 Jan 06, 03:04:05 pm",
+	}
+	formats[5] = DateFormat{
+		Display: "24hr",
+		format:  "02 Jan 06, 15:04:05 pm",
+	}
+	return formats
+}
+
+func (a *App) getDateFormat() string {
+	return getDateFormatData()[a.Settings.DateFormat].format
+}
+
+func (a *App) GetDateFormats() map[uint8]DateFormat {
+	formats := getDateFormatData()
+	now := time.Now()
+	for i, f := range formats {
+		f.Display = fmt.Sprintf("%s (%s)", now.Format(f.format), f.Display)
+		formats[i] = f
+	}
+
+	return formats
 }

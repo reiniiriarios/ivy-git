@@ -166,7 +166,7 @@ func (a *App) ResetBranchToRemote(branch string) DataResponse {
 
 // Get additional commit details not listed in the table.
 func (a *App) GetCommitDetails(hash string) DataResponse {
-	commit, err := a.Git.GetCommitDetails(hash)
+	commit, err := a.Git.GetCommitDetails(hash, a.getDateFormat())
 	return dataResponse(err, commit)
 }
 
@@ -184,7 +184,7 @@ func (a *App) GetCommitList(limit uint64, offset uint64) DataResponse {
 		}
 	}
 
-	HEAD, commits, graph, err := a.Git.GetCommitsAndGraph(limit, offset)
+	HEAD, commits, graph, err := a.Git.GetCommitsAndGraph(limit, offset, a.getDateFormat())
 	return dataResponse(err, struct {
 		HEAD    git.Ref
 		Commits []git.Commit

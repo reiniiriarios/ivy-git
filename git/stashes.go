@@ -7,7 +7,7 @@ import (
 )
 
 // Get all stashes from `git reflog`.
-func (g *Git) getStashes() []Commit {
+func (g *Git) getStashes(date_format string) []Commit {
 	var stashes []Commit
 
 	// Include:
@@ -57,7 +57,7 @@ func (g *Git) getStashes() []Commit {
 			ts, err := strconv.ParseInt(parts[5], 10, 64)
 			dt := ""
 			if err == nil {
-				dt = time.Unix(ts, 0).Format(DATE_FORMAT)
+				dt = time.Unix(ts, 0).Format(date_format)
 			}
 
 			stashes = append(stashes, Commit{

@@ -11,6 +11,7 @@
   import SetTheme from "components/settings/SetTheme.svelte";
   import SetHighlightMain from "components/settings/SetHighlightMain.svelte";
   import SetDisplayAvatars from "./SetDisplayAvatars.svelte";
+  import SetDateFormat from "./SetDateFormat.svelte";
 
   onMount(() => {
     gitConfig.fetch();
@@ -24,6 +25,7 @@
   <SetTheme />
   <SetWorkflow />
   <SetHighlightMain />
+  <SetDateFormat />
   <SetConventionalCommits />
   <SetDisplayAvatars />
 

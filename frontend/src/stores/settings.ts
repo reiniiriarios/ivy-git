@@ -1,11 +1,12 @@
 import { parseResponse } from 'scripts/parse-response';
 import { writable, get, derived } from 'svelte/store';
-import { GetSettings, SaveSettingsGui } from 'wailsjs/go/main/App'
+import { GetDateFormats, GetSettings, SaveSettingsGui } from 'wailsjs/go/main/App'
 
 interface Settings {
 	Version: string;
   Workflow: string;
   Theme: string;
+  DateFormat: number;
   HighlightMainBranch: boolean;
   HighlightConventionalCommits: boolean;
 	DisplayCommitSignatureInList: boolean;
@@ -35,6 +36,13 @@ function createSettings() {
     updateTheme: (theme: string) => {
       update(s => {
         s.Theme = theme;
+        return s;
+      });
+      settings.save();
+    },
+    updateDateFormat: (format: number) => {
+      update(s => {
+        s.DateFormat = format;
         return s;
       });
       settings.save();
@@ -81,3 +89,26 @@ export const theme = derived(settings, $settings => {
   }
   return $settings.Theme;
 });
+
+type DateFormats = {[id: number]: {
+  Display: string;
+  // format: string;
+}}
+
+function createDateFormats() {
+  const { subscribe, set } = writable({} as DateFormats);
+
+  return {
+    subscribe,
+    fetch: async () => {
+      if (!Object.keys(get(dateFormats)).length) {
+        await GetDateFormats().then(result => {
+          set(result);
+        });
+      }
+      return get(dateFormats);
+    },
+  };
+}
+export const dateFormats = createDateFormats();
+dateFormats.fetch(); // only once for the app
