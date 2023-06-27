@@ -70,12 +70,14 @@ func (g *Git) GetDiffStaged() (string, error) {
 	return diff, nil
 }
 
-func (g *Git) findMergeBase(hash1 string, hash2 string) (string, error) {
-	if hash1 == "" || hash2 == "" {
-		return "", errors.New("no commit hash specified")
+func (g *Git) findMergeBase(hashes ...string) (string, error) {
+	if len(hashes) < 2 {
+		return "", errors.New("not enough commit hashes to find merge base")
 	}
 
-	b, err := g.run("merge-base", hash1, hash2)
+	cmd := []string{"merge-base"}
+	cmd = append(cmd, hashes...)
+	b, err := g.run(cmd...)
 	if err != nil {
 		return "", err
 	}

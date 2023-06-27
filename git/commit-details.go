@@ -126,7 +126,7 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 	var numstat string
 	var merge_base string
 	if len(parents) > 1 {
-		merge_base, err = g.findMergeBase(parents[0], parents[1])
+		merge_base, err = g.findMergeBase(parents...)
 		if err != nil {
 			return FileStatDir{}, err
 		}
