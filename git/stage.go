@@ -57,7 +57,7 @@ func (g *Git) StagePartial(diff Diff, filename string, status string) error {
 	if patch == "" {
 		return nil
 	}
-	_, err := g.runWithOpts([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, gitRunOpts{stdin: patch})
+	_, err := g.runWithOpts([]string{"apply", "--cached", "--unidiff-zero", "--ignore-whitespace", "--whitespace=nowarn", "-"}, gitRunOpts{stdin: patch})
 	return err
 }
 
@@ -66,6 +66,6 @@ func (g *Git) UnstagePartial(diff Diff, filename string, status string) error {
 	if patch == "" {
 		return nil
 	}
-	_, err := g.runWithOpts([]string{"apply", "--cached", "--unidiff-zero", "--whitespace=nowarn", "-"}, gitRunOpts{stdin: patch})
+	_, err := g.runWithOpts([]string{"apply", "--cached", "--unidiff-zero", "--ignore-whitespace", "--whitespace=nowarn", "-"}, gitRunOpts{stdin: patch})
 	return err
 }
