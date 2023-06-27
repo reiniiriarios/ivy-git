@@ -211,7 +211,9 @@ func (g *Git) GetCommitFileParsedDiff(hash string, file string, oldfile string) 
 }
 
 func (g *Git) getCommitFileDiff(hash string, file string, oldfile string) (string, error) {
-	cmd := []string{"log", hash, "-w", "-m", "-1", "--first-parent", "--patch", "-z", "--no-color", "--", file}
+	cmd := []string{"--no-pager", "log", hash, "-m", "-1", "--first-parent", "--patch", "-z", "--no-color", "--", file}
+	// alt:
+	// cmd := []string{"--no-pager", "diff", hash+"^..."+hash, "--no-color", "-z", "--", file}
 	if oldfile != "" {
 		cmd = append(cmd, oldfile)
 	}
