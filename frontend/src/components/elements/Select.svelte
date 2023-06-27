@@ -16,7 +16,7 @@
   $: {
     if (!options.length && values.length) {
       opts = values.map((v: string|number) => {
-        if (v === selected) currentDisplay = v.toString();
+        if (v === currentValue) currentDisplay = v.toString();
         return {
           value: v,
           display: v.toString(),
@@ -25,7 +25,7 @@
     } else {
       opts = [];
       Object.keys(options).forEach(v => {
-        if (v === selected) currentDisplay = options[v];
+        if (v === currentValue) currentDisplay = options[v];
         opts.push({
           value: v,
           display: options[v],
