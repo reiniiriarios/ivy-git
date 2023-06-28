@@ -20,6 +20,7 @@
 
   import { enableWatcher } from "events/watcher";
   import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
+  import LinkPreview from "components/elements/LinkPreview.svelte";
 
   let gitInstalled: boolean = false;
   GitIsInstalled().then(r => gitInstalled = r);
@@ -89,5 +90,6 @@
     {/if}
     <Message />
   </div>
+  <LinkPreview />
   <ContextMenu />
 </div>

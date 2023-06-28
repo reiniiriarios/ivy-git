@@ -11,6 +11,7 @@ export const currentTab = writable('tree');
 export const repoSelect = writable(false);
 export const branchSelect = writable(false);
 export const commitDetailsWindow = writable(false);
+export const linkPreviewHref = writable('');
 
 interface CommitMessage {
   Subject: string;
