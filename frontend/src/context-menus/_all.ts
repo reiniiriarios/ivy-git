@@ -15,6 +15,8 @@ import { menuBranch } from 'context-menus/branch-in-list';
 import { menuRepo } from 'context-menus/repo';
 import { menuHash } from 'context-menus/hash';
 import { menuLink } from './link';
+import { menuText } from './text';
+import { menuInput } from './input';
 
 interface Menus { [name: string]: Menu }
 
@@ -43,6 +45,8 @@ const menus: Menus = {
   repo: menuRepo,
   hash: menuHash,
   link: menuLink,
+  text: menuText,
+  input: menuInput,
 };
 
 function createContextMenu() {

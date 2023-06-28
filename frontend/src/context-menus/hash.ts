@@ -18,12 +18,12 @@ export const menuHash: Menu = (e: HTMLElement) => {
     });
   }
 
-  m.push(    {
+  m.push({
     text: "Copy Hash to Clipboard",
     callback: (e) => {
       ClipboardSetText(e.dataset.hash);
     },
-  },);
+  });
 
   return m;
 }

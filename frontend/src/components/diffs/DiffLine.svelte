@@ -29,7 +29,7 @@
     : ''
   }</div>
   <div class="diff__line-type"></div>
-  <div class="diff__line-code" class:diff__line-code--nonewline={line.NoNewline}>
+  <div class="diff__line-code" data-menu="text" class:diff__line-code--nonewline={line.NoNewline}>
     <span class="diff__line-code-contents highlight">
       {#if $currentDiff.Highlight && $currentDiff.Highlight[line.RawLineNo]}
         {@html $currentDiff.Highlight[line.RawLineNo]}

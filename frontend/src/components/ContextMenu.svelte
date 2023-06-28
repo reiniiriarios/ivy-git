@@ -74,14 +74,23 @@
         }
       }
 
-      if (!currentMenu && e.target instanceof HTMLAnchorElement) {
-        currentClickedElement = e.target;
-        currentMenu = 'link';
+      if (!currentMenu) {
+        if (e.target instanceof HTMLAnchorElement || e.target.parentElement instanceof HTMLAnchorElement) {
+          currentClickedElement = e.target;
+          currentMenu = 'link';
+        }
+        else if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+          currentClickedElement = e.target;
+          currentMenu = 'input';
+        }
       }
 
       if (currentMenu) {
         e.preventDefault();
-        window.getSelection().removeAllRanges();
+        // Unless we're clicking on text or an input element, prevent text selection.
+        if (!['text', 'input'].includes(currentMenu)) {
+          window.getSelection().removeAllRanges();
+        }
         contextMenu.setMenu(currentMenu, currentClickedElement);
         currentClickedElement.classList.add('hover');
         displayMenu(e);

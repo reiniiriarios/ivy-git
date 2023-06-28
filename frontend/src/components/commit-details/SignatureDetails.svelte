@@ -14,9 +14,9 @@
           </span>
         </span>
       </span>
-      <span class="commit-details__gpg-key">{$commitSignature.Key}</span>
+      <span class="commit-details__gpg-key" data-menu="text">{$commitSignature.Key}</span>
       {#if $commitSignature.Name}
-        <span class="commit-details__gpg-name">{$commitSignature.Name}</span>
+        <span class="commit-details__gpg-name" data-menu="text">{$commitSignature.Name}</span>
       {/if}
     {:else}
       None

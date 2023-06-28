@@ -43,7 +43,7 @@
   }
 </script>
 
-<div class="message">
+<div class="message" data-menu="text">
   <div class="message__subject">{@html codify(subject)}</div>
   <div id="commit-details-body" on:click={clickBody} on:keypress={clickBody} class="message__body">
     <!-- body is markup html, do not escape -->

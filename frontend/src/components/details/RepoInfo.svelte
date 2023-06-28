@@ -13,7 +13,7 @@
 
 <div class="repo-info">
   <h2>Info</h2>
-  <div class="repo-info__things">
+  <div class="repo-info__things" data-menu="text">
     <div>
       {@html octicons["git-branch"].toSVG({width: 16})}
       <strong>{$numBranches}</strong>

@@ -50,7 +50,7 @@
         </tr>
         <tr>
           <th>Author</th>
-          <td>
+          <td data-menu="text">
             {#if $settings.DisplayAvatars && commit.AuthorEmail}
               <Avatar email="{commit.AuthorEmail}" hover={true} />
             {/if}
@@ -62,11 +62,11 @@
         </tr>
         <tr>
           <th>Authored Date</th>
-          <td>{commit.AuthorDatetime}</td>
+          <td data-menu="text">{commit.AuthorDatetime}</td>
         </tr>
         <tr>
           <th>Committer</th>
-          <td>
+          <td data-menu="text">
             {#if $settings.DisplayAvatars && $commitDetails?.CommitterEmail}
               <Avatar email="{$commitDetails.CommitterEmail}" hover={true} />
             {/if}
@@ -78,7 +78,7 @@
         </tr>
         <tr>
           <th>Committed Date</th>
-          <td>
+          <td data-menu="text">
             {$commitDetails?.CommitterDatetime}
           </td>
         </tr>
