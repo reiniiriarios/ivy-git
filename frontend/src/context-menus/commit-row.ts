@@ -13,6 +13,7 @@ import revertCommit from "actions/commit/revert";
 import softReset from "actions/commit/reset-soft";
 import hardReset from "actions/commit/reset-hard";
 import dropCommit from "actions/commit/drop";
+import resetHead from "actions/commit/reset-head";
 
 export const menuCommitRow: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -73,6 +74,18 @@ export const menuCommitRow: Menu = (e: HTMLElement) => {
       {
         text: 'Hard Reset to This Commit',
         callback: () => hardReset(e.dataset.hash),
+      }
+    ]);
+  }
+  else {
+    m = m.concat([
+      {
+        text: 'Soft Reset This Commit',
+        callback: () => resetHead(false),
+      },
+      {
+        text: 'Hard Reset This Commit',
+        callback: () => resetHead(true),
       }
     ]);
   }

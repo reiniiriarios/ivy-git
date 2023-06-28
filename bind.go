@@ -349,6 +349,11 @@ func (a *App) SoftReset(hash string) DataResponse {
 	return dataResponse(err, true)
 }
 
+func (a *App) ResetHead(hard bool) DataResponse {
+	err := a.Git.ResetHead(hard)
+	return dataResponse(err, true)
+}
+
 func (a *App) RevertCommit(hash string) DataResponse {
 	err := a.Git.RevertCommit(hash)
 	return dataResponse(err, true)
