@@ -97,7 +97,7 @@ func (a *App) saveRepoData() {
 // Save settings to config file.
 func (a *App) saveSettings(new_settings Settings) error {
 	// Always save the current version in settings.
-	new_settings.Version = VERSION
+	new_settings.Version = a.getWailsConfig().Info.Version
 
 	// Only three viable options for this.
 	if new_settings.Workflow != "squash" && new_settings.Workflow != "rebase" {
@@ -217,13 +217,13 @@ func (a *App) initDir(path string) {
 func (a *App) settingsDirName() string {
 	if runtime.Environment(a.ctx).Platform == "windows" {
 		// Windows convention is the name of the app.
-		return NAME
+		return a.getWailsConfig().Name
 	} else if runtime.Environment(a.ctx).Platform == "darwin" {
 		// Darwin convention is the bundle id.
-		return BUNDLE
+		return a.getWailsConfig().Bundle
 	}
-	// For unix, use the shortname.
-	return SHORT_NAME
+	// For unix, use the slug.
+	return a.getWailsConfig().Slug
 }
 
 // Get settings in frontend.
