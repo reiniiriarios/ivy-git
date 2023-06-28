@@ -130,12 +130,13 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) (b
 		return false, errors.New("no branch name specified")
 	}
 
-	delete := "-d"
+	var err error
 	if force {
-		delete = "-D"
+		_, err = g.run("branch", "--delete", "--force", branch)
+	} else {
+		_, err = g.run("branch", "--delete", branch)
 	}
 
-	_, err := g.run("branch", delete, branch)
 	if err != nil {
 		if errorCode(err) == MustForceDeleteBranch {
 			return true, err
@@ -150,7 +151,11 @@ func (g *Git) DeleteBranch(branch string, force bool, delete_on_remotes bool) (b
 		}
 		for _, remote := range remotes {
 			if g.branchExistsOnRemote(branch, remote) {
-				_, err := g.run("push", delete, remote, branch)
+				if force {
+					_, err = g.run("push", "--delete", "--force", remote, branch)
+				} else {
+					_, err = g.run("push", "--delete", remote, branch)
+				}
 				if err != nil {
 					if errorCode(err) == MustForceDeleteBranch {
 						return true, err
