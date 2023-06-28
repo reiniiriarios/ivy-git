@@ -2,16 +2,15 @@
   import octicons from '@primer/octicons';
 
   import CommitLabels from 'components/commits/CommitLabels.svelte';
-  import { highlightConventionalCommits } from 'scripts/conventional-commits';
+  import Avatar from 'components/elements/Avatar.svelte';
 
   import { NUM_COLORS, UNCOMMITED_HASH } from 'scripts/graph';
+  import { highlightConventionalCommits } from 'scripts/conventional-commits';
 
   import { HEAD, type Commit } from 'stores/commits';
   import { currentCommit } from 'stores/commit-details';
   import { RepoState, repoState } from 'stores/repo-state';
   import { settings } from 'stores/settings';
-  import { avatars } from 'stores/avatars';
-  import Avatar from 'components/elements/Avatar.svelte';
 
   export let commit: Commit;
   export let signStatus: string;
@@ -74,7 +73,11 @@
   <td class="commit__td commit__td--tree"></td>
   <!-- The following is interactive via the tr, which doesn't take a tabindex because it's set to display: contents. -->
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <td class="commit__td commit__td--subject" tabindex="0">{@html formatSubject(commit.Subject)}</td>
+  <td class="commit__td commit__td--subject" tabindex="0">
+    <span class="commit__ellipsis">
+      {@html formatSubject(commit.Subject)}
+    </span>
+  </td>
   {#if $settings.DisplayCommitSignatureInList}
     <td class="commit__td commit__td--gpg">
       {#if commit.Hash === UNCOMMITED_HASH}
@@ -88,7 +91,13 @@
     {#if $settings.DisplayAvatars && commit.AuthorEmail}
       <Avatar email="{commit.AuthorEmail}" />
     {/if}
-    {commit.AuthorName ?? commit.AuthorEmail}
+    <span class="commit__ellipsis">
+      {commit.AuthorName ?? commit.AuthorEmail}
+    </span>
   </td>
-  <td class="commit__td commit__td--authortime">{commit.AuthorDatetime}</td>
+  <td class="commit__td commit__td--authortime">
+    <span class="commit__ellipsis">
+      {commit.AuthorDatetime}
+    </span>
+  </td>
 </tr>

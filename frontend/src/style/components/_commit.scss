@@ -5,6 +5,9 @@
   position: relative;
 
   &__td {
+    display: flex;
+    align-items: center;
+    justify-content: left;
     text-align: left;
     padding-left: 0.67rem;
     padding-right: 0.67rem;
@@ -21,16 +24,13 @@
       padding-right: 0.75rem;
     }
 
+    &--refs {
+      justify-content: right;
+    }
+
     &--tree {
       padding: 0;
       overflow: hidden;
-    }
-
-    &--subject,
-    &--author,
-    &--authortime {
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .uncommitted & {
@@ -59,11 +59,10 @@
     .avatar {
       height: calc(var(--commit-row-height) - 4px);
       width: calc(var(--commit-row-height) - 4px);
-      margin-right: 0.25rem;
+      min-width: calc(var(--commit-row-height) - 4px);
+      margin-right: 0.5rem;
       // vertical-align:middle doesn't quite get it right here...
-      vertical-align: bottom;
-      position: relative;
-      top: 0.22rem;
+      vertical-align: middle;
     }
   }
 
@@ -80,5 +79,10 @@
 
   &.active td {
     background-color: var(--color-commitlistitem-bg-active);
+  }
+
+  &__ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
