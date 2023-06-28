@@ -25,6 +25,24 @@ type Refs struct {
 	Heads          []Ref
 }
 
+// Get the hash of the last commit on main.
+func (g *Git) lastCommitOnMain() string {
+	h, err := g.run("--no-pager", "log", "-n", "1", "--format=%H", g.Repo.Main)
+	if err != nil {
+		return ""
+	}
+	return parseOneLine(h)
+}
+
+// Get the hash of the initial commit.
+func (g *Git) getInitialCommit() string {
+	h, err := g.run("rev-list", "--max-parents=0", "HEAD")
+	if err != nil {
+		return ""
+	}
+	return parseOneLine(h)
+}
+
 // Get the symbolic ref for the HEAD or an empty string if it isn't symbolic.
 func (g *Git) symbolicRefHead() string {
 	h, err := g.run("symbolic-ref", "HEAD", "--")
