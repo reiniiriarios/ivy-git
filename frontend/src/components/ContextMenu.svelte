@@ -74,15 +74,13 @@
         }
       }
 
-      if (!currentMenu) {
-        if (e.target instanceof HTMLAnchorElement || e.target.parentElement instanceof HTMLAnchorElement) {
-          currentClickedElement = e.target;
-          currentMenu = 'link';
-        }
-        else if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-          currentClickedElement = e.target;
-          currentMenu = 'input';
-        }
+      if ((!currentMenu || currentMenu === 'text') && (e.target instanceof HTMLAnchorElement || e.target.parentElement instanceof HTMLAnchorElement)) {
+        currentClickedElement = e.target;
+        currentMenu = 'link';
+      }
+      else if (!currentMenu && (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+        currentClickedElement = e.target;
+        currentMenu = 'input';
       }
 
       if (currentMenu) {
