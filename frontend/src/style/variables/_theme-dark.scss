@@ -164,8 +164,9 @@
   --color-status-ignored: var(--color-scale-o2-6-100);
   --color-status-not-updated: var(--color-scale-a-6-100);
   --color-status-unmerged: var(--color-scale-n-4-100);
-  --color-status-unresolved: var(--color-scale-n-7-100);
-  --color-status-unresolved-active: var(--color-scale-n-6-100);
+
+  --color-status-bg-unresolved: var(--color-scale-n-7-100);
+  --color-status-bg-unresolved-active: var(--color-scale-n-6-100);
 
   --color-file-added: var(--color-scale-g-1-100);
   --color-file-deleted: var(--color-scale-r-3-100);
