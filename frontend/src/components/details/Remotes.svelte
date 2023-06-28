@@ -45,7 +45,7 @@
       </thead>
       <tbody>
         {#each Object.entries($remotes) as [_, remote]}
-          <tr class="remote" data-name="{remote.Name}" data-menu="remote">
+          <tr class="remote" data-name="{remote.Name}" data-url="{remote.Url}" data-menu="remote">
             <td>
               <div class="remote__name">{remote.Name}</div>
               <div class="remote__fetch-push">
