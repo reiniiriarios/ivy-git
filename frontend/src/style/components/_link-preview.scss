@@ -1,0 +1,16 @@
+.link-preview {
+  display: none;
+  position: fixed;
+  z-index: 9000;
+  bottom: var(--resize-bar-width);
+  right: var(--resize-bar-width);
+  background-color: var(--color-link-preview-bg);
+  opacity: 0.9;
+  border-top-left-radius: 0.5rem;
+  // gravity
+  padding: 0.25rem 0.75rem 0.3rem;
+
+  &--visible {
+    display: block;
+  }
+}
