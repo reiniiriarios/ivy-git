@@ -74,8 +74,14 @@
         }
       }
 
+      if (!currentMenu && e.target instanceof HTMLAnchorElement) {
+        currentClickedElement = e.target;
+        currentMenu = 'link';
+      }
+
       if (currentMenu) {
         e.preventDefault();
+        window.getSelection().removeAllRanges();
         contextMenu.setMenu(currentMenu, currentClickedElement);
         currentClickedElement.classList.add('hover');
         displayMenu(e);

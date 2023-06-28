@@ -1,3 +1,5 @@
+import { writable } from 'svelte/store';
+
 import { menuLabelBranch } from 'context-menus/label-branch';
 import { menuLabelTag } from 'context-menus/label-tag';
 import { menuLabelStash } from 'context-menus/label-stash';
@@ -11,8 +13,8 @@ import { menuChangesList } from 'context-menus/changes-list';
 import { menuBranchesList } from 'context-menus/branches-list';
 import { menuBranch } from 'context-menus/branch-in-list';
 import { menuRepo } from 'context-menus/repo';
-import { writable } from 'svelte/store';
-import { menuHash } from './hash';
+import { menuHash } from 'context-menus/hash';
+import { menuLink } from './link';
 
 interface Menus { [name: string]: Menu }
 
@@ -40,6 +42,7 @@ const menus: Menus = {
   branchInList: menuBranch,
   repo: menuRepo,
   hash: menuHash,
+  link: menuLink,
 };
 
 function createContextMenu() {
