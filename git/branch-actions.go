@@ -35,19 +35,16 @@ func (g *Git) PushBranch(branch string, force bool) (bool, error) {
 		remote = g.getRemoteFallback()
 	}
 
-	err = g.PushRemoteBranch(remote, branch, set_upstream, force)
-	if err != nil && errorCode(err) == PushNotFastForward {
-		return true, err
-	}
-	return false, err
+	must_force, err := g.PushRemoteBranch(remote, branch, set_upstream, force)
+	return must_force, err
 }
 
-func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool, force bool) error {
+func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool, force bool) (bool, error) {
 	if branch == "" {
-		return errors.New("no branch name specified")
+		return false, errors.New("no branch name specified")
 	}
 	if remote == "" {
-		return errors.New("no remote name specified")
+		return false, errors.New("no remote name specified")
 	}
 
 	var err error
@@ -61,7 +58,10 @@ func (g *Git) PushRemoteBranch(remote string, branch string, set_upstream bool, 
 			_, err = g.run("push", remote, branch+":"+branch)
 		}
 	}
-	return err
+	if err != nil && errorCode(err) == PushNotFastForward && !force {
+		return true, err
+	}
+	return false, err
 }
 
 func (g *Git) PullBranch(branch string, rebase bool) error {

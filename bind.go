@@ -125,10 +125,16 @@ func (a *App) FetchRemote(remote string) DataResponse {
 	return dataResponse(err, true)
 }
 
-func (a *App) PushRemote(remote string) DataResponse {
+func (a *App) PushRemote(remote string, force bool) DataResponse {
 	branch, err := a.Git.GetCurrentBranch()
 	if err == nil {
-		err = a.Git.PushRemoteBranch(remote, branch, false, false)
+		var must_force bool
+		must_force, err = a.Git.PushRemoteBranch(remote, branch, false, force)
+		if must_force {
+			return DataResponse{
+				Response: "must-force",
+			}
+		}
 	}
 	return dataResponse(err, true)
 }
