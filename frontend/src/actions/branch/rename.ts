@@ -2,6 +2,8 @@ import { checkRef } from "scripts/check-ref";
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
+import { currentRepo, repos } from "stores/repos";
+import { get } from "svelte/store";
 import { RenameBranch } from "wailsjs/go/main/App";
 
 function renameBranch(branch: string) {
@@ -13,10 +15,14 @@ function renameBranch(branch: string) {
     validateBlank: checkRef,
     okay: 'Cancel',
     callbackConfirm: () => {
+      let isMain = branch === get(repos)[get(currentRepo)].Main;
       RenameBranch(branch, messageDialog.blankValue()).then(r => {
         parseResponse(r, () => {
           commitData.refresh();
           commitSignData.refresh();
+          if (isMain) {
+            repos.updateMain(messageDialog.blankValue());
+          }
         });
       });
     },
