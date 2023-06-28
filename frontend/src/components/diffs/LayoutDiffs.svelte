@@ -5,7 +5,7 @@
   import DiffCommitted from "components/diffs/DiffCommitted.svelte";
   import DiffConflict from "components/diffs/DiffConflict.svelte";
   import DiffConflictActions from "components/diffs/DiffConflictActions.svelte";
-  import CommitLink from "components/CommitLink.svelte";
+  import CommitLink from "components/elements/CommitLink.svelte";
   import FileTooLarge from "./FileTooLarge.svelte";
 </script>
 

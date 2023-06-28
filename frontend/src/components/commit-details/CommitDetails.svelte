@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CommitLink from 'components/CommitLink.svelte';
+  import CommitLink from 'components/elements/CommitLink.svelte';
   import CommitFileChanges from 'components/commit-details/CommitFileChanges.svelte';
   import { resetDirs } from 'scripts/commit-details-collapse';
   import { resetDetailsSizing, setDetailsResizable } from 'scripts/commit-details-resize';
@@ -10,7 +10,6 @@
   import CommitMessage from 'components/commit-details/CommitMessage.svelte';
   import Avatar from 'components/elements/Avatar.svelte';
   import { settings } from 'stores/settings';
-  import { avatars } from 'stores/avatars';
 
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
@@ -36,7 +35,9 @@
       <table>
         <tr>
           <th>Hash</th>
-          <td>{commit.Hash}</td>
+          <td>
+            <CommitLink hash={commit.Hash} disabled={true} />
+          </td>
         </tr>
         <tr>
           <th>Parents</th>

@@ -12,6 +12,7 @@ import { menuBranchesList } from 'context-menus/branches-list';
 import { menuBranch } from 'context-menus/branch-in-list';
 import { menuRepo } from 'context-menus/repo';
 import { writable } from 'svelte/store';
+import { menuHash } from './hash';
 
 interface Menus { [name: string]: Menu }
 
@@ -38,6 +39,7 @@ const menus: Menus = {
   branchList: menuBranchesList,
   branchInList: menuBranch,
   repo: menuRepo,
+  hash: menuHash,
 };
 
 function createContextMenu() {
