@@ -40,7 +40,9 @@ func (g *Git) getInitialCommit() string {
 	if err != nil {
 		return ""
 	}
-	return parseOneLine(h)
+	// It's possible to return more than one result (rarely).
+	lines := parseLines(h)
+	return lines[0]
 }
 
 // Get the symbolic ref for the HEAD or an empty string if it isn't symbolic.
