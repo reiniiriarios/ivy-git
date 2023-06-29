@@ -20,6 +20,14 @@
       display: inline-flex;
       justify-content: center;
       align-items: center;
+
+      &--hidden {
+        display: none;
+      }
+
+      &--spin {
+        animation: rotating 3s linear infinite;
+      }
     }
   }
 

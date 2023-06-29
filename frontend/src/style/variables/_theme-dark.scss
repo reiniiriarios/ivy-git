@@ -180,6 +180,12 @@
   --color-ahead: var(--color-scale-g-3-100);
   --color-behind: var(--color-scale-r-4-100);
 
+  --color-num-commits: var(--color-scale-a-2-100);
+  --color-insertions: var(--color-scale-g-2-100);
+  --color-deletions: var(--color-scale-r-3-100);
+
+  --color-contributor-email: var(--color-scale-t-2-100);
+
   --color-make-commit-text: var(--color-scale-a-2-100);
   --color-make-commit-bg: var(--color-scale-g-6-100);
   --color-make-commit-bg-hover: var(--color-scale-g-5-100);

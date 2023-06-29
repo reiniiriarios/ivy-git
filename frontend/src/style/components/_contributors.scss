@@ -1,0 +1,69 @@
+.contributors {
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-right: 1.5rem;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0 1.5rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  &__contributor {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  &__avatar {
+    width: 3.5rem;
+
+    .avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+  }
+
+  &__name {
+    font-size: 1.25rem;
+  }
+
+  &__email {
+    a {
+      color: var(--color-contributor-email);
+    }
+  }
+
+  &__details {
+    > * {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__commits {
+    color: var(--color-num-commits);
+  }
+
+  &__insertions {
+    color: var(--color-insertions);
+  }
+
+  &__deletions {
+    color: var(--color-deletions);
+  }
+
+  &__message {
+    div {
+      padding: 1rem;
+    }
+  }
+}

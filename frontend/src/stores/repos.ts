@@ -23,6 +23,7 @@ import { currentDiff } from 'stores/diffs';
 import { repoState } from 'stores/repo-state';
 
 import { parseResponse } from 'scripts/parse-response';
+import { contributors } from './contributors';
 
 export interface Repo {
   Name: string;
@@ -119,6 +120,7 @@ function createRepos() {
           repos[get(currentRepo)].Main = branch;
           return repos;
         });
+        contributors.reset();
         if (cTab === 'details') {
           remoteData.refresh();
           numCommits.fetch();
@@ -186,12 +188,16 @@ function createCurrentRepo() {
           if (cTab === 'tree') {
             commitData.refresh();
             commitSignData.refresh();
-          } else if (cTab === 'details') {
+          }
+          if (cTab === 'details') {
             remoteData.refresh();
             numCommits.fetch();
             numBranches.fetch();
             numTags.fetch();
             cloc.fetch();
+            contributors.fetch();
+          } else {
+            contributors.clear();
           }
           currentCommit.clear();
           repoState.load();
