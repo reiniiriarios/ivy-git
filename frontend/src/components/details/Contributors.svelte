@@ -16,10 +16,23 @@
   let goIcon: HTMLElement;
   let waitIcon: HTMLElement;
 
+  let updateWord: string = "Update";
+  let updateMessages: string[] = [
+    "Working",
+    "Still Working",
+    "Large Repo, Please Wait",
+    "Just a bit longer...",
+    "Please hold...",
+    "Wow, this is... a lot...",
+    "*Sigh*",
+  ];
+
   function update() {
     updateButton.disabled = true;
     goIcon.classList.add('icon--hidden');
     waitIcon.classList.remove('icon--hidden');
+    let done = false;
+    let messageCounter = 0;
     contributors.update().then(() => {
       // Artificial loading time here makes the UI make more sense.
       // This doesn't delay content loading.
@@ -27,8 +40,24 @@
         updateButton.disabled = false;
         goIcon.classList.remove('icon--hidden');
         waitIcon.classList.add('icon--hidden');
+        done = true;
+        updateWord = 'Update';
       }, 200);
     });
+    // Set an update timer to give update messages to make the
+    // user feel okay about waiting a long time. Because this can
+    // take a Long Time on Big Repos, particularly on slower machines.
+    let update = setInterval(() => {
+      if (done) {
+        clearInterval(update);
+        return;
+      }
+      if (messageCounter === updateMessages.length) {
+        messageCounter = 0;
+      }
+      updateWord = updateMessages[messageCounter];
+      messageCounter++;
+    }, 3000);
   }
 </script>
 
@@ -50,7 +79,7 @@
           bind:this={updateButton}
           on:click={update}
         >
-          Update
+          {updateWord}
           <span class="icon" bind:this={goIcon}>
             {@html octicons["arrow-switch"].toSVG({width: 12})}
           </span>

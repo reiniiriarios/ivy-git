@@ -89,7 +89,6 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 		if err != nil {
 			return contributors, start_hash, err
 		}
-		println(strings.Join(cmd, " "))
 
 		// Remove extra whitespace after null separator and before shortstat.
 		r := regexp.MustCompile("\x00[\r\n ]+")
@@ -140,8 +139,6 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 				// ignore errors
 				if err == nil {
 					contributor.Insertions += u
-				} else {
-					println(err.Error())
 				}
 			}
 			match_del := r_del.FindAllStringSubmatch(parts[1], 1)
@@ -150,8 +147,6 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 				// ignore errors
 				if err == nil {
 					contributor.Deletions += u
-				} else {
-					println(err.Error())
 				}
 			}
 
