@@ -78,6 +78,7 @@
         <Info>
           Calculated by the number of commits on the main branch.
           Does not auto-refresh; can be cpu-intensive to calculate on larger repos.
+          Respects <a href="https://git-scm.com/docs/gitmailmap">mailmap</a>.
         </Info>
       </h2>
     </div>
