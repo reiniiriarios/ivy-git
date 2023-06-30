@@ -566,16 +566,21 @@ func (a *App) CherryPickSkip() DataResponse {
 
 func (a *App) GetCachedContributorsData() DataResponse {
 	contrib := a.loadContributorData()
-	return dataResponse(nil, contrib.Contributors)
+	return dataResponse(nil, contrib)
 }
 
 func (a *App) UpdateContributorsData() DataResponse {
 	contrib := a.loadContributorData()
 	contrib = a.updateContributorData(contrib)
-	return dataResponse(nil, contrib.Contributors)
+	return dataResponse(nil, contrib)
 }
 
 func (a *App) ResetContributorsData() DataResponse {
 	a.resetContributorData()
 	return dataResponse(nil, true)
+}
+
+func (a *App) CommitsBehindMain(hash string) DataResponse {
+	n, err := a.Git.CommitBehindMain(hash)
+	return dataResponse(err, n)
 }

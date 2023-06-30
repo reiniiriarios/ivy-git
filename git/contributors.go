@@ -161,3 +161,28 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 
 	return contributors_map.toArray(), g.lastCommitOnMain(), nil
 }
+
+// Get number of commits behind the tip of main a commit is.
+func (g *Git) CommitBehindMain(hash string) (uint64, error) {
+	if g.Repo.Main == "" {
+		return 0, errors.New("no main branch set for current repo")
+	}
+	return g.CommitBehindCount(hash, g.lastCommitOnMain())
+}
+
+// Get number of commits behind one commit is from another.
+func (g *Git) CommitBehindCount(older_hash string, newer_hash string) (uint64, error) {
+	if older_hash == newer_hash {
+		return 0, nil
+	}
+	c, err := g.run("rev-list", older_hash+".."+newer_hash, "--count", "--")
+	if err != nil {
+		return 0, err
+	}
+	c = parseOneLine(c)
+	n, err := strconv.ParseUint(c, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return n, nil
+}

@@ -27,6 +27,11 @@
     "*Sigh*",
   ];
 
+  let commitsBehind: number = 0;
+  contributors.subscribe(() => {
+    contributors.numCommitsBehind().then(n => commitsBehind = n);
+  });
+
   function update() {
     updateButton.disabled = true;
     goIcon.classList.add('icon--hidden');
@@ -72,6 +77,11 @@
         </Info>
       </h2>
     </div>
+    {#if commitsBehind}
+      <div class="contributors__behind">
+        {commitsBehind} {commitsBehind === 1 ? 'commit' : 'commits'} out of date.
+      </div>
+    {/if}
     {#if $repos[$currentRepo].Main}
       <div>
         <button
@@ -91,9 +101,9 @@
     {/if}
   </div>
   {#if $repos[$currentRepo].Main}
-    {#if $contributors?.length}
+    {#if $contributors?.Contributors?.length}
       <ul class="contributors__list">
-        {#each $contributors as c}
+        {#each $contributors.Contributors as c}
           <li class="contributors__contributor">
             {#if $settings.DisplayAvatars && c.Email}
               <div class="contributors__avatar">

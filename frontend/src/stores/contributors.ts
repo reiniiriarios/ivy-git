@@ -1,6 +1,6 @@
 import { parseResponse } from "scripts/parse-response";
-import { writable } from "svelte/store";
-import { GetCachedContributorsData, ResetContributorsData, UpdateContributorsData } from "wailsjs/go/main/App";
+import { writable, get, derived } from "svelte/store";
+import { CommitsBehindMain, GetCachedContributorsData, ResetContributorsData, UpdateContributorsData } from "wailsjs/go/main/App";
 
 interface Contributor {
 	Name: string;
@@ -10,7 +10,10 @@ interface Contributor {
 	Deletions: number;
 }
 
-type Contributors = Contributor[];
+interface Contributors {
+  LastHashParsed: string;
+  Contributors: Contributor[];
+}
 
 function createContributors() {
   const { subscribe, set } = writable({} as Contributors);
@@ -32,6 +35,13 @@ function createContributors() {
     reset: async () => {
       contributors.clear();
       ResetContributorsData();
+    },
+    numCommitsBehind: async (): Promise<number> => {
+      let behind: number = 0;
+      await CommitsBehindMain(get(contributors).LastHashParsed).then(result =>
+        parseResponse(result, () => behind = result.Data)
+      );
+      return behind;
     },
   };
 }

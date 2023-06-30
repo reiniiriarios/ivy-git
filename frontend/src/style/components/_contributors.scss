@@ -6,9 +6,13 @@
     padding-right: 1.5rem;
   }
 
+  &__behind {
+    color: var(--color-text-muted);
+  }
+
   &__list {
     list-style: none;
-    margin: 0 1.5rem;
+    margin: 0.5rem 1.5rem;
     padding: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
