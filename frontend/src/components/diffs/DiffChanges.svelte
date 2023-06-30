@@ -5,6 +5,7 @@
   import DiffEmpty from "components/diffs/DiffEmpty.svelte";
   import NoChanges from "./NoChanges.svelte";
   import DiffLine from "./DiffLine.svelte";
+  import ChangesSummary from "./ChangesSummary.svelte";
 
   let miniHunkElements: HTMLElement[] = [];
 
@@ -111,7 +112,9 @@
     <DiffBinary />
   {:else if $currentDiff.Empty}
     <DiffEmpty />
-  {:else if !$changesNumStaged && !$changesNumUnstaged && !$changesNumConflicts}
+  {:else if $changesNumStaged || $changesNumUnstaged || $changesNumConflicts}
+    <ChangesSummary />
+  {:else}
     <NoChanges />
   {/if}
 </div>
