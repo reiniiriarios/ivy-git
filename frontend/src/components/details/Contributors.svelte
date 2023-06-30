@@ -32,7 +32,10 @@
     contributors.numCommitsBehind().then(n => commitsBehind = n);
   });
 
+  let running: boolean = false;
+
   function update() {
+    running = true;
     updateButton.disabled = true;
     goIcon.classList.add('icon--hidden');
     waitIcon.classList.remove('icon--hidden');
@@ -47,6 +50,7 @@
         waitIcon.classList.add('icon--hidden');
         done = true;
         updateWord = 'Update';
+        running = false;
       }, 200);
     });
     // Set an update timer to give update messages to make the
@@ -124,6 +128,14 @@
           </li>
         {/each}
       </ul>
+    {:else if !running}
+      <div class="contributors__message">
+        The contributors list displays users' contributions to main.<br>
+        Calculating on larger repos can take time.
+        <div>
+          <button class="btn" on:click={update}>Update Contributors Data</button>
+        </div>
+      </div>
     {/if}
   {:else}
     <div class="contributors__message">
