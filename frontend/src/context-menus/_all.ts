@@ -17,6 +17,7 @@ import { menuHash } from 'context-menus/hash';
 import { menuLink } from './link';
 import { menuText } from './text';
 import { menuInput } from './input';
+import { menuContributors } from './contributors';
 
 interface Menus { [name: string]: Menu }
 
@@ -47,6 +48,7 @@ const menus: Menus = {
   link: menuLink,
   text: menuText,
   input: menuInput,
+  contributors: menuContributors,
 };
 
 function createContextMenu() {

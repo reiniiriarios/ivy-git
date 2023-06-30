@@ -71,7 +71,7 @@
 </script>
 
 <div class="contributors">
-  <div class="contributors__head">
+  <div class="contributors__head" data-menu="contributors">
     <div>
       <h2>
         Contributors
