@@ -60,7 +60,9 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 	final_hash := g.lastCommitOnMain()
 
 	// If this hasn't been run before, start at the beginning.
+	boundary := false
 	if start_hash == "" {
+		boundary = true
 		start_hash = g.getInitialCommit()
 	}
 	// Last hash processed.
@@ -74,50 +76,66 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 	} else {
 		data = append(data, "%an", "%ae")
 	}
-	format := strings.Join(data, GIT_LOG_SEP)
+	format := strings.Join(data, GIT_LOG_SEP) + "\n"
 
+	// The -z option does not include the --shortstat data and, in fact, places a \x00 between
+	// the commit data specified in --format and the --shortstat data, grouping the data
+	// incorrectly. As there are newlines between each commit's data as well as within its data,
+	// we add a random string by which we separate and parse commit data.
+	split := "_-ghowuigah9384h2g0h8222-_"
 	// Loop n results at a time for larger repos.
 	for i := 0; ; /* breaks below */ i += CONTRIBUTORS_LOG_LIMIT {
 		cmd := []string{
 			"--no-pager",
 			"log",
-			start_hash + ".." + final_hash, // range
-			"--format=" + format,
-			"--shortstat", // insertions, deletions
-			"--boundary",  // includes start hash
-			"-z",
+			start_hash + ".." + final_hash,
+			"--format=" + split + format,
+			"--shortstat",
 			"--max-count=" + strconv.Itoa(CONTRIBUTORS_LOG_LIMIT),
 			"--skip=" + strconv.Itoa(i),
-			"--", // if bad revision, this ensures correct error is thrown
 		}
+		// If starting on the initial commit, we should include that commit as well.
+		if boundary {
+			cmd = append(cmd, "--boundary")
+		}
+		// if bad revision, this ensures correct error is thrown
+		cmd = append(cmd, "--")
+
 		c, err := g.run(cmd...)
 		if err != nil {
 			return contributors, start_hash, err
 		}
 
-		// Remove extra whitespace after null separator and before shortstat.
-		r := regexp.MustCompile("\x00[\r\n ]+")
-		c = r.ReplaceAllString(c, "\x00")
+		// Remove extra whitespace.
+		c = strings.ReplaceAll(c, "\r\n", "\n")
+		multinewline := regexp.MustCompile(`(\r\n?|\n){2,}`)
+		c = multinewline.ReplaceAllString(c, "\n")
+		c = strings.TrimSpace(c)
+		if c == "" {
+			break
+		}
 
 		r_ins := regexp.MustCompile(`([0-9]+) insertion`)
 		r_del := regexp.MustCompile(`([0-9]+) deletion`)
 
 		// Loop lines
-		lines := parseLines(c)
+		lines := strings.Split(c, split)
 		if len(lines) == 0 {
 			break
 		}
 		for _, line := range lines {
+			line = multinewline.ReplaceAllString(line, "\n")
 
 			// Split commit data and shortstat.
-			parts := strings.Split(line, "\x00")
-			if len(parts) != 2 {
+			parts := strings.Split(strings.TrimSpace(line), "\n")
+			if len(parts) < 2 && strings.TrimSpace(parts[0]) == "" {
 				continue
 			}
 
 			// Split commit data.
 			parts_a := strings.Split(parts[0], GIT_LOG_SEP)
 			if len(parts_a) != len(data) {
+				// Malformed data. This may occur on extraneous lines.
 				continue
 			}
 			// Keep this updated to the most recent one processed.
@@ -137,21 +155,24 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 			contributor := contributors_map[email]
 			contributor.Commits++
 
-			// Add to insertions and deletions counts.
-			match_ins := r_ins.FindAllStringSubmatch(parts[1], 1)
-			if len(match_ins) > 0 && len(match_ins[0]) > 0 {
-				u, err := strconv.ParseUint(match_ins[0][1], 0, 64)
-				// ignore errors
-				if err == nil {
-					contributor.Insertions += u
+			// Empty commits won't have this data.
+			if len(parts) > 1 {
+				// Add to insertions and deletions counts.
+				match_ins := r_ins.FindAllStringSubmatch(parts[1], 1)
+				if len(match_ins) > 0 && len(match_ins[0]) > 0 {
+					u, err := strconv.ParseUint(match_ins[0][1], 0, 64)
+					// ignore errors
+					if err == nil {
+						contributor.Insertions += u
+					}
 				}
-			}
-			match_del := r_del.FindAllStringSubmatch(parts[1], 1)
-			if len(match_del) > 0 && len(match_del[0]) > 0 {
-				u, err := strconv.ParseUint(match_del[0][1], 0, 64)
-				// ignore errors
-				if err == nil {
-					contributor.Deletions += u
+				match_del := r_del.FindAllStringSubmatch(parts[1], 1)
+				if len(match_del) > 0 && len(match_del[0]) > 0 {
+					u, err := strconv.ParseUint(match_del[0][1], 0, 64)
+					// ignore errors
+					if err == nil {
+						contributor.Deletions += u
+					}
 				}
 			}
 
