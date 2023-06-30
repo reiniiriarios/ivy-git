@@ -27,7 +27,7 @@ type Refs struct {
 
 // Get the hash of the last commit on main.
 func (g *Git) lastCommitOnMain() string {
-	h, err := g.run("--no-pager", "log", "-n", "1", "--format=%H", g.Repo.Main)
+	h, err := g.run("rev-list", "--max-count=1", g.Repo.Main)
 	if err != nil {
 		return ""
 	}
