@@ -570,7 +570,11 @@ func (a *App) GetCachedContributorsData() DataResponse {
 }
 
 func (a *App) UpdateContributorsData() DataResponse {
-	contrib := a.loadContributorData()
+	// todo: Add to cache instead of refreshing from the beginning. The challenge here is getting
+	// the correct data when history is rewritten, such as even in the simple case of a commit
+	// being amended.
+	// contrib := a.loadContributorData()
+	contrib := ContributorData{}
 	contrib = a.updateContributorData(contrib)
 	return dataResponse(nil, contrib)
 }
