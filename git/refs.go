@@ -42,7 +42,8 @@ func (g *Git) getInitialCommit() string {
 	}
 	// It's possible to return more than one result (rarely).
 	lines := parseLines(h)
-	return lines[0]
+	// The correct commit should be the oldest, which is the last in the list.
+	return lines[len(lines)-1]
 }
 
 // Get the symbolic ref for the HEAD or an empty string if it isn't symbolic.
