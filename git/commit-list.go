@@ -47,7 +47,13 @@ func (g *Git) getLog(limit uint64, offset uint64, date_format string) ([]Commit,
 	// %at - Author Time
 	// %s  - Subject
 	// https://git-scm.com/docs/pretty-formats
-	data := []string{"%H", "%P", "%an", "%ae", "%at", "%s"}
+	data := []string{"%H", "%P"}
+	if GIT_RESPECT_MAILMAP {
+		data = append(data, "%aN", "%aE")
+	} else {
+		data = append(data, "%an", "%ae")
+	}
+	data = append(data, "%at", "%s")
 	format := strings.Join(data, GIT_LOG_SEP)
 	// Include:
 	// - branches

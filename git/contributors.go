@@ -68,7 +68,12 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 
 	contributors_map := contributors.toMap()
 
-	data := []string{"%H", "%an", "%ae"}
+	data := []string{"%H"}
+	if GIT_RESPECT_MAILMAP {
+		data = append(data, "%aN", "%aE")
+	} else {
+		data = append(data, "%an", "%ae")
+	}
 	format := strings.Join(data, GIT_LOG_SEP)
 
 	// Loop n results at a time for larger repos.

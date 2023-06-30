@@ -51,12 +51,19 @@ func (g *Git) GetCommitDetails(hash string, date_format string) (CommitAddl, err
 	}
 
 	// Include:
-	// %an - Committer Name
-	// %ae - Committer Email
+	// %cn - Committer Name
+	// %ce - Committer Email
 	// %at - Committer Time
 	// %b  - Body
 	// https://git-scm.com/docs/pretty-formats
-	data := []string{"%cn", "%ce", "%ct", "%b"}
+	data := []string{}
+	if GIT_RESPECT_MAILMAP {
+		data = append(data, "%cN", "%cE")
+	} else {
+		data = append(data, "%cn", "%ce")
+	}
+	data = append(data, "%ct", "%b")
+
 	format := strings.Join(data, GIT_LOG_SEP)
 	c, err := g.run("--no-pager", "log", hash, "--format="+format, "--max-count=1")
 	if err != nil {

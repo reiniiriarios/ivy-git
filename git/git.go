@@ -13,6 +13,9 @@ import (
 
 const GIT_CMD_TIMEOUT = 10 * time.Second
 
+// todo: this may deserve a setting?
+const GIT_RESPECT_MAILMAP = true
+
 type Git struct {
 	AppCtx context.Context
 	Repo
