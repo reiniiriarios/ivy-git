@@ -32,9 +32,11 @@ function createRemotes() {
   };
 }
 export const remoteData = createRemotes();
+
 export const remotes = derived(remoteData, $remoteData => {
   return $remoteData?.Remotes?.length ? $remoteData.Remotes : [];
 });
+
 export const currentRemote = derived(remoteData, $remoteData => {
   if (!$remoteData?.Remotes?.length) return {} as Remote;
   return $remoteData.Remotes.find(r => r.Name === $remoteData.CurrentRemote) ?? {} as Remote;

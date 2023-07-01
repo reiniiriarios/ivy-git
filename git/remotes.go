@@ -3,6 +3,7 @@ package git
 import (
 	"errors"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -88,32 +89,57 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 	for _, r := range rl {
 		d := strings.Fields(r)
 		if len(d) == 3 {
-			if i, exists := rmap[d[0]]; exists {
-				if d[2] == "(fetch)" {
+			name := d[0]
+			uri := d[1]
+			direction := d[2]
+
+			if i, exists := rmap[name]; exists {
+				if direction == "(fetch)" {
 					remotes[i].Fetch = true
-				} else if d[2] == "(push)" {
+				} else if direction == "(push)" {
 					remotes[i].Push = true
 				}
 			} else {
 				var fetch, push bool
-				if d[2] == "(fetch)" {
+				if direction == "(fetch)" {
 					fetch = true
 					push = false
-				} else if d[2] == "(push)" {
+				} else if direction == "(push)" {
 					fetch = false
 					push = true
 				}
 
-				url, err := url.Parse(d[1])
-				if err != nil {
-					return remotes, err
-				}
+				site := ""
+				userRepo := ""
 
-				site := getSiteName(url.Hostname())
+				url, err := url.Parse(uri)
+				// Errors possible on valid URLs for SSH, e.g.:
+				// "git@github.com:user/repo.git": first path segment in URL cannot contain colon
+				if err == nil {
+					if url.Hostname() != "" {
+						site = getSiteName(url.Hostname())
+					} else if url.Scheme != "" {
+						// In the case of SSH urls, the Scheme is probably the "site", e.g.
+						// sitealias:/home/user/repo.git
+						site = url.Scheme
+					}
 
-				userRepo := strings.Trim(url.Path, "/")
-				if len(userRepo) > 4 && userRepo[len(userRepo)-4:] == ".git" {
-					userRepo = userRepo[:len(userRepo)-4]
+					userRepo = strings.Trim(url.Path, "/")
+					if len(userRepo) > 4 && userRepo[len(userRepo)-4:] == ".git" {
+						userRepo = userRepo[:len(userRepo)-4]
+					}
+				} else {
+					// Try to parse SSH urls and return site and path, e.g.
+					// git@github.com:user/repo.git => github.com, user/repo.git
+					r := regexp.MustCompile(`^(?:[^@]+@)?([^:]+):(.+)$`)
+					matches := r.FindAllStringSubmatch(uri, -1)
+					if len(matches) > 0 && len(matches[0]) > 1 {
+						site = matches[0][1]
+						userRepo = matches[0][2]
+					} else {
+						// If all fails, set the userRepo as the uri itself, leaving site blank.
+						userRepo = uri
+					}
 				}
 
 				user := ""
