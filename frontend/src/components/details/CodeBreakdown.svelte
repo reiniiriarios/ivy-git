@@ -5,6 +5,8 @@
   import languages from "style/languages.json"
   import { formatBytes } from "scripts/bytes";
   import Info from "components/elements/Info.svelte";
+  import { currentRepo, repos } from "stores/repos";
+  import { currentTab } from "stores/ui";
 
   onMount(() => {
     cloc.fetch();
@@ -17,7 +19,7 @@
     <Info>
       May not be exact.
       Some auto-generated files, such as <code>package-lock.json</code>, are ignored.
-      Calculated based on current repo status.
+      Calculated based on main branch.
     </Info>
   </h2>
   <div class="code-breakdown__inner">
@@ -64,6 +66,13 @@
       <div class="code-breakdown__error">{$cloc.Error}</div>
     {:else if $cloc.Total?.Total === 0}
       <div class="code-breakdown__no-data">No data.</div>
+    {:else if !$repos[$currentRepo].Main}
+      <div class="code-breakdown__message">
+        Select a main branch in in order to view code breakdown.
+        <div>
+          <button class="btn" on:click={() => currentTab.set('settings')}>View Settings</button>
+        </div>
+      </div>
     {:else}
       <div class="code-breakdown__loading">{@html octicons.gear.toSVG({width: 24})}</div>
     {/if}

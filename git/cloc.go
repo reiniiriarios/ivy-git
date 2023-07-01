@@ -1,6 +1,8 @@
-package cloc
+package git
 
 import (
+	"errors"
+	"fmt"
 	"sort"
 )
 
@@ -9,6 +11,16 @@ type AllLanguageData []*LanguageData
 type ClocData struct {
 	Languages AllLanguageData
 	Total     *LanguageData
+}
+
+type ClocProcessor struct {
+	langs *DefinedLanguages
+}
+
+type ClocResult struct {
+	Total         *LanguageData
+	Languages     map[string]*Language
+	MaxPathLength int
 }
 
 func (ls AllLanguageData) Len() int {
@@ -26,14 +38,26 @@ func (ls AllLanguageData) Less(i, j int) bool {
 	return ls[i].Bytes > ls[j].Bytes
 }
 
-func Cloc(dir string, paths []string) (ClocData, error) {
+func (g *Git) Cloc() (ClocData, error) {
+	if g.Repo.Directory == "" {
+		return ClocData{}, errors.New("no repo selected")
+	}
+	if g.Repo.Main == "" {
+		return ClocData{}, errors.New("no main branch set for repo")
+	}
+
+	paths, err := g.LsTreeBranch(g.Repo.Main)
+	if err != nil {
+		return ClocData{}, err
+	}
+
 	// Get data
-	processor := Processor{
+	processor := ClocProcessor{
 		langs: NewDefinedLanguages(),
 	}
-	gitattributes_translations := parseGitAttributes(dir)
+	gitattributes_translations := g.parseGitAttributes()
 
-	result, err := processor.analyze(paths, gitattributes_translations)
+	result, err := g.clocAnalyze(&processor, paths, gitattributes_translations)
 	if err != nil {
 		return ClocData{}, err
 	}
@@ -45,9 +69,15 @@ func Cloc(dir string, paths []string) (ClocData, error) {
 	// Calc percentages and cort data
 	for _, l := range result.Languages {
 		if l.Data.Files > 0 {
-			l.Data.CodePercent = float64(l.Data.Code) / float64(result.Total.Code) * 100
-			l.Data.TotalPercent = float64(l.Data.Bytes) / float64(result.Total.Bytes) * 100
+			if result.Total.Code > 0 {
+				l.Data.CodePercent = float64(l.Data.Code) / float64(result.Total.Code) * 100
+			}
+			if result.Total.Bytes > 0 {
+				l.Data.TotalPercent = float64(l.Data.Bytes) / float64(result.Total.Bytes) * 100
+			}
 			data.Languages = append(data.Languages, &l.Data)
+
+			fmt.Printf("%v\n", l.Data)
 		}
 	}
 	sort.Sort(data.Languages)
@@ -55,22 +85,10 @@ func Cloc(dir string, paths []string) (ClocData, error) {
 	return data, nil
 }
 
-// Processor is gocloc analyzing processor.
-type Processor struct {
-	langs *DefinedLanguages
-}
-
-// Result defined processing result.
-type Result struct {
-	Total         *LanguageData
-	Languages     map[string]*Language
-	MaxPathLength int
-}
-
 // Analyze executes gocloc parsing for the directory of the paths argument and returns the result.
-func (p *Processor) analyze(files []string, translations map[string]string) (*Result, error) {
+func (g *Git) clocAnalyze(p *ClocProcessor, files []string, translations map[string]string) (*ClocResult, error) {
 	total := LanguageData{}
-	languages := parseAllFiles(files, p.langs, translations)
+	languages := clocAllFiles(files, p.langs, translations)
 	maxPathLen := 0
 	num := 0
 	for _, lang := range languages {
@@ -86,7 +104,7 @@ func (p *Processor) analyze(files []string, translations map[string]string) (*Re
 
 	for _, language := range languages {
 		for _, file := range language.Files {
-			cf := analyzeFile(file, language)
+			cf, _ := g.clocAnalyzeFileOnBranch(file, language)
 			cf.Lang = language.Data.Name
 
 			language.Data.Code += cf.Code
@@ -110,7 +128,7 @@ func (p *Processor) analyze(files []string, translations map[string]string) (*Re
 		total.Bytes += language.Data.Bytes
 	}
 
-	return &Result{
+	return &ClocResult{
 		Total:         &total,
 		Languages:     languages,
 		MaxPathLength: maxPathLen,

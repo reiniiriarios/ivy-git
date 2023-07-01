@@ -132,18 +132,6 @@ func (g *Git) NameOfMainBranch() string {
 	return g.NameOfMainBranchForRepo(g.Repo.Directory)
 }
 
-func (g *Git) LsFiles() ([]string, error) {
-	f, err := g.run("ls-files")
-	if err != nil {
-		return []string{}, err
-	}
-	files := parseLines(f)
-	for i := range files {
-		files[i] = filepath.Join(g.Repo.Directory, files[i])
-	}
-	return files, nil
-}
-
 type RepoState string
 
 const (

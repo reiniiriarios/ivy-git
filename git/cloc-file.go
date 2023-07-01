@@ -1,9 +1,9 @@
-package cloc
+package git
 
 import (
 	"bufio"
 	"io"
-	"os"
+	"os/exec"
 	"strings"
 	"unicode"
 )
@@ -24,9 +24,11 @@ type ClocFiles []ClocFile
 func (cf ClocFiles) Len() int {
 	return len(cf)
 }
+
 func (cf ClocFiles) Swap(i, j int) {
 	cf[i], cf[j] = cf[j], cf[i]
 }
+
 func (cf ClocFiles) Less(i, j int) bool {
 	if cf[i].Code == cf[j].Code {
 		return cf[i].Name < cf[j].Name
@@ -34,25 +36,64 @@ func (cf ClocFiles) Less(i, j int) bool {
 	return cf[i].Code > cf[j].Code
 }
 
-// AnalyzeFile is analyzing file, this function calls AnalyzeReader() inside.
-func analyzeFile(filename string, language *Language) *ClocFile {
-	fp, err := os.Open(filename)
-	if err != nil {
-		// ignore error
-		return &ClocFile{Name: filename}
-	}
-	defer fp.Close()
+func (g *Git) clocAnalyzeFileOnBranch(file string, language *Language) (*ClocFile, error) {
+	cfile := &ClocFile{}
 
-	file := analyzeReader(filename, language, fp)
-	stat, err := fp.Stat()
-	if err == nil {
-		file.Bytes = stat.Size()
-	}
+	// Swap to forward slashes. Even on windows, git show requires this.
+	file = strings.ReplaceAll(file, "\\", "/")
 
-	return file
+	// We're going to pipe the output of the git command and scan the pipe reader.
+	reader, writer := io.Pipe()
+
+	// Analyze pipe stream.
+	scannerStopped := make(chan struct{})
+	go func() {
+		defer close(scannerStopped)
+		cfile = clocAnalyzeReader(file, language, reader)
+	}()
+
+	// Run command to show a specific file on a specific branch in a specific repo.
+	command := []string{
+		"-C",
+		g.Repo.Directory,
+		"--no-pager",
+		"show",
+		g.Repo.Main + ":" + file,
+	}
+	cmd := exec.Command("git", command...)
+
+	// On windows, we need to hide the command prompt.
+	hideCmdPrompt(cmd)
+
+	// Set stdout and make go.
+	cmd.Stdout = writer
+	// debug
+	// cmd.Stderr = writer
+	err := cmd.Start()
+	go func() {
+		err = cmd.Wait()
+		writer.Close()
+	}()
+
+	// And we're done.
+	<-scannerStopped
+
+	return cfile, err
 }
 
-func analyzeReader(filename string, language *Language, file io.Reader) *ClocFile {
+type ScanByteCounter struct {
+	BytesRead int64
+}
+
+func (s *ScanByteCounter) Wrap(split bufio.SplitFunc) bufio.SplitFunc {
+	return func(data []byte, atEOF bool) (int, []byte, error) {
+		adv, tok, err := split(data, atEOF)
+		s.BytesRead += int64(adv)
+		return adv, tok, err
+	}
+}
+
+func clocAnalyzeReader(filename string, language *Language, file *io.PipeReader) *ClocFile {
 	clocFile := &ClocFile{
 		Name: filename,
 		Lang: language.Data.Name,
@@ -64,6 +105,9 @@ func analyzeReader(filename string, language *Language, file io.Reader) *ClocFil
 	defer putByteSlice(buf)
 	scanner := bufio.NewScanner(file)
 	scanner.Buffer(buf.Bytes(), 1024*1024)
+	counter := ScanByteCounter{}
+	splitFunc := counter.Wrap(bufio.ScanWords)
+	scanner.Split(splitFunc)
 
 scannerloop:
 	for scanner.Scan() {
@@ -155,6 +199,8 @@ scannerloop:
 			clocFile.Comments++
 		}
 	}
+
+	clocFile.Bytes = counter.BytesRead
 
 	return clocFile
 }

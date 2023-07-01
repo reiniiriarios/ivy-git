@@ -1,11 +1,22 @@
-package cloc
+package git
 
 import (
-	"crypto/md5"
-	"fmt"
-	"os"
+	"bytes"
 	"strings"
+	"sync"
 )
+
+var bsPool = sync.Pool{New: func() any { return new(bytes.Buffer) }}
+
+func getByteSlice() *bytes.Buffer {
+	v := bsPool.Get().(*bytes.Buffer)
+	v.Reset()
+	return v
+}
+
+func putByteSlice(bs *bytes.Buffer) {
+	bsPool.Put(bs)
+}
 
 func trimBOM(line string) string {
 	l := len(line)
@@ -36,34 +47,17 @@ func nextRune(s string) rune {
 	return 0
 }
 
-func checkMD5Sum(path string, fileCache map[string]struct{}) (ignore bool) {
-	content, err := os.ReadFile(path)
-	if err != nil {
-		return true
-	}
-
-	// calc md5sum
-	hash := md5.Sum(content)
-	c := fmt.Sprintf("%x", hash)
-	if _, ok := fileCache[c]; ok {
-		return true
-	}
-
-	fileCache[c] = struct{}{}
-	return false
-}
-
-func ignoreFile(file string) bool {
+func clocIgnoreFile(file string) bool {
 	// todo: more of this
 	return strings.HasSuffix(file, "package-lock.json")
 }
 
-func parseAllFiles(files []string, languages *DefinedLanguages, translations map[string]string) (result map[string]*Language) {
+func clocAllFiles(files []string, languages *DefinedLanguages, translations map[string]string) (result map[string]*Language) {
 	result = make(map[string]*Language, 0)
-	fileCache := make(map[string]struct{})
+	// fileCache := make(map[string]struct{})
 
 	for _, file := range files {
-		if ignoreFile(file) {
+		if clocIgnoreFile(file) {
 			continue
 		}
 		ext, ok := getFileType(file)
@@ -76,9 +70,6 @@ func parseAllFiles(files []string, languages *DefinedLanguages, translations map
 		}
 		targetExt, ok := Exts[ext]
 		if !ok {
-			continue
-		}
-		if checkMD5Sum(file, fileCache) {
 			continue
 		}
 		if _, exists := result[targetExt]; !exists {

@@ -598,3 +598,8 @@ func (a *App) CommitsBehindMain(hash string) DataResponse {
 	n, err := a.Git.CommitBehindMain(hash)
 	return dataResponse(err, n)
 }
+
+func (a *App) Cloc() DataResponse {
+	cloc, err := a.Git.Cloc()
+	return dataResponse(err, cloc)
+}

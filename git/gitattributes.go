@@ -1,4 +1,4 @@
-package cloc
+package git
 
 import (
 	"bufio"
@@ -8,9 +8,13 @@ import (
 	"strings"
 )
 
-func parseGitAttributes(dir string) map[string]string {
+func (g *Git) parseGitAttributes() map[string]string {
 	translations := make(map[string]string)
-	ga := filepath.Join(dir, ".gitattributes")
+	if g.Repo.Main == "" {
+		return translations
+	}
+
+	ga := filepath.Join(g.Repo.Main, ".gitattributes")
 	if _, err := os.Stat(ga); err != nil {
 		// ignore err
 		return translations

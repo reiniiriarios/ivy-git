@@ -1,4 +1,4 @@
-package cloc
+package git
 
 import (
 	"bufio"
@@ -575,7 +575,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"PowerShell":          NewLanguage("PowerShell", []string{"#"}, [][]string{{"<#", "#>"}}),
 			"Polly":               NewLanguage("Polly", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"Protocol Buffers":    NewLanguage("Protocol Buffers", []string{"//"}, [][]string{{"", ""}}),
-			"Pure Data":           NewLanguage("Pure Data", []string{}, [][]string{}),
+			"Pure Data":           NewLanguage("Pure Data", []string{}, [][]string{{"", ""}}),
 			"Python":              NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}}),
 			"Q":                   NewLanguage("Q", []string{"/ "}, [][]string{{"\\", "/"}, {"/", "\\"}}),
 			"QML":                 NewLanguage("QML", []string{"//"}, [][]string{{"/*", "*/"}}),
