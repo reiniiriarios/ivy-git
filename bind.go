@@ -5,6 +5,7 @@ import (
 	"ivy-git/files"
 	"ivy-git/git"
 	"path/filepath"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -45,7 +46,16 @@ func (a *App) fileTooLarge(file string) bool {
 }
 
 func (a *App) GitIsInstalled() bool {
-	return a.Git.GitIsInstalled()
+	// Try n times to see if git is installed and working.
+	// Sometimes on startup it will... take a second or two on Windows.
+	// Unknown reasons. Very weird.
+	for i := 0; i < 8; i++ {
+		if a.Git.GitIsInstalled() {
+			return true
+		}
+		time.Sleep(250 * time.Millisecond)
+	}
+	return false
 }
 
 // Get current branch for currently selected repo.
