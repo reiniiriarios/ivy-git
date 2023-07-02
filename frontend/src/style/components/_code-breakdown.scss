@@ -10,15 +10,15 @@
 .code-breakdown {
   text-align: left;
 
-  &__inner {
-    margin: 0 1.5rem;
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-right: 1.5rem;
   }
 
-  &__loading {
-    svg {
-      fill: var(--color-text);
-      animation: rotating 3s linear infinite;
-    }
+  &__inner {
+    margin: 0 1.5rem;
   }
 
   &__bar {
@@ -72,7 +72,18 @@
     }
   }
 
-  &__no-data {
-    color: var(--color-text-muted);
+  &__message {
+    text-align: center;
+
+    div {
+      padding: 1rem;
+    }
+
+    &--loading {
+      svg {
+        fill: var(--color-text);
+        animation: rotating 3s linear infinite;
+      }
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { parseResponse } from "scripts/parse-response";
-import { get, writable } from "svelte/store";
-import { Cloc, NumBranches, NumMainBranchCommits, NumTags } from "wailsjs/go/main/App";
+import { writable } from "svelte/store";
+import { NumBranches, NumMainBranchCommits, NumTags } from "wailsjs/go/main/App";
 
 function createNumBranches() {
   const { subscribe, set } = writable(0);
@@ -45,40 +45,3 @@ function createNumCommits() {
   };
 }
 export const numCommits = createNumCommits();
-
-interface ClocData {
-  Languages: LanguageData[];
-  Total: LanguageData;
-  Error: string;
-}
-
-interface LanguageData {
-  Name: string;
-  Files: number;
-  Code: number;
-  Comments: number;
-  Blanks: number;
-  Total: number;
-  Bytes: number;
-  CodePercent: number;
-  TotalPercent: number;
-}
-
-function createCloc() {
-  const { subscribe, set } = writable({} as ClocData);
-
-  return {
-    subscribe,
-    fetch: async () => {
-      set({} as ClocData);
-      Cloc().then(result => {
-        parseResponse(result, () => {
-          set(result.Data);
-        }, () => {
-          set({ Error: result.Message } as ClocData);
-        });
-      });
-    },
-  };
-}
-export const cloc = createCloc();

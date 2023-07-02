@@ -1,6 +1,7 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { numBranches, numTags, numCommits, cloc } from "stores/repo-info";
+  import { numBranches, numTags, numCommits } from "stores/repo-info";
+  import { cloc } from "stores/cloc";
   import { currentRepo, repos } from "stores/repos";
   import { onMount } from "svelte";
 

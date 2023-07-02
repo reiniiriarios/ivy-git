@@ -1,5 +1,5 @@
 import { parseResponse } from "scripts/parse-response";
-import { writable, get, derived } from "svelte/store";
+import { writable, get } from "svelte/store";
 import { CommitsBehindMain, GetCachedContributorsData, ResetContributorsData, UpdateContributorsData } from "wailsjs/go/main/App";
 
 interface Contributor {

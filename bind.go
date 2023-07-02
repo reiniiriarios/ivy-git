@@ -599,7 +599,22 @@ func (a *App) CommitsBehindMain(hash string) DataResponse {
 	return dataResponse(err, n)
 }
 
-func (a *App) Cloc() DataResponse {
-	cloc, err := a.Git.Cloc()
-	return dataResponse(err, cloc)
+func (a *App) GetCachedClocData() DataResponse {
+	contrib := a.loadClocData()
+	return dataResponse(nil, contrib)
+}
+
+func (a *App) UpdateClocData() DataResponse {
+	// todo: Add to cache instead of refreshing from the beginning. The challenge here is getting
+	// the correct data when history is rewritten, such as even in the simple case of a commit
+	// being amended.
+	// cloc := a.loadClocData()
+	cloc := git.ClocData{}
+	cloc = a.updateClocData(cloc)
+	return dataResponse(nil, cloc)
+}
+
+func (a *App) ResetClocData() DataResponse {
+	a.resetClocData()
+	return dataResponse(nil, true)
 }

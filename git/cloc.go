@@ -2,15 +2,15 @@ package git
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 )
 
 type AllLanguageData []*LanguageData
 
 type ClocData struct {
-	Languages AllLanguageData
-	Total     *LanguageData
+	LastHashParsed string
+	Languages      AllLanguageData
+	Total          *LanguageData
 }
 
 type ClocProcessor struct {
@@ -63,7 +63,8 @@ func (g *Git) Cloc() (ClocData, error) {
 	}
 
 	data := ClocData{
-		Total: result.Total,
+		LastHashParsed: g.lastCommitOnMain(),
+		Total:          result.Total,
 	}
 
 	// Calc percentages and cort data
@@ -76,8 +77,6 @@ func (g *Git) Cloc() (ClocData, error) {
 				l.Data.TotalPercent = float64(l.Data.Bytes) / float64(result.Total.Bytes) * 100
 			}
 			data.Languages = append(data.Languages, &l.Data)
-
-			fmt.Printf("%v\n", l.Data)
 		}
 	}
 	sort.Sort(data.Languages)

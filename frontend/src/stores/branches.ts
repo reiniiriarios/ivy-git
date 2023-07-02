@@ -8,7 +8,7 @@ import { currentTab } from 'stores/ui';
 import { currentCommit } from 'stores/commit-details';
 import { remoteData } from 'stores/remotes';
 import { currentRepo } from 'stores/repos';
-import { cloc } from 'stores/repo-info';
+import { cloc } from 'stores/cloc';
 
 import { parseResponse } from 'scripts/parse-response';
 
