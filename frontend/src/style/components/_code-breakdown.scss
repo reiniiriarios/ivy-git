@@ -1,4 +1,4 @@
-@keyframes rotating {
+@keyframes codeBreakdownRotatingGear {
   from {
     transform: rotate(0deg);
   }
@@ -82,7 +82,7 @@
     &--loading {
       svg {
         fill: var(--color-text);
-        animation: rotating 3s linear infinite;
+        animation: codeBreakdownRotatingGear 3s linear infinite;
       }
     }
   }

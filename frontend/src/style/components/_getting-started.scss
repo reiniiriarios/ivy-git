@@ -1,5 +1,14 @@
 @use "../mixins" as *;
 
+@keyframes gettingStartedRotatingGear {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .getting-started {
   display: flex;
   justify-content: center;
@@ -10,4 +19,18 @@
   pointer-events: none;
   // Gravity
   padding-bottom: 2rem;
+
+  &__loading {
+    padding: 5rem;
+    text-align: center;
+
+    div {
+      padding: 2rem;
+    }
+
+    svg {
+      fill: var(--color-text);
+      animation: gettingStartedRotatingGear 3s linear infinite;
+    }
+  }
 }

@@ -22,8 +22,12 @@
   import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
   import LinkPreview from "components/elements/LinkPreview.svelte";
 
+  let checkingApp: boolean = true;
   let gitInstalled: boolean = false;
-  GitIsInstalled().then(r => gitInstalled = r);
+  GitIsInstalled().then(r => {
+    gitInstalled = r;
+    checkingApp = false;
+  });
 
   let goos: string = "";
 
@@ -72,7 +76,9 @@
 <div class="app app--{goos}">
   <TitleBar />
   <div id="container">
-    {#if !gitInstalled}
+    {#if checkingApp}
+      <GetStarted state="loading" />
+    {:else if !gitInstalled}
       <GetStarted state="no-git" />
     {:else}
       <LayoutSidebar />
