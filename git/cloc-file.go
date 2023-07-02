@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strings"
 	"unicode"
+
+	enry "github.com/go-enry/go-enry/v2"
 )
 
 // ClocFile is collecting to line count result.
@@ -34,6 +36,28 @@ func (cf ClocFiles) Less(i, j int) bool {
 		return cf[i].Name < cf[j].Name
 	}
 	return cf[i].Code > cf[j].Code
+}
+
+func (g *Git) readLanguageFromFileOnBranch(file string) string {
+	// Swap to forward slashes. Even on windows, git show requires this.
+	file = strings.ReplaceAll(file, "\\", "/")
+
+	// Run command to show a specific file on a specific branch in a specific repo.
+	cmd := []string{
+		"-C",
+		g.Repo.Directory,
+		"--no-pager",
+		"show",
+		g.Repo.Main + ":" + file,
+	}
+	content, err := g.run(cmd...)
+	if err != nil {
+		println(err.Error())
+		return ""
+	}
+	lang := enry.GetLanguage(file, []byte(content))
+
+	return lang
 }
 
 func (g *Git) clocAnalyzeFileOnBranch(file string, language *Language) (*ClocFile, error) {

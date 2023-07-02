@@ -10,8 +10,6 @@ import (
 	"sort"
 	"strings"
 	"unicode"
-
-	enry "github.com/go-enry/go-enry/v2"
 )
 
 // Language is a type used to definitions and store statistics for one programming language.
@@ -344,25 +342,14 @@ func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
 	return
 }
 
-func getFileType(path string) (ext string, ok bool) {
+func (g *Git) getFileType(path string) (ext string, ok bool) {
 	ext = filepath.Ext(path)
 	base := filepath.Base(path)
 
 	switch ext {
-	case ".m", ".v", ".fs", ".r", ".ts":
-		content, err := os.ReadFile(path)
-		if err != nil {
-			return "", false
-		}
-		lang := enry.GetLanguage(path, content)
-		return lang, true
-	case ".mo":
-		content, err := os.ReadFile(path)
-		if err != nil {
-			return "", false
-		}
-		lang := enry.GetLanguage(path, content)
-		if lang == "" {
+	case ".m", ".v", ".fs", ".r", ".ts", ".mo":
+		lang := g.readLanguageFromFileOnBranch(path)
+		if lang == "" && ext == ".mo" {
 			return "Motoko", true
 		}
 		return lang, true

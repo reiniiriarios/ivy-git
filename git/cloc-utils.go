@@ -52,7 +52,7 @@ func clocIgnoreFile(file string) bool {
 	return strings.HasSuffix(file, "package-lock.json")
 }
 
-func clocAllFiles(files []string, languages *DefinedLanguages, translations map[string]string) (result map[string]*Language) {
+func (g *Git) clocAllFiles(files []string, languages *DefinedLanguages, translations map[string]string) (result map[string]*Language) {
 	result = make(map[string]*Language, 0)
 	// fileCache := make(map[string]struct{})
 
@@ -60,7 +60,7 @@ func clocAllFiles(files []string, languages *DefinedLanguages, translations map[
 		if clocIgnoreFile(file) {
 			continue
 		}
-		ext, ok := getFileType(file)
+		ext, ok := g.getFileType(file)
 		if !ok {
 			continue
 		}

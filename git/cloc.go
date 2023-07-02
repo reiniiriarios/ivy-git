@@ -87,7 +87,7 @@ func (g *Git) Cloc() (ClocData, error) {
 // Analyze executes gocloc parsing for the directory of the paths argument and returns the result.
 func (g *Git) clocAnalyze(p *ClocProcessor, files []string, translations map[string]string) (*ClocResult, error) {
 	total := LanguageData{}
-	languages := clocAllFiles(files, p.langs, translations)
+	languages := g.clocAllFiles(files, p.langs, translations)
 	maxPathLen := 0
 	num := 0
 	for _, lang := range languages {
