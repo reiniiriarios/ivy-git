@@ -18,6 +18,7 @@ import { menuLink } from './link';
 import { menuText } from './text';
 import { menuInput } from './input';
 import { menuContributors } from './contributors';
+import { menuCloc } from './cloc';
 
 interface Menus { [name: string]: Menu }
 
@@ -49,6 +50,7 @@ const menus: Menus = {
   text: menuText,
   input: menuInput,
   contributors: menuContributors,
+  cloc: menuCloc,
 };
 
 function createContextMenu() {

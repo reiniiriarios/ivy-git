@@ -122,10 +122,10 @@ function createRepos() {
           return repos;
         });
         contributors.reset();
+        cloc.reset();
         if (cTab === 'details') {
           remoteData.refresh();
           numCommits.fetch();
-          cloc.fetch();
         }
       });
     }
@@ -199,6 +199,7 @@ function createCurrentRepo() {
             contributors.fetch();
           } else {
             contributors.clear();
+            cloc.clear();
           }
           currentCommit.clear();
           repoState.load();
