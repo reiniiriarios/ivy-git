@@ -43,6 +43,8 @@ export interface Diff {
   Highlight: HighlightedLines;
 }
 
+type HighlightedLines = {[line: number]: string}[];
+
 export interface DiffHunk {
   Header: string;
   StartOld: number;
@@ -75,15 +77,6 @@ interface DiffConflict {
 	Resolution: OursTheirs;
 }
 
-type HighlightedLines = {[line: number]: string}[];
-
-interface HighlightedFile {
-	Size: number;
-	TooLarge: boolean;
-	Lang: string;
-	Highlight: HighlightedLines;
-}
-
 function createCurrentDiff() {
   const { subscribe, set, update } = writable({} as Diff);
 
@@ -104,7 +97,7 @@ function createCurrentDiff() {
           diff.Staged = false;
           diff.Committed = true;
           diff.Hash = hash;
-          diff.File = oldfile ? `${file} -> ${oldfile}` : file; // ???
+          diff.File = oldfile ? `${oldfile} → ${file}` : file;
           set(diff);
         });
       });
