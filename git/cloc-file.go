@@ -106,7 +106,7 @@ func clocAnalyzeReader(filename string, language *Language, file *io.PipeReader)
 	scanner := bufio.NewScanner(file)
 	scanner.Buffer(buf.Bytes(), 1024*1024)
 	counter := ScanByteCounter{}
-	splitFunc := counter.Wrap(bufio.ScanWords)
+	splitFunc := counter.Wrap(bufio.ScanLines)
 	scanner.Split(splitFunc)
 
 scannerloop:
