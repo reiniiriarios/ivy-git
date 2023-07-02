@@ -35,6 +35,18 @@ type AppData struct {
 	RecentRepoDir string
 }
 
+// Get default settings. These are immediately overwritten by the saved data in the yaml file.
+func (a *App) getDefaultSettings() Settings {
+	return Settings{
+		Workflow:                     "merge",
+		DateFormat:                   0,
+		HighlightMainBranch:          true,
+		HighlightConventionalCommits: false,
+		DisplayCommitSignatureInList: false, // wip
+		DisplayAvatars:               true,
+	}
+}
+
 // Load configuration yaml for app.
 func (a *App) loadConfig() {
 	// Get repo data.
@@ -61,7 +73,7 @@ func (a *App) loadConfig() {
 	// Get settings.
 	sp := filepath.Join(a.settingsLocationRoaming(), "settings.yaml")
 	settings_data := a.initConfigFile(sp)
-	var settings Settings
+	settings := a.getDefaultSettings()
 	err = yaml.Unmarshal(settings_data, &settings)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
