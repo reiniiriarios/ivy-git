@@ -155,7 +155,7 @@
         <div class="code-breakdown__message">
           No data.
           <div>
-            <button class="btn" on:click={update}>Update Contributors Data</button>
+            <button class="btn" on:click={update}>Calculate Code Breakdown</button>
           </div>
         </div>
       {/if}
