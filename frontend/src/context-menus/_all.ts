@@ -19,6 +19,7 @@ import { menuText } from './text';
 import { menuInput } from './input';
 import { menuContributors } from './contributors';
 import { menuCloc } from './cloc';
+import { menuRemoteBranch } from './branch-in-list-remote';
 
 interface Menus { [name: string]: Menu }
 
@@ -44,6 +45,7 @@ const menus: Menus = {
   changes: menuChangesList,
   branchList: menuBranchesList,
   branchInList: menuBranch,
+  remoteBranchInList: menuRemoteBranch,
   repo: menuRepo,
   hash: menuHash,
   link: menuLink,
