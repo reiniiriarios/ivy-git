@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { branches, currentBranch, detachedHead, remoteOnlyBranches } from 'stores/branches';
+  import { branches, currentBranch, detachedHead, remoteOnlyBranches, type Branch } from 'stores/branches';
   import { branchSelect, repoSelect } from 'stores/ui';
   import createBranch from 'actions/branch/create';
   import { mergeConflicts } from 'stores/changes';
@@ -10,6 +10,16 @@
   import octicons from '@primer/octicons';
   import deleteRemoteBranch from 'actions/branch/remote-delete';
 
+  let filterInput: HTMLElement;
+  let filterBy: string;
+
+  // Must add a slight delay for dom render time here.
+  branchSelect.subscribe(s => {
+    if (s) setTimeout(() => {
+      if (filterInput) filterInput.focus();
+    }, 50);
+  });
+
   const newBranch = () => createBranch();
 
   function toggleList(e?: MouseEvent | KeyboardEvent) {
@@ -17,7 +27,9 @@
       return;
     }
     branchSelect.set(!$branchSelect);
-    if ($branchSelect) repoSelect.set(false);
+    if ($branchSelect) {
+      repoSelect.set(false);
+    }
   }
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {
@@ -56,43 +68,59 @@
       <div class="sidebar-dropdown__add">
         <button class="btn" on:click={newBranch}>Create Branch +</button>
       </div>
+      <div class="sidebar-dropdown__filter">
+        <label class="sidebar-dropdown__filter-label">
+          <span class="sidebar-dropdown__filter-desc">Filter</span>
+          <input
+            class="text-input sidebar-dropdown__filter-input"
+            type="text"
+            spellcheck="false"
+            bind:value={filterBy}
+            bind:this={filterInput}
+          />
+        </label>
+      </div>
       <ul class="sidebar-dropdown__list">
         {#if $branches?.length}
           {#each Object.entries($branches) as [_, branch]}
-            <li
-              class="sidebar-dropdown__item"
-              class:sidebar-dropdown__item--selected={branch?.Name === $currentBranch.Name}
-              class:sidebar-dropdown__item--main={$settings.HighlightMainBranch && branch.Name === $repos[$currentRepo].Main}
-              data-menu="branchInList"
-              data-name="{branch.Name}"
-              data-upstream="{branch.Upstream}"
-              data-current="{$currentBranch.Name === branch.Name}"
-            >
-              <button class="list-btn name" on:click={() => switchBranch(branch.Name)}>
-                {branch.Name}
-                {#if $settings.HighlightMainBranch && branch.Name === $repos[$currentRepo].Main}
-                  <span class="icon" aria-label="(Main branch)">{@html octicons['star-fill'].toSVG({width: 12})}</span>
+            {#if !filterBy || branch.Name.toLowerCase().includes(filterBy.toLowerCase())}
+              <li
+                class="sidebar-dropdown__item"
+                class:sidebar-dropdown__item--selected={branch?.Name === $currentBranch.Name}
+                class:sidebar-dropdown__item--main={$settings.HighlightMainBranch && branch.Name === $repos[$currentRepo].Main}
+                data-menu="branchInList"
+                data-name="{branch.Name}"
+                data-upstream="{branch.Upstream}"
+                data-current="{$currentBranch.Name === branch.Name}"
+              >
+                <button class="list-btn name" on:click={() => switchBranch(branch.Name)}>
+                  {branch.Name}
+                  {#if $settings.HighlightMainBranch && branch.Name === $repos[$currentRepo].Main}
+                    <span class="icon" aria-label="(Main branch)">{@html octicons['star-fill'].toSVG({width: 12})}</span>
+                  {/if}
+                </button>
+                {#if branch?.Name && branch.Name !== $currentBranch.Name && branch.Name !== $repos[$currentRepo].Main }
+                  <button class="list-btn x" on:click={() => deleteBranch(branch.Name, !!branch.Upstream)}>&times;</button>
                 {/if}
-              </button>
-              {#if branch?.Name && branch.Name !== $currentBranch.Name && branch.Name !== $repos[$currentRepo].Main }
-                <button class="list-btn x" on:click={() => deleteBranch(branch.Name, !!branch.Upstream)}>&times;</button>
-              {/if}
-            </li>
+              </li>
+            {/if}
           {/each}
         {/if}
         {#if $remoteOnlyBranches?.length}
           {#each Object.entries($remoteOnlyBranches) as [_, branch]}
-            <li
-              class="sidebar-dropdown__item"
-              data-menu="remoteBranchInList"
-              data-name="{branch.Name}"
-              data-remote="{branch.Remote}"
-            >
-              <button class="list-btn name" on:click={() => switchBranch(branch.Name, branch.Remote)}>
-                <span class="sidebar-dropdown__remote">{branch.Remote}/</span>{branch.Name}
-              </button>
-              <button class="list-btn x" on:click={() => deleteRemoteBranch(branch.Name, branch.Remote)}>&times;</button>
-            </li>
+            {#if !filterBy || branch.Name.toLowerCase().includes(filterBy.toLowerCase())}
+              <li
+                class="sidebar-dropdown__item"
+                data-menu="remoteBranchInList"
+                data-name="{branch.Name}"
+                data-remote="{branch.Remote}"
+              >
+                <button class="list-btn name" on:click={() => switchBranch(branch.Name, branch.Remote)}>
+                  <span class="sidebar-dropdown__remote">{branch.Remote}/</span>{branch.Name}
+                </button>
+                <button class="list-btn x" on:click={() => deleteRemoteBranch(branch.Name, branch.Remote)}>&times;</button>
+              </li>
+            {/if}
           {/each}
         {/if}
       </ul>
