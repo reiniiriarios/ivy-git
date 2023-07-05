@@ -12,9 +12,11 @@
   import SelectRepo from "components/sidebar/SelectRepo.svelte";
   import RebaseActions from "components/sidebar/RebaseActions.svelte";
   import CherryPickActions from "components/sidebar/CherryPickActions.svelte";
+
+  import { resizableSidebar } from "scripts/sidebar-resize";
 </script>
 
-<div class="sidebar">
+<div class="sidebar" use:resizableSidebar>
   <SelectRepo />
   {#if $currentRepo}
     <SelectBranch />

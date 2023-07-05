@@ -21,6 +21,7 @@
   import { enableWatcher } from "events/watcher";
   import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
   import LinkPreview from "components/elements/LinkPreview.svelte";
+  import { setMainBlock } from "scripts/sidebar-resize";
 
   let checkingApp: boolean = true;
   let gitInstalled: boolean = false;
@@ -82,16 +83,16 @@
       <GetStarted state="no-git" />
     {:else}
       <LayoutSidebar />
-      <main>
-          {#if $currentRepo}
-            {#if $noBranchSelected}
-              <GetStarted state="no-branch" />
-            {:else}
-              <MainTabs />
-            {/if}
+      <main use:setMainBlock>
+        {#if $currentRepo}
+          {#if $noBranchSelected}
+            <GetStarted state="no-branch" />
           {:else}
-            <GetStarted />
+            <MainTabs />
           {/if}
+        {:else}
+          <GetStarted />
+        {/if}
       </main>
     {/if}
     <Message />

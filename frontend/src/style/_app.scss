@@ -8,12 +8,13 @@
 
 #container {
   display: flex;
-  justify-content: center;
+  justify-content: left;
   height: calc(100vh - var(--title-bar-height));
   width: 100vw;
 }
 
-.resizer {
+.resizer,
+.resizer-v {
   cursor: col-resize;
   position: absolute;
   top: 0;
@@ -61,7 +62,7 @@
 
 .overlay {
   z-index: 10;
-  position: absolute;
+  position: fixed;
   top: var(--title-bar-height);
   left: 0;
   width: 100vw;
