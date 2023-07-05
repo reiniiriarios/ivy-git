@@ -2,7 +2,7 @@ import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 import type { Menu, MenuItem } from "context-menus/_all";
 
-import checkoutBranch from "actions/branch/checkout";
+import switchBranch from "actions/branch/switch";
 import pullBranch from "actions/branch/pull";
 import deleteRemoteBranch from "actions/branch/remote-delete";
 
@@ -12,7 +12,7 @@ export const menuLabelRemoteBranch: Menu = (e: HTMLElement) => {
   if (e.dataset.current !== "true") {
     m.push({
       text: "Checkout Branch",
-      callback: () => checkoutBranch(e.dataset.branch, e.dataset.remote),
+      callback: () => switchBranch(e.dataset.branch, e.dataset.remote),
     });
   }
 

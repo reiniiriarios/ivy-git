@@ -2,7 +2,7 @@ import { type Menu, type MenuItem } from "context-menus/_all";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 import deleteBranch from "actions/branch/delete";
 import renameBranch from "actions/branch/rename";
-import checkoutBranch from "actions/branch/checkout";
+import switchBranch from "actions/branch/switch";
 
 export const menuBranch: Menu = (e: HTMLElement) => {
   let m: MenuItem[] = [];
@@ -10,7 +10,7 @@ export const menuBranch: Menu = (e: HTMLElement) => {
   if (e.dataset.current !== "true") {
     m.push({
       text: "Checkout Branch",
-      callback: () => checkoutBranch(e.dataset.name),
+      callback: () => switchBranch(e.dataset.name),
     });
   }
 

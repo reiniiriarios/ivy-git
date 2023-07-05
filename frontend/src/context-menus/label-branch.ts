@@ -10,7 +10,7 @@ import { settings } from "stores/settings";
 import deleteBranch from "actions/branch/delete";
 import pushBranch from "actions/branch/push";
 import renameBranch from "actions/branch/rename";
-import checkoutBranch from "actions/branch/checkout";
+import switchBranch from "actions/branch/switch";
 import resetBranchToRemote from "actions/branch/reset-to-remote";
 import rebaseOnBranch from "actions/branch/rebase-on";
 import rebaseAndMergeIntoCurrentBranch from "actions/branch/merge-rebase";
@@ -23,7 +23,7 @@ export const menuLabelBranch: Menu = (e: HTMLElement) => {
   if (e.dataset.current !== "true") {
     m.push({
       text: "Checkout Branch",
-      callback: () => checkoutBranch(e.dataset.name),
+      callback: () => switchBranch(e.dataset.name),
     });
   }
   m = m.concat([
