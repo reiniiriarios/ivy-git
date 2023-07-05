@@ -14,7 +14,7 @@ import {
 import { commitData, commitSignData } from 'stores/commits';
 import { changes } from 'stores/changes';
 import { currentCommit } from 'stores/commit-details';
-import { branches, currentBranch } from 'stores/branches';
+import { branches, currentBranch, remoteBranches } from 'stores/branches';
 import { remoteData } from 'stores/remotes';
 import { currentTab, repoSelect } from 'stores/ui';
 import { messageDialog } from 'stores/message-dialog';
@@ -144,6 +144,7 @@ function createCurrentRepo() {
         repoState.load();
         currentBranch.refresh();
         branches.refresh();
+        remoteBranches.refresh();
         changes.refresh();
       });
     },
@@ -153,6 +154,7 @@ function createCurrentRepo() {
         repoState.refresh();
         currentBranch.refresh();
         branches.refresh();
+        remoteBranches.refresh();
         changes.refresh();
       });
     },
@@ -173,6 +175,7 @@ function createCurrentRepo() {
           repoState.clear();
           currentDiff.clear();
           branches.refresh();
+          remoteBranches.refresh();
           currentBranch.refresh();
           changes.refresh();
           set("");
@@ -205,6 +208,7 @@ function createCurrentRepo() {
           repoState.load();
           currentDiff.clear();
           branches.refresh();
+          remoteBranches.refresh();
           currentBranch.refresh();
           changes.refresh();
           set(repo_id);

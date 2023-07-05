@@ -90,6 +90,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    overflow-y: auto;
   }
 
   &__item {
@@ -102,12 +103,22 @@
       background-color: var(--color-sidebar-dropdown-selected);
     }
 
+    .list-btn.name {
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .icon {
       fill: var(--color-main-branch-star);
       margin: 0 0.125rem;
       position: relative;
       top: 0.125rem;
     }
+  }
+
+  &__remote {
+    color: var(--color-text-muted);
   }
 
   &__remaining-space {

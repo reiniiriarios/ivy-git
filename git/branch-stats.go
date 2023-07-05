@@ -12,6 +12,7 @@ import (
 type Branch struct {
 	Name     string
 	Upstream string
+	Remote   string
 }
 
 func (g *Git) NumBranches() uint64 {
@@ -118,6 +119,34 @@ func (g *Git) GetBranches() ([]Branch, error) {
 				parts := strings.Split(ref, "/")
 				branch_list = append(branch_list, Branch{
 					Name: parts[len(parts)-1],
+				})
+			}
+		}
+	}
+
+	return branch_list, nil
+}
+
+// Get list of all remote branches for currently selected repo.
+func (g *Git) GetRemoteBranches() ([]Branch, error) {
+	branch_list := []Branch{}
+
+	branches, err := g.run("for-each-ref", "--format", "%(refname:lstrip=2)", "refs/remotes/**")
+	if err != nil {
+		return branch_list, err
+	}
+	println(branches)
+
+	bs := parseLines(branches)
+	for _, branch := range bs {
+		// origin/branch-name
+		parts := strings.Split(branch, "/")
+		if len(parts) == 2 {
+			// don't need origin/HEAD
+			if parts[1] != "HEAD" {
+				branch_list = append(branch_list, Branch{
+					Name:   parts[1],
+					Remote: parts[0],
 				})
 			}
 		}

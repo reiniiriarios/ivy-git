@@ -17,7 +17,7 @@ func (g *Git) SwitchBranch(branch string, remote string) error {
 		if err != nil {
 			return err
 		}
-		_, err = g.run("checkout branch")
+		_, err = g.run("checkout", branch)
 	} else {
 		_, err = g.run("checkout", "-b", branch, remote+"/"+branch)
 	}

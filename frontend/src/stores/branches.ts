@@ -1,6 +1,6 @@
 import { writable, get, derived } from 'svelte/store';
 
-import { GetBranches, GetCurrentBranch, SwitchBranch } from 'wailsjs/go/main/App';
+import { GetBranches, GetCurrentBranch, SwitchBranch, GetRemoteBranches } from 'wailsjs/go/main/App';
 
 import { commitData, commitSignData } from 'stores/commits';
 import { changes } from 'stores/changes';
@@ -18,6 +18,9 @@ currentTab.subscribe(t => cTab = t);
 export interface Branch {
   Name: string;
   Upstream: string;
+  Remote: string;
+  // ui
+  Local: boolean;
 }
 
 function createBranches() {
@@ -33,6 +36,26 @@ function createBranches() {
   };
 }
 export const branches = createBranches();
+export const upstreams = derived(branches, $branches => $branches.map(branch => branch.Upstream));
+
+function createRemoteBranches() {
+  const { subscribe, set } = writable([] as Branch[]);
+  
+  return {
+    subscribe,
+    refresh: async () => {
+      GetRemoteBranches().then(result => {
+        set(result.Data as Branch[]);
+      });
+    },
+  };
+}
+export const remoteBranches = createRemoteBranches();
+export const remoteOnlyBranches = derived([upstreams, remoteBranches], ([$upstreams, $remoteBranches]) => {
+  return $remoteBranches.filter(branch => (
+    !$upstreams.includes(branch.Remote+'/'+branch.Name)
+  ));
+});
 
 function createCurrentBranch() {
   const { subscribe, set } = writable({} as Branch);

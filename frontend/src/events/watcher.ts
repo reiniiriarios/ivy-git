@@ -1,4 +1,4 @@
-import { branches, currentBranch } from 'stores/branches';
+import { branches, currentBranch, remoteBranches } from 'stores/branches';
 import { changes } from 'stores/changes';
 import { commitData, commitSignData } from 'stores/commits';
 import { currentDiff } from 'stores/diffs';
@@ -27,6 +27,9 @@ export function enableWatcher() {
       branches.refresh();
       commitSignData.refresh();
       remoteData.refresh();
+    }
+    if (e.RemoteDiffChange) {
+      remoteBranches.refresh();
     }
   });
 }

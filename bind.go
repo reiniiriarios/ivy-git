@@ -72,6 +72,12 @@ func (a *App) GetBranches() DataResponse {
 	return dataResponse(err, branches)
 }
 
+// Get list of all remote branches for currently selected repo.
+func (a *App) GetRemoteBranches() DataResponse {
+	branches, err := a.Git.GetRemoteBranches()
+	return dataResponse(err, branches)
+}
+
 // Switch branch on currently selected repo.
 func (a *App) SwitchBranch(branch string, remote string) DataResponse {
 	err := a.Git.SwitchBranch(branch, remote)

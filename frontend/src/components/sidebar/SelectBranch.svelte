@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { branches, currentBranch, detachedHead } from 'stores/branches';
+  import { branches, currentBranch, detachedHead, remoteOnlyBranches } from 'stores/branches';
   import { branchSelect, repoSelect } from 'stores/ui';
   import createBranch from 'actions/branch/create';
   import { mergeConflicts } from 'stores/changes';
@@ -8,6 +8,7 @@
   import { currentRepo, repos } from 'stores/repos';
   import { settings } from 'stores/settings';
   import octicons from '@primer/octicons';
+  import deleteRemoteBranch from 'actions/branch/remote-delete';
 
   const newBranch = () => createBranch();
 
@@ -67,8 +68,8 @@
               data-upstream="{branch.Upstream}"
               data-current="{$currentBranch.Name === branch.Name}"
             >
-              <button class="list-btn name" on:click={() => switchBranch(branch?.Name)}>
-                {branch?.Name}
+              <button class="list-btn name" on:click={() => switchBranch(branch.Name)}>
+                {branch.Name}
                 {#if $settings.HighlightMainBranch && branch.Name === $repos[$currentRepo].Main}
                   <span class="icon" aria-label="(Main branch)">{@html octicons['star-fill'].toSVG({width: 12})}</span>
                 {/if}
@@ -76,6 +77,21 @@
               {#if branch?.Name && branch.Name !== $currentBranch.Name && branch.Name !== $repos[$currentRepo].Main }
                 <button class="list-btn x" on:click={() => deleteBranch(branch.Name, !!branch.Upstream)}>&times;</button>
               {/if}
+            </li>
+          {/each}
+        {/if}
+        {#if $remoteOnlyBranches?.length}
+          {#each Object.entries($remoteOnlyBranches) as [_, branch]}
+            <li
+              class="sidebar-dropdown__item"
+              data-menu="remoteBranchInList"
+              data-name="{branch.Name}"
+              data-remote="{branch.Remote}"
+            >
+              <button class="list-btn name" on:click={() => switchBranch(branch.Name, branch.Remote)}>
+                <span class="sidebar-dropdown__remote">{branch.Remote}/</span>{branch.Name}
+              </button>
+              <button class="list-btn x" on:click={() => deleteRemoteBranch(branch.Name, branch.Remote)}>&times;</button>
             </li>
           {/each}
         {/if}
