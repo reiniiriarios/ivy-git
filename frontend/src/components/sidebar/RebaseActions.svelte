@@ -2,6 +2,7 @@
   import { parseResponse } from "scripts/parse-response";
   import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
+  import { commitMessage } from "stores/ui";
   import { RebaseAbort, RebaseContinue, RebaseSkip } from "wailsjs/go/main/App";
 
   let running: boolean = false;
@@ -13,6 +14,7 @@
         parseResponse(result, () => {
           changes.refresh();
           repoState.refresh();
+          commitMessage.clear();
         });
         running = false;
       });
@@ -26,6 +28,7 @@
         parseResponse(result, () => {
           changes.refresh();
           repoState.refresh();
+          commitMessage.clear();
         });
         running = false;
       });
@@ -39,6 +42,7 @@
         parseResponse(result, () => {
           changes.refresh();
           repoState.refresh();
+          commitMessage.clear();
         });
         running = false;
       });
