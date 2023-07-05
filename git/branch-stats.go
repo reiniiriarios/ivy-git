@@ -135,7 +135,6 @@ func (g *Git) GetRemoteBranches() ([]Branch, error) {
 	if err != nil {
 		return branch_list, err
 	}
-	println(branches)
 
 	bs := parseLines(branches)
 	for _, branch := range bs {
