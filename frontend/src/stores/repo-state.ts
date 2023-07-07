@@ -42,26 +42,26 @@ export const repoState = createRepoState();
 export const repoStateMessage = derived(repoState, $repoState => {
   switch ($repoState) {
     case RepoState.Interactive:
-      return "Interactive Rebase in Progress";
+      return "Rebase in Progress"; // Interactive not always correct.
     case RepoState.RebaseMerge:
       return "Rebase or Merge in Progress";
     case RepoState.Merge:
-        return "Merge in Progress";
+      return "Merge in Progress";
     case RepoState.Rebase:
-        return "Rebase in Progress";
+      return "Rebase in Progress";
     case RepoState.Apply:
-        return "Apply in Progress";
+      return "Apply in Progress";
     case RepoState.ApplyOrRebase:
-        return "Apply or Rebase in Progress";
+      return "Apply or Rebase in Progress";
     case RepoState.Revert:
-        return "Revert in Progress";
+      return "Revert in Progress";
     case RepoState.RevertSequence:
-        return "Revert Sequence in Progress";
+      return "Revert Sequence in Progress";
     case RepoState.CherryPick:
-        return "Cherry Pick in Progress";
+      return "Cherry Pick in Progress";
     case RepoState.CherryPickSequence:
-        return "Cherry Pick Sequence in Progress";
+      return "Cherry Pick Sequence in Progress";
     case RepoState.Bisect:
-        return "Bisect in Progress";
+      return "Bisect in Progress";
   }
 });
