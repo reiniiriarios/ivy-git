@@ -23,14 +23,20 @@ function createInProgMsg() {
 
   return {
     subscribe,
-    // If the repo is in a state where there might be an in-progress message, then fetch it.
     fetch: async () => {
       switch (get(repoState)) {
+        // If the repo is in a state where there might be an in-progress message, then fetch it.
         case RepoState.Merge:
         case RepoState.RebaseMerge:
         case RepoState.Interactive:
         case RepoState.RevertSequence:
           commitMessage.fetchMerge();
+          break;
+        // Otherwise, clear it. This method should only run when the repo state changes, and so
+        // this should ensure that any message loaded during a repo state change is cleared, as
+        // it would no longer be relevant/correct to display.
+        default:
+          commitMessage.clear();
       }
     },
     fetchMerge: async () => {
