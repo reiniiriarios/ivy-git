@@ -71,6 +71,7 @@
                 display={$messageDialog.blank}
                 id="message-dialog-blank"
                 validate={validateBlank}
+                autoEditBlank={$messageDialog.autoEditBlank}
                 bind:value={blankValue}
                 bind:valid={blankValid}
               />

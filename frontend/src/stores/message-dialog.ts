@@ -26,6 +26,7 @@ interface Message {
   }[];
   blank?: string;
   validateBlank?: (input: string) => boolean,
+  autoEditBlank?: (input: string) => string,
 
   // Specific message dialogs:
   addTag?: boolean;
@@ -76,6 +77,7 @@ function createMessage() {
         checkboxes: message.checkboxes ?? [],
         blank: message.blank ?? '',
         validateBlank: message.validateBlank ?? null,
+        autoEditBlank: message.autoEditBlank ?? null,
         callbackConfirm: message.callbackConfirm ?? (() => {}),
         okay: message.okay ?? 'Cancel',
         callback: message.callback ?? (() => {}),
