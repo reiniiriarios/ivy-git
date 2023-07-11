@@ -11,6 +11,7 @@
   import { currentCommit } from 'stores/commit-details';
   import { RepoState, repoState } from 'stores/repo-state';
   import { settings } from 'stores/settings';
+  import { uncommittedChanges } from 'stores/changes';
 
   export let commit: Commit;
   export let signStatus: string;
@@ -55,7 +56,7 @@
   class:uncommitted={commit.Hash === UNCOMMITED_HASH}
   class:merge={commit.Merge}
   class:stash={commit.Stash}
-  class:head={commit.Hash === $HEAD.Hash && [RepoState.Nil, RepoState.None].includes($repoState)}
+  class:head={commit.Hash === $HEAD.Hash && !$uncommittedChanges && [RepoState.Nil, RepoState.None].includes($repoState)}
   class:active={commit.Hash === $currentCommit.Hash}
   data-id="{commit.Id}"
   data-hash="{commit.Hash}"

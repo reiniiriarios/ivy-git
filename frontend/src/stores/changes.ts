@@ -147,3 +147,9 @@ export const mergeConflictsResolved = derived(changes, $changes => $changes?.c &
 export const changesNumStaged = derived(changes, $changes => $changes?.x ? Object.keys(get(changes).x).length : 0);
 export const changesNumUnstaged = derived(changes, $changes => $changes?.y ? Object.keys(get(changes).y).length : 0);
 export const changesNumConflicts = derived(changes, $changes => $changes?.c ? Object.keys(get(changes).c).length : 0);
+export const uncommittedChanges = derived(changes, $changes => {
+  let x = $changes?.x ? Object.keys(get(changes).x).length : 0;
+  let y = $changes?.y ? Object.keys(get(changes).y).length : 0;
+  let c = $changes?.c ? Object.keys(get(changes).c).length : 0;
+  return x + y + c > 0;
+});
