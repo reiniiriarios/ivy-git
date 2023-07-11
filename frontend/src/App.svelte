@@ -5,13 +5,18 @@
   import TitleBar from "components/app/TitleBar.svelte";
   import ContextMenu from "components/ContextMenu.svelte";
   import GetStarted from "components/GetStarted.svelte";
+  import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
+  import LinkPreview from "components/elements/LinkPreview.svelte";
 
   import { GitIsInstalled, ResizeWindow } from "wailsjs/go/main/App";
 
   import { addInputListener, keyboardNavListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";
-  import { environment } from "stores/env";
+  import { setMainBlock } from "scripts/sidebar-resize";
 
+  import { get } from "svelte/store";
+
+  import { environment } from "stores/env";
   import { appData } from "stores/app-data";
   import { currentRepo, repos } from "stores/repos";
   import { remoteData } from "stores/remotes";
@@ -19,9 +24,6 @@
   import { noBranchSelected } from "stores/branches";
 
   import { enableWatcher } from "events/watcher";
-  import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
-  import LinkPreview from "components/elements/LinkPreview.svelte";
-  import { setMainBlock } from "scripts/sidebar-resize";
 
   let checkingApp: boolean = true;
   let gitInstalled: boolean = false;
@@ -36,19 +38,11 @@
   appData.fetch();
   currentRepo.load();
   repos.refresh();
-  settings.refresh();
-  remoteData.refresh();
-  environment.fetch().then(env => {
-    goos = env.platform;
-    switch (env.platform) {
-      case "darwin":
-        document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--darwin)");
-        break;
-      case "windows":
-        document.documentElement.style.setProperty("--color-app-bg", "var(--color-app-bg--windows)");
-        break;
-    }
+  settings.refresh().then(() => {
+    document.documentElement.style.setProperty("--bg-opacity", (get(settings).BackgroundOpacity ?? 100) + '%');
   });
+  remoteData.refresh();
+  environment.fetch();
 
   // Keep theme updated in <html data-theme="theme">
   theme.subscribe(t => {

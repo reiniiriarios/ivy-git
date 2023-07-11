@@ -11,6 +11,7 @@ interface Settings {
   HighlightConventionalCommits: boolean;
 	DisplayCommitSignatureInList: boolean;
   DisplayAvatars: boolean;
+  BackgroundOpacity: number;
 }
 
 function createSettings() {
@@ -19,7 +20,7 @@ function createSettings() {
   return {
     subscribe,
     refresh: async () => {
-      GetSettings().then(result => {
+      await GetSettings().then(result => {
         set(result);
       });
     },

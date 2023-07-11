@@ -1,4 +1,6 @@
 :root {
+  --color-app-bg: 13, 17, 23;
+
   --color-selection: var(--color-scale-a-9-100);
   --color-selection-bg: var(--color-scale-a-1-100);
 
@@ -44,11 +46,6 @@
   --color-links: var(--color-scale-g-3-100);
 
   --color-code: var(--color-scale-l-1-100);
-
-  --color-app-bg--windows: #0d1117cc;
-  --color-app-bg--darwin: #0d111766;
-  --color-app-bg--linux: #0d1117;
-  --color-app-bg: var(--color-app-bg--windows);
 
   --color-sidebar-bg: var(--color-scale-a-8-100);
   --color-sidebar-border: var(--color-scale-a-9-100);

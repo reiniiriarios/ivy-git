@@ -1,5 +1,5 @@
 html {
-  background-color: var(--color-app-bg);
+  background-color: rgba(var(--color-app-bg), var(--bg-opacity));
   text-align: center;
   height: 100vh;
   width: 100vw;

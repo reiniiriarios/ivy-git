@@ -1,4 +1,6 @@
 [data-theme="light"] {
+  --color-app-bg: 240, 246, 252;
+
   --color-selection: var(--color-scale-a-0-100);
   --color-selection-bg: var(--color-scale-a-6-100);
 
@@ -44,11 +46,6 @@
   --color-links: var(--color-scale-g-6-100);
 
   --color-code: var(--color-scale-l-6-100);
-
-  --color-app-bg--windows: #f0f6fcbb;
-  --color-app-bg--darwin: #f0f6fcaa;
-  --color-app-bg--linux: #f0f6fc;
-  --color-app-bg: var(--color-app-bg--windows);
 
   --color-sidebar-bg: var(--color-scale-a-1-100);
   --color-sidebar-border: var(--color-scale-a-1-100);

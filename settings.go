@@ -27,6 +27,7 @@ type Settings struct {
 	HighlightConventionalCommits bool
 	DisplayCommitSignatureInList bool
 	DisplayAvatars               bool
+	BackgroundOpacity            uint8
 }
 
 type AppData struct {
@@ -44,6 +45,7 @@ func (a *App) getDefaultSettings() Settings {
 		HighlightConventionalCommits: false,
 		DisplayCommitSignatureInList: false, // wip
 		DisplayAvatars:               true,
+		BackgroundOpacity:            DEFAULT_BG_OPACITY,
 	}
 }
 
