@@ -11,9 +11,11 @@
       Display a star next to the main branch in order to locate it easily.
     </Info>
   </h4>
-  <Checkbox
-    display="Highlight Main"
-    checked={$settings.HighlightMainBranch}
-    on:click={settings.toggleHighlightMainBranch}
-  />
+  <div class="setting__set">
+    <Checkbox
+      display="Highlight Main"
+      checked={$settings.HighlightMainBranch}
+      on:click={settings.toggleHighlightMainBranch}
+    />
+  </div>
 </div>

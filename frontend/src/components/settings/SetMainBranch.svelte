@@ -10,9 +10,11 @@
 
 <div class="setting">
   <h4 class="setting__name">Main Branch</h4>
-  <Select
-    values={$branches.map(b => b.Name)}
-    selected={$repos[$currentRepo].Main ?? ""}
-    on:change={saveMain}
-  />
+  <div class="setting__set">
+    <Select
+      values={$branches.map(b => b.Name)}
+      selected={$repos[$currentRepo].Main ?? ""}
+      on:change={saveMain}
+    />
+  </div>
 </div>

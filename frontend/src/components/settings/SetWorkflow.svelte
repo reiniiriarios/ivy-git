@@ -15,7 +15,7 @@
       This setting changes which items are available in some context menus.
     </Info>
   </h4>
-  <div class="big-option">
+  <div class="setting__set big-option">
     <button class="big-option__option"
       class:big-option__option--active={$settings.Workflow === 'merge'}
       on:click={() => saveWorkflow('merge')}>

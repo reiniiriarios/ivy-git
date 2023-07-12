@@ -14,9 +14,11 @@
 
 <div class="setting">
   <h4 class="setting__name">Date Format</h4>
-  <Select
-    options={opts}
-    selected={$settings.DateFormat ?? 0}
-    on:change={saveDateFormat}
-  />
+  <div class="setting__set">
+    <Select
+      options={opts}
+      selected={$settings.DateFormat ?? 0}
+      on:change={saveDateFormat}
+    />
+  </div>
 </div>

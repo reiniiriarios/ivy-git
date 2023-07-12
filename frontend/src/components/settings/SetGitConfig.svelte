@@ -7,7 +7,7 @@
 
 <div class="setting setting--split">
   <div class="setting__split setting__split--left">
-    <h4 class="setting__name">
+    <h4 class="setting__name setting__name--split">
       Global Settings
       <Info>
         Global settings overridden by local settings.
@@ -41,7 +41,7 @@
     </div>
   </div>
   <div class="setting__split setting__split--right">
-    <h4 class="setting__name">
+    <h4 class="setting__name setting__name--split">
       Local (Repo) Settings
       <Info position="left">
         Local settings are per-repo and will override global settings.

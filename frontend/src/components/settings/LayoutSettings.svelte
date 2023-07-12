@@ -19,22 +19,36 @@
 </script>
 
 <div class="settings">
-  <h2>Settings</h2>
+  <h2 class="settings__title">Settings</h2>
 
-  <h3>App</h3>
-  <SetTheme />
-  <SetWorkflow />
-  <SetHighlightMain />
-  <SetDateFormat />
-  <SetConventionalCommits />
-  <SetDisplayAvatars />
+    <h3 class="settings__section-header">App</h3>
+    <div class="settings__grid">
+      <SetTheme />
+    </div>
+    <SetWorkflow />
+    <div class="settings__grid">
+      <SetHighlightMain />
+      <SetDateFormat />
+      <SetConventionalCommits />
+      <SetDisplayAvatars />
+    </div>
 
-  <h3>Repo</h3>
-  <SetMainBranch />
+  <div class="settings__section">
+    <h3 class="settings__section-header">Repo</h3>
+    <div class="settings__grid">
+      <SetMainBranch />
+    </div>
+  </div>
 
-  <h3>Git</h3>
-  <SetGitConfig />
+  <div class="settings__section">
+    <h3 class="settings__section-header">Git</h3>
+    <SetGitConfig />
+  </div>
 
-  <h2>Info</h2>
-  <AppInfo />
+  <div class="settings__section settings__section--info">
+    <h2 class="settings__section-header">Info</h2>
+    <div class="settings__grid">
+      <AppInfo />
+    </div>
+  </div>
 </div>

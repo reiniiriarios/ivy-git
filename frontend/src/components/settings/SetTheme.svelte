@@ -15,9 +15,11 @@
 
 <div class="setting">
   <h4 class="setting__name">Theme</h4>
-  <Select
-    options={themes}
-    selected={$settings.Theme ?? ""}
-    on:change={saveTheme}
-  />
+  <div class="setting__set">
+    <Select
+      options={themes}
+      selected={$settings.Theme ?? ""}
+      on:change={saveTheme}
+    />
+  </div>
 </div>

@@ -11,9 +11,11 @@
       Display avatars from Gravatar or GitHub for GitHub anon email addresses.
     </Info>
   </h4>
-  <Checkbox
-    display="Display"
-    checked={$settings.DisplayAvatars}
-    on:click={settings.toggleDisplayAvatars}
-  />
+  <div class="setting__set">
+    <Checkbox
+      display="Display Avatars"
+      checked={$settings.DisplayAvatars}
+      on:click={settings.toggleDisplayAvatars}
+    />
+  </div>
 </div>
