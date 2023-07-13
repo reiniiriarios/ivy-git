@@ -80,6 +80,10 @@ func (a *App) loadConfig() {
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 	}
+	// Validate settings.
+	if settings.BackgroundOpacity < 10 || settings.BackgroundOpacity > 100 {
+		settings.BackgroundOpacity = DEFAULT_BG_OPACITY
+	}
 	// Call the save method to validate and correct outdated settings.
 	a.saveSettings(settings)
 
