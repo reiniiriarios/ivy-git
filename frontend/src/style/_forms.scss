@@ -163,3 +163,84 @@ textarea {
     height: 2.5rem;
   }
 }
+
+.range {
+	--thumb-height: 1rem;
+	--track-height: 0.25rem;
+
+  display: flex;
+  align-items: center;
+
+  &__slider {
+    appearance: none;
+  	position: relative;
+  	background: var(--color-btn-bg);
+    border: var(--btn-border);
+    padding: 0.75rem 0.5rem;
+    margin: 0.25rem 0;
+    border-radius: 0.5rem;
+  	color: var(--color-range);
+  	overflow: hidden;
+  	transition: all ease 100ms;
+  	height: var(--thumb-height);
+  	font-size: 1.5rem;
+  	width: 12.5rem;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &:disabled {
+      filter: grayscale(1);
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    &::-webkit-slider-runnable-track,
+    &::-webkit-slider-thumb {
+    	appearance: none;
+    	transition: all ease 100ms;
+      position: relative;
+    	height: var(--thumb-height);
+    }
+
+    &::-webkit-slider-thumb {
+      --clip-top: calc((var(--thumb-height) - var(--track-height)) * 0.5 - 0.5px);
+      --clip-bottom: calc(var(--thumb-height) - var(--clip-top));
+
+      width: var(--thumb-height);
+      background-color: currentColor;
+      border-radius: var(--thumb-height);
+      filter: brightness(100%);
+      clip-path: polygon(
+        100% -1px,
+        0.25rem -1px,
+        0 var(--clip-top),
+        0 var(--clip-bottom),
+        0.25rem 100%,
+        calc(100% + 1px) calc(100% + 1px)
+      );
+    }
+
+    &::-webkit-slider-runnable-track {
+    	background: linear-gradient(var(--color-range-track) 0 0) scroll no-repeat center / 100% calc(var(--track-height) + 1px);
+    }
+
+    &:hover::-webkit-slider-thumb {
+      filter: brightness(150%);
+      cursor: grab;
+    }
+    
+    &:active::-webkit-slider-thumb {
+      filter: brightness(80%);
+      cursor: grabbing;
+    }
+  }
+
+  &__value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.5rem;
+  }
+}

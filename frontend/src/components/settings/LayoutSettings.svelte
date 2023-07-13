@@ -12,6 +12,7 @@
   import SetHighlightMain from "components/settings/SetHighlightMain.svelte";
   import SetDisplayAvatars from "./SetDisplayAvatars.svelte";
   import SetDateFormat from "./SetDateFormat.svelte";
+  import SetBackgroundOpacity from "./SetBackgroundOpacity.svelte";
 
   onMount(() => {
     gitConfig.fetch();
@@ -24,6 +25,7 @@
     <h3 class="settings__section-header">App</h3>
     <div class="settings__grid">
       <SetTheme />
+      <SetBackgroundOpacity />
     </div>
     <SetWorkflow />
     <div class="settings__grid">

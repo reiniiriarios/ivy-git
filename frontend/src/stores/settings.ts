@@ -48,6 +48,15 @@ function createSettings() {
       });
       settings.save();
     },
+    updateBackgroundOpacity: (opacity: number) => {
+      opacity = Math.min(100, Math.max(0, opacity));
+      document.documentElement.style.setProperty("--bg-opacity", opacity + '%');
+      update(s => {
+        s.BackgroundOpacity = opacity;
+        return s;
+      });
+      settings.save();
+    },
     toggleHighlightConventionalCommits: () => {
       update(s => {
         s.HighlightConventionalCommits = !s.HighlightConventionalCommits;
