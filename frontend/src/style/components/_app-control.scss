@@ -33,15 +33,15 @@
     }
   
     #close {
-      background-color: var(--color-scale-r-4-100);
+      background-color: var(--color-app-control-bg-x-darwin);
     }
   
     #minimize {
-      background-color: var(--color-scale-y-2-100);
+      background-color: var(--color-app-control-bg-min-darwin);
     }
   
     #maximize {
-      background-color: var(--color-scale-g-3-100);
+      background-color: var(--color-app-control-bg-max-darwin);
     }
   
     &:hover {
@@ -61,7 +61,7 @@
         height: var(--title-bar-height);
         justify-content: center;
         align-items: center;
-        fill: var(--color-scale-a-4-100);
+        fill: var(--color-app-control-fill-windows);
   
         svg {
           height: 10px;
@@ -70,39 +70,51 @@
       }
   
       &:hover {
-        background-color: var(--color-scale-a-6-100);
-
-        [data-theme="light"] & {
-          background-color: var(--color-scale-a-1-100);
-        }
+        background-color: var(--color-app-control-bg-hover-windows);
       }
     }
   
     #close:hover {
-      background-color: var(--color-scale-r-5-100);
+      background-color: var(--color-app-control-bg-x-hover-windows);
   
       span {
-        fill: var(--color-scale-a-1-100);
+        fill: var(--color-app-control-fill-x-hover-windows);
       }
     }
   }
   
   &.linux {
+    padding: 0.125rem 0.33rem;
+    box-sizing: border-box;
+
     .control {
-      width: calc(var(--title-bar-height) * 1.25);
-      height: var(--title-bar-height);
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      margin: 0.25rem 0.3rem;
+      box-sizing: border-box;
+      background-color: var(--color-app-control-bg-linux);
+      display: flex;
+      justify-content: center;
+      align-items: center;
   
       span {
         display: flex;
-        height: var(--title-bar-height);
         justify-content: center;
         align-items: center;
-        fill: var(--color-scale-a-4-100);
+        fill: var(--color-app-control-fill-linux);
+      }
+  
+      svg {
+        height: 8px;
+        width: 8px;
       }
   
       &:hover {
+        background-color: var(--color-app-control-bg-hover-linux);
+
         span {
-          fill: var(--color-scale-a-1-100);
+          fill: var(--color-app-control-fill-hover-linux);
         }
       }
     }

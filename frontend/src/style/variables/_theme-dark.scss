@@ -1,6 +1,21 @@
 :root {
   --color-app-bg: 13, 17, 23;
 
+  --color-app-control-bg-x-darwin: var(--color-scale-r-4-100);
+  --color-app-control-bg-min-darwin: var(--color-scale-y-2-100);
+  --color-app-control-bg-max-darwin: var(--color-scale-g-3-100);
+
+  --color-app-control-bg-windows: transparent;
+  --color-app-control-bg-hover-windows: var(--color-scale-a-6-100);
+  --color-app-control-bg-x-hover-windows: var(--color-scale-r-5-100);
+  --color-app-control-fill-windows: var(--color-scale-a-4-100);
+  --color-app-control-fill-x-hover-windows: var(--color-scale-a-1-100);
+
+  --color-app-control-bg-linux: var(--color-scale-a-7-100);
+  --color-app-control-bg-hover-linux: var(--color-scale-a-6-100);
+  --color-app-control-fill-linux: var(--color-scale-a-2-100);
+  --color-app-control-fill-hover-linux: var(--color-scale-a-1-100);
+
   --color-selection: var(--color-scale-a-9-100);
   --color-selection-bg: var(--color-scale-a-1-100);
 
