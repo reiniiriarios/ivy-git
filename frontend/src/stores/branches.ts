@@ -12,9 +12,6 @@ import { cloc } from 'stores/cloc';
 
 import { parseResponse } from 'scripts/parse-response';
 
-let cTab = '';
-currentTab.subscribe(t => cTab = t);
-
 export interface Branch {
   Name: string;
   Upstream: string;
@@ -78,11 +75,11 @@ function createCurrentBranch() {
       if (b !== get(currentBranch)?.Name) {
         SwitchBranch(b, r).then(result => {
           parseResponse(result, () => {
-            if (cTab === 'tree') {
+            if (get(currentTab) === 'tree') {
               commitData.refresh();
               commitSignData.refresh();
               currentCommit.clear();
-            } else if (cTab === 'details') {
+            } else if (get(currentTab) === 'details') {
               remoteData.refresh();
               cloc.fetch();
             }

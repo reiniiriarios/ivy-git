@@ -33,9 +33,6 @@ export interface Repo {
   Main: string;
 }
 
-let cTab = '';
-currentTab.subscribe(t => cTab = t);
-
 function createRepos() {
   const { subscribe, set, update } = writable([] as Repo[]);
   
@@ -124,7 +121,7 @@ function createRepos() {
         });
         contributors.reset();
         cloc.reset();
-        if (cTab === 'details') {
+        if (get(currentTab) === 'details') {
           remoteData.refresh();
           numCommits.fetch();
         }
@@ -164,10 +161,10 @@ function createCurrentRepo() {
     clear: async () => {
       UpdateSelectedRepo("").then(result => {
         parseResponse(result, () => {
-          if (cTab === 'tree') {
+          if (get(currentTab) === 'tree') {
             commitData.refresh();
             commitSignData.refresh();
-          } else if (cTab === 'details') {
+          } else if (get(currentTab) === 'details') {
             remoteData.refresh();
             numCommits.fetch();
             numBranches.fetch();
@@ -193,11 +190,11 @@ function createCurrentRepo() {
       }
       UpdateSelectedRepo(repo_id).then(result => {
         parseResponse(result, () => {
-          if (cTab === 'tree') {
+          if (get(currentTab) === 'tree') {
             commitData.refresh();
             commitSignData.refresh();
           }
-          if (cTab === 'details') {
+          if (get(currentTab) === 'details') {
             remoteData.refresh();
             numCommits.fetch();
             numBranches.fetch();
