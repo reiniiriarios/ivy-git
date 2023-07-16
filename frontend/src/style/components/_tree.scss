@@ -16,7 +16,7 @@ $num-colors: 10;
     z-index: 150;
     --null-fade: 90%;
 
-    &--continues {
+    &[data-fade] {
       -webkit-mask-image: linear-gradient(rgba(0 0 0 / 100%),rgba(0 0 0 / 100%) var(--null-fade), rgba(0 0 0 / 0%));
       mask-image: linear-gradient(rgba(0 0 0 / 100%),rgba(0 0 0 / 100%) var(--null-fade), rgba(0 0 0 / 0%));
     }

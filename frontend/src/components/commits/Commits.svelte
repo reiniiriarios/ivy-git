@@ -8,7 +8,6 @@
   import { setCommitsContainer } from 'scripts/commit-details-resize';
 
   import { commitData, commits, tree, commitSignData } from 'stores/commits';
-  import { setFade } from 'scripts/graph';
   import { settings } from 'stores/settings';
   import type { Unsubscriber } from 'svelte/store';
 
@@ -16,6 +15,7 @@
   let scrollPosition: number;
   let commitsTable: HTMLElement;
   let resizeIndex: number;
+  let treeGraphElement: HTMLElement;
 
   const COL_MIN_WIDTH = 75;
 
@@ -65,6 +65,12 @@
   const treeUnsubscribe = tree.subscribe(t => {
     columns[1].min = parseInt(t.width);
     if (columns[1].el) columns[1].el.style.minWidth = t.width;
+
+    if (treeGraphElement) {
+      // Start fade at last commit before null vertex.
+      let fadeAt = (t.height - 1) / t.height * 100.0;
+      treeGraphElement.style.setProperty('--null-fade', fadeAt + '%');
+    }
   });
 
   let commitDataUnsubscribe: Unsubscriber;
@@ -173,7 +179,7 @@
             <td></td>
             <td>
               <div class="tree">
-                <div class="tree__graph" use:setFade data-fade="{$tree.continues}" data-height="{$tree.height}">{@html $tree.svg.outerHTML}</div>
+                <div class="tree__graph" bind:this={treeGraphElement} data-fade="{$tree.continues}" data-height="{$tree.height}">{@html $tree.svg.outerHTML}</div>
               </div>
             </td>
             <td></td>

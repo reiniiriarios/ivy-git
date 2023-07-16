@@ -1,5 +1,7 @@
 import { vertexOut, vertexOver } from 'scripts/vertex';
 import { type Graph, type Limb, type Vertex, tree } from 'stores/commits';
+import { onDestroy } from 'svelte';
+import type { Unsubscriber } from 'svelte/store';
 
 // Match to git.commits.go.
 export const UNCOMMITED_HASH = "#";
@@ -163,21 +165,4 @@ function scaleX(x: number): number {
 
 function scaleY(y: number): number {
   return y * SCALE_Y + OFFSET_Y;
-}
-
-export function setFade(el: HTMLElement) {
-  tree.subscribe((t) => {
-    if (t.continues) {
-      if (!el.classList.contains('tree__graph--continues')) {
-        el.classList.add('tree__graph--continues');
-      }
-      // Start fade at last commit before null vertex.
-      let fadeAt = (t.height - 1) / t.height * 100.0;
-      el.style.setProperty('--null-fade', fadeAt + '%');
-    } else {
-      if (el.classList.contains('tree__graph--continues')) {
-        el.classList.remove('tree__graph--continues');
-      }
-    }
-  });
 }
