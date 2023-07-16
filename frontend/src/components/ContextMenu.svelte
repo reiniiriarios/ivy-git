@@ -32,13 +32,13 @@
   function getCurrentMenuHeight() {
     // Easier than exact calculation, works just as well.
     let height = 18;
-    $contextMenu.forEach(i => i.sep ? height += 17 : height += 30);
+    if ($contextMenu) $contextMenu.forEach(i => i.sep ? height += 17 : height += 30);
     return height;
   }
 
   function getCurrentMenuWidth() {
     // Easier than exact calculation, works nearly as well.
-    return $contextMenu.reduce((a, b) => a.text?.length > b.text?.length ? a : b).text.length * 7.6;
+    return $contextMenu ? $contextMenu.reduce((a, b) => a.text?.length > b.text?.length ? a : b).text.length * 7.6 : 0;
   }
 
   function hideMenu() {
