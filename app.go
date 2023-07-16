@@ -34,6 +34,9 @@ func (a *App) startup(ctx context.Context) {
 	// Context for app.
 	a.ctx = ctx
 
+	// Debug stats
+	go a.statLoop()
+
 	// Load yaml configs.
 	a.loadConfig()
 
