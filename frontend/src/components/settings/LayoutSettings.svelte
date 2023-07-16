@@ -13,6 +13,7 @@
   import SetDisplayAvatars from "./SetDisplayAvatars.svelte";
   import SetDateFormat from "./SetDateFormat.svelte";
   import SetBackgroundOpacity from "./SetBackgroundOpacity.svelte";
+  import SetAutoFetch from "./SetAutoFetch.svelte";
 
   onMount(() => {
     gitConfig.fetch();
@@ -33,6 +34,7 @@
       <SetDateFormat />
       <SetConventionalCommits />
       <SetDisplayAvatars />
+      <SetAutoFetch />
     </div>
 
   <div class="settings__section">
