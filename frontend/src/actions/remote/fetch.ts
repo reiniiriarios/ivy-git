@@ -1,3 +1,4 @@
+import { autoFetchTimer } from "events/auto-fetch";
 import checkIcon from "scripts/button-check-icon";
 import { parseResponse } from "scripts/parse-response";
 import { remoteData } from "stores/remotes";
@@ -9,6 +10,7 @@ function fetchRemote(remote: string, button?: HTMLElement) {
     parseResponse(r, () => {
       if (button) checkIcon(button, true);
       remoteData.refresh();
+      autoFetchTimer.reset();
     }, () => {
       if (button) button.removeAttribute('disabled')
     });

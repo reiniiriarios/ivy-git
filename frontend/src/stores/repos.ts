@@ -25,6 +25,7 @@ import { repoState } from 'stores/repo-state';
 
 import { parseResponse } from 'scripts/parse-response';
 import { contributors } from './contributors';
+import { autoFetchTimer } from 'events/auto-fetch';
 
 export interface Repo {
   Name: string;
@@ -146,6 +147,7 @@ function createCurrentRepo() {
         branches.refresh();
         remoteBranches.refresh();
         changes.refresh();
+        autoFetchTimer.reset();
       });
     },
     refresh: async () => {
@@ -156,6 +158,7 @@ function createCurrentRepo() {
         branches.refresh();
         remoteBranches.refresh();
         changes.refresh();
+        autoFetchTimer.reset();
       });
     },
     clear: async () => {
@@ -178,6 +181,7 @@ function createCurrentRepo() {
           remoteBranches.refresh();
           currentBranch.refresh();
           changes.refresh();
+          autoFetchTimer.reset();
           set("");
         });
       });
@@ -211,6 +215,7 @@ function createCurrentRepo() {
           remoteBranches.refresh();
           currentBranch.refresh();
           changes.refresh();
+          autoFetchTimer.reset();
           set(repo_id);
         });
       });

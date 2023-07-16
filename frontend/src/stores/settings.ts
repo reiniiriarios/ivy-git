@@ -1,3 +1,4 @@
+import { autoFetchTimer } from 'events/auto-fetch';
 import { parseResponse } from 'scripts/parse-response';
 import { writable, get, derived } from 'svelte/store';
 import { GetDateFormats, GetSettings, SaveSettingsGui } from 'wailsjs/go/main/App'
@@ -12,6 +13,7 @@ interface Settings {
 	DisplayCommitSignatureInList: boolean;
   DisplayAvatars: boolean;
   BackgroundOpacity: number;
+  AutoFetch: boolean;
 }
 
 function createSettings() {
@@ -74,6 +76,18 @@ function createSettings() {
     toggleDisplayAvatars: () => {
       update(s => {
         s.DisplayAvatars = !s.DisplayAvatars;
+        return s;
+      });
+      settings.save();
+    },
+    toggleAutoFetch: () => {
+      update(s => {
+        s.AutoFetch = !s.AutoFetch;
+        if (s.AutoFetch) {
+          autoFetchTimer.init();
+        } else {
+          autoFetchTimer.disable();
+        }
         return s;
       });
       settings.save();

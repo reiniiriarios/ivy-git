@@ -24,6 +24,7 @@
   import { noBranchSelected } from "stores/branches";
 
   import { enableWatcher } from "events/watcher";
+  import { autoFetchTimer } from "events/auto-fetch";
 
   let checkingApp: boolean = true;
   let gitInstalled: boolean = false;
@@ -40,6 +41,9 @@
   repos.refresh();
   settings.refresh().then(() => {
     document.documentElement.style.setProperty("--bg-opacity", (get(settings).BackgroundOpacity ?? 100) + '%');
+    if (get(settings).AutoFetch) {
+      autoFetchTimer.init();
+    }
   });
   remoteData.refresh();
   environment.fetch();

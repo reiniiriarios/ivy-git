@@ -28,6 +28,7 @@ type Settings struct {
 	DisplayCommitSignatureInList bool
 	DisplayAvatars               bool
 	BackgroundOpacity            uint8
+	AutoFetch                    bool
 }
 
 type AppData struct {
@@ -46,6 +47,7 @@ func (a *App) getDefaultSettings() Settings {
 		DisplayCommitSignatureInList: false, // wip
 		DisplayAvatars:               true,
 		BackgroundOpacity:            DEFAULT_BG_OPACITY,
+		AutoFetch:                    true,
 	}
 }
 
