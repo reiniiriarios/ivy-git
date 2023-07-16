@@ -25,6 +25,7 @@
 
   import { enableWatcher } from "events/watcher";
   import { autoFetchTimer } from "events/auto-fetch";
+  import { onDestroy } from "svelte";
 
   let checkingApp: boolean = true;
   let gitInstalled: boolean = false;
@@ -49,8 +50,11 @@
   environment.fetch();
 
   // Keep theme updated in <html data-theme="theme">
-  theme.subscribe(t => {
+  const themeUnsubscribe = theme.subscribe(t => {
     document.documentElement.dataset.theme = t;
+  });
+  onDestroy(() => {
+    themeUnsubscribe();
   });
 
   // Frontend Listeners

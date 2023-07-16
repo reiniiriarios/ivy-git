@@ -6,12 +6,17 @@
   import Checkbox from 'components/elements/Checkbox.svelte';
   import MessageCloneRepo from './MessageCloneRepo.svelte';
   import TextInput from 'components/elements/TextInput.svelte';
+  import { onDestroy } from 'svelte';
 
   let blankValid: boolean;
   let blankValue: string;
 
-  messageDialog.subscribe(() => {
+  const messageDialogUnsubscribe = messageDialog.subscribe(() => {
     blankValue = null;
+  });
+
+  onDestroy(() => {
+    messageDialogUnsubscribe();
   });
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {

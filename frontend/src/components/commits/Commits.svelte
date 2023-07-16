@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from 'svelte';
+  import { afterUpdate, onDestroy, onMount } from 'svelte';
 
   import CommitRow from 'components/commits/CommitRow.svelte';
   import CommitDetails from 'components/commit-details/CommitDetails.svelte';
@@ -10,6 +10,7 @@
   import { commitData, commits, tree, commitSignData } from 'stores/commits';
   import { setFade } from 'scripts/graph';
   import { settings } from 'stores/settings';
+  import type { Unsubscriber } from 'svelte/store';
 
   let scrollDiv: HTMLElement;
   let scrollPosition: number;
@@ -61,14 +62,21 @@
     },
   ]);
 
-  tree.subscribe(t => {
+  const treeUnsubscribe = tree.subscribe(t => {
     columns[1].min = parseInt(t.width);
     if (columns[1].el) columns[1].el.style.minWidth = t.width;
   });
 
+  let commitDataUnsubscribe: Unsubscriber;
+
   onMount(() => {
     commitData.refresh();
-    commitData.subscribe(() => setAutoCols());
+    commitDataUnsubscribe = commitData.subscribe(() => setAutoCols());
+  });
+
+  onDestroy(() => {
+    treeUnsubscribe();
+    commitDataUnsubscribe();
   });
 
   afterUpdate(() => {

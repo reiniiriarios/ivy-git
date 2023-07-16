@@ -9,15 +9,20 @@
   import { settings } from 'stores/settings';
   import octicons from '@primer/octicons';
   import deleteRemoteBranch from 'actions/branch/remote-delete';
+  import { onDestroy } from 'svelte';
 
   let filterInput: HTMLElement;
   let filterBy: string;
 
   // Must add a slight delay for dom render time here.
-  branchSelect.subscribe(s => {
+  const branchSelectUnsubscribe = branchSelect.subscribe(s => {
     if (s) setTimeout(() => {
       if (filterInput) filterInput.focus();
     }, 50);
+  });
+
+  onDestroy(() => {
+    branchSelectUnsubscribe();
   });
 
   const newBranch = () => createBranch();

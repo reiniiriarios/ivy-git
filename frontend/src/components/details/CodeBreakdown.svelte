@@ -1,7 +1,7 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
   import { cloc } from "stores/cloc";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import languages from "style/languages.json"
   import { formatBytes } from "scripts/bytes";
   import Info from "components/elements/Info.svelte";
@@ -28,8 +28,12 @@
   ];
 
   let commitsBehind: number = 0;
-  cloc.subscribe(() => {
+  const clocUnsubscribe = cloc.subscribe(() => {
     cloc.numCommitsBehind().then(n => commitsBehind = n);
+  });
+
+  onDestroy(() => {
+    clocUnsubscribe();
   });
 
   let running: boolean = false;

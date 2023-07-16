@@ -3,14 +3,19 @@
   import TextInput from "components/elements/TextInput.svelte";
   import { checkRef } from "scripts/check-ref";
   import { messageDialog } from "stores/message-dialog";
+  import { onDestroy } from "svelte";
 
   let tagName: string;
   let tagMessage: string;
   let tagValid: boolean;
 
-  messageDialog.subscribe(() => {
+  const messageDialogUnsubscribe = messageDialog.subscribe(() => {
     tagName = null;
     tagMessage = null;
+  });
+
+  onDestroy(() => {
+    messageDialogUnsubscribe();
   });
 
   window.addEventListener('keydown', function(e: KeyboardEvent) {

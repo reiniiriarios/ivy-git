@@ -10,11 +10,12 @@
   import CommitMessage from 'components/commit-details/CommitMessage.svelte';
   import Avatar from 'components/elements/Avatar.svelte';
   import { settings } from 'stores/settings';
+  import { onDestroy } from 'svelte';
 
   let height = document.documentElement.style.getPropertyValue('--commit-details-height-default');
 
   let commit: Commit;
-  currentCommit.subscribe(c => {
+  const currentCommitUnsubscribe = currentCommit.subscribe(c => {
     resetDirs();
     commit = c;
     if (c?.Hash) {
@@ -26,6 +27,10 @@
       commitDetailsWindow.set(false);
       resetDetailsSizing();
     }
+  });
+
+  onDestroy(() => {
+    currentCommitUnsubscribe();
   });
 </script>
 

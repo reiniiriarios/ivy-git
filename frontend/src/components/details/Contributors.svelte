@@ -6,7 +6,7 @@
   import { currentRepo, repos } from "stores/repos";
   import { settings } from "stores/settings";
   import { currentTab } from "stores/ui";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   onMount(() => {
     contributors.fetch();
@@ -28,8 +28,12 @@
   ];
 
   let commitsBehind: number = 0;
-  contributors.subscribe(() => {
+  const contributorsUnsubscribe = contributors.subscribe(() => {
     contributors.numCommitsBehind().then(n => commitsBehind = n);
+  });
+
+  onDestroy(() => {
+    contributorsUnsubscribe();
   });
 
   let running: boolean = false;

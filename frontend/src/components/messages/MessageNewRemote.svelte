@@ -1,6 +1,7 @@
 <script lang="ts">
   import TextInput from "components/elements/TextInput.svelte";
   import { messageDialog } from "stores/message-dialog";
+  import { onDestroy } from "svelte";
 
   let remoteName: string;
   let fetchUrl: string;
@@ -9,11 +10,15 @@
   let fetchValid: boolean = false;
   let pushValid: boolean = false;
 
-  messageDialog.subscribe(() => {
+  const messageDialogUnsubscribe = messageDialog.subscribe(() => {
     remoteName = null;
     fetchUrl = null;
     pushUrl = null;
     nameValid = false;
+  });
+
+  onDestroy(() => {
+    messageDialogUnsubscribe();
   });
 
   const validateName = () => nameValid = /^[a-z0-9_\-]+?$/i.test(remoteName);
