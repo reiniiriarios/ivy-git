@@ -42,7 +42,7 @@
   }
 
   function hideMenu() {
-    menuElement.style.display = 'none';
+    if (menuElement) menuElement.style.display = 'none';
     if (currentClickedElement) {
       currentClickedElement.classList.remove('hover');
     }
