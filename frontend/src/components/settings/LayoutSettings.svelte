@@ -23,11 +23,13 @@
 <div class="settings">
   <h2 class="settings__title">Settings</h2>
 
-    <h3 class="settings__section-header">App</h3>
+    <h3 class="settings__section-header">Appearance</h3>
     <div class="settings__grid">
       <SetTheme />
       <SetBackgroundOpacity />
     </div>
+
+    <h3 class="settings__section-header">App Customization</h3>
     <SetWorkflow />
     <div class="settings__grid">
       <SetHighlightMain />
