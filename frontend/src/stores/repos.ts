@@ -41,7 +41,7 @@ function createRepos() {
     refresh: async () => {
       GetRepos().then((result: Repo[]) => {
         // Sort
-        if (Object.entries(result).length) {
+        if (result && Object.entries(result).length) {
           set(Object.entries(result).sort(([_aId, aRepo], [_bId, bRepo]) => {
             if (aRepo.Name < bRepo.Name) return -1;
             if (aRepo.Name > bRepo.Name) return 1;
