@@ -12,9 +12,12 @@ import (
 )
 
 const GIT_CMD_TIMEOUT = 10 * time.Second
+const GIT_CMD_MAX_ROUTINES = 10
 
 // todo: this may deserve a setting?
 const GIT_RESPECT_MAILMAP = true
+
+var gitCommandQueue chan struct{} = make(chan struct{}, GIT_CMD_MAX_ROUTINES)
 
 type Git struct {
 	AppCtx context.Context
@@ -59,6 +62,8 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 		defer resetEnvVariables(env_save)
 	}
 
+	gitCommandQueue <- struct{}{}
+
 	// Run command in a specific directory.
 	command = append([]string{"-C", opts.directory}, command...)
 	cmd := exec.Command("git", command[0:]...)
@@ -79,11 +84,13 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 	if opts.stdin != "" {
 		stdin, err := cmd.StdinPipe()
 		if err != nil {
+			<-gitCommandQueue
 			return "", err
 		}
 
 		err = cmd.Start()
 		if err != nil {
+			<-gitCommandQueue
 			return "", g.ParseGitError(errb.String(), err)
 		}
 
@@ -97,6 +104,7 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 		err = cmd.Wait()
 
 		if err != nil {
+			<-gitCommandQueue
 			return "", g.ParseGitError(errb.String(), err)
 		}
 	} else {
@@ -111,9 +119,11 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 	// The error may be 'exit status 1', but if there is an
 	// error, errb should contain the relevant information.
 	if (opts.always_return_stderr && strings.TrimSpace(errb.String()) != "") || (!opts.ignore_errors && err != nil) {
+		<-gitCommandQueue
 		return outb.String(), g.ParseGitError(errb.String(), err)
 	}
 
+	<-gitCommandQueue
 	return outb.String(), nil
 }
 
