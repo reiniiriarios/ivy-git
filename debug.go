@@ -24,6 +24,7 @@ func (a *App) printStats() {
 	wailsruntime.LogDebug(a.ctx, "mem.TotalAlloc: "+byteCountIEC(mem.TotalAlloc))
 	wailsruntime.LogDebug(a.ctx, "mem.HeapAlloc: "+byteCountIEC(mem.HeapAlloc))
 	wailsruntime.LogDebug(a.ctx, "mem.NumGC: "+fmt.Sprint(mem.NumGC))
+	wailsruntime.LogDebug(a.ctx, "mem.NumGoroutine: "+fmt.Sprint(runtime.NumGoroutine()))
 }
 
 func byteCountIEC(b uint64) string {
