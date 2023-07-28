@@ -17,10 +17,11 @@ type GitHubUserData struct {
 	AvatarUrl string `json:"avatar_url"`
 }
 
+var githubUrlRegex = regexp.MustCompile(`^(\d+)\+([^@]+)@users.noreply.github.com$`)
+
 func (a *App) GetAvatarUrl(email string) string {
 	// Anon GitHub email addresses are not on Gravatar (directly):
-	r := regexp.MustCompile(`^(\d+)\+([^@]+)@users.noreply.github.com$`)
-	matches := r.FindStringSubmatch(email)
+	matches := githubUrlRegex.FindStringSubmatch(email)
 	if len(matches) > 2 {
 		return getGitHubAvatarUrl(matches[1], matches[2])
 	}

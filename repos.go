@@ -123,9 +123,10 @@ func (a *App) AddRepo() RepoResponse {
 	}
 }
 
+var repoUrlRegex = regexp.MustCompile(`^.*\/([^\/]+?)\/?(?:\.git\/?)?$`)
+
 func (a *App) CloneRepo(url string, dir string) RepoResponse {
-	r := regexp.MustCompile(`^.*\/([^\/]+?)\/?(?:\.git\/?)?$`)
-	name := r.ReplaceAllString(url, "$1")
+	name := repoUrlRegex.ReplaceAllString(url, "$1")
 
 	err := a.Git.CloneRepo(url, name, dir)
 	if err != nil {

@@ -76,6 +76,8 @@ func (g *Git) getRemoteForBranch(branch string) (string, error) {
 	return r, nil
 }
 
+var gitUrlSSHRegex = regexp.MustCompile(`^(?:[^@]+@)?([^:]+):(.+)$`)
+
 func (g *Git) GetRemotes() ([]Remote, error) {
 	remotes := []Remote{}
 	rmap := make(map[string]int)
@@ -131,8 +133,7 @@ func (g *Git) GetRemotes() ([]Remote, error) {
 				} else {
 					// Try to parse SSH urls and return site and path, e.g.
 					// git@github.com:user/repo.git => github.com, user/repo.git
-					r := regexp.MustCompile(`^(?:[^@]+@)?([^:]+):(.+)$`)
-					matches := r.FindAllStringSubmatch(uri, -1)
+					matches := gitUrlSSHRegex.FindAllStringSubmatch(uri, -1)
 					if len(matches) > 0 && len(matches[0]) > 1 {
 						site = matches[0][1]
 						userRepo = matches[0][2]

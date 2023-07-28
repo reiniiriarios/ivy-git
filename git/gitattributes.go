@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var gitAttributesLangRegex = regexp.MustCompile(`\*\.([a-z0-9]+).*(?:diff|linguist-language)=([a-z0-9]+).*`)
+
 func (g *Git) parseGitAttributes() map[string]string {
 	translations := make(map[string]string)
 	if g.Repo.Main == "" {
@@ -28,8 +30,7 @@ func (g *Git) parseGitAttributes() map[string]string {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		r := regexp.MustCompile(`\*\.([a-z0-9]+).*(?:diff|linguist-language)=([a-z0-9]+).*`)
-		matches := r.FindStringSubmatch(scanner.Text())
+		matches := gitAttributesLangRegex.FindStringSubmatch(scanner.Text())
 		if len(matches) == 3 {
 			translations[strings.ToLower(matches[1])] = strings.ToLower(matches[2])
 		}

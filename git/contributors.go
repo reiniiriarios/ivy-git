@@ -53,6 +53,10 @@ func (c *Contributors) toMap() ContributorsMap {
 
 const CONTRIBUTORS_LOG_LIMIT = 1000
 
+var multinewlineRegex = regexp.MustCompile(`(\r\n?|\n){2,}`)
+var insertionRegex = regexp.MustCompile(`([0-9]+) insertion`)
+var delectionRegex = regexp.MustCompile(`([0-9]+) deletion`)
+
 func (g *Git) AddContributorsSince(contributors Contributors, start_hash string) (Contributors, string, error) {
 	if g.Repo.Main == "" {
 		return contributors, start_hash, errors.New("no main branch set for current repo")
@@ -108,15 +112,11 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 
 		// Remove extra whitespace.
 		c = strings.ReplaceAll(c, "\r\n", "\n")
-		multinewline := regexp.MustCompile(`(\r\n?|\n){2,}`)
-		c = multinewline.ReplaceAllString(c, "\n")
+		c = multinewlineRegex.ReplaceAllString(c, "\n")
 		c = strings.TrimSpace(c)
 		if c == "" {
 			break
 		}
-
-		r_ins := regexp.MustCompile(`([0-9]+) insertion`)
-		r_del := regexp.MustCompile(`([0-9]+) deletion`)
 
 		// Loop lines
 		lines := strings.Split(c, split)
@@ -124,7 +124,7 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 			break
 		}
 		for _, line := range lines {
-			line = multinewline.ReplaceAllString(line, "\n")
+			line = multinewlineRegex.ReplaceAllString(line, "\n")
 
 			// Split commit data and shortstat.
 			parts := strings.Split(strings.TrimSpace(line), "\n")
@@ -158,7 +158,7 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 			// Empty commits won't have this data.
 			if len(parts) > 1 {
 				// Add to insertions and deletions counts.
-				match_ins := r_ins.FindAllStringSubmatch(parts[1], 1)
+				match_ins := insertionRegex.FindAllStringSubmatch(parts[1], 1)
 				if len(match_ins) > 0 && len(match_ins[0]) > 0 {
 					u, err := strconv.ParseUint(match_ins[0][1], 0, 64)
 					// ignore errors
@@ -166,7 +166,7 @@ func (g *Git) AddContributorsSince(contributors Contributors, start_hash string)
 						contributor.Insertions += u
 					}
 				}
-				match_del := r_del.FindAllStringSubmatch(parts[1], 1)
+				match_del := delectionRegex.FindAllStringSubmatch(parts[1], 1)
 				if len(match_del) > 0 && len(match_del[0]) > 0 {
 					u, err := strconv.ParseUint(match_del[0][1], 0, 64)
 					// ignore errors

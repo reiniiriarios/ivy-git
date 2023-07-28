@@ -416,6 +416,8 @@ func (d *Diff) parseConflicts() error {
 	return nil
 }
 
+var hunkHeaderRegex = regexp.MustCompile(`^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@`)
+
 // Parse a hunk header.
 //
 // Currently only supports default format:
@@ -428,8 +430,7 @@ func (d *Diff) parseConflicts() error {
 // https://git-scm.com/docs/diff-format
 // https://git-scm.com/docs/git-diff
 func parseHunkHeading(line string) (DiffHunk, error) {
-	r := regexp.MustCompile(`^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@`)
-	matches := r.FindStringSubmatch(line)
+	matches := hunkHeaderRegex.FindStringSubmatch(line)
 	if len(matches) < 5 {
 		return DiffHunk{}, errors.New("malformed diff header")
 	}
