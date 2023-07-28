@@ -17,6 +17,10 @@ Thumbs.db
 # profiling
 pprof.sh
 pprof.pdf
+heap*.out
+pprof*.out
+goroutine*.out
+logs*.out
 
 # git
 .mailmap
