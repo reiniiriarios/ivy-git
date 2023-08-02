@@ -12,6 +12,9 @@ jobs:
       matrix:
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
+    env:
+      GOGC: 100
+      GOMEMLIMIT: 1000MiB
 
     steps:
       - uses: actions/checkout@v3
@@ -28,7 +31,7 @@ jobs:
       - name: Build for darwin
         if: matrix.platform == 'macos-latest'
         run: |
-          GOGC=100 GOMEMLIMIT=1000MiB wails build -platform darwin/universal
+          wails build -platform darwin/universal
 
       - name: Create darwin package
         if: matrix.platform == 'macos-latest'
@@ -48,7 +51,7 @@ jobs:
       - name: Build for windows
         if: matrix.platform == 'windows-latest'
         run: |
-          cmd /v /c "set GOGC=100 && set GOMEMLIMIT=1000MiB && wails build -platform windows/amd64 -nsis"
+          wails build -platform windows/amd64 -nsis
           Compress-Archive -Path "$PWD\build\bin\Ivy Git.exe" -DestinationPath "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64.zip"
           Move-Item -Path "$PWD\build\bin\Ivy Git-amd64-installer.exe" -Destination "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64_installer.exe"
 
