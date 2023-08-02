@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -43,6 +44,24 @@ func (g *Git) run(command ...string) (string, error) {
 	return g.runWithOpts(command, gitRunOpts{})
 }
 
+// Buffer pool to reduce GC
+var gitOutBuffers = sync.Pool{
+	New: func() interface{} {
+		return new(bytes.Buffer)
+	},
+}
+
+// Fetch a buffer from the pool
+func GetGitOutBuffer() *bytes.Buffer {
+	return gitOutBuffers.Get().(*bytes.Buffer)
+}
+
+// Return a buffer to the pool
+func PutGitOutBuffer(buf *bytes.Buffer) {
+	buf.Reset()
+	gitOutBuffers.Put(buf)
+}
+
 // Run a git command with the specified options.
 func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 	if opts.directory == "" {
@@ -71,9 +90,13 @@ func (g *Git) runWithOpts(command []string, opts gitRunOpts) (string, error) {
 	// On windows, we need to hide the command prompt.
 	hideCmdPrompt(cmd)
 
-	var outb, errb bytes.Buffer
-	cmd.Stdout = &outb
-	cmd.Stderr = &errb
+	// Get stdout and stderr buffers from pool.
+	outb := GetGitOutBuffer()
+	errb := GetGitOutBuffer()
+	defer PutGitOutBuffer(outb)
+	defer PutGitOutBuffer(errb)
+	cmd.Stdout = outb
+	cmd.Stderr = errb
 	var err error
 
 	// Timeout git calls after GIT_CMD_TIMEOUT to keep from locking program in case of halts.
