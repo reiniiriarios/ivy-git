@@ -13,6 +13,10 @@ jobs:
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     env:
+      # Important! Memory leak without these two settings.
+      # 100 is the default for the garbage collector, but there is a bug that
+      # isn't setting it. Setting the memory limit arbitrarily high also seems
+      # to better kick the garbage collector into action.
       GOGC: 100
       GOMEMLIMIT: 1000MiB
 
