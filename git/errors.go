@@ -93,6 +93,7 @@ const (
 	HTTPSAuthenticationFailed
 	RemoteDisconnection
 	HostDown
+	SignalKilled
 	RebaseConflicts
 	MergeConflicts
 	HTTPSRepositoryNotFound
@@ -195,6 +196,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 		{
 			Code:  HostDown,
 			Regex: "Cloning into '(.+)'...\nfatal: unable to access '(.+)': Could not resolve host: (.+)",
+		},
+		{
+			Code:  SignalKilled,
+			Regex: "error: signal killed",
 		},
 		{
 			Code:  RebaseConflicts,
@@ -457,6 +462,8 @@ func getGitErrorMessage(code ErrorCode) string {
 		return "The remote disconnected. Check your Internet connection and try again."
 	case HostDown:
 		return "The host is down. Check your Internet connection and try again."
+	case SignalKilled:
+		return "Error fetching data. Check your Internet connection."
 	case RebaseConflicts:
 		return "There were conflicts while trying to rebase. Please resolve the conflicts before continuing."
 	case MergeConflicts:
