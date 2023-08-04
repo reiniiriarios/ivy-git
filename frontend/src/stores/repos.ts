@@ -191,8 +191,10 @@ function createCurrentRepo() {
       UpdateSelectedRepo(repo_id).then(result => {
         parseResponse(result, () => {
           if (get(currentTab) === 'tree') {
-            commitData.refresh();
-            commitSignData.refresh();
+            commitData.clear().then(() => {
+              commitData.refresh();
+              commitSignData.refresh();
+            });
           }
           if (get(currentTab) === 'details') {
             remoteData.refresh();

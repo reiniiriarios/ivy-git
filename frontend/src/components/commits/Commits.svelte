@@ -145,7 +145,7 @@
 
 <div class="commits" id="commits">
   <div class="commits__table-container" id="commits__scroll" use:stickyScroll use:setCommitsContainerDetails>
-    {#if Object.entries($commits).length}
+    {#if $commits && Object.entries($commits).length}
       <table bind:this={commitsTable} use:setCommitsTableSidebar class="commits__table" id="commits__table"
         style="grid-template-columns: {$settings.DisplayCommitSignatureInList ? "auto auto 5fr auto auto auto" : "auto auto 5fr auto auto"}">
         <thead>

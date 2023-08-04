@@ -84,13 +84,15 @@ export interface Graph {
   Continues: boolean;
 }
 
+interface CommitData {
+  commits: Commit[];
+  HEAD: Ref;
+  Graph: Graph;
+  page: number;
+}
+
 function createCommitData() {
-  const { subscribe, set } = writable({
-    commits: [] as Commit[],
-    HEAD: {} as Ref,
-    Graph: {} as Graph,
-    page: 0,
-  });
+  const { subscribe, set } = writable({} as CommitData);
   
   return {
     subscribe,
@@ -118,6 +120,7 @@ function createCommitData() {
       });
       commitSignData.refresh();
     },
+    clear: async () => set({} as CommitData),
   };
 }
 export const commitData = createCommitData();

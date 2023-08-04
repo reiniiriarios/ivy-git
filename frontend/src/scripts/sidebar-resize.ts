@@ -18,7 +18,6 @@ export const setCommitsTableSidebar = (el: HTMLElement) => {
 };
 
 export const setCommitListAutoCols = (el: HTMLElement) => {
-  console.log(el);
   if (el) el.style.gridTemplateColumns =
     get(settings).DisplayCommitSignatureInList
       ? "auto auto 5fr auto auto auto"

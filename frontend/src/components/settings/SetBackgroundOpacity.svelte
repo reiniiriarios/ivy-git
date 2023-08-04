@@ -2,7 +2,6 @@
   import { settings } from "stores/settings";
 
   function updateBackgroundOpacity(e: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
-    console.log(e.currentTarget);
     settings.updateBackgroundOpacity(parseInt(e.currentTarget.value));
   }
 </script>
