@@ -74,10 +74,8 @@
   <td class="commit__td commit__td--tree"></td>
   <!-- The following is interactive via the tr, which doesn't take a tabindex because it's set to display: contents. -->
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <td class="commit__td commit__td--subject" tabindex="0">
-    <span class="commit__ellipsis">
-      {@html formatSubject(commit.Subject)}
-    </span>
+  <td class="commit__td commit__td--subject commit__ellipsis" tabindex="0">
+    {@html formatSubject(commit.Subject)}
   </td>
   {#if $settings.DisplayCommitSignatureInList}
     <td class="commit__td commit__td--gpg">
@@ -96,9 +94,7 @@
       {commit.AuthorName ?? commit.AuthorEmail}
     </span>
   </td>
-  <td class="commit__td commit__td--authortime">
-    <span class="commit__ellipsis">
-      {commit.AuthorDatetime}
-    </span>
+  <td class="commit__td commit__td--authortime commit__ellipsis">
+    {commit.AuthorDatetime}
   </td>
 </tr>

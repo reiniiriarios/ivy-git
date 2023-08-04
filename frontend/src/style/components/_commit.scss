@@ -5,10 +5,8 @@
   position: relative;
 
   &__td {
-    display: flex;
-    align-items: center;
-    justify-content: left;
     text-align: left;
+    padding-top: 0.25rem;
     padding-left: 0.67rem;
     padding-right: 0.67rem;
     height: var(--commit-row-height);
@@ -16,7 +14,6 @@
     white-space: nowrap;
 
     &:first-child {
-      padding-left: 0.67rem;
       padding-right: 0;
     }
 
@@ -31,6 +28,17 @@
     &--tree {
       padding: 0;
       overflow: hidden;
+    }
+
+    &--author {
+      display: flex;
+      align-items: start;
+      justify-content: left;
+
+      .avatar {
+        position: relative;
+        bottom: 0.125rem;
+      }
     }
 
     .uncommitted & {
