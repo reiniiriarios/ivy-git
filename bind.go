@@ -49,7 +49,7 @@ func (a *App) GitIsInstalled() bool {
 	// Try n times to see if git is installed and working.
 	// Sometimes on startup it will... take a second or two on Windows.
 	// Unknown reasons. Very weird.
-	for i := 0; i < 8; i++ {
+	for i := 0; i < 16; i++ {
 		if a.Git.GitIsInstalled() {
 			return true
 		}
