@@ -18,10 +18,6 @@ var assets embed.FS
 var appIcon []byte
 
 func main() {
-	// CPU profiling
-	// "github.com/pkg/profile"
-	// defer profile.Start().Stop()
-
 	// Create an instance of the app structure
 	app := NewApp()
 

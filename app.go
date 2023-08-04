@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"ivy-git/git"
+	"os"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -35,7 +36,10 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
 	// Debug stats
-	go a.statLoop()
+	_, exists := os.LookupEnv("IVY_GIT_DEBUG")
+	if exists {
+		go a.statLoop()
+	}
 
 	// Load yaml configs.
 	a.loadConfig()
