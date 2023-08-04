@@ -154,6 +154,7 @@ const (
 	ReplaceLineEndings
 	CherryPickConflict
 	CouldNotApply
+	CouldNotReadUsername
 )
 
 type GitErrorRegex struct {
@@ -441,6 +442,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Code:  CouldNotApply,
 			Regex: "(?m)error: could not apply",
 		},
+		{
+			Code:  CouldNotReadUsername,
+			Regex: "fatal: could not read Username for '(?:.+?)': (?:.+)",
+		},
 	}
 }
 
@@ -555,6 +560,8 @@ func getGitErrorMessage(code ErrorCode) string {
 		return "There were conflicts while trying to cherry pick. Please resolve the conflicts before continuing."
 	case CouldNotApply:
 		return "Please resolve the conflicts before continuing."
+	case CouldNotReadUsername:
+		return "Could not read Username for this repo. Check your git settings for the current remote or check authentication for remote, such as logging in via an access token."
 	case MergeWithLocalChanges:
 	case RebaseWithLocalChanges:
 	case GPGFailedToSignData:
