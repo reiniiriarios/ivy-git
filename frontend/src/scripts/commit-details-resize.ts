@@ -4,7 +4,7 @@ let commitDetailsContainer: HTMLElement;
 let minCommits = 200;
 let minDetails = 100;
 
-export const setCommitsContainer = (el: HTMLElement) => {
+export const setCommitsContainerDetails = (el: HTMLElement) => {
   commitsContainer = el;
 }
 

@@ -5,7 +5,8 @@
   import CommitDetails from 'components/commit-details/CommitDetails.svelte';
   import LoadMoreCommits from 'components/commits/LoadMoreCommits.svelte';
 
-  import { setCommitsContainer } from 'scripts/commit-details-resize';
+  import { setCommitsContainerDetails } from 'scripts/commit-details-resize';
+  import { setCommitListAutoCols, setCommitsTableSidebar } from 'scripts/sidebar-resize';
 
   import { commitData, commits, tree, commitSignData } from 'stores/commits';
   import { settings } from 'stores/settings';
@@ -77,7 +78,7 @@
 
   onMount(() => {
     commitData.refresh();
-    commitDataUnsubscribe = commitData.subscribe(() => setAutoCols());
+    commitDataUnsubscribe = commitData.subscribe(() => setCommitListAutoCols(commitsTable));
   });
 
   onDestroy(() => {
@@ -88,15 +89,6 @@
   afterUpdate(() => {
     scrollDiv.scrollTo(0, scrollPosition);
   });
-
-  function setAutoCols() {
-    if (commitsTable) {
-      commitsTable.style.gridTemplateColumns =
-        $settings.DisplayCommitSignatureInList
-          ? "auto auto 5fr auto auto auto"
-          : "auto auto 5fr auto auto";
-    }
-  }
 
   function stickyScroll(el: HTMLElement) {
     scrollDiv = el;
@@ -152,9 +144,9 @@
 </script>
 
 <div class="commits" id="commits">
-  <div class="commits__table-container" id="commits__scroll" use:stickyScroll use:setCommitsContainer>
+  <div class="commits__table-container" id="commits__scroll" use:stickyScroll use:setCommitsContainerDetails>
     {#if Object.entries($commits).length}
-      <table bind:this={commitsTable} class="commits__table" id="commits__table"
+      <table bind:this={commitsTable} use:setCommitsTableSidebar class="commits__table" id="commits__table"
         style="grid-template-columns: {$settings.DisplayCommitSignatureInList ? "auto auto 5fr auto auto auto" : "auto auto 5fr auto auto"}">
         <thead>
           <tr>
