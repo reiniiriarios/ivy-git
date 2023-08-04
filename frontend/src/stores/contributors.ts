@@ -1,6 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { writable, get } from "svelte/store";
 import { CommitsBehindMain, GetCachedContributorsData, ResetContributorsData, UpdateContributorsData } from "wailsjs/go/main/App";
+import { currentRepo } from "./repos";
 
 interface Contributor {
 	Name: string;
@@ -27,9 +28,12 @@ function createContributors() {
       );
     },
     update: async () => {
-      await UpdateContributorsData().then(result =>
+      let repo = get(currentRepo);
+      await UpdateContributorsData().then(result => {
+        // This might take a while. If the repo isn't the same as when we started, don't update.
+        if (get(currentRepo) !== repo) return;
         parseResponse(result, () => set(result.Data))
-      );
+      });
     },
     clear: async () => set({} as Contributors),
     reset: async () => {
@@ -46,3 +50,4 @@ function createContributors() {
   };
 }
 export const contributors = createContributors();
+export const contributorsRunning = writable(false);

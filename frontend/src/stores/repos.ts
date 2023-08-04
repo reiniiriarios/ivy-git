@@ -19,12 +19,12 @@ import { remoteData } from 'stores/remotes';
 import { currentTab, repoSelect } from 'stores/ui';
 import { messageDialog } from 'stores/message-dialog';
 import { numBranches, numCommits, numTags } from 'stores/repo-info';
-import { cloc } from 'stores/cloc';
+import { cloc, clocRunning } from 'stores/cloc';
 import { currentDiff } from 'stores/diffs';
 import { repoState } from 'stores/repo-state';
 
 import { parseResponse } from 'scripts/parse-response';
-import { contributors } from './contributors';
+import { contributors, contributorsRunning } from './contributors';
 import { autoFetchTimer } from 'events/auto-fetch';
 
 export interface Repo {
@@ -213,6 +213,8 @@ function createCurrentRepo() {
           currentBranch.refresh();
           changes.refresh();
           autoFetchTimer.reset();
+          clocRunning.set(false);
+          contributorsRunning.set(false);
           set(repo_id);
         });
       });

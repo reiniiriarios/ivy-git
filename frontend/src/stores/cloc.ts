@@ -1,6 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { get, writable } from "svelte/store";
 import { CommitsBehindMain, GetCachedClocData, UpdateClocData, ResetClocData } from "wailsjs/go/main/App";
+import { currentRepo } from "./repos";
 
 interface ClocData {
   LastHashParsed: string;
@@ -37,9 +38,12 @@ function createCloc() {
       });
     },
     update: async () => {
-      await UpdateClocData().then(result =>
-        parseResponse(result, () => set(result.Data))
-      );
+      let repo = get(currentRepo);
+      await UpdateClocData().then(result => {
+        // This might take a while. If the repo isn't the same as when we started, don't update.
+        if (get(currentRepo) !== repo) return;
+        parseResponse(result, () => set(result.Data));
+      });
     },
     clear: async () => set({} as ClocData),
     reset: async () => {
@@ -56,3 +60,4 @@ function createCloc() {
   };
 }
 export const cloc = createCloc();
+export const clocRunning = writable(false);

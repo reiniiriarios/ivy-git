@@ -2,11 +2,12 @@
   import octicons from "@primer/octicons";
   import Avatar from "components/elements/Avatar.svelte";
   import Info from "components/elements/Info.svelte";
-  import { contributors } from "stores/contributors";
+  import { contributors, contributorsRunning } from "stores/contributors";
   import { currentRepo, repos } from "stores/repos";
   import { settings } from "stores/settings";
   import { currentTab } from "stores/ui";
   import { onDestroy, onMount } from "svelte";
+  import type { Unsubscriber } from "svelte/store";
 
   onMount(() => {
     contributors.fetch();
@@ -28,40 +29,48 @@
   ];
 
   let commitsBehind: number = 0;
-  const contributorsUnsubscribe = contributors.subscribe(() => {
-    contributors.numCommitsBehind().then(n => commitsBehind = n);
+
+  let contributorsUnsubscribe: Unsubscriber;
+  let contributorsRunningUnsubscribe: Unsubscriber;
+
+  onMount(() => {
+    contributorsUnsubscribe = contributors.subscribe(() => {
+      contributors.numCommitsBehind().then(n => commitsBehind = n);
+    });
+    contributorsRunningUnsubscribe = contributorsRunning.subscribe(r => {
+      if (r) {
+        updateButton.disabled = true;
+        goIcon.classList.add('icon--hidden');
+        waitIcon.classList.remove('icon--hidden');
+      } else {
+        updateButton.disabled = false;
+        goIcon.classList.remove('icon--hidden');
+        waitIcon.classList.add('icon--hidden');
+        updateWord = 'Update';
+      }
+    });
   });
 
   onDestroy(() => {
     contributorsUnsubscribe();
+    contributorsRunningUnsubscribe();
   });
 
-  let running: boolean = false;
-
   function update() {
-    running = true;
-    updateButton.disabled = true;
-    goIcon.classList.add('icon--hidden');
-    waitIcon.classList.remove('icon--hidden');
-    let done = false;
+    contributorsRunning.set(true);
     let messageCounter = 0;
     contributors.update().then(() => {
       // Artificial loading time here makes the UI make more sense.
       // This doesn't delay content loading.
       setTimeout(() => {
-        updateButton.disabled = false;
-        goIcon.classList.remove('icon--hidden');
-        waitIcon.classList.add('icon--hidden');
-        done = true;
-        updateWord = 'Update';
-        running = false;
+        contributorsRunning.set(false);
       }, 200);
     });
     // Set an update timer to give update messages to make the
     // user feel okay about waiting a long time. Because this can
     // take a Long Time on Big Repos, particularly on slower machines.
     let update = setInterval(() => {
-      if (done) {
+      if (!$contributorsRunning) {
         clearInterval(update);
         return;
       }
@@ -133,7 +142,7 @@
           </li>
         {/each}
       </ul>
-    {:else if !running}
+    {:else if !$contributorsRunning}
       <div class="contributors__message">
         The contributors list displays users' contributions to main.<br>
         Calculating on larger repos can take time.

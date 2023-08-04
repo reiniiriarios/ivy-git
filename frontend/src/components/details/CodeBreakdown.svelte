@@ -1,12 +1,13 @@
 <script lang="ts">
   import octicons from "@primer/octicons";
-  import { cloc } from "stores/cloc";
+  import { cloc, clocRunning } from "stores/cloc";
   import { onDestroy, onMount } from "svelte";
   import languages from "style/languages.json"
   import { formatBytes } from "scripts/bytes";
   import Info from "components/elements/Info.svelte";
   import { currentRepo, repos } from "stores/repos";
   import { currentTab } from "stores/ui";
+  import type { Unsubscriber } from "svelte/store";
 
   onMount(() => {
     cloc.fetch();
@@ -28,40 +29,48 @@
   ];
 
   let commitsBehind: number = 0;
-  const clocUnsubscribe = cloc.subscribe(() => {
-    cloc.numCommitsBehind().then(n => commitsBehind = n);
+
+  let clocUnsubscribe: Unsubscriber;
+  let clocRunningUnsubscribe: Unsubscriber;
+
+  onMount(() => {
+    clocUnsubscribe = cloc.subscribe(() => {
+      cloc.numCommitsBehind().then(n => commitsBehind = n);
+    });
+    clocRunningUnsubscribe = clocRunning.subscribe(r => {
+      if (r) {
+        updateButton.disabled = true;
+        goIcon.classList.add('icon--hidden');
+        waitIcon.classList.remove('icon--hidden');
+      } else {
+        updateButton.disabled = false;
+        goIcon.classList.remove('icon--hidden');
+        waitIcon.classList.add('icon--hidden');
+        updateWord = 'Update';
+      }
+    });
   });
 
   onDestroy(() => {
     clocUnsubscribe();
+    clocRunningUnsubscribe();
   });
 
-  let running: boolean = false;
-
   function update() {
-    running = true;
-    updateButton.disabled = true;
-    goIcon.classList.add('icon--hidden');
-    waitIcon.classList.remove('icon--hidden');
-    let done = false;
+    clocRunning.set(true);
     let messageCounter = 0;
     cloc.update().then(() => {
       // Artificial loading time here makes the UI make more sense.
       // This doesn't delay content loading.
       setTimeout(() => {
-        updateButton.disabled = false;
-        goIcon.classList.remove('icon--hidden');
-        waitIcon.classList.add('icon--hidden');
-        done = true;
-        updateWord = 'Update';
-        running = false;
+        clocRunning.set(false);
       }, 200);
     });
     // Set an update timer to give update messages to make the
     // user feel okay about waiting a long time. Because this can
     // take a Long Time on Big Repos, particularly on slower machines.
     let update = setInterval(() => {
-      if (done) {
+      if (!$clocRunning) {
         clearInterval(update);
         return;
       }
@@ -153,7 +162,7 @@
         </table>
       {:else if $cloc.Error}
         <div class="code-breakdown__message code-breakdown__message--error">{$cloc.Error}</div>
-      {:else if running}
+      {:else if $clocRunning}
         <div class="code-breakdown__message code-breakdown__message--loading">{@html octicons.gear.toSVG({width: 24})}</div>
       {:else}
         <div class="code-breakdown__message">
