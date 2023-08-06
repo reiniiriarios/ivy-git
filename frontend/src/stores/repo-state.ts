@@ -63,5 +63,7 @@ export const repoStateMessage = derived(repoState, $repoState => {
       return "Cherry Pick Sequence in Progress";
     case RepoState.Bisect:
       return "Bisect in Progress";
+    default:
+      return "";
   }
 });
