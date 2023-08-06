@@ -19,6 +19,8 @@ type GitHubUserData struct {
 
 var githubUrlRegex = regexp.MustCompile(`^(\d+)\+([^@]+)@users.noreply.github.com$`)
 
+const AVATAR_SIZE = 128 // pixels
+
 func (a *App) GetAvatarUrl(email string) string {
 	// Anon GitHub email addresses are not on Gravatar (directly):
 	matches := githubUrlRegex.FindStringSubmatch(email)
@@ -30,7 +32,7 @@ func (a *App) GetAvatarUrl(email string) string {
 	// d=identicon will return an anon avatar if none is found
 	// d=404 will cause an error
 	// otherwise, the gravatar logo will load if not found
-	return fmt.Sprintf("https://www.gravatar.com/avatar/%x?d=identicon&size=64", hash)
+	return fmt.Sprintf("https://www.gravatar.com/avatar/%x?d=identicon&size=%d", hash, AVATAR_SIZE)
 }
 
 func getGitHubAvatarUrl(user_id string, username string) string {
@@ -49,7 +51,7 @@ func getGitHubAvatarUrl(user_id string, username string) string {
 			return data.AvatarUrl
 		}
 	*/
-	return fmt.Sprintf("https://avatars.githubusercontent.com/u/%s?s=64&v=4", user_id)
+	return fmt.Sprintf("https://avatars.githubusercontent.com/u/%s?s=%d&v=4", user_id, AVATAR_SIZE)
 }
 
 func getGitHubUserData(username string) (GitHubUserData, error) {

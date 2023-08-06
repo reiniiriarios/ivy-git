@@ -13,6 +13,9 @@
   &__big {
     border-radius: 50%;
     box-shadow: 0.2rem 0.2rem 1rem 0.2rem rgba(0 0 0 / 40%);
+    // Match avatars.go AVATAR_SIZE / 2 (for retina)
+    width: 64px;
+    height: 64px;
   }
 
   &__hover-box {
