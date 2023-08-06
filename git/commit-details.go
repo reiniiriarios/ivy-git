@@ -138,10 +138,10 @@ func (g *Git) GetCommitDiffSummary(hash string) (FileStatDir, error) {
 		if err != nil {
 			return FileStatDir{}, err
 		}
-		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash, merge_base)
+		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "--ignore-cr-at-eol", "-z", hash, merge_base)
 		ignore_first_line = false
 	} else {
-		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "-z", hash)
+		numstat, err = g.run("diff-tree", "--numstat", "-r", "--root", "--find-renames", "--ignore-cr-at-eol", "-z", hash)
 		ignore_first_line = true
 	}
 	if err != nil {
