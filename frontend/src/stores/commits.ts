@@ -127,7 +127,9 @@ export const commitData = createCommitData();
 export const commits = derived(commitData, $commitData => $commitData?.commits);
 export const commitsMap = derived(commitData, $commitData => {
   let map = new Map<string, number>();
-  $commitData.commits.map((c, i) => map.set(c.Hash, i));
+  if ($commitData?.commits && $commitData.commits.length) {
+    $commitData.commits.forEach((c, i) => map.set(c.Hash, i));
+  }
   return map;
 });
 export const HEAD = derived(commitData, $commitData => $commitData?.HEAD);
