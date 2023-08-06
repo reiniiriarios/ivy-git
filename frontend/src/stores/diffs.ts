@@ -83,21 +83,23 @@ function createCurrentDiff() {
   return {
     subscribe,
     set,
-    clear: () => set({} as Diff),
+    clear: async () => set({} as Diff),
     // Fetch diff from specific commit.
     fetchDiff: async (hash: string, file: string, oldfile: string) => {
+      let diff = {
+        File: oldfile ? `${oldfile} → ${file}` : file,
+        Staged: false,
+        Committed: true,
+        Hash: hash,
+      } as Diff;
+      currentDiff.set(diff);
       GetCommitFileParsedDiff(hash, file, oldfile, false).then(result => {
         parseResponse(result, () => {
-          let diff = {} as Diff;
           if (result.Response === 'too-large') {
             diff.TooLarge = true;
           } else {
-            diff = result.Data;
+            diff = {...diff, ...result.Data};
           }
-          diff.Staged = false;
-          diff.Committed = true;
-          diff.Hash = hash;
-          diff.File = oldfile ? `${oldfile} → ${file}` : file;
           set(diff);
         });
       });

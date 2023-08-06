@@ -69,19 +69,21 @@ function createChanges() {
       else {
         // Conflict diff.
         if (xyc === 'c') {
+          let diff = {
+            File: file,
+            Status: f.Letter,
+            Committed: false,
+            Conflict: true,
+            Staged: false,
+          } as Diff;
+          currentDiff.set(diff);
           GetConflictParsedDiff(file, false).then(result => {
             parseResponse(result, () => {
-              let diff = {} as Diff;
               if (result.Response === 'too-large') {
                 diff.TooLarge = true;
               } else {
-                diff = result.Data;
+                diff = {...diff, ...result.Data};
               }
-              diff.File = file;
-              diff.Status = f.Letter;
-              diff.Conflict = true;
-              diff.Staged = false;
-              diff.Committed = false;
               update(c => {
                 if (c.c[file]) {
                   c.c[file].Diff = diff;
@@ -94,18 +96,20 @@ function createChanges() {
         }
         // Staged or unstaged diff.
         else {
+          let diff = {
+            File: file,
+            Status: f.Letter,
+            Committed: false,
+            Staged: xyc === 'x',
+          } as Diff;
+          currentDiff.set(diff);
           GetWorkingFileParsedDiff(file, f.Letter, xyc === 'x', false).then(result => {
             parseResponse(result, () => {
-              let diff = {} as Diff;
               if (result.Response === 'too-large') {
                 diff.TooLarge = true;
               } else {
-                diff = result.Data;
+                diff = {...diff, ...result.Data};
               }
-              diff.File = file;
-              diff.Status = f.Letter;
-              diff.Staged = xyc === 'x';
-              diff.Committed = false;
               update(c => {
                 if (c[xyc][file]) {
                   c[xyc][file].Diff = diff;
