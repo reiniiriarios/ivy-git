@@ -81,6 +81,7 @@ func (a *App) loadConfig() {
 	err = yaml.Unmarshal(settings_data, &settings)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
+		settings = a.getDefaultSettings()
 	}
 	// Validate settings.
 	if settings.BackgroundOpacity < 10 || settings.BackgroundOpacity > 100 {
