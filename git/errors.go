@@ -445,6 +445,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Regex: "warning: ([A-Z]+) will be replaced by ([A-Z]+) in (.+).",
 		},
 		{
+			Code:  ReplaceLineEndings,
+			Regex: "warning: in the working copy of '.+?', ([A-Z]+) will be replaced by ([A-Z]+) the next time",
+		},
+		{
 			Code:  CherryPickConflict,
 			Regex: "(?m)error: could not apply(?:.+)cherry-pick",
 		},
