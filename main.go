@@ -56,6 +56,6 @@ func main() {
 	})
 
 	if err != nil {
-		println("Error:", err.Error())
+		println("Error (main)", err.Error())
 	}
 }

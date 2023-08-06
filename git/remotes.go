@@ -191,7 +191,7 @@ func (g *Git) getMainBranchForRemote(remote string) string {
 
 	ls, err := g.run("ls-remote", remote)
 	if err != nil {
-		println(err.Error())
+		println("Error (getMainBranchForRemote)", err.Error())
 		return ""
 	}
 	rs := parseLines(ls)

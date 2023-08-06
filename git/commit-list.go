@@ -153,7 +153,7 @@ func (g *Git) getNumUncommitedChanges() int {
 	c, err := g.run("status", "--untracked-files=all", "--porcelain")
 	if err != nil {
 		if errorCode(err) != NoCommitsYet && errorCode(err) != BadRevision && errorCode(err) != UnknownRevisionOrPath {
-			println(err.Error())
+			println("Error (getNumUncommitedChanges)", err.Error())
 		}
 		return 0
 	}

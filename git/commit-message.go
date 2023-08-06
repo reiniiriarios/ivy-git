@@ -41,14 +41,14 @@ func (g *Git) GetInProgressCommitMessage(merge bool) (string, error) {
 
 	if _, err := os.Stat(file); err != nil {
 		if !os.IsNotExist(err) {
-			println(err)
+			println("Error (GetInProgressCommitMessage, Stat)", err)
 		}
 		return "", err
 	}
 
 	msg, err := os.ReadFile(file)
 	if err != nil {
-		println(err)
+		println("Error (GetInProgressCommitMessage, ReadFile)", err)
 		return "", err
 	}
 

@@ -142,7 +142,7 @@ func (g *Git) getRefs() (Refs, error) {
 				refs.HEAD.Hash = hash
 			} else if !strings.HasPrefix(name, "refs/stash") {
 				// Ignore stash, but anything else log a warning.
-				println("Error parsing ref:", name)
+				println("Error (getRefs), parsing ref:", name)
 			}
 		}
 	}

@@ -52,7 +52,7 @@ func (g *Git) readLanguageFromFileOnBranch(file string) string {
 	}
 	content, err := g.run(cmd...)
 	if err != nil {
-		println(err.Error())
+		println("Error (readLanguageFromFileOnBranch)", err.Error())
 		return ""
 	}
 	lang := enry.GetLanguage(file, []byte(content))

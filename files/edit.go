@@ -98,7 +98,7 @@ func deleteAndReplaceLinesFromFileIntoTemp(filename string, delete_lines []int64
 		}
 		if err != nil {
 			if err != io.EOF {
-				println("Error reading file:", err)
+				println("Error (deleteAndReplaceLinesFromFileIntoTemp)", err)
 			}
 			break
 		}

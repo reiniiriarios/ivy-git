@@ -50,7 +50,7 @@ func (g *Git) HasCommits(directory string) bool {
 		return true
 	}
 	if errorCode(err) != NoCommitsYet && errorCode(err) != BadRevision {
-		println(err.Error())
+		println("Error (HasCommits)", err.Error())
 	}
 	return false
 }

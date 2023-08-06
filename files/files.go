@@ -58,7 +58,7 @@ func GetContents(file string) (string, error) {
 		}
 		if err != nil {
 			if err != io.EOF {
-				println("Error reading file:", err)
+				println("Error (GetContents)", err)
 			}
 			break
 		}
