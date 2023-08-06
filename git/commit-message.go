@@ -1,7 +1,6 @@
 package git
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -47,7 +46,7 @@ func (g *Git) GetInProgressCommitMessage(merge bool) (string, error) {
 		return "", err
 	}
 
-	msg, err := ioutil.ReadFile(file)
+	msg, err := os.ReadFile(file)
 	if err != nil {
 		println(err)
 		return "", err
