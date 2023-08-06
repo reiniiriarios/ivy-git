@@ -38,6 +38,7 @@ export interface Diff {
   Conflict: boolean;
   Hash: string;
   Resolved: boolean;
+  Loading: boolean;
   // Separate fetch
   Lang: string;
   Highlight: HighlightedLines;
@@ -91,15 +92,19 @@ function createCurrentDiff() {
         Staged: false,
         Committed: true,
         Hash: hash,
+        Loading: true,
       } as Diff;
       currentDiff.set(diff);
       GetCommitFileParsedDiff(hash, file, oldfile, false).then(result => {
+        diff.Loading = false;
         parseResponse(result, () => {
           if (result.Response === 'too-large') {
             diff.TooLarge = true;
           } else {
             diff = {...diff, ...result.Data};
           }
+          set(diff);
+        }, () => {
           set(diff);
         });
       });

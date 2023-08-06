@@ -101,9 +101,11 @@ function createChanges() {
             Status: f.Letter,
             Committed: false,
             Staged: xyc === 'x',
+            Loading: true,
           } as Diff;
           currentDiff.set(diff);
           GetWorkingFileParsedDiff(file, f.Letter, xyc === 'x', false).then(result => {
+            diff.Loading = false;
             parseResponse(result, () => {
               if (result.Response === 'too-large') {
                 diff.TooLarge = true;
@@ -116,6 +118,8 @@ function createChanges() {
                 }
                 return c;
               });
+              currentDiff.set(diff);
+            }, () => {
               currentDiff.set(diff);
             });
           });

@@ -5,8 +5,9 @@
   import DiffCommitted from "components/diffs/DiffCommitted.svelte";
   import DiffConflict from "components/diffs/DiffConflict.svelte";
   import DiffConflictActions from "components/diffs/DiffConflictActions.svelte";
+  import FileTooLarge from "components/diffs/FileTooLarge.svelte";
+  import DiffLoading from "components/diffs/DiffLoading.svelte";
   import CommitLink from "components/elements/CommitLink.svelte";
-  import FileTooLarge from "./FileTooLarge.svelte";
 </script>
 
 {#if $currentDiff}
@@ -19,7 +20,9 @@
         {$currentDiff.File}
       </div>
     {/if}
-    {#if $currentDiff.TooLarge}
+    {#if $currentDiff.Loading}
+      <DiffLoading />
+    {:else if $currentDiff.TooLarge}
       <FileTooLarge />
     {:else if $currentDiff.Committed}
       <DiffCommitted />
