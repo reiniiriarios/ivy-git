@@ -6,7 +6,6 @@
 
   &__td {
     text-align: left;
-    padding-top: 0.25rem;
     padding-left: 0.67rem;
     padding-right: 0.67rem;
     height: var(--commit-row-height);
@@ -34,11 +33,6 @@
       display: flex;
       align-items: start;
       justify-content: left;
-
-      .avatar {
-        position: relative;
-        bottom: 0.125rem;
-      }
     }
 
     .uncommitted & {
