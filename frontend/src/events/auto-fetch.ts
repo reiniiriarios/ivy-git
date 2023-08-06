@@ -1,7 +1,7 @@
-import fetchRemote from "actions/remote/fetch";
-import { currentRemote } from "stores/remotes";
+import { parseResponse } from "scripts/parse-response";
 import { RepoState, repoState } from "stores/repo-state";
 import { get, writable } from "svelte/store";
+import { FetchAll } from "wailsjs/go/main/App";
 
 // How often to check the timer.
 const AUTO_FETCH_INTERVAL = 1000; //ms
@@ -22,11 +22,12 @@ export const autoFetchTimer = function () {
             // Only fetch if in a neutral state and not in
             // the middle of a merge, rebase, bisect, etc.
             if (get(repoState) === RepoState.None) {
-              let r = get(currentRemote).Name;
-              if (r) {
-                console.log('Auto fetching from', r, '...');
-                fetchRemote(r);
-              }
+              console.log('Auto fetching...');
+              FetchAll().then(r => {
+                parseResponse(r, () => {
+                  autoFetchTimer.reset();
+                });
+              });
               autoFetchTimer.reset();
             }
           }

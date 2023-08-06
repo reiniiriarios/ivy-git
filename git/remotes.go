@@ -227,6 +227,11 @@ func (g *Git) getMainBranchForRemote(remote string) string {
 	return maybe_main
 }
 
+func (g *Git) FetchAll() error {
+	_, err := g.run("fetch", "--all", "--prune")
+	return err
+}
+
 func (g *Git) FetchRemote(remote string) error {
 	if remote == "" {
 		return errors.New("no remote name specified")

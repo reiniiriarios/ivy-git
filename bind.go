@@ -136,6 +136,11 @@ func (a *App) GetRemotes() DataResponse {
 	})
 }
 
+func (a *App) FetchAll() DataResponse {
+	err := a.Git.FetchAll()
+	return dataResponse(err, true)
+}
+
 func (a *App) FetchRemote(remote string) DataResponse {
 	err := a.Git.FetchRemote(remote)
 	return dataResponse(err, true)
