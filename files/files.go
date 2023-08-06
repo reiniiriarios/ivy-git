@@ -19,7 +19,7 @@ type File struct {
 	Highlight map[int]string
 }
 
-const MAX_FILE_SIZE = 25 << 20 // 25 MiB
+const MAX_FILE_SIZE = 1 << 20 // 1 MiB
 
 func FileTooLarge(file string) bool {
 	bytes, err := getFileSize(file)
