@@ -87,8 +87,13 @@ func (g *Git) PullRemoteBranch(remote string, branch string, rebase bool) error 
 
 	var err error
 	if rebase {
-		// Rebase flag should come at end or may trigger error "cannot rebase onto multiple branches".
-		_, err = g.run("pull", remote, branch+":"+branch, "--rebase")
+		// Must split into multiple commands. Adding `--rebase` flag to end of `pull` can cause
+		// errors in some circumstances, but adding the flag to the beginning can cause errors
+		// in other cirumstances.
+		_, err = g.run("fetch", "--all", "--prune")
+		if err == nil {
+			_, err = g.run("rebase", remote+"/"+branch)
+		}
 	} else {
 		_, err = g.run("pull", remote, branch+":"+branch)
 	}
