@@ -49,9 +49,9 @@ function createRemoteBranches() {
 }
 export const remoteBranches = createRemoteBranches();
 export const remoteOnlyBranches = derived([upstreams, remoteBranches], ([$upstreams, $remoteBranches]) => {
-  return $remoteBranches.filter(branch => (
+  return $remoteBranches?.length ? $remoteBranches.filter(branch => (
     !$upstreams.includes(branch.Remote+'/'+branch.Name)
-  ));
+  )) : [];
 });
 
 function createCurrentBranch() {
