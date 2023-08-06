@@ -99,6 +99,7 @@ const (
 	HTTPSRepositoryNotFound
 	SSHRepositoryNotFound
 	PushNotFastForward
+	PullNonFastForward
 	BranchDeletionFailed
 	DefaultBranchDeletionFailed
 	RevertConflicts
@@ -220,6 +221,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 		{
 			Code:  PushNotFastForward,
 			Regex: "\\((?:non-fast-forward|fetch first)\\)\nerror: failed to push some refs to '.*'",
+		},
+		{
+			Code:  PullNonFastForward,
+			Regex: "[rejected][ \t]*(.+?)[ \t]*->[ \t]*(.+?)[ \t]*\\(non-fast-forward\\)",
 		},
 		{
 			Code:  BranchDeletionFailed,
@@ -473,6 +478,8 @@ func getGitErrorMessage(code ErrorCode) string {
 		return "The repository does not seem to exist anymore. You may not have access, or it may have been deleted or renamed."
 	case PushNotFastForward:
 		return "The repository has been updated since you last pulled. Try pulling before pushing."
+	case PullNonFastForward:
+		return "Error pulling '%s' into '%s' via fast-forward. Resolve conflicts before pulling or reset local branch to remote."
 	case BranchDeletionFailed:
 		return "Could not delete the branch. It was probably already deleted."
 	case DefaultBranchDeletionFailed:
