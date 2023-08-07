@@ -192,6 +192,6 @@ func resetEnvVariables(envs []env) error {
 }
 
 func (g *Git) GitIsInstalled() bool {
-	_, err := g.run("--version")
+	_, err := g.runWithOpts([]string{"--version"}, gitRunOpts{directory: "."})
 	return err == nil
 }
