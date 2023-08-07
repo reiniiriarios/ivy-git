@@ -33,7 +33,7 @@ function createBranches() {
   };
 }
 export const branches = createBranches();
-export const upstreams = derived(branches, $branches => $branches.map(branch => branch.Upstream));
+export const upstreams = derived(branches, $branches => $branches?.map(branch => branch.Upstream) ?? []);
 
 function createRemoteBranches() {
   const { subscribe, set } = writable([] as Branch[]);
@@ -50,7 +50,7 @@ function createRemoteBranches() {
 export const remoteBranches = createRemoteBranches();
 export const remoteOnlyBranches = derived([upstreams, remoteBranches], ([$upstreams, $remoteBranches]) => {
   return $remoteBranches?.length ? $remoteBranches.filter(branch => (
-    !$upstreams.includes(branch.Remote+'/'+branch.Name)
+    !$upstreams?.includes(branch.Remote+'/'+branch.Name)
   )) : [];
 });
 

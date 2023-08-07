@@ -12,7 +12,7 @@
   <h4 class="setting__name">Main Branch</h4>
   <div class="setting__set">
     <Select
-      values={$branches.map(b => b.Name)}
+      values={$branches?.map(b => b.Name) ?? []}
       selected={$repos[$currentRepo].Main ?? ""}
       on:change={saveMain}
     />
