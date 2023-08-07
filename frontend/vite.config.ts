@@ -1,21 +1,8 @@
-import {defineConfig} from 'vite'
-import {svelte} from '@sveltejs/vite-plugin-svelte'
-import {resolve} from 'path';
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [svelte()],
-  resolve: {
-    alias: {
-      wailsjs: resolve('./wailsjs'),
-      components: resolve('./src/components'),
-      'context-menus': resolve('./src/context-menus'),
-      events: resolve('./src/events'),
-      scripts: resolve('./src/scripts'),
-      stores: resolve('./src/stores'),
-      style: resolve('./src/style'),
-      actions: resolve('./src/actions'),
-      src: resolve('./src'),
-    }
-  }
-})
+  plugins: [svelte(), tsconfigPaths()],
+});
