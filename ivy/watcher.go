@@ -41,45 +41,57 @@ func (a *App) watcher() {
 		wg.Wait()
 	}
 
-	for range time.Tick(time.Second * WATCHER_INTERVAL) {
-		// If this variable has changed, it means another instance of this
-		// loop is running and this one should quit.
-		if semi_semaphore != a.WatcherSemiSemaphore {
+	ticker := time.NewTicker(time.Second * WATCHER_INTERVAL)
+	endWatcher := make(chan bool)
+
+	var lc_new bool
+	var sr_new bool
+	var ud_new bool
+	var uf_new bool
+	var rd_new bool
+	var sd_new bool
+
+	for {
+		select {
+		// Have a select case other than ticking in order to fully break
+		// the loop without a memory leak.
+		case <-endWatcher:
 			return
-		}
+		case <-ticker.C:
+			// If this variable has changed, it means another instance of this
+			// loop is running and this one should quit.
+			if semi_semaphore != a.WatcherSemiSemaphore {
+				endWatcher <- true
+				return
+			}
 
-		// If no repo is selected, don't do anything.
-		if !a.isCurrentRepo() {
-			continue
-		}
+			// If no repo is selected, don't do anything.
+			if !a.isCurrentRepo() {
+				continue
+			}
 
-		// Get new data
-		wg.Add(6)
-		var lc_new bool
-		var sr_new bool
-		var ud_new bool
-		var uf_new bool
-		var rd_new bool
-		var sd_new bool
-		go a.updateLastCommit(&lc_new, &wg)
-		go a.updateShowRefAll(&sr_new, &wg)
-		go a.updateUncommittedDiff(&ud_new, &wg)
-		go a.updateUntrackedFiles(&uf_new, &wg)
-		go a.updateRemoteDiff(&rd_new, &wg)
-		go a.updateStagedDiff(&sd_new, &wg)
-		wg.Wait()
+			// Get new data
+			wg.Add(6)
+			go a.updateLastCommit(&lc_new, &wg)
+			go a.updateShowRefAll(&sr_new, &wg)
+			go a.updateUncommittedDiff(&ud_new, &wg)
+			go a.updateUntrackedFiles(&uf_new, &wg)
+			go a.updateRemoteDiff(&rd_new, &wg)
+			go a.updateStagedDiff(&sd_new, &wg)
+			wg.Wait()
 
-		// If data changed, emit event.
-		if lc_new || sr_new || ud_new || uf_new || rd_new || sd_new {
-			runtime.LogInfo(a.ctx, "Watcher updating")
-			runtime.EventsEmit(a.ctx, "watcher", WatcherEvent{
-				CommitChange:          lc_new,
-				ShowRefChange:         sr_new,
-				UncommittedDiffChange: ud_new,
-				UntrackedFilesChange:  uf_new,
-				RemoteDiffChange:      rd_new,
-				StagedDiffChange:      sd_new,
-			})
+			// If data changed, emit event.
+			if lc_new || sr_new || ud_new || uf_new || rd_new || sd_new {
+				runtime.LogInfo(a.ctx, "Watcher updating")
+				runtime.EventsEmit(a.ctx, "watcher", WatcherEvent{
+					CommitChange:          lc_new,
+					ShowRefChange:         sr_new,
+					UncommittedDiffChange: ud_new,
+					UntrackedFilesChange:  uf_new,
+					RemoteDiffChange:      rd_new,
+					StagedDiffChange:      sd_new,
+				})
+			}
 		}
 	}
 }
