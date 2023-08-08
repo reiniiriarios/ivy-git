@@ -13,11 +13,12 @@ import (
 
 // Update cloc data with latest git information.
 func (a *App) updateClocData(clocData git.ClocData) git.ClocData {
-	clocData, err := a.Git.Cloc()
+	newClocData, err := a.Git.Cloc()
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 	} else {
-		a.saveClocData(clocData)
+		a.saveClocData(newClocData)
+		clocData = newClocData
 	}
 	return clocData
 }

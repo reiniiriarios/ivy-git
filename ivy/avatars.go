@@ -2,11 +2,7 @@ package ivy
 
 import (
 	"crypto/md5"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"regexp"
 )
 
@@ -54,20 +50,20 @@ func getGitHubAvatarUrl(user_id string, username string) string {
 	return fmt.Sprintf("https://avatars.githubusercontent.com/u/%s?s=%d&v=4", user_id, AVATAR_SIZE)
 }
 
-func getGitHubUserData(username string) (GitHubUserData, error) {
-	var data GitHubUserData
-	resp, err := http.Get("https://api.github.com/users/" + username)
-	if err != nil {
-		return data, err
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return data, err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return data, errors.New(resp.Status)
-	}
-	json.Unmarshal(body, &data)
-	return data, nil
-}
+// func getGitHubUserData(username string) (GitHubUserData, error) {
+// 	var data GitHubUserData
+// 	resp, err := http.Get("https://api.github.com/users/" + username)
+// 	if err != nil {
+// 		return data, err
+// 	}
+// 	defer resp.Body.Close()
+// 	body, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return data, err
+// 	}
+// 	if resp.StatusCode != http.StatusOK {
+// 		return data, errors.New(resp.Status)
+// 	}
+// 	json.Unmarshal(body, &data)
+// 	return data, nil
+// }
