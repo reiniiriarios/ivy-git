@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
-import { ApplyStash } from "wailsjs/go/main/App";
+import { ApplyStash } from "wailsjs/go/ivy/App";
 
 function applyStash(stash: string) {
   messageDialog.confirm({

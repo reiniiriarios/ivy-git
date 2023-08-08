@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
-import { DeleteBranch } from "wailsjs/go/main/App";
+import { DeleteBranch } from "wailsjs/go/ivy/App";
 
 // Delete local branch, optionally remote.
 function deleteBranch(branch: string, can_delete_remote: boolean) {

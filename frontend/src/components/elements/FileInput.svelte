@@ -1,6 +1,6 @@
 <script lang="ts">
   import { parseResponse } from "scripts/parse-response";
-  import { SelectDirectory } from "wailsjs/go/main/App";
+  import { SelectDirectory } from "wailsjs/go/ivy/App";
 
   export let display: string = "";
   export let id: string = "";

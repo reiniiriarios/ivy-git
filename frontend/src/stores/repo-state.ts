@@ -1,5 +1,5 @@
 import { derived, writable } from "svelte/store";
-import { GetRepoState } from "wailsjs/go/main/App";
+import { GetRepoState } from "wailsjs/go/ivy/App";
 import { commitMessage } from "stores/ui";
 
 export const RepoState = {

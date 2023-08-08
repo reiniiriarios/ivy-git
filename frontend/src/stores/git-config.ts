@@ -7,7 +7,7 @@ import {
   UpdateGitConfigUserEmail,
   UpdateGitConfigUserName,
   UpdateGitConfigUserSigningKey,
-} from 'wailsjs/go/main/App';
+} from 'wailsjs/go/ivy/App';
 
 interface GitConfigAll {
   local: GitConfig,

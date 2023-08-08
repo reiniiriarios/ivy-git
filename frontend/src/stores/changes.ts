@@ -1,6 +1,6 @@
 import { parseResponse } from 'scripts/parse-response';
 import { derived, get, writable } from 'svelte/store';
-import { GetConflictParsedDiff, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/main/App';
+import { GetConflictParsedDiff, GetWorkingFileParsedDiff, GitListChanges } from 'wailsjs/go/ivy/App';
 import { currentRepo } from 'stores/repos';
 import { currentDiff, type Diff } from 'stores/diffs';
 import { currentTab } from 'stores/ui';

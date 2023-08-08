@@ -3,7 +3,7 @@
   import TextInput from "components/elements/TextInput.svelte";
   import { appData } from "stores/app-data";
   import { messageDialog } from "stores/message-dialog";
-  import { FileExists } from "wailsjs/go/main/App";
+  import { FileExists } from "wailsjs/go/ivy/App";
 
   let repoName: string;
   let repoLocation: string = $appData.RecentRepoDir;

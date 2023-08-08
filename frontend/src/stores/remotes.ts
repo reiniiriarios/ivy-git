@@ -1,5 +1,5 @@
 import { derived, writable } from 'svelte/store';
-import { GetRemotes } from 'wailsjs/go/main/App';
+import { GetRemotes } from 'wailsjs/go/ivy/App';
 
 export interface Remote {
 	Name: string;

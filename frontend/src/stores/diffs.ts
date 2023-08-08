@@ -6,7 +6,7 @@ import {
   ResolveDiffConflicts,
   StageFile,
   RemoveFile,
-} from "wailsjs/go/main/App";
+} from "wailsjs/go/ivy/App";
 import { parseResponse } from "scripts/parse-response";
 
 type OursTheirs = number;

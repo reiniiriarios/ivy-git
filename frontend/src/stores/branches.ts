@@ -1,6 +1,6 @@
 import { writable, get, derived } from 'svelte/store';
 
-import { GetBranches, GetCurrentBranch, SwitchBranch, GetRemoteBranches } from 'wailsjs/go/main/App';
+import { GetBranches, GetCurrentBranch, SwitchBranch, GetRemoteBranches } from 'wailsjs/go/ivy/App';
 
 import { commitData, commitSignData } from 'stores/commits';
 import { changes } from 'stores/changes';

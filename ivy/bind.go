@@ -1,9 +1,9 @@
-package main
+package ivy
 
 import (
 	"fmt"
-	"ivy-git/files"
-	"ivy-git/git"
+	"ivy-git/ivy/files"
+	"ivy-git/ivy/git"
 	"path/filepath"
 	"time"
 

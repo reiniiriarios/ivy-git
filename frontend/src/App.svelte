@@ -8,7 +8,7 @@
   import LayoutSidebar from "components/sidebar/LayoutSidebar.svelte";
   import LinkPreview from "components/elements/LinkPreview.svelte";
 
-  import { GitIsInstalled, ResizeWindow } from "wailsjs/go/main/App";
+  import { GitIsInstalled, ResizeWindow } from "wailsjs/go/ivy/App";
 
   import { addInputListener, keyboardNavListener } from "scripts/keyboard-navigation";
   import { addLinkListener } from "scripts/links";

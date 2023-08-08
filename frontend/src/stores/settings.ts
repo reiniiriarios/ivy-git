@@ -1,7 +1,7 @@
 import { autoFetchTimer } from 'events/auto-fetch';
 import { parseResponse } from 'scripts/parse-response';
 import { writable, get, derived } from 'svelte/store';
-import { GetDateFormats, GetSettings, SaveSettingsGui } from 'wailsjs/go/main/App'
+import { GetDateFormats, GetSettings, SaveSettingsGui } from 'wailsjs/go/ivy/App'
 
 interface Settings {
 	Version: string;

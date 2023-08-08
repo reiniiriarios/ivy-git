@@ -2,7 +2,7 @@ import { autoFetchTimer } from "events/auto-fetch";
 import checkIcon from "scripts/button-check-icon";
 import { parseResponse } from "scripts/parse-response";
 import { remoteData } from "stores/remotes";
-import { PullRemote } from "wailsjs/go/main/App";
+import { PullRemote } from "wailsjs/go/ivy/App";
 
 function pullRemote(remote: string, button?: HTMLElement) {
   if (button) button.setAttribute('disabled', 'disabled');

@@ -1,8 +1,8 @@
-package main
+package ivy
 
 import (
 	"context"
-	"ivy-git/git"
+	"ivy-git/ivy/git"
 	"os"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -14,6 +14,7 @@ type App struct {
 	RepoSaveData         RepoSaveData
 	Settings             Settings
 	AppData              AppData
+	WailsConfig          WailsConfig
 	Git                  git.Git
 	CurrentHash          string
 	ShowRefAll           string
@@ -24,6 +25,23 @@ type App struct {
 	WatcherSemiSemaphore uint64
 }
 
+type WailsConfig struct {
+	Name   string            `json:"name"`
+	Slug   string            `json:"slug"`
+	Bundle string            `json:"bundle"`
+	Author wailsConfigAuthor `json:"author"`
+	Info   wailsConfigInfo   `json:"info"`
+}
+
+type wailsConfigAuthor struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type wailsConfigInfo struct {
+	Version string `json:"productVersion"`
+}
+
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
@@ -31,7 +49,7 @@ func NewApp() *App {
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
+func (a *App) Startup(ctx context.Context) {
 	// Context for app.
 	a.ctx = ctx
 
@@ -66,6 +84,6 @@ func (a *App) startup(ctx context.Context) {
 }
 
 // called when the DOM is ready
-func (a *App) domready(ctx context.Context) {
+func (a *App) Domready(ctx context.Context) {
 	go a.watcher()
 }

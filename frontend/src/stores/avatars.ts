@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import { GetAvatarUrl } from "wailsjs/go/main/App";
+import { GetAvatarUrl } from "wailsjs/go/ivy/App";
 
 type Avatars = { [email: string]: string };
 

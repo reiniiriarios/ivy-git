@@ -3,7 +3,7 @@
   import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
   import { commitMessage } from "stores/ui";
-  import { RebaseAbort, RebaseContinue, RebaseSkip } from "wailsjs/go/main/App";
+  import { RebaseAbort, RebaseContinue, RebaseSkip } from "wailsjs/go/ivy/App";
 
   let running: boolean = false;
 

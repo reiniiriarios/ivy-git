@@ -1,10 +1,10 @@
-package main
+package ivy
 
 import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"ivy-git/git"
+	"ivy-git/ivy/git"
 	"os"
 	"path/filepath"
 	"time"
@@ -118,7 +118,7 @@ func (a *App) saveRepoData() {
 // Save settings to config file.
 func (a *App) saveSettings(new_settings Settings) error {
 	// Always save the current version in settings.
-	new_settings.Version = a.getWailsConfig().Info.Version
+	new_settings.Version = a.WailsConfig.Info.Version
 
 	// Only three viable options for this.
 	if new_settings.Workflow != "squash" && new_settings.Workflow != "rebase" {
@@ -238,13 +238,13 @@ func (a *App) initDir(path string) {
 func (a *App) settingsDirName() string {
 	if runtime.Environment(a.ctx).Platform == "windows" {
 		// Windows convention is the name of the app.
-		return a.getWailsConfig().Name
+		return a.WailsConfig.Name
 	} else if runtime.Environment(a.ctx).Platform == "darwin" {
 		// Darwin convention is the bundle id.
-		return a.getWailsConfig().Bundle
+		return a.WailsConfig.Bundle
 	}
 	// For unix, use the slug.
-	return a.getWailsConfig().Slug
+	return a.WailsConfig.Slug
 }
 
 // Get settings in frontend.

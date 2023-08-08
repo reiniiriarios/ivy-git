@@ -2,7 +2,7 @@ import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { commitMessage } from "stores/ui";
-import { MergeCommit } from "wailsjs/go/main/App";
+import { MergeCommit } from "wailsjs/go/ivy/App";
 
 function mergeBranch(branch: string) {
   messageDialog.confirm({

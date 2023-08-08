@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { commitMessage } from "stores/ui";
-import { RebaseOnBranch } from "wailsjs/go/main/App";
+import { RebaseOnBranch } from "wailsjs/go/ivy/App";
 
 function rebaseOnBranch(branch: string) {
   RebaseOnBranch(branch).then(r => {

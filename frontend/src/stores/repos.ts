@@ -9,7 +9,7 @@ import {
   RemoveRepo,
   UpdateMain,
   UpdateSelectedRepo,
-} from 'wailsjs/go/main/App';
+} from 'wailsjs/go/ivy/App';
 
 import { commitData, commitSignData } from 'stores/commits';
 import { changes } from 'stores/changes';

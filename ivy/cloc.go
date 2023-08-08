@@ -1,10 +1,10 @@
-package main
+package ivy
 
 import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"ivy-git/git"
+	"ivy-git/ivy/git"
 	"os"
 	"path/filepath"
 

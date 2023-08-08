@@ -3,7 +3,7 @@
   import { changes, mergeConflicts, mergeConflictsResolved } from "stores/changes";
   import { repoState } from "stores/repo-state";
   import { commitMessage } from "stores/ui";
-  import { CherryPickAbort, CherryPickContinue, CherryPickSkip } from "wailsjs/go/main/App";
+  import { CherryPickAbort, CherryPickContinue, CherryPickSkip } from "wailsjs/go/ivy/App";
 
   let running: boolean = false;
 

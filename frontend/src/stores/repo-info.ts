@@ -1,6 +1,6 @@
 import { parseResponse } from "scripts/parse-response";
 import { writable } from "svelte/store";
-import { NumBranches, NumMainBranchCommits, NumTags } from "wailsjs/go/main/App";
+import { NumBranches, NumMainBranchCommits, NumTags } from "wailsjs/go/ivy/App";
 
 function createNumBranches() {
   const { subscribe, set } = writable(0);

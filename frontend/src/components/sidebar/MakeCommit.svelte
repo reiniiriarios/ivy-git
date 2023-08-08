@@ -7,7 +7,7 @@
   import { commitData } from "stores/commits";
   import { repoState } from "stores/repo-state";
   import { repoSelect, branchSelect, commitMessageSubject, commitMessageBody, commitMessage } from "stores/ui";
-  import { MakeCommit, MakeStash } from "wailsjs/go/main/App";
+  import { MakeCommit, MakeStash } from "wailsjs/go/ivy/App";
   import { remoteData } from "stores/remotes";
 
   let running: boolean = false;

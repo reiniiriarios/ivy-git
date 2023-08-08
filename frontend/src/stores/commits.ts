@@ -1,7 +1,7 @@
 import { drawGraph, getSVGWidth } from 'scripts/graph';
 import { parseResponse } from 'scripts/parse-response';
 import { derived, writable, get } from 'svelte/store';
-import { GetCommitList, GetCommitsSignStatus } from 'wailsjs/go/main/App';
+import { GetCommitList, GetCommitsSignStatus } from 'wailsjs/go/ivy/App';
 import { settings } from 'stores/settings';
 
 const COMMIT_LIST_PAGING = 500;

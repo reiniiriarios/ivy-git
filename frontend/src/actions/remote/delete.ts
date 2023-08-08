@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { messageDialog } from "stores/message-dialog";
 import { remoteData } from "stores/remotes";
-import { DeleteRemote } from "wailsjs/go/main/App";
+import { DeleteRemote } from "wailsjs/go/ivy/App";
 
 function deleteRemote(remote: string) {
   messageDialog.confirm({

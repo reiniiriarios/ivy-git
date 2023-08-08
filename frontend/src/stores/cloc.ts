@@ -1,6 +1,6 @@
 import { parseResponse } from "scripts/parse-response";
 import { get, writable } from "svelte/store";
-import { CommitsBehindMain, GetCachedClocData, UpdateClocData, ResetClocData } from "wailsjs/go/main/App";
+import { CommitsBehindMain, GetCachedClocData, UpdateClocData, ResetClocData } from "wailsjs/go/ivy/App";
 import { currentRepo } from "./repos";
 
 interface ClocData {

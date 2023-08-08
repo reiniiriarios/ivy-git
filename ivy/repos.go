@@ -1,8 +1,8 @@
-package main
+package ivy
 
 import (
 	"errors"
-	"ivy-git/git"
+	"ivy-git/ivy/git"
 	"os"
 	"path/filepath"
 	"regexp"

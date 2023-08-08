@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
-import { DropCommit } from "wailsjs/go/main/App";
+import { DropCommit } from "wailsjs/go/ivy/App";
 
 function dropCommit(hash: string) {
   messageDialog.confirm({

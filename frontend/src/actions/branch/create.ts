@@ -4,7 +4,7 @@ import { currentBranch, type Branch } from "stores/branches";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { branchSelect } from "stores/ui";
-import { CreateBranch } from "wailsjs/go/main/App";
+import { CreateBranch } from "wailsjs/go/ivy/App";
 
 function parseBranchPaste(input: string): string {
   // JIRA adds this to its 'create branch' feature.

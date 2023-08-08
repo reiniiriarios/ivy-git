@@ -1,7 +1,7 @@
 package git
 
 import (
-	"ivy-git/files"
+	"ivy-git/ivy/files"
 	"path/filepath"
 )
 

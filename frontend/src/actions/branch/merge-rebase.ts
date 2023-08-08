@@ -2,7 +2,7 @@ import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { commitMessage } from "stores/ui";
-import { MergeRebase } from "wailsjs/go/main/App";
+import { MergeRebase } from "wailsjs/go/ivy/App";
 
 function rebaseAndMergeIntoCurrentBranch(branch: string) {
   messageDialog.confirm({

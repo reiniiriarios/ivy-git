@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import { GetInProgressCommitMessageMerge, GetInProgressCommitMessageEdit, GetLastCommitMessage } from 'wailsjs/go/main/App'
+import { GetInProgressCommitMessageMerge, GetInProgressCommitMessageEdit, GetLastCommitMessage } from 'wailsjs/go/ivy/App'
 
 import { RepoState, repoState } from 'stores/repo-state';
 import { parseResponse } from 'scripts/parse-response';

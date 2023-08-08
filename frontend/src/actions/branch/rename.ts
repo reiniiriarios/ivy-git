@@ -4,7 +4,7 @@ import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { currentRepo, repos } from "stores/repos";
 import { get } from "svelte/store";
-import { RenameBranch } from "wailsjs/go/main/App";
+import { RenameBranch } from "wailsjs/go/ivy/App";
 
 function renameBranch(branch: string) {
   messageDialog.confirm({

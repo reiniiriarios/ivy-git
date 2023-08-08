@@ -1,4 +1,4 @@
-package main
+package ivy
 
 import (
 	"crypto/md5"

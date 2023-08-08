@@ -2,7 +2,7 @@ import { parseResponse } from "scripts/parse-response";
 import { changes } from "stores/changes";
 import { currentDiff } from "stores/diffs";
 import { messageDialog } from "stores/message-dialog";
-import { DiscardChanges } from "wailsjs/go/main/App";
+import { DiscardChanges } from "wailsjs/go/ivy/App";
 import { get } from "svelte/store";
 
 export function discardChanges(file: string) {

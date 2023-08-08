@@ -1,6 +1,6 @@
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
-import { ResetBranchToRemote } from "wailsjs/go/main/App";
+import { ResetBranchToRemote } from "wailsjs/go/ivy/App";
 
 function resetBranchToRemote(branch: string) {
   messageDialog.confirm({

@@ -2,7 +2,7 @@ import { type Menu, type MenuItem } from "context-menus/_all";
 import { get } from "svelte/store";
 import { finderWord } from "stores/env";
 import { currentRepo } from "stores/repos";
-import { OpenRepoInFinder } from "wailsjs/go/main/App";
+import { OpenRepoInFinder } from "wailsjs/go/ivy/App";
 import { ClipboardSetText } from "wailsjs/runtime/runtime";
 
 export const menuRepo: Menu = (e: HTMLElement) => {

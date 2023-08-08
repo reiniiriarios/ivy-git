@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { RepoState, repoState } from "stores/repo-state";
 import { get, writable } from "svelte/store";
-import { FetchAll } from "wailsjs/go/main/App";
+import { FetchAll } from "wailsjs/go/ivy/App";
 
 // How often to check the timer.
 const AUTO_FETCH_INTERVAL = 1000; //ms

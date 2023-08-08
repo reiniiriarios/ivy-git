@@ -2,7 +2,7 @@ import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { commitMessage } from "stores/ui";
-import { CherryPick } from "wailsjs/go/main/App";
+import { CherryPick } from "wailsjs/go/ivy/App";
 
 function cherryPick(hash: string) {
   messageDialog.confirm({

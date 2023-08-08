@@ -3,7 +3,7 @@ import { currentBranch, detachedHead } from "stores/branches";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { get } from "svelte/store";
-import { CheckoutCommit } from "wailsjs/go/main/App";
+import { CheckoutCommit } from "wailsjs/go/ivy/App";
 
 function checkoutCommit(hash: string) {
   if (get(detachedHead)) {

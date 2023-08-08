@@ -3,7 +3,7 @@ import { changes, type Change } from "stores/changes";
 import { currentDiff } from "stores/diffs";
 import { currentTab } from "stores/ui";
 import { get } from "svelte/store";
-import { StageFile, StagePartialFile } from "wailsjs/go/main/App";
+import { StageFile, StagePartialFile } from "wailsjs/go/ivy/App";
 
 export function stageFile(file: Change, partial: boolean) {
   if (file) {

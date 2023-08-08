@@ -3,7 +3,7 @@ import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
 import { settings } from "stores/settings";
 import { get } from "svelte/store";
-import { PushBranch } from "wailsjs/go/main/App";
+import { PushBranch } from "wailsjs/go/ivy/App";
 
 function pushBranch(name: string, display: string) {
   PushBranch(name, false).then(r => {

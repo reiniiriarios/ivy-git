@@ -3,7 +3,7 @@ import { parseResponse } from "scripts/parse-response";
 import { changes } from "stores/changes";
 import { currentDiff } from "stores/diffs";
 import { currentTab } from "stores/ui";
-import { StageAll } from "wailsjs/go/main/App";
+import { StageAll } from "wailsjs/go/ivy/App";
 
 export function stageAll() {
   StageAll().then(result => {

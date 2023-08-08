@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { messageDialog } from "stores/message-dialog";
 import { remoteData } from "stores/remotes";
-import { AddRemote } from "wailsjs/go/main/App";
+import { AddRemote } from "wailsjs/go/ivy/App";
 
 function addRemote() {
   messageDialog.addRemote({

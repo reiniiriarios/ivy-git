@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
-import { MergeFastForward } from "wailsjs/go/main/App";
+import { MergeFastForward } from "wailsjs/go/ivy/App";
 
 function fastForwardMerge(branch: string) {
   messageDialog.confirm({

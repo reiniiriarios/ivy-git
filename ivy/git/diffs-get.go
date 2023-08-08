@@ -2,7 +2,7 @@ package git
 
 import (
 	"errors"
-	"ivy-git/files"
+	"ivy-git/ivy/files"
 )
 
 // Get a simple list of untracked files, no other data.

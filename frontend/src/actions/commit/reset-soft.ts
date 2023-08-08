@@ -1,7 +1,7 @@
 import { parseResponse } from "scripts/parse-response";
 import { commitData, commitSignData } from "stores/commits";
 import { messageDialog } from "stores/message-dialog";
-import { SoftReset } from "wailsjs/go/main/App";
+import { SoftReset } from "wailsjs/go/ivy/App";
 
 function softReset(hash: string) {
   messageDialog.confirm({

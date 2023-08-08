@@ -3,7 +3,7 @@
   import { parseResponse } from "scripts/parse-response";
   import { changes } from "stores/changes";
   import { currentDiff } from "stores/diffs";
-  import { StageFile, StagePartialFile, UnstageFile, UnstagePartialFile } from "wailsjs/go/main/App";
+  import { StageFile, StagePartialFile, UnstageFile, UnstagePartialFile } from "wailsjs/go/ivy/App";
 
   function stageSelected(e: (MouseEvent | KeyboardEvent) & { currentTarget: HTMLButtonElement }) {
     e.currentTarget.disabled = true;

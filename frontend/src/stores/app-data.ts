@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { GetAppData } from 'wailsjs/go/main/App';
+import { GetAppData } from 'wailsjs/go/ivy/App';
 import { EventsOn } from 'wailsjs/runtime/runtime';
 
 interface AppData {

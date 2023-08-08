@@ -3,7 +3,7 @@ import checkIcon from "scripts/button-check-icon";
 import { parseResponse } from "scripts/parse-response";
 import { remoteData } from "stores/remotes";
 import { settings } from "stores/settings";
-import { PushRemote } from "wailsjs/go/main/App";
+import { PushRemote } from "wailsjs/go/ivy/App";
 import { messageDialog } from "stores/message-dialog";
 
 function pushRemote(remote: string, button?: HTMLElement) {
