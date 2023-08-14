@@ -20,7 +20,7 @@ export const RepoState = {
 
 function createRepoState() {
   const { subscribe, set } = writable(RepoState.Nil);
-  
+
   return {
     subscribe,
     load: async () => {
@@ -32,7 +32,11 @@ function createRepoState() {
     refresh: async () => {
       GetRepoState().then(result => {
         set(result);
-        commitMessage.check();
+        if (result === RepoState.Nil || result === RepoState.None) {
+          commitMessage.clear();
+        } else {
+          commitMessage.check();
+        }
       });
     },
     clear: async () => set(RepoState.Nil),
