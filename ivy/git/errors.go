@@ -157,6 +157,7 @@ const (
 	CherryPickConflict
 	CouldNotApply
 	CouldNotReadUsername
+	RefNotSymbolic
 )
 
 type GitErrorRegex struct {
@@ -460,6 +461,10 @@ func getGitErrorRegexes() []GitErrorRegex {
 			Code:  CouldNotReadUsername,
 			Regex: "fatal: could not read Username for '(?:.+?)': (?:.+)",
 		},
+		{
+			Code:  RefNotSymbolic,
+			Regex: "ref (.+?) is not a symbolic ref",
+		},
 	}
 }
 
@@ -580,6 +585,8 @@ func getGitErrorMessage(code ErrorCode) string {
 		return "Please resolve the conflicts before continuing."
 	case CouldNotReadUsername:
 		return "Could not read Username for this repo. Check your git settings for the current remote or check authentication for remote, such as logging in via an access token."
+	case RefNotSymbolic:
+		return "%s is not a symbolic ref."
 	case MergeWithLocalChanges:
 	case RebaseWithLocalChanges:
 	case GPGFailedToSignData:

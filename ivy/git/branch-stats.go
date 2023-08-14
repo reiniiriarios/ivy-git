@@ -75,10 +75,18 @@ func (g *Git) getCurrentBranchFromSymbolicRef() (string, error) {
 	// earlier    `git symbolic-ref HEAD` -- works, but returns full ref
 	ref, err := g.run("symbolic-ref", "HEAD")
 	if err != nil {
+		// If the HEAD is detached, this error will proc.
+		if errorCode(err) == RefNotSymbolic {
+			ref, err = g.run("rev-parse", "--abbrev-ref", "HEAD")
+		}
+		// If any of these errors, assume there's no branch selected and no commits available to parse.
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision || errorCode(err) == UnknownRevisionOrPath || errorCode(err) == ExitStatus1 {
 			return "", nil
 		}
-		return "", err
+		if err != nil {
+			// Otherwise something odd may be happening, display the error.
+			return "", err
+		}
 	}
 	// refs/heads/main => main
 	ref = parseOneLine(ref)
