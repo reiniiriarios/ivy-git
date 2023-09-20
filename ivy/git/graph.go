@@ -132,9 +132,8 @@ func (g *Graph) buildPaths() {
 				g.buildNormalPath(&g.Vertices[i], color)
 				color++
 			}
-		} else {
-			i++
 		}
+		i++
 	}
 
 	// Determine committed status of each line.
