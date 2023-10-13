@@ -1,6 +1,6 @@
 module ivy-git
 
-go 1.18
+go 1.21
 
 require (
 	github.com/alecthomas/chroma/v2 v2.9.1
