@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Ivy Git
+Comment=Git Gui
+Exec=/usr/bin/ivy-git
+Icon=/etc/ivy-git/icon.png
+Terminal=false
