@@ -1,7 +1,6 @@
 package files
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -109,7 +108,7 @@ func (f *File) getSize() error {
 }
 
 func (f *File) getContents() error {
-	bytes, err := ioutil.ReadFile(f.Filepath)
+	bytes, err := os.ReadFile(f.Filepath)
 	if err != nil {
 		return err
 	}

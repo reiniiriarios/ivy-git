@@ -3,7 +3,6 @@ package ivy
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"ivy-git/ivy/git"
 	"os"
 	"path/filepath"
@@ -177,7 +176,7 @@ func (a *App) initConfigFile(file string) []byte {
 		}
 		defer f.Close()
 	}
-	contents, err := ioutil.ReadFile(file)
+	contents, err := os.ReadFile(file)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
 	}
