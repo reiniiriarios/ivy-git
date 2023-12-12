@@ -1,0 +1,18 @@
+Source: ivy-git
+Section: Git
+Priority: optional
+Maintainer: Emma Litwa-Vulcu <80431903+reiniiriarios@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13), golang-1.21, libgtk3, libwebkit
+Standards-Version: 4.6.0
+Homepage: https://ivygit.com
+#Vcs-Browser: https://salsa.debian.org/debian/ivy-git
+#Vcs-Git: https://salsa.debian.org/debian/ivy-git.git
+Rules-Requires-Root: no
+
+Package: ivy-git
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Git GUI
+ Ivy Git aims to simplify workflow by putting the least amount of
+ resistance between the user and git as possible, enabling diverse
+ workflows without the constraints of being opinionated. 

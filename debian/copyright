@@ -1,0 +1,6 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ivy-git
+Upstream-Contact: Emma Litwa-Vulcu
+
+Files: *
+Copyright: 2023 Emma Litwa-Vulcu <80431903+reiniiriarios@users.noreply.github.com>
