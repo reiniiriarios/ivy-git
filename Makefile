@@ -56,6 +56,8 @@ build:
 		cp dist/bin/ivy-git build/
 		cp dist/linux/ivy-git.desktop build/
 		cp dist/appicon.png build/
+		VERSION=$(cat wails.json | grep productVersion | awk -F\" '{print $4}') \
+		sed -i "s/version:.*/version: '$(VERSION)'/g" snap/snapcraft.yaml
   endif
   ifeq ($(USER_OS), windows)
 		wails build -platform windows/amd64 -nsis
@@ -79,3 +81,6 @@ install:
   ifeq ($(USER_OS), windows)
 		build/IvyGit_dev_Windows_amd64_installer.exe
   endif
+
+clean:
+	rm -rf build
