@@ -1,0 +1,20 @@
+name: ivy-git # you probably want to 'snapcraft register <name>'
+base: core22 # the base snap is the execution environment for this snap
+version: '0.38.0'
+summary: Git Gui # 79 char long summary
+description: |
+   Ivy Git aims to simplify workflow by putting the least amount of
+   resistance between the user and git as possible, enabling diverse
+   workflows without the constraints of being opinionated. 
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+parts:
+  ivy-git:
+    plugin: dump
+    source: https://ivygit.s3.us-west-2.amazonaws.com/IvyGit_v$SNAPCRAFT_PROJECT_VERSION_linux_binary.tar.gz
+
+apps:
+  ivy-git:
+    command: ivy-git
