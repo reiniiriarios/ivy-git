@@ -37,6 +37,7 @@ all: deps build
 
 deps:
 	go get -d ./...
+	go install github.com/wailsapp/wails/v2/cmd/wails@2.6.0
 	(cd frontend && npm ci)
 
 run:
@@ -56,8 +57,6 @@ build:
 		cp dist/bin/ivy-git build/
 		cp dist/linux/ivy-git.desktop build/
 		cp dist/appicon.png build/
-		VERSION=$(cat wails.json | grep productVersion | awk -F\" '{print $4}') \
-		sed -i "s/version:.*/version: '$(VERSION)'/g" snap/snapcraft.yaml
   endif
   ifeq ($(USER_OS), windows)
 		wails build -platform windows/amd64 -nsis
@@ -66,6 +65,13 @@ build:
   endif
   ifeq ($(USER_OS),)
 		echo "Unrecognized OS"
+  endif
+
+package:
+  ifeq ($(USER_OS), linux)
+		VERSION=$(cat wails.json | grep productVersion | awk -F\" '{print $4}') \
+		VERSION=$(cat wails.json | grep productVersion | awk -F\" '{print $4}') \
+		sed -i "s/version:.*/version: '${VERSION}'/g" snap/snapcraft.yaml
   endif
 
 install:
