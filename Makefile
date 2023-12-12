@@ -43,18 +43,24 @@ run:
 	IVY_GIT_DEBUG=true GODEBUG=gctrace=1 GOGC=100 GOMEMLIMIT=1000MiB wails dev
 
 build:
+	@mkdir -p build
   ifeq ($(USER_OS), darwin)
 		GOGC=100 GOMEMLIMIT=1000MiB wails build -platform darwin/universal
-		pkgbuild --root build/bin --component-plist build/darwin/components.plist --identifier "me.reinii.ivy-git.pkg" --install-location /Applications ivy-git.pkg
+		pkgbuild --root dist/bin --component-plist dist/darwin/components.plist --identifier "me.reinii.ivy-git.pkg" --install-location /Applications ivy-git.pkg
 		productbuild --package ivy-git.pkg "IvyGit_dev_Darwin_Universal.pkg"
+		mv ivy-git.pkg dist/bin/ivy-git.pkg
+		mv IvyGit_dev_Darwin_Universal.pkg build/IvyGit_dev_Darwin_Universal.pkg
   endif
   ifeq ($(USER_OS), linux)
 		GOGC=100 GOMEMLIMIT=1000MiB wails build -platform linux/amd64 -o ivy-git
+		cp dist/bin/ivy-git build/
+		cp dist/linux/ivy-git.desktop build/
+		cp dist/appicon.png build/
   endif
   ifeq ($(USER_OS), windows)
 		wails build -platform windows/amd64 -nsis
-		pwsh -noprofile -command Compress-Archive -Path "$PWD\build\bin\Ivy Git.exe" -DestinationPath "$PWD\IvyGit_dev_Windows_amd64.zip"
-		pwsh -noprofile -command Move-Item -Path "$PWD\build\bin\Ivy Git-amd64-installer.exe" -Destination "$PWD\IvyGit_dev_Windows_amd64_installer.exe"
+		pwsh -noprofile -command Compress-Archive -Path "$PWD\dist\bin\Ivy Git.exe" -DestinationPath "$PWD\build\IvyGit_dev_Windows_amd64.zip"
+		pwsh -noprofile -command Move-Item -Path "$PWD\dist\bin\Ivy Git-amd64-installer.exe" -Destination "$PWD\build\IvyGit_dev_Windows_amd64_installer.exe"
   endif
   ifeq ($(USER_OS),)
 		echo "Unrecognized OS"
@@ -62,14 +68,14 @@ build:
 
 install:
   ifeq ($(USER_OS), darwin)
-		build/bin/ivy-git.pkg
+		build/IvyGit_dev_Darwin_Universal.pkg
   endif
   ifeq ($(USER_OS), linux)
-		install -v build/bin/ivy-git /usr/bin/ivy-git
+		install -v build/ivy-git /usr/bin/ivy-git
 		mkdir -p /etc/ivy-git
-		install -v build/linux/ivy-git.desktop /usr/share/applications/ivy-git.desktop
+		install -v build/ivy-git.desktop /usr/share/applications/ivy-git.desktop
 		install -v build/appicon.png /etc/ivy-git/icon.png
   endif
   ifeq ($(USER_OS), windows)
-		build/bin/IvyGit_dev_Windows_amd64_installer.exe
+		build/IvyGit_dev_Windows_amd64_installer.exe
   endif

@@ -40,7 +40,7 @@ jobs:
       - name: Create darwin package
         if: matrix.platform == 'macos-latest'
         run: |
-          pkgbuild --root build/bin --component-plist build/darwin/components.plist --identifier "me.reinii.ivy-git.pkg" --install-location /Applications ivy-git.pkg
+          pkgbuild --root dist/bin --component-plist dist/darwin/components.plist --identifier "me.reinii.ivy-git.pkg" --install-location /Applications ivy-git.pkg
           productbuild --package ivy-git.pkg "IvyGit_${{ github.ref_name }}_Darwin_Universal.pkg"
 
       - name: Upload darwin package
@@ -56,8 +56,8 @@ jobs:
         if: matrix.platform == 'windows-latest'
         run: |
           wails build -platform windows/amd64 -nsis
-          Compress-Archive -Path "$PWD\build\bin\Ivy Git.exe" -DestinationPath "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64.zip"
-          Move-Item -Path "$PWD\build\bin\Ivy Git-amd64-installer.exe" -Destination "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64_installer.exe"
+          Compress-Archive -Path "$PWD\dist\bin\Ivy Git.exe" -DestinationPath "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64.zip"
+          Move-Item -Path "$PWD\dist\bin\Ivy Git-amd64-installer.exe" -Destination "$PWD\IvyGit_${{ github.ref_name }}_Windows_amd64_installer.exe"
 
       - name: Upload windows zip and installer
         if: matrix.platform == 'windows-latest'

@@ -3,10 +3,11 @@
 Thumbs.db
 
 # build
-/build/bin
+/dist/bin
 /*res.syso
-/build/windows/installer/tmp
-/build/windows/installer/wails_tools.nsh
+/dist/windows/installer/tmp
+/dist/windows/installer/wails_tools.nsh
+/build
 
 # vendor
 /vendor
