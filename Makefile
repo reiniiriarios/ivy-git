@@ -39,7 +39,7 @@ all: deps build package
 
 deps:
 	go get -d ./...
-	go install github.com/wailsapp/wails/v2/cmd/wails@2.6.0
+	go install github.com/wailsapp/wails/v2/cmd/wails@v2.6.0
 	(cd frontend && npm ci)
 	wails doctor
 
