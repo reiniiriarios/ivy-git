@@ -6,7 +6,9 @@ It is built on [Wails](https://wails.io/) in [Go](https://go.dev/), [Svelte](htt
 
 **[➡ Download Latest Release](https://github.com/reiniiriarios/ivy-git/releases/latest)**
 
-![Screenshot](./docs/ivy-git-08-mac.png)
+![Screenshot of Commit List on macoS](./docs/ivy-git-08-mac.png)
+
+![Screenshot of Diff on Linux](./docs/ivy-git-09-linux.png)
 
 ## Major Features
 
