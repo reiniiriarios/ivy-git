@@ -61,6 +61,18 @@ build:
 		echo "Build error, unrecognized OS"
 	endif
 
+linux:
+	@mkdir -p build
+	GOGC=100 GOMEMLIMIT=1000MiB wails build -platform linux/amd64 -o ivy-git
+
+darwin:
+	@mkdir -p build
+	GOGC=100 GOMEMLIMIT=1000MiB wails build -platform darwin/universal
+
+windows:
+	@mkdir -p build
+	GOGC=100 GOMEMLIMIT=1000MiB wails build -platform windows/amd64 -nsis
+
 package:
 	ifeq ($(USER_OS), darwin)
 		pkgbuild --root dist/bin --component-plist dist/darwin/components.plist --identifier "me.reinii.ivy-git.pkg" --install-location /Applications ivy-git.pkg
@@ -72,8 +84,6 @@ package:
 		cp dist/bin/ivy-git build/
 		cp dist/linux/ivy-git.desktop build/
 		cp dist/appicon.png build/
-		VERSION=$(cat wails.json | grep productVersion | awk -F\" '{print $4}') \
-		sed -i "s/version:.*/version: '${VERSION}'/g" snap/snapcraft.yaml
 	endif
 	ifeq ($(USER_OS), windows)
 		pwsh -noprofile -command Compress-Archive -Path "$PWD\dist\bin\Ivy Git.exe" -DestinationPath "$PWD\build\IvyGit_dev_Windows_amd64.zip"
