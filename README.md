@@ -10,6 +10,8 @@ It is built on [Wails](https://wails.io/) in [Go](https://go.dev/), [Svelte](htt
 
 ![Screenshot of Diff on Linux](./docs/ivy-git-09-linux.png)
 
+[📸 See More Screenshots](./docs)
+
 ## Major Features
 
 - Tree View
