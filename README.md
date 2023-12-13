@@ -43,7 +43,6 @@ libgtk-3|libgtk-3-dev|package manager
 libwebkit|libwebkit2gtk-4.0-dev|package manager
 pkg-config|pkg-config|package manager
 Node.js/npm|nodejs|package manager / [nvm](https://github.com/nvm-sh/nvm)
-Wails 2.6.0|wails|`go install github.com/wailsapp/wails/v2/cmd/wails@v2.6.0`
 
 ### macOS Dependencies
 
@@ -56,7 +55,6 @@ Go 1.21|golang-1.21|Homebrew / [go.dev](https://go.dev/dl/)
 libgtk-3|libgtk-3-dev|Homebrew
 libwebkit|libwebkit2gtk-4.0-dev|Homebrew
 Node.js/npm|nodejs|Homebrew / [nvm](https://github.com/nvm-sh/nvm)
-Wails 2.6.0|wails|`go install github.com/wailsapp/wails/v2/cmd/wails@v2.6.0`
 
 ### Windows Dependencies
 
@@ -67,7 +65,33 @@ Go 1.21|GoLang/Go|winget / [go.dev](https://go.dev/dl/)
 NSIS|NSIS/NSIS|winget / [NSIS](https://nsis-dev.github.io/)
 WebView2|Microsoft/EdgeWebView2Runtime|winget / [Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
 Node.js/npm|nodejs|[nvm](https://github.com/nvm-sh/nvm)
-Wails 2.6.0|wails|`go install github.com/wailsapp/wails/v2/cmd/wails@v2.6.0`
+
+## Building
+
+To build for your current platform, run from the `ivy-git` source directory:
+
+```sh
+make
+make install
+```
+
+### Details
+
+`make` will first install all Go and npm dependencies via `make deps`, including Wails. It will then call `make build` and build for your current system.
+
+To build for a specific OS other than your own, you can run `make linux`, `make darwin`, or `make windows`. To build for Windows, builds, you'll need the additional `nsis` dependency.
+
+### Linux
+
+`make install` will copy the binary to `/usr/bin/ivy-git`, additional files to `/etc/ivy-git/*`, and a `.desktop` file to `/usr/share/applications/`.
+
+### macOS
+
+`make` will generate a universal app that should work on both x64 and amd (M1) chips. `make install` will create a `pkg` file that will install the app appropriately.
+
+### Windows
+
+`make install` will create both a zip file and an installer. If you have issues running `make install` on Windows, make sure Powershell is accessible from the shell you are using. Be aware: Running install from WSL will, as you might expect, build and install for Linux, not Windows.
 
 ### Troubleshooting
 
@@ -76,17 +100,6 @@ If you're having trouble getting Wails properly installed, see the [Wails Gettin
 To check dependencies listed above, run `wails doctor` after installing Wails.
 
 Node dependencies, including Svelte and Typescript, will be installed as a part of the build process. If you wish/need to manually install, you can run `npm ci` from the `/frontend` directory.
-
-## Building
-
-To build for your current platform, run:
-
-```sh
-make
-make install
-```
-
-Details on build and packaging process for Linux, macOS, and Windows are in [the Makefile](./Makefile) as well as [the GitHub release workflow](./.github/workflows/release.yaml).
 
 ## Running in Development Mode
 
