@@ -63,7 +63,7 @@ func (g *Git) getLog(limit uint64, offset uint64, date_format string) ([]Commit,
 	// - HEAD
 	count := "--max-count=" + strconv.FormatUint(limit, 10)
 	skip := "--skip=" + strconv.FormatUint(offset, 10)
-	c, err := g.run("--no-pager", "log", "--format="+format, count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD", "--")
+	c, err := g.run("--no-pager", "log", "--format="+format, count, skip, "--topo-order", "--branches", "--tags", "--glob=refs/remotes", "HEAD", "--")
 	if err != nil {
 		if errorCode(err) == NoCommitsYet || errorCode(err) == BadRevision {
 			return commits, lookup, nil
@@ -132,7 +132,19 @@ func (g *Git) GetCommitsSignStatus(limit uint64, offset uint64) (CommitsSigned, 
 	format := strings.Join(data, GIT_LOG_SEP)
 	count := "--max-count=" + strconv.FormatUint(limit, 10)
 	skip := "--skip=" + strconv.FormatUint(offset, 10)
-	c, err := g.run("--no-pager", "log", "--format="+format, count, skip, "--branches", "--tags", "--glob=refs/remotes", "HEAD", "--")
+	c, err := g.run(
+		"--no-pager",
+		"log",
+		"--format="+format,
+		count,
+		skip,
+		"--topo-order",
+		"--branches",
+		"--tags",
+		"--glob=refs/remotes",
+		"HEAD",
+		"--",
+	)
 	if err != nil {
 		return commits, err
 	}
